@@ -12,6 +12,8 @@ Ler só o doc do assunto do pedido. Não ler todos por padrão.
 | `docs/ARCHITECTURE.md` | Técnico: stack, pastas, dados, convenções de código. |
 | `docs/DESIGN.md` | Design system: tokens, componentes, regras visuais. |
 
+Mockup (fonte visual): https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR. Canvas Design: telas claro/escuro (`Main.dc.html` tem todas) + board `DesignSystem.dc.html`. Ler e publicar via Artifact tool.
+
 ## Regras
 
 1. Início de chat novo: ativar skill `caveman` (nível `full`).
@@ -26,3 +28,4 @@ Ler só o doc do assunto do pedido. Não ler todos por padrão.
 10. Código novo ou alterado (model, service, lógica, feature): teste junto. Regras em `docs/ARCHITECTURE.md` (Testes).
 11. Task finalizada: commit + push na hora, sem perguntar. Mensagem sem `Co-Authored-By` nem outra assinatura de IA.
 12. Git: trabalho na `develop`. `main` = prod, nunca commitar direto nela.
+13. Mudança no app que afete o visual: atualizar o mockup junto, sempre. Mockup = registro fiel do app.

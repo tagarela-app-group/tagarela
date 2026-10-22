@@ -8,20 +8,23 @@ class WordOfDayCard extends StatelessWidget {
 
   final WordOfDay word;
 
+  static const _padding = AppSpacing.s5;
+
   @override
   Widget build(BuildContext context) {
     return AppCard(
       color: AppPalette.mango,
       radius: AppRadius.xl,
-      padding: const EdgeInsets.all(AppSpacing.s5),
+      padding: const EdgeInsets.all(_padding),
       child: DefaultTextStyle.merge(
         style: const TextStyle(color: AppPalette.ink),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
+            // Como no mockup: 34/38 além da borda do card, que corta o balão.
             Positioned(
-              right: -34,
-              top: -38,
+              right: -34 - _padding,
+              top: -38 - _padding,
               child: SpeechBubbleIcon(
                 size: 150,
                 color: AppPalette.ink.withValues(alpha: 0.07),

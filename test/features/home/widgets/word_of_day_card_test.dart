@@ -27,10 +27,15 @@ void main() {
     expect(find.text('“A cozy room.”'), findsOneWidget);
   });
 
-  testWidgets('fundo tem o balão de fala redondo', (tester) async {
+  testWidgets('balão de fundo passa da borda do card, como no mockup', (
+    tester,
+  ) async {
     await tester.pumpComponent(const WordOfDayCard(word: _word));
 
-    expect(find.byType(SpeechBubbleIcon), findsOneWidget);
+    final card = tester.getRect(find.byType(AppCard));
+    final bubble = tester.getRect(find.byType(SpeechBubbleIcon));
+    expect(bubble.right - card.right, 34);
+    expect(card.top - bubble.top, 38);
   });
 
   testWidgets('tem ações de ouvir e adicionar', (tester) async {
