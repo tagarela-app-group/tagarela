@@ -57,6 +57,22 @@ jobs:
           path: coverage/lcov.info
           retention-days: 7
 
+  vulnerabilidades:
+    name: Dependências vulneráveis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      # Confere todo lockfile do repo (pubspec.lock, Podfile.lock...) contra
+      # a base OSV. Versão fixa: o Google avisa que muda até em patch.
+      - name: OSV-Scanner
+        uses: google/osv-scanner-action/osv-scanner-action@v2.7.0
+        with:
+          scan-args: |-
+            --recursive
+            ./
+
   android:
     name: Build Android
     needs: check
