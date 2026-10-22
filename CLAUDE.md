@@ -25,3 +25,4 @@ Ler só o doc do assunto do pedido. Não ler todos por padrão.
 9. Pedido quebra regra ou boa prática: avisar usuário antes de fazer. Dizer qual regra e propor alternativa.
 10. Código novo ou alterado (model, service, lógica, feature): teste junto. Regras em `docs/ARCHITECTURE.md` (Testes).
 11. Task finalizada: commit + push na hora, sem perguntar. Mensagem sem `Co-Authored-By` nem outra assinatura de IA.
+12. Git: trabalho na `develop`. `main` = prod, nunca commitar direto nela.
