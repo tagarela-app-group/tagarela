@@ -91,3 +91,14 @@ Fluxo: tela → store → service → `ApiClient` → API.
 ## Dependências
 
 Antes de adicionar pacote: checar pub.dev (likes, último publish), issues abertas (build/toolchain). Contar ao usuário antes de instalar. Plugin nativo ou pacote pouco mantido: perguntar.
+
+## Git e CI
+
+- Branches: `main` = produção. `develop` = integração. Cada mudança = branch nova a partir da `develop`: `feat/`, `fix/`, `docs/`, `ci/`, `chore/` + nome curto.
+- Fluxo: branch → commit → push → PR pra `develop`. Esteira verde → squash merge, branch apagada. Release: PR `develop` → `main` (merge commit), aprovado pelo usuário.
+- Esteira: `.github/workflows/ci.yml`. Roda em todo PR e push na `develop`/`main`.
+  - Formato, análise e testes: `flutter pub get --enforce-lockfile`, `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test --coverage`. Cobertura no resumo da rodada + artefato `cobertura`.
+  - Build Android: `flutter build apk --release` (chave de debug). APK no artefato `apk`, 7 dias.
+  - Build iOS: `flutter build ios --release --no-codesign`. Só PR/push na `main` (macOS lento).
+- Flutter da esteira = `FLUTTER_VERSION` no workflow. Subiu o Flutter local: subir lá junto.
+- Antes do push, rodar local: `dart format lib test`, `flutter analyze`, `flutter test`.

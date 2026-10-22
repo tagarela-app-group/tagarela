@@ -26,6 +26,6 @@ Mockup (fonte visual): https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR. Canvas
 8. Seguir sempre boas práticas de código, estrutura e arquitetura.
 9. Pedido quebra regra ou boa prática: avisar usuário antes de fazer. Dizer qual regra e propor alternativa.
 10. Código novo ou alterado (model, service, lógica, feature): teste junto. Regras em `docs/ARCHITECTURE.md` (Testes).
-11. Task finalizada: commit + push na hora, sem perguntar. Mensagem sem `Co-Authored-By` nem outra assinatura de IA.
-12. Git: trabalho na `develop`. `main` = prod, nunca commitar direto nela.
+11. Task finalizada: branch própria + commit + push + PR pra `develop`, na hora, sem perguntar. Fluxo em `docs/ARCHITECTURE.md` (Git e CI). Commit e PR sem `Co-Authored-By` nem outra assinatura de IA.
+12. Merge: PR pra `develop` com esteira verde = eu faço. PR `develop` → `main` (prod) = só o usuário aprova. Nunca commitar direto na `develop` nem na `main`.
 13. Mudança no app que afete o visual: atualizar o mockup junto, sempre. Mockup = registro fiel do app.

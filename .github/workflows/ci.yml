@@ -1,0 +1,113 @@
+name: Esteira
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+# Push novo no mesmo PR cancela a rodada anterior.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Mesma versão do Flutter usada localmente.
+  FLUTTER_VERSION: 3.44.8
+
+jobs:
+  check:
+    name: Formato, análise e testes
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Dependências (lockfile travado)
+        run: flutter pub get --enforce-lockfile
+
+      - name: Formato
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Análise
+        run: flutter analyze
+
+      - name: Testes
+        run: flutter test --coverage
+
+      - name: Cobertura no resumo
+        run: |
+          awk -F: '/^LF:/ { lf += $2 } /^LH:/ { lh += $2 }
+            END { printf "### Cobertura\n%.1f%% (%d de %d linhas)\n", lh * 100 / lf, lh, lf }' \
+            coverage/lcov.info >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: cobertura
+          path: coverage/lcov.info
+          retention-days: 7
+
+  android:
+    name: Build Android
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Dependências (lockfile travado)
+        run: flutter pub get --enforce-lockfile
+
+      # Release assinado com a chave de debug (config padrão do projeto).
+      - name: Build APK
+        run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7
+
+  ios:
+    name: Build iOS
+    needs: check
+    # macOS é lento: só no caminho pra produção (PR ou push na main).
+    if: github.base_ref == 'main' || github.ref == 'refs/heads/main'
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Dependências (lockfile travado)
+        run: flutter pub get --enforce-lockfile
+
+      - name: Build iOS (sem assinatura)
+        run: flutter build ios --release --no-codesign
