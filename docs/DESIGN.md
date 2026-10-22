@@ -83,7 +83,7 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `SegmentBar` | Barra proporcional; com `total` vira progresso |
 | `LevelDots` | Nível SRS em 5 traços |
 | `SegmentedControl` | Abas em pílula, escolha única |
-| `AppTabBar` | Tab bar com badge e espaço central (`centerGap`) |
+| `AppTabBar` | Tab bar com badge e espaço central (`centerGap`). Badge: `alert`, 18, anel 2 da cor da tab bar, no canto da pílula |
 | `StateMessage` | Ícone + título + texto + ação opcional. Lista vazia, erro |
 | `AsyncStatus` | Body sem dado: spinner, ou erro (`StateMessage`) com "Tentar de novo" |
 | `ArcMenu` | Botão + que abre opções em arco (150°, 90°, 30°, raio 118) sobre scrim com blur. Arco tracejado decorativo liga as opções |

@@ -91,20 +91,23 @@ class _Tab extends StatelessWidget {
               curve: AppMotion.standard,
               width: 56,
               height: 30,
-              // Centra o ícone. Sem isso, com badge visível o ícone vai pro
-              // canto (Badge vira Stack e solta o tamanho do filho).
-              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: selected ? c.primarySoft : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
-              child: Badge(
-                isLabelVisible: item.badge > 0,
-                label: Text('${item.badge}'),
-                backgroundColor: c.alert,
-                textColor: c.onAlert,
-                offset: const Offset(2, -2),
-                child: Icon(item.icon, size: 22, color: fg),
+              // Stack do tamanho da pílula: ícone no centro, badge no canto.
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  Icon(item.icon, size: 22, color: fg),
+                  if (item.badge > 0)
+                    Positioned(
+                      top: -3,
+                      right: 8,
+                      child: _Badge(count: item.badge),
+                    ),
+                ],
               ),
             ),
             Text(
@@ -116,6 +119,33 @@ class _Tab extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Contador em alert com anel da cor da tab bar, que separa do ícone.
+class _Badge extends StatelessWidget {
+  const _Badge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Container(
+      height: 18,
+      constraints: const BoxConstraints(minWidth: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: c.alert,
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+        border: Border.all(color: c.surface, width: 2),
+      ),
+      child: Text(
+        '$count',
+        style: AppText.tag.copyWith(letterSpacing: 0, color: c.onAlert),
       ),
     );
   }
