@@ -1,0 +1,28 @@
+/// Ponto único de import do design system:
+/// `import 'package:tagarela/design_system/design_system.dart';`
+library;
+
+export 'package:tagarela/design_system/components/app_bubble.dart';
+export 'package:tagarela/design_system/components/app_button.dart';
+export 'package:tagarela/design_system/components/app_card.dart';
+export 'package:tagarela/design_system/components/app_chip.dart';
+export 'package:tagarela/design_system/components/app_icon_button.dart';
+export 'package:tagarela/design_system/components/app_tab_bar.dart';
+export 'package:tagarela/design_system/components/app_tag.dart';
+export 'package:tagarela/design_system/components/app_text_field.dart';
+export 'package:tagarela/design_system/components/arc_menu.dart';
+export 'package:tagarela/design_system/components/async_status.dart';
+export 'package:tagarela/design_system/components/icon_tile.dart';
+export 'package:tagarela/design_system/components/level_dots.dart';
+export 'package:tagarela/design_system/components/page_header.dart';
+export 'package:tagarela/design_system/components/section_header.dart';
+export 'package:tagarela/design_system/components/segment_bar.dart';
+export 'package:tagarela/design_system/components/segmented_control.dart';
+export 'package:tagarela/design_system/components/sheet_page.dart';
+export 'package:tagarela/design_system/components/state_message.dart';
+export 'package:tagarela/design_system/components/status_pill.dart';
+export 'package:tagarela/design_system/theme.dart';
+export 'package:tagarela/design_system/tokens/app_colors.dart';
+export 'package:tagarela/design_system/tokens/app_icons.dart';
+export 'package:tagarela/design_system/tokens/app_tokens.dart';
+export 'package:tagarela/design_system/tokens/app_typography.dart';
