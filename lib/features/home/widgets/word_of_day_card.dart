@@ -22,8 +22,7 @@ class WordOfDayCard extends StatelessWidget {
             Positioned(
               right: -34,
               top: -38,
-              child: Icon(
-                AppIcons.chat,
+              child: SpeechBubbleIcon(
                 size: 150,
                 color: AppPalette.ink.withValues(alpha: 0.07),
               ),

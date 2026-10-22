@@ -61,6 +61,8 @@ Estilos sem cor: herdam `ink`. Mudar cor com `copyWith(color:)`.
 
 Material outlined/rounded, centralizado em `app_icons.dart`. Trocar pacote = mexer só lá. 22 em tab bar/header, 16–20 em linhas.
 
+Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, mesma API do `Icon`).
+
 ## Componentes
 
 | Componente | Uso |
@@ -77,6 +79,7 @@ Material outlined/rounded, centralizado em `app_icons.dart`. Trocar pacote = mex
 | `AppTag` | Etiqueta caixa alta com contorno (PALAVRA, EXPRESSÃO) |
 | `IconTile` | Ícone em quadrado tingido por `AppAccent` |
 | `AppBubble` | Forma balão: logo, avatar, itens do arco |
+| `SpeechBubbleIcon` | Balão de fala redondo cheio, desenhado. Fundo da palavra do dia |
 | `SegmentBar` | Barra proporcional; com `total` vira progresso |
 | `LevelDots` | Nível SRS em 5 traços |
 | `SegmentedControl` | Abas em pílula, escolha única |
