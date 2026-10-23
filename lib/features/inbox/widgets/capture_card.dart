@@ -349,23 +349,7 @@ class _Terms extends StatelessWidget {
       spacing: 6,
       runSpacing: 6,
       children: [
-        for (final term in terms)
-          Container(
-            height: 30,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: muted ? c.surfaceAlt : c.primarySoft,
-              borderRadius: BorderRadius.circular(AppRadius.pill),
-            ),
-            child: Text(
-              term.text,
-              style: AppText.label.copyWith(
-                fontWeight: FontWeight.w700,
-                color: muted ? c.inkSoft : c.primaryText,
-              ),
-            ),
-          ),
+        for (final term in terms) TermChip(label: term.text, muted: muted),
       ],
     );
     if (muted) return chips;

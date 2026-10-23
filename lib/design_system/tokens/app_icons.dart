@@ -8,6 +8,8 @@ abstract final class AppIcons {
   static const back = Icons.chevron_left_rounded;
   static const forward = Icons.chevron_right_rounded;
   static const close = Icons.close_rounded;
+  static const edit = Icons.edit_outlined;
+  static const delete = Icons.delete_outline_rounded;
   static const more = Icons.more_vert_rounded;
 
   static const add = Icons.add_rounded;

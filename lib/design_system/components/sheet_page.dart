@@ -11,6 +11,7 @@ class SheetPage extends StatelessWidget {
     required this.children,
     this.gap = AppSpacing.s5,
     this.onRefresh,
+    this.footer,
   });
 
   final Widget header;
@@ -19,6 +20,8 @@ class SheetPage extends StatelessWidget {
   final double gap;
 
   final RefreshCallback? onRefresh;
+
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +62,7 @@ class SheetPage extends StatelessWidget {
                         AppSpacing.screen,
                         AppSpacing.s6,
                         AppSpacing.screen,
-                        AppSpacing.s6 + bottom,
+                        AppSpacing.s6 + (footer == null ? bottom : 0),
                       ),
                       itemCount: children.length,
                       separatorBuilder: (_, _) => SizedBox(height: gap),
@@ -69,6 +72,22 @@ class SheetPage extends StatelessWidget {
                 ),
               ),
             ),
+            if (footer case final footer?)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: c.bg,
+                  border: Border(top: BorderSide(color: c.line)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    AppSpacing.screen,
+                    AppSpacing.s3,
+                    AppSpacing.screen,
+                    AppSpacing.s3 + bottom,
+                  ),
+                  child: footer,
+                ),
+              ),
           ],
         ),
       ),

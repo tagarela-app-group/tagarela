@@ -68,7 +68,7 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 
 | Componente | Uso |
 | --- | --- |
-| `SheetPage` | Toda tela: header + body arredondado rolável. `onRefresh` = puxar pra atualizar |
+| `SheetPage` | Toda tela: header + body arredondado rolável. `onRefresh` = puxar pra atualizar. `footer` = barra fixa embaixo (fundo `bg`, linha `line` em cima), fora da rolagem |
 | `PageHeader` | Título/subtítulo (+ leading/trailing) no header |
 | `SectionHeader` | Título de seção + ação texto |
 | `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), contrast (botão Apple), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading`. `loading`: spinner 18 na cor do texto no lugar do `leading`, rótulo e cor da variante ficam, toque ignorado. Enquanto um botão carrega, os outros da tela ficam desabilitados |
@@ -90,6 +90,7 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `AsyncStatus` | Body sem dado: spinner, ou erro (`StateMessage`) com "Tentar de novo" |
 | `ArcMenu` | Botão + que abre opções em arco (150°, 90°, 30°, raio 118) sobre scrim com blur. Arco tracejado decorativo liga as opções |
 | `AppSheet` | Painel que sobe de baixo: puxador, `IconTile` + título + subtítulo, Fechar (`soft`), conteúdo. Raio `sheet` no topo, sobre `scrim`. Abre com `AppSheet.show(context, builder)`; sobe com o teclado |
+| `TermChip` | Pílula do termo escolhido: `primarySoft` + `primaryText`. Sem `onRemove`: 30 de altura, texto `label` (card do Inbox). Com `onRemove`: 40, texto `button` + X "Remover <termo>". `muted` = `surfaceAlt` + `inkSoft` (analisada) |
 | `OptionRow` | Linha de escolha: `IconTile` 48 + título + subtítulo + seta. Borda `line` 1.5, raio `lg`. Ex.: Tirar foto, Escolher da galeria |
 
 ## Regras

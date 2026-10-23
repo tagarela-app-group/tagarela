@@ -23,6 +23,7 @@ export 'package:tagarela/design_system/components/sheet_page.dart';
 export 'package:tagarela/design_system/components/speech_bubble_icon.dart';
 export 'package:tagarela/design_system/components/state_message.dart';
 export 'package:tagarela/design_system/components/status_pill.dart';
+export 'package:tagarela/design_system/components/term_chip.dart';
 export 'package:tagarela/design_system/theme.dart';
 export 'package:tagarela/design_system/tokens/app_colors.dart';
 export 'package:tagarela/design_system/tokens/app_icons.dart';

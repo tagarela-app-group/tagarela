@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/inbox/inbox_page.dart';
+import 'package:tagarela/features/inbox/pick_terms_page.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 
 import '../../helpers/fake_capture_api.dart';
@@ -127,6 +128,17 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(sectionLabels(tester), ['ANALISADAS · 1']);
+  });
+
+  testWidgets('Escolher termos abre a tela da captura', (tester) async {
+    await seed([sampleCapture('pronta', text: 'Pronta pra escolher')]);
+    await pumpInbox(tester);
+
+    await tester.tap(find.text('Escolher termos'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PickTermsPage), findsOneWidget);
+    expect(find.text('escolher'), findsOneWidget);
   });
 
   testWidgets('Processar agora sem rede avisa', (tester) async {

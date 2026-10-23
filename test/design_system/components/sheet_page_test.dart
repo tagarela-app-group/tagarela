@@ -59,4 +59,26 @@ void main() {
 
     expect(find.byType(RefreshIndicator), findsNothing);
   });
+
+  testWidgets('footer fica fixo embaixo, fora da rolagem', (tester) async {
+    await tester.pumpPage(
+      SheetPage(
+        header: const Text('Header'),
+        footer: const Text('Rodapé'),
+        children: [
+          for (var i = 0; i < 40; i++)
+            SizedBox(height: 100, child: Text('Item $i')),
+        ],
+      ),
+    );
+    final before = tester.getTopLeft(find.text('Rodapé'));
+
+    await tester.scrollUntilVisible(find.text('Item 39'), 500);
+
+    expect(tester.getTopLeft(find.text('Rodapé')), before);
+    expect(
+      tester.getBottomLeft(find.byType(ListView)).dy,
+      lessThanOrEqualTo(before.dy),
+    );
+  });
 }

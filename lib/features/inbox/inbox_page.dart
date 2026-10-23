@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/inbox/pick_terms_page.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 
 enum InboxTab {
@@ -111,6 +112,11 @@ class _InboxPageState extends State<InboxPage> {
             now: now,
             onDiscard: () => captures.discard(capture),
             onProcess: () => _run(() => captures.processNow(capture)),
+            onPick: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => PickTermsPage(capture: capture),
+              ),
+            ),
             onConfirm: () => captures.confirm(capture),
           ),
       ],
