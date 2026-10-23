@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 
-enum AppIconButtonVariant { onHeader, ink, primary, ghost }
+enum AppIconButtonVariant { onHeader, ink, primary, soft, ghost }
 
 class AppIconButton extends StatelessWidget {
   const AppIconButton({
@@ -28,6 +28,7 @@ class AppIconButton extends StatelessWidget {
       AppIconButtonVariant.onHeader => (c.headerChip, AppPalette.white),
       AppIconButtonVariant.ink => (AppPalette.ink, AppPalette.mango),
       AppIconButtonVariant.primary => (c.primary, c.onPrimary),
+      AppIconButtonVariant.soft => (c.surfaceAlt, c.ink),
       AppIconButtonVariant.ghost => (Colors.transparent, c.inkSoft),
     };
 

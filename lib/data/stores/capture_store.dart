@@ -124,7 +124,7 @@ class CaptureStore extends Store<List<Capture>> {
 
   Future<Capture> _create(Capture capture) async {
     await _change(capture);
-    return capture;
+    return await _db.capture(capture.id) ?? capture;
   }
 
   Future<void> _change(Capture capture) async {

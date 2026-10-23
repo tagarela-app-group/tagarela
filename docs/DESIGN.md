@@ -72,9 +72,9 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `PageHeader` | Título/subtítulo (+ leading/trailing) no header |
 | `SectionHeader` | Título de seção + ação texto |
 | `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), contrast (botão Apple), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading`. `loading`: spinner 18 na cor do texto no lugar do `leading`, rótulo e cor da variante ficam, toque ignorado. Enquanto um botão carrega, os outros da tela ficam desabilitados |
-| `AppIconButton` | Botão redondo de ícone. Variantes onHeader, ink, primary, ghost. `tooltip` obrigatório |
+| `AppIconButton` | Botão redondo de ícone. Variantes onHeader, ink, primary, soft (`surfaceAlt` + `ink`: fechar painel), ghost. `tooltip` obrigatório |
 | `AppCard` | Superfície com sombra. `onTap` opcional. `color` próprio = sem sombra. `muted` = sem fundo nem sombra, borda `line` (item encerrado, ex.: captura analisada) |
-| `AppTextField` | Rótulo acima, ícone, halo no foco, `helperText` (some com erro), erro, `obscure` com olho |
+| `AppTextField` | Rótulo acima, ícone, halo no foco, `helperText` (some com erro), erro, `obscure` com olho. `lines` > 1 = várias linhas (rola dentro). `maxLength` = limite + contador `n/max` à direita do rodapé. `autofocus` |
 | `AppCodeField` | Código numérico em caixas (padrão 6, 56 de altura, raio md). Caixa da vez com halo, erro em `alert`. Campo real escondido (`oneTimeCode`, só dígito). `onCompleted` ao completar |
 | `AppChip` | Filtro. Selecionado = tinta cheia |
 | `StatusPill` | Status: learning, mastered, primary, neutral, alert (coral: erro) |
@@ -86,9 +86,11 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `LevelDots` | Nível SRS em 5 traços |
 | `SegmentedControl` | Abas em pílula, escolha única |
 | `AppTabBar` | Tab bar com badge e espaço central (`centerGap`). Badge: `alert`, 18, anel 2 da cor da tab bar, no canto da pílula |
-| `StateMessage` | Ícone + título + texto + ação opcional. Lista vazia, erro |
+| `StateMessage` | Ícone + título + texto + ação opcional. Lista vazia, erro, permissão negada |
 | `AsyncStatus` | Body sem dado: spinner, ou erro (`StateMessage`) com "Tentar de novo" |
 | `ArcMenu` | Botão + que abre opções em arco (150°, 90°, 30°, raio 118) sobre scrim com blur. Arco tracejado decorativo liga as opções |
+| `AppSheet` | Painel que sobe de baixo: puxador, `IconTile` + título + subtítulo, Fechar (`soft`), conteúdo. Raio `sheet` no topo, sobre `scrim`. Abre com `AppSheet.show(context, builder)`; sobe com o teclado |
+| `OptionRow` | Linha de escolha: `IconTile` 48 + título + subtítulo + seta. Borda `line` 1.5, raio `lg`. Ex.: Tirar foto, Escolher da galeria |
 
 ## Regras
 
@@ -96,3 +98,4 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 - Status sempre `StatusPill`; aprendendo = âmbar, dominado = menta.
 - Ícone só com cor; ativo muda cor, não forma.
 - Valor visual novo: virar token aqui antes de usar.
+- Aviso rápido: `SnackBar` do tema (fundo `ink`, texto `bg`, ação manga no claro e violeta no escuro), flutuante acima da tab bar.

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/audio_playback.dart';
+import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
@@ -18,12 +19,14 @@ AppScope testScope({
   AuthStore? auth,
   CaptureStore? captures,
   AudioPlayback? playback,
+  CaptureDevice? device,
   HomeStore? home,
   VocabularyStore? vocabulary,
 }) => AppScope(
   auth: auth ?? fakeAuthStore(),
   captures: captures ?? fakeCaptures().store,
   playback: playback ?? FakeAudioPlayback(),
+  device: device ?? FakeCaptureDevice(),
   home: home ?? HomeStore(sampleHome),
   vocabulary: vocabulary ?? VocabularyStore(sampleGroups),
   child: child,
@@ -41,6 +44,7 @@ extension PumpApp on WidgetTester {
     AuthStore? auth,
     CaptureStore? captures,
     AudioPlayback? playback,
+    CaptureDevice? device,
     HomeStore? home,
     VocabularyStore? vocabulary,
     bool load = true,
@@ -51,6 +55,7 @@ extension PumpApp on WidgetTester {
       auth: auth,
       captures: captures,
       playback: playback,
+      device: device,
       home: home,
       vocabulary: vocabulary,
       child: MaterialApp(theme: theme ?? AppTheme.light, home: page),

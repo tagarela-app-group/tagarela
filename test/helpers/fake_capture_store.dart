@@ -5,6 +5,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:tagarela/data/audio_playback.dart';
+import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/database.dart';
 import 'package:tagarela/data/media_storage.dart';
 import 'package:tagarela/data/models.dart';
@@ -51,7 +52,63 @@ class FakeAudioPlayback extends ChangeNotifier implements AudioPlayback {
   }
 
   @override
+  Future<void> stop() async {
+    if (playing == null) return;
+    playing = null;
+    total = null;
+    notifyListeners();
+  }
+
+  @override
   Future<Duration?> duration(File file) async => const Duration(seconds: 4);
+}
+
+class FakeCaptureDevice implements CaptureDevice {
+  bool camera = true;
+  bool microphone = true;
+  File? nextPhoto = File('cache/foto.jpg');
+  bool recording = false;
+  int recordings = 0;
+  int cancelled = 0;
+  int settingsOpened = 0;
+  final origins = <PhotoOrigin>[];
+  final discarded = <String>[];
+
+  @override
+  Future<bool> allowCamera() async => camera;
+
+  @override
+  Future<bool> allowMicrophone() async => microphone;
+
+  @override
+  Future<void> openSettings() async => settingsOpened++;
+
+  @override
+  Future<File?> photo(PhotoOrigin origin) async {
+    origins.add(origin);
+    return nextPhoto;
+  }
+
+  @override
+  Future<void> startRecording() async {
+    recording = true;
+    recordings++;
+  }
+
+  @override
+  Future<File?> stopRecording() async {
+    recording = false;
+    return File('cache/gravacao-$recordings.m4a');
+  }
+
+  @override
+  Future<void> cancelRecording() async {
+    recording = false;
+    cancelled++;
+  }
+
+  @override
+  Future<void> discard(File file) async => discarded.add(file.path);
 }
 
 typedef FakeCaptures = ({

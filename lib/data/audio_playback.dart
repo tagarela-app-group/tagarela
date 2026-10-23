@@ -24,6 +24,12 @@ class AudioPlayback extends ChangeNotifier {
     await player.play(DeviceFileSource(file.path));
   }
 
+  Future<void> stop() async {
+    if (_playing == null) return;
+    await _player?.stop();
+    _reset();
+  }
+
   Future<Duration?> duration(File file) async {
     final probe = AudioPlayer();
     try {

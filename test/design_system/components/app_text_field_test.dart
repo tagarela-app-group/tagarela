@@ -77,4 +77,48 @@ void main() {
 
     expect(_obscured(tester), isTrue);
   });
+
+  testWidgets('várias linhas com contador e limite', (tester) async {
+    await tester.pumpComponent(
+      const AppTextField(
+        label: 'Frase',
+        helperText: 'Os termos você escolhe no Inbox.',
+        lines: 4,
+        maxLength: 10,
+      ),
+    );
+
+    final field = tester.widget<TextField>(find.byType(TextField));
+    expect(field.minLines, 4);
+    expect(field.maxLines, 4);
+    expect(field.keyboardType, TextInputType.multiline);
+    expect(find.text('Os termos você escolhe no Inbox.'), findsOneWidget);
+    expect(find.text('0/10'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'hello world, again');
+    await tester.pump();
+
+    expect(field.controller!.text, 'hello worl');
+    expect(find.text('10/10'), findsOneWidget);
+  });
+
+  testWidgets('contador usa o controller de fora', (tester) async {
+    final controller = TextEditingController(text: 'oi');
+    addTearDown(controller.dispose);
+    await tester.pumpComponent(
+      AppTextField(controller: controller, maxLength: 500),
+    );
+
+    expect(find.text('2/500'), findsOneWidget);
+  });
+
+  testWidgets('autofocus foca ao abrir', (tester) async {
+    await tester.pumpComponent(const AppTextField(autofocus: true));
+    await tester.pump();
+
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+      isTrue,
+    );
+  });
 }

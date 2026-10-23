@@ -66,12 +66,14 @@ void main() {
       expect(only().status, CaptureStatus.ready);
       expect(only().pending, isEmpty);
       expect(only().updatedAt, isNotNull);
+      expect(capture.pending, isEmpty);
     });
 
     test('texto offline: fica salvo pendente e sobe no sync', () async {
       api.offline = true;
-      await store.createText(text);
+      final capture = await store.createText(text);
 
+      expect(capture.pending, {CaptureSync.create});
       expect(only().pending, {CaptureSync.create});
       expect(api.server, isEmpty);
 
@@ -106,6 +108,7 @@ void main() {
       );
       expect(only().status, CaptureStatus.processing);
       expect(only().pending, isEmpty);
+      expect(capture.status, CaptureStatus.processing);
     });
 
     test('áudio offline: guarda as duas etapas pendentes', () async {
