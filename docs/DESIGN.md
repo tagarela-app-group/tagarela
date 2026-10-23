@@ -53,7 +53,7 @@ Estilos sem cor: herdam `ink`. Mudar cor com `copyWith(color:)`.
 
 - `AppSpacing.sN` = N × 4 (s1 4 … s14 56). Margem de tela `screen` = 20.
 - `AppRadius`: xs 6 (tag) · sm 10 · md 16 (botão, campo) · lg 22 (card) · xl 28 (palavra do dia) · sheet 32 · pill · `bubble(r)`.
-- `AppMotion`: fast 120 · base 200 · slow 320 ms. Curva `standard`; `spring` (easeOutBack) no arco.
+- `AppMotion`: fast 120 · base 200 · slow 320 ms. Curva `standard`; `spring` (easeOutBack) no arco. Troca de aba: a nova entra por cima da antiga (que fica opaca embaixo) com fade + subida leve (`slow`, `standard`). Estado das abas mantido.
 - `AppBlur.scrim` 2: desfoque atrás do scrim.
 - Sombra: `cardShadow`, `buttonShadow` (só primário grande), `fabShadow`. Vêm de `AppColors`.
 - Toque mínimo 44.
