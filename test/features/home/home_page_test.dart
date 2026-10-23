@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models.dart';
@@ -8,19 +9,54 @@ import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
 
 import '../../helpers/fake_api_client.dart';
+import '../../helpers/fake_auth.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
-  testWidgets('header saúda o usuário e mostra a sequência', (tester) async {
-    final scope = await tester.pumpPage(HomePage(onSeeVocabulary: () {}));
+  group('greeting', () {
+    test('muda com a hora do dia', () {
+      String at(int hour) => greeting(DateTime(2026, 10, 23, hour), 'Ana');
 
-    final user = scope.user.data!;
-    expect(find.text('Bom dia, ${user.name}'), findsOneWidget);
-    expect(find.text(user.initials), findsOneWidget);
+      expect(at(5), 'Bom dia, Ana');
+      expect(at(11), 'Bom dia, Ana');
+      expect(at(12), 'Boa tarde, Ana');
+      expect(at(17), 'Boa tarde, Ana');
+      expect(at(18), 'Boa noite, Ana');
+      expect(at(4), 'Boa noite, Ana');
+    });
+
+    test('sem nome fica só a saudação', () {
+      expect(greeting(DateTime(2026, 10, 23, 9), ''), 'Bom dia!');
+    });
+  });
+
+  testWidgets('header saúda pelo primeiro nome, com foto e iniciais', (
+    tester,
+  ) async {
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}),
+      auth: await signedInAuthStore(),
+    );
+
     expect(
-      find.bySemanticsLabel('Sequência de ${user.streakDays} dias'),
+      find.textContaining(RegExp(r'^Bo(m dia|a tarde|a noite), Ana$')),
       findsOneWidget,
     );
+    expect(find.text('AS'), findsOneWidget);
+    final bubble = tester.widget<AppBubble>(find.byType(AppBubble));
+    expect((bubble.image as NetworkImage?)?.url, 'https://example.com/ana.png');
+    expect(find.byIcon(Icons.local_fire_department_rounded), findsNothing);
+  });
+
+  testWidgets('header aparece mesmo quando os dados falham', (tester) async {
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}),
+      api: FakeApiClient()..failing = true,
+      auth: await signedInAuthStore(),
+    );
+
+    expect(find.textContaining(', Ana'), findsOneWidget);
+    expect(find.text('Não deu pra carregar'), findsOneWidget);
   });
 
   testWidgets('mostra palavra do dia, resumo e revisão', (tester) async {

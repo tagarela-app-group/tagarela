@@ -91,19 +91,47 @@ void main() {
     expect(<TermGroup>[].termCount, 0);
   });
 
-  group('User.initials', () {
-    User user(String name) => User(name: name, email: '', streakDays: 0);
+  group('User', () {
+    User user(String name) => User(name: name, email: 'mari@email.com');
 
-    test('um nome = duas primeiras letras', () {
-      expect(user('Marina').initials, 'MA');
+    test('um nome = uma inicial', () {
+      expect(user('Moeb').initials, 'M');
     });
 
-    test('nome composto = primeira e última inicial', () {
+    test('nome composto = inicial do primeiro e do último nome', () {
+      expect(user('Bruno Pinheiro').initials, 'BP');
       expect(user('marina de souza').initials, 'MS');
     });
 
-    test('nome de uma letra', () {
-      expect(user('M').initials, 'M');
+    test('sem nome: iniciais e nome de exibição vêm do e-mail', () {
+      expect(
+        (user('').initials, user('').displayName),
+        ('M', 'mari@email.com'),
+      );
+      expect(user('').firstName, '');
+    });
+
+    test('primeiro nome', () {
+      expect(user('  Marina de Souza ').firstName, 'Marina');
+    });
+
+    test('fromJson da API e ida e volta pelo toJson', () {
+      final api = User.fromJson({
+        'id': 1,
+        'display': 'Bia',
+        'email': 'bia@gmail.com',
+        'name': 'Bia Lima',
+        'picture': 'https://example.com/bia.png',
+      });
+      final apple = User.fromJson({'id': 2, 'email': 'x@privaterelay.com'});
+
+      expect(
+        (api.name, api.picture),
+        ('Bia Lima', 'https://example.com/bia.png'),
+      );
+      expect((apple.name, apple.picture), ('', null));
+      expect(User.fromJson(api.toJson()).picture, api.picture);
+      expect(apple.toJson().containsKey('picture'), isFalse);
     });
   });
 

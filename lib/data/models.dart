@@ -24,30 +24,29 @@ enum TermStatus {
 }
 
 class User {
-  const User({
-    required this.name,
-    required this.email,
-    required this.streakDays,
-  });
+  const User({required this.name, required this.email, this.picture});
 
   User.fromJson(Json json)
     : this(
-        name: json['name']! as String,
-        email: json['email']! as String,
-        streakDays: json['streakDays']! as int,
+        name: json['name'] as String? ?? '',
+        email: json['email'] as String? ?? '',
+        picture: json['picture'] as String?,
       );
 
   final String name;
   final String email;
+  final String? picture;
 
-  final int streakDays;
+  Json toJson() => {'name': name, 'email': email, 'picture': ?picture};
+
+  String get displayName => name.trim().isEmpty ? email : name.trim();
+
+  String get firstName => name.trim().split(RegExp(r'\s+')).first;
 
   String get initials {
-    final words = name.trim().split(RegExp(r'\s+'));
-    final letters = words.length > 1
-        ? words.first[0] + words.last[0]
-        : words.first.substring(0, words.first.length.clamp(0, 2));
-    return letters.toUpperCase();
+    final words = displayName.split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
+    final picked = words.length > 1 ? [words.first, words.last] : words;
+    return picked.map((word) => word[0]).join().toUpperCase();
   }
 }
 

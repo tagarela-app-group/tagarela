@@ -71,7 +71,7 @@ Duas URLs: dados no mock, conta na API Django.
 
 - URL base: `--dart-define=API_URL=...`. Padrão `http://10.0.2.2:3000` (emulador Android enxerga o PC em 10.0.2.2).
 - Mock: `npx json-server server/db.json` (porta 3000). Celular físico: `API_URL=http://<IP do PC>:3000`.
-- Rotas: `GET /user`, `/stats`, `/wordOfDay`, `/groups?_embed=terms`, `/inbox`. `POST /terms`. `DELETE /inbox/:id`.
+- Rotas: `GET /stats`, `/wordOfDay`, `/groups?_embed=terms`, `/inbox`. `POST /terms`. `DELETE /inbox/:id`.
 - IDs sempre string (json-server v1 gera string).
 - http sem TLS só no debug (`usesCleartextTraffic` em `android/app/src/debug`). Release: só https. iOS (ATS): não configurado.
 - Online: hospedar o db.json (ex.: my-json-server lê `db.json` na raiz de um repo GitHub; só leitura) e passar a URL https.
@@ -87,6 +87,7 @@ Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `ap
 - Google: o client ID web vem da API (`GET config`, provider `google`), que lê o `GOOGLE_CLIENT_ID` do `.env` do backend. É o `serverClientId` do `google_sign_in` e o `aud` do id_token. Nada a passar no `flutter run`. Sem client ID na API, o botão avisa "Esse login não está disponível agora.". iOS: `--dart-define=GOOGLE_IOS_CLIENT_ID=<client ID iOS>` + URL scheme com o client ID iOS invertido no `Info.plist` (falta: precisa do ID). Android: client OAuth Android com o SHA-1 da chave no Google Cloud.
 - Apple: só iOS (botão some no Android). `APPLE_CLIENT_ID` = bundle ID `com.tagarela.tagarela` (padrão; mesmo `APPLE_CLIENT_ID` do backend). Entitlement `com.apple.developer.applesignin` em `ios/Runner/Runner.entitlements`; no Xcode, time com a capability Sign in with Apple.
 - Token: refresh no `flutter_secure_storage` (chave `refresh_token`). Access não é guardado: nenhuma rota de dados pede login ainda.
+- Usuário: vem da API em `data.user` (`name`, `email`, `picture` = foto do Google). `AuthStore.user` guarda o do login e, ao abrir o app, busca `GET auth/session` depois do refresh. Fica salvo no `flutter_secure_storage` (chave `user`) pra aparecer offline; sair apaga. Home (saudação + avatar) e Perfil leem daqui; não há mais `/user` no json-server.
 
 ## Layout de tela
 

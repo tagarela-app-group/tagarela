@@ -80,7 +80,7 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `StatusPill` | Status: learning, mastered, primary, neutral |
 | `AppTag` | Etiqueta caixa alta com contorno (PALAVRA, EXPRESSÃO) |
 | `IconTile` | Ícone em quadrado tingido por `AppAccent` |
-| `AppBubble` | Forma balão: logo, avatar, itens do arco |
+| `AppBubble` | Forma balão: logo, avatar, itens do arco. `image`: foto recortada no balão, por cima do conteúdo (as iniciais aparecem enquanto carrega ou se falhar) |
 | `SpeechBubbleIcon` | Balão de fala redondo cheio, desenhado. Fundo da palavra do dia |
 | `SegmentBar` | Barra proporcional; com `total` vira progresso |
 | `LevelDots` | Nível SRS em 5 traços |

@@ -3,29 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
+import 'package:tagarela/features/profile/user_avatar.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final userStore = AppScope.of(context).user;
+    final auth = AppScope.of(context).auth;
 
     return ListenableBuilder(
-      listenable: userStore,
+      listenable: auth,
       builder: (context, _) {
-        final user = userStore.data;
+        final user = auth.user;
         return SheetPage(
           header: user == null
               ? const PageHeader(title: 'Perfil')
               : PageHeader(
-                  title: user.name,
+                  title: user.displayName,
                   subtitle: user.email,
-                  leading: AppBubble(size: 56, child: Text(user.initials)),
+                  leading: UserAvatar(user: user, size: 56),
                 ),
           children: [
-            if (user == null)
-              AsyncStatus(error: userStore.error, onRetry: userStore.load),
             AppButton(
               label: 'Sair',
               onPressed: () => _logout(context),

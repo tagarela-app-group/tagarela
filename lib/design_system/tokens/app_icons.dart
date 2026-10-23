@@ -21,7 +21,6 @@ abstract final class AppIcons {
   static const audio = Icons.mic_none_rounded;
   static const text = Icons.title_rounded;
 
-  static const streak = Icons.local_fire_department_rounded;
   static const offline = Icons.wifi_off_rounded;
   static const mail = Icons.mail_outline_rounded;
   static const lock = Icons.lock_outline_rounded;

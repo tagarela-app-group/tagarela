@@ -13,15 +13,21 @@ class AuthStore extends ChangeNotifier {
   final SocialSignIn _social;
 
   String? _refreshToken;
+  User? _user;
 
   bool get isSignedIn => _refreshToken != null;
+
+  User? get user => _user;
 
   Future<bool> restore() async {
     final stored = await _storage.read();
     if (stored == null) return false;
     _refreshToken = stored;
+    _user = await _storage.readUser();
     try {
-      await _save(await _service.refresh(stored));
+      final tokens = await _service.refresh(stored);
+      await _save(tokens);
+      await _saveUser(await _service.session(tokens.access));
     } on AuthException {
       await _forget();
     } on Exception {
@@ -84,7 +90,10 @@ class AuthStore extends ChangeNotifier {
 
   Future<AuthResult> _signIn(Future<AuthResult> request) async {
     final result = await request;
-    if (result is AuthSignedIn) await _save(result.tokens);
+    if (result is AuthSignedIn) {
+      await _save(result.tokens);
+      if (result.user case final user?) await _saveUser(user);
+    }
     return result;
   }
 
@@ -94,8 +103,15 @@ class AuthStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> _saveUser(User user) async {
+    _user = user;
+    await _storage.writeUser(user);
+    notifyListeners();
+  }
+
   Future<void> _forget() async {
     _refreshToken = null;
+    _user = null;
     await _storage.clear();
     notifyListeners();
   }

@@ -28,7 +28,7 @@ Brasileiro, inglês básico/intermediário, celular na mão, pouco tempo.
 | Criar conta | Nome, e-mail, senha (mín. 8). Google/Apple. Depois: código no e-mail. |
 | Código | 6 dígitos do e-mail (confirmar cadastro ou trocar senha). Reenviar após 1 min. Trocar e-mail. |
 | Esqueci a senha | E-mail → código → nova senha → já entra. |
-| Início | Palavra do dia, resumo do vocabulário (total, aprendendo, dominado), revisão de hoje, sequência de dias. |
+| Início | Saudação pelo primeiro nome conforme a hora (bom dia, boa tarde, boa noite) com a foto do Google ou as iniciais (primeiro e último nome), palavra do dia, resumo do vocabulário (total, aprendendo, dominado), revisão de hoje. Sem sequência de dias. |
 | Vocabulário | Grade de grupos (% dominado). Busca e filtros: a definir. |
 | Grupo | Termos do grupo: tipo, tradução, status, nível. Filtro todos/aprendendo/dominado. |
 | Inbox | Prontos para revisar (adicionar/descartar) e em análise (analisando, na fila sem rede). |
