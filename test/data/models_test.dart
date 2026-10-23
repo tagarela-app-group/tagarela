@@ -94,22 +94,19 @@ void main() {
   group('User', () {
     User user(String name) => User(name: name, email: 'mari@email.com');
 
-    test('um nome = duas primeiras letras', () {
-      expect(user('Marina').initials, 'MA');
+    test('um nome = uma inicial', () {
+      expect(user('Moeb').initials, 'M');
     });
 
-    test('nome composto = primeira e última inicial', () {
+    test('nome composto = inicial do primeiro e do último nome', () {
+      expect(user('Bruno Pinheiro').initials, 'BP');
       expect(user('marina de souza').initials, 'MS');
-    });
-
-    test('nome de uma letra', () {
-      expect(user('M').initials, 'M');
     });
 
     test('sem nome: iniciais e nome de exibição vêm do e-mail', () {
       expect(
         (user('').initials, user('').displayName),
-        ('MA', 'mari@email.com'),
+        ('M', 'mari@email.com'),
       );
       expect(user('').firstName, '');
     });

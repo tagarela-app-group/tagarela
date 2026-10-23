@@ -44,11 +44,9 @@ class User {
   String get firstName => name.trim().split(RegExp(r'\s+')).first;
 
   String get initials {
-    final words = displayName.split(RegExp(r'\s+'));
-    final letters = words.length > 1
-        ? words.first[0] + words.last[0]
-        : words.first.substring(0, words.first.length.clamp(0, 2));
-    return letters.toUpperCase();
+    final words = displayName.split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
+    final picked = words.length > 1 ? [words.first, words.last] : words;
+    return picked.map((word) => word[0]).join().toUpperCase();
   }
 }
 
