@@ -30,3 +30,4 @@ Mockup (fonte visual): https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR. Canvas
 12. Merge: PR pra `develop` com esteira verde = eu faço. PR `develop` → `main` (prod) = só o usuário aprova. Nunca commitar direto na `develop` nem na `main`.
 13. Mudança no app que afete o visual: atualizar o mockup junto, sempre. Mockup = registro fiel do app.
 14. Sem comentário no código. Vale pra config também (workflow, pubspec, analysis_options). Nome claro explica o quê. Porquê vai no doc do assunto ou no PR.
+15. Antes de alterar qualquer coisa (código, doc, config, mockup): apresentar proposta ao usuário (o que muda, onde, opções com prós e contras, recomendação) e esperar aprovação. Só implementar o aprovado.
