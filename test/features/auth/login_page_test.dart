@@ -151,6 +151,17 @@ void main() {
     );
   });
 
+  testWidgets('Google sem configuração na API avisa', (tester) async {
+    api.responses['GET /config'] = FakeAuthApi.config({});
+    await pumpLogin(tester);
+
+    await tester.tap(find.text('Continuar com Google'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Esse login não está disponível agora.'), findsOneWidget);
+    expect(find.byType(LoginPage), findsOneWidget);
+  });
+
   testWidgets('"Esqueci minha senha" leva o e-mail digitado', (tester) async {
     await pumpLogin(tester);
 

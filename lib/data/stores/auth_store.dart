@@ -56,7 +56,10 @@ class AuthStore extends ChangeNotifier {
     _service.resetPassword(code, password, sessionToken: sessionToken),
   );
 
-  Future<AuthResult?> signInWithGoogle() => _signInWith(_social.google);
+  Future<AuthResult?> signInWithGoogle() async {
+    final clientId = await _service.providerClientId('google');
+    return _signInWith(() => _social.google(clientId));
+  }
 
   Future<AuthResult?> signInWithApple() => _signInWith(_social.apple);
 

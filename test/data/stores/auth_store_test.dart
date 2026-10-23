@@ -82,6 +82,7 @@ void main() {
 
   test('Google e Apple mandam o token do provider pra API', () async {
     await store.signInWithGoogle();
+    expect(social.googleClientId, 'web-client-id');
     expect(
       (api.last('POST /auth/provider/token').body! as Map)['provider'],
       'google',
@@ -95,11 +96,19 @@ void main() {
     expect(store.isSignedIn, isTrue);
   });
 
-  test('login social cancelado devolve null sem chamar a API', () async {
+  test('Google sem client_id na API falha sem abrir o Google', () async {
+    api.responses['GET /config'] = FakeAuthApi.config({});
+
+    await expectLater(store.signInWithGoogle(), throwsA(isA<AuthException>()));
+    expect(social.googleClientId, isNull);
+    expect(api.routes, ['GET /config']);
+  });
+
+  test('login social cancelado devolve null sem logar', () async {
     social.googleToken = null;
 
     expect(await store.signInWithGoogle(), isNull);
-    expect(api.requests, isEmpty);
+    expect(api.routes, ['GET /config']);
   });
 
   test('logout apaga o token e encerra a sessão na API', () async {

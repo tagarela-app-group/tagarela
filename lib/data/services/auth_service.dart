@@ -113,6 +113,19 @@ class AuthService {
     },
   );
 
+  Future<String> providerClientId(String provider) async {
+    final response = _check(await _call('GET', '/config'));
+    final data = (response.body! as Json)['data']! as Json;
+    final providers = (data['socialaccount'] as Json?)?['providers'] as List?;
+    final clientId = providers
+        ?.cast<Json>()
+        .where((p) => p['id'] == provider)
+        .map((p) => p['client_id'])
+        .firstOrNull;
+    if (clientId is String && clientId.isNotEmpty) return clientId;
+    throw AuthException.message('Esse login não está disponível agora.');
+  }
+
   Future<AuthTokens> refresh(String refreshToken) async {
     final response = _check(
       await _call(
