@@ -4,8 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 
-/// Layout padrão de tela: header colorido + body com topo arredondado.
-/// O body rola e respeita `MediaQuery.padding.bottom`.
 class SheetPage extends StatelessWidget {
   const SheetPage({
     super.key,
@@ -17,7 +15,6 @@ class SheetPage extends StatelessWidget {
   final Widget header;
   final List<Widget> children;
 
-  /// Espaço entre os itens do body.
   final double gap;
 
   @override

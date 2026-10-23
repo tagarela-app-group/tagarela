@@ -4,7 +4,6 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-/// Chip de filtro. Selecionado = tinta cheia.
 class AppChip extends StatelessWidget {
   const AppChip({
     super.key,

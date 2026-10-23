@@ -3,18 +3,14 @@ import 'dart:io';
 
 import 'package:tagarela/data/api_client.dart';
 
-/// API em memória com os dados de `server/db.json`.
-/// Imita o json-server no que o app usa: GET, `_embed`, POST, DELETE.
 class FakeApiClient implements ApiClient {
   FakeApiClient()
     : db = jsonDecode(File('server/db.json').readAsStringSync()) as Map;
 
   final Map db;
 
-  /// Chamadas feitas, ex.: `POST /terms`.
   final calls = <String>[];
 
-  /// `true` = toda chamada falha com 500.
   bool failing = false;
 
   @override
@@ -27,7 +23,6 @@ class FakeApiClient implements ApiClient {
     final data = _copy(db[uri.pathSegments.single]);
     final embed = uri.queryParameters['_embed'];
     if (embed == null) return data;
-    // `/groups?_embed=terms` → cada grupo com seus `terms` (via `groupId`).
     final children = db[embed] as List;
     final key = '${uri.pathSegments.single.replaceAll(RegExp(r's$'), '')}Id';
     for (final parent in data as List) {

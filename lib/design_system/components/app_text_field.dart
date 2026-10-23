@@ -6,8 +6,6 @@ import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-/// Campo com rótulo acima, ícone opcional e halo no foco.
-/// `obscure: true` adiciona o botão de mostrar/ocultar.
 class AppTextField extends StatefulWidget {
   const AppTextField({
     super.key,

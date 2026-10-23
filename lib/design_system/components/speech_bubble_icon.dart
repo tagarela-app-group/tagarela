@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Balão de fala redondo, cheio. Material não tem; desenho igual ao mockup.
-/// Segue a API do `Icon`: sem `size`/`color`, usa o `IconTheme`.
 class SpeechBubbleIcon extends StatelessWidget {
   const SpeechBubbleIcon({super.key, this.size, this.color});
 
@@ -25,7 +23,6 @@ class _BubblePainter extends CustomPainter {
 
   final Color color;
 
-  /// Grade do desenho, como a dos ícones Material.
   static const _grid = 24.0;
 
   static final _path = Path()

@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/store.dart';
 
-/// Store de teste: devolve o próximo valor ou lança o próximo erro.
 class _NumberStore extends Store<int> {
   Object? next;
 

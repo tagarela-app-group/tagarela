@@ -4,7 +4,6 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-/// Forma de balão de fala (assinatura da marca). Logo, avatar, destaque.
 class AppBubble extends StatelessWidget {
   const AppBubble({
     super.key,

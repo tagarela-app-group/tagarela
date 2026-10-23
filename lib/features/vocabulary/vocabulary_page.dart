@@ -43,7 +43,6 @@ class VocabularyPage extends StatelessWidget {
   }
 }
 
-/// Grade de 2 colunas; cards da mesma linha com a mesma altura.
 class _GroupGrid extends StatelessWidget {
   const _GroupGrid({required this.groups});
 

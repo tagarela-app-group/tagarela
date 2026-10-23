@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 
-/// Nível de revisão (SRS) em traços.
 class LevelDots extends StatelessWidget {
   const LevelDots({
     super.key,

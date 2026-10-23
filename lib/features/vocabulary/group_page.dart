@@ -14,7 +14,6 @@ class GroupPage extends StatefulWidget {
 }
 
 class _GroupPageState extends State<GroupPage> {
-  /// Opções do filtro, na ordem do `SegmentedControl`. `null` = todos.
   static const _filters = [null, TermStatus.learning, TermStatus.mastered];
 
   int _filter = 0;

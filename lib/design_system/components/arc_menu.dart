@@ -24,9 +24,6 @@ class ArcMenuItem {
   final VoidCallback onTap;
 }
 
-/// Botão + que abre opções em arco sobre um scrim.
-/// Ocupa a tela toda (usar dentro de `Stack`); fora do botão e das opções,
-/// toques passam para baixo.
 class ArcMenu extends StatefulWidget {
   const ArcMenu({
     super.key,
@@ -38,19 +35,16 @@ class ArcMenu extends StatefulWidget {
 
   final List<ArcMenuItem> items;
 
-  /// Distância do fundo da tela até o centro do botão.
   final double anchorBottom;
   final String? title;
   final String? subtitle;
 
-  /// Quanto o botão invade o conteúdo acima da âncora.
   static const overhang = 32.0;
 
   static const _fabSize = 64.0;
   static const _itemSize = 60.0;
   static const _radius = 118.0;
 
-  /// Quanto o arco tracejado passa do primeiro e do último item, em graus.
   static const _arcOverhang = 15.0;
 
   @override
@@ -179,7 +173,6 @@ class _ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
     );
   }
 
-  /// Ângulo do item: abre de 150° a 30° (0° = direita, 90° = topo).
   double _degrees(int index) {
     final count = widget.items.length;
     return count == 1 ? 90.0 : 150 - index * (120 / (count - 1));
@@ -187,7 +180,6 @@ class _ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
 
   Widget _item(int index, ArcMenuItem item, Offset center, double t) {
     final angle = _degrees(index) * math.pi / 180;
-    // Atraso entre itens.
     final start = index * 0.1;
     final p = AppMotion.spring.transform(
       ((t - start) / (1 - start)).clamp(0.0, 1.0),
@@ -274,8 +266,6 @@ class _ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
   }
 }
 
-/// Arco tracejado, só estética, ligando as opções. Desenha da esquerda pra
-/// direita conforme abre.
 class _DashedArcPainter extends CustomPainter {
   _DashedArcPainter({
     required this.center,
@@ -286,7 +276,6 @@ class _DashedArcPainter extends CustomPainter {
 
   final Offset center;
 
-  /// Graus, mesma convenção de `_degrees`.
   final double from;
   final double to;
   final double t;
@@ -302,7 +291,6 @@ class _DashedArcPainter extends CustomPainter {
       ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round;
     final rect = Rect.fromCircle(center: center, radius: ArcMenu._radius);
-    // No canvas o ângulo cresce no sentido horário: 165° vira -165°.
     final start = -from * math.pi / 180;
     final sweep = (from - to) * math.pi / 180 * AppMotion.standard.transform(t);
     final dash = _dash / ArcMenu._radius;

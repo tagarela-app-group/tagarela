@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 
-/// JSON de objeto vindo da API.
 typedef Json = Map<String, Object?>;
 
 enum TermKind {
@@ -41,10 +40,8 @@ class User {
   final String name;
   final String email;
 
-  /// Dias seguidos de estudo.
   final int streakDays;
 
-  /// "Marina" → "MA"; "Marina Souza" → "MS".
   String get initials {
     final words = name.trim().split(RegExp(r'\s+'));
     final letters = words.length > 1
@@ -54,7 +51,6 @@ class User {
   }
 }
 
-/// Números do resumo da Início.
 class Stats {
   const Stats({required this.weekGain, required this.reviewCount});
 
@@ -64,10 +60,8 @@ class Stats {
         reviewCount: json['reviewCount']! as int,
       );
 
-  /// Termos novos nesta semana.
   final int weekGain;
 
-  /// Termos esperando revisão hoje.
   final int reviewCount;
 }
 
@@ -86,10 +80,8 @@ class Term {
   final String translation;
   final TermKind kind;
 
-  /// Nível de revisão (SRS), 0 a 5.
   final int level;
 
-  /// Nível 4+ = dominado.
   TermStatus get status =>
       level >= 4 ? TermStatus.mastered : TermStatus.learning;
 }
@@ -103,7 +95,6 @@ class TermGroup {
     required this.terms,
   });
 
-  /// Espera os termos embutidos (`/groups?_embed=terms`).
   TermGroup.fromJson(Json json)
     : this(
         id: json['id']! as String,
@@ -117,7 +108,6 @@ class TermGroup {
         ],
       );
 
-  /// Nome do ícone na API → ícone do app.
   static const _icons = {
     'travel': AppIcons.travel,
     'work': AppIcons.work,
@@ -136,12 +126,10 @@ class TermGroup {
   int get masteredCount =>
       terms.where((t) => t.status == TermStatus.mastered).length;
 
-  /// `null` = todos.
   List<Term> termsWith(TermStatus? status) =>
       status == null ? terms : terms.where((t) => t.status == status).toList();
 }
 
-/// Totais do vocabulário inteiro.
 extension TermGroupList on List<TermGroup> {
   int get termCount => fold(0, (sum, g) => sum + g.terms.length);
   int get masteredCount => fold(0, (sum, g) => sum + g.masteredCount);
@@ -214,16 +202,13 @@ class InboxItem {
   final String id;
   final CaptureSource source;
 
-  /// Texto capturado, ou duração no caso de áudio.
   final String content;
 
-  /// Já formatado ("há 12 min").
   final String capturedAt;
   final InboxStatus status;
   final Suggestion? suggestion;
 }
 
-/// Resultado da análise de um item do Inbox.
 class Suggestion {
   const Suggestion(this.translation, this.kind, this.groupId, this.groupName);
 

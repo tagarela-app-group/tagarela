@@ -10,8 +10,6 @@ class Segment {
   final Color color;
 }
 
-/// Barra dividida em partes proporcionais.
-/// Com `total`, vira progresso: o que falta aparece como trilho.
 class SegmentBar extends StatelessWidget {
   const SegmentBar({
     super.key,

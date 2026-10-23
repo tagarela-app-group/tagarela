@@ -152,7 +152,6 @@ class _LoginHeader extends StatelessWidget {
   }
 }
 
-/// Balão decorativo com expressão em inglês.
 class _TalkChip extends StatelessWidget {
   const _TalkChip(this.text, {required this.turns, this.filled = false});
 

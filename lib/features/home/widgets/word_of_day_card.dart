@@ -21,7 +21,6 @@ class WordOfDayCard extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            // Como no mockup: 34/38 além da borda do card, que corta o balão.
             Positioned(
               right: -34 - _padding,
               top: -38 - _padding,

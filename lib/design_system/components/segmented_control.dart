@@ -4,7 +4,6 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-/// Abas em pílula. Escolha única.
 class SegmentedControl extends StatelessWidget {
   const SegmentedControl({
     super.key,

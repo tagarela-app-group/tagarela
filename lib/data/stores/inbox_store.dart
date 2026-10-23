@@ -8,13 +8,11 @@ class InboxStore extends Store<List<InboxItem>> {
 
   final InboxService _service;
 
-  /// Recarregado ao aceitar item (termo novo entra num grupo).
   final VocabularyStore _vocabulary;
 
   @override
   Future<List<InboxItem>> fetch() => _service.fetchItems();
 
-  /// Falha da API sobe para a tela; item fica no Inbox.
   Future<void> accept(InboxItem item) async {
     await _service.accept(item);
     _remove(item);

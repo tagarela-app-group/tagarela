@@ -6,11 +6,9 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 
-/// Body enquanto o dado não chega: carregando, ou erro com "Tentar de novo".
 class AsyncStatus extends StatelessWidget {
   const AsyncStatus({super.key, required this.error, required this.onRetry});
 
-  /// `null` = carregando.
   final Object? error;
   final VoidCallback onRetry;
 

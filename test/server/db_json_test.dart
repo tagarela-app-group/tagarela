@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/fake_api_client.dart';
 
-/// Contrato do `server/db.json` que o app assume.
 void main() {
   final db = FakeApiClient().db;
   final groups = db['groups'] as List;

@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/api_client.dart';
 
-/// Servidor HTTP local de verdade: testa o cliente sem mock.
 void main() {
   late HttpServer server;
   late ApiClient api;

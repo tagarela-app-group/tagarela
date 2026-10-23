@@ -47,7 +47,6 @@ void main() {
     expect(badge.top - pill.top, -3);
     expect(pill.right - badge.right, 8);
     expect(badge.height, 18);
-    // Largura depende da fonte; nunca menor que um círculo.
     expect(badge.width, greaterThanOrEqualTo(18));
   });
 

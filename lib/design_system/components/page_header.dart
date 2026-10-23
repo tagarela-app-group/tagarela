@@ -4,7 +4,6 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-/// Título + subtítulo para o header do `SheetPage`.
 class PageHeader extends StatelessWidget {
   const PageHeader({
     super.key,

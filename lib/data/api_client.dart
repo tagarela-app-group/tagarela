@@ -1,12 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-/// Cliente HTTP da API (JSON). Único ponto que fala com a rede.
 class ApiClient {
   ApiClient({this.baseUrl = defaultBaseUrl});
 
-  /// `flutter run --dart-define=API_URL=https://...`.
-  /// Padrão: json-server local visto do emulador Android (10.0.2.2 = PC).
   static const defaultBaseUrl = String.fromEnvironment(
     'API_URL',
     defaultValue: 'http://10.0.2.2:3000',
