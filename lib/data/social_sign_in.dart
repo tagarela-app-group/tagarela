@@ -14,9 +14,6 @@ class SocialToken {
 }
 
 class SocialSignIn {
-  static const googleServerClientId = String.fromEnvironment(
-    'GOOGLE_SERVER_CLIENT_ID',
-  );
   static const googleIosClientId = String.fromEnvironment(
     'GOOGLE_IOS_CLIENT_ID',
   );
@@ -27,12 +24,12 @@ class SocialSignIn {
 
   bool _googleReady = false;
 
-  Future<SocialToken?> google() async {
+  Future<SocialToken?> google(String serverClientId) async {
     final google = GoogleSignIn.instance;
     if (!_googleReady) {
       await google.initialize(
         clientId: googleIosClientId.isEmpty ? null : googleIosClientId,
-        serverClientId: googleServerClientId,
+        serverClientId: serverClientId,
       );
       _googleReady = true;
     }
@@ -41,7 +38,7 @@ class SocialSignIn {
       if (idToken == null) return null;
       return SocialToken(
         provider: 'google',
-        clientId: googleServerClientId,
+        clientId: serverClientId,
         idToken: idToken,
       );
     } on GoogleSignInException catch (e) {

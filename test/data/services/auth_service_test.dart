@@ -96,6 +96,29 @@ void main() {
     });
   });
 
+  test('client_id do provider vem do /config da API', () async {
+    expect(await service.providerClientId('google'), 'web-client-id');
+  });
+
+  test('provider fora do /config vira AuthException', () async {
+    api.responses['GET /config'] = FakeAuthApi.config({'google': ''});
+
+    await expectLater(
+      service.providerClientId('google'),
+      throwsA(
+        isA<AuthException>().having(
+          (e) => e.message,
+          'message',
+          'Esse login não está disponível agora.',
+        ),
+      ),
+    );
+    await expectLater(
+      service.providerClientId('apple'),
+      throwsA(isA<AuthException>()),
+    );
+  });
+
   test('refresh devolve novo par e logout manda Bearer', () async {
     final tokens = await service.refresh('refresh-1');
     await service.logout('access-2');

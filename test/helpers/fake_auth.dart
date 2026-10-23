@@ -29,6 +29,7 @@ class FakeAuthApi implements ApiClient {
       'data': {'access_token': 'access-2', 'refresh_token': 'refresh-2'},
     }),
     'DELETE /auth/session': const ApiResponse(401, {'status': 401}),
+    'GET /config': config({'google': 'web-client-id'}),
   };
 
   Exception? error;
@@ -61,6 +62,18 @@ class FakeAuthApi implements ApiClient {
         },
         'meta': {'is_authenticated': false, 'session_token': session},
       });
+
+  static ApiResponse config(Map<String, String> clientIds) => ApiResponse(200, {
+    'status': 200,
+    'data': {
+      'socialaccount': {
+        'providers': [
+          for (final MapEntry(:key, :value) in clientIds.entries)
+            {'id': key, 'name': key, 'client_id': value},
+        ],
+      },
+    },
+  });
 
   static ApiResponse errors(Map<String?, String> messages) => ApiResponse(400, {
     'status': 400,
@@ -124,9 +137,11 @@ class FakeSocialSignIn implements SocialSignIn {
     idToken: 'apple-id-token',
   );
   Exception? error;
+  String? googleClientId;
 
   @override
-  Future<SocialToken?> google() async {
+  Future<SocialToken?> google(String serverClientId) async {
+    googleClientId = serverClientId;
     if (error case final error?) throw error;
     return googleToken;
   }

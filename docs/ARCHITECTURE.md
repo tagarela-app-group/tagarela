@@ -81,10 +81,10 @@ Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `ap
 
 - URL: `--dart-define=AUTH_URL=...`. Padrão `http://10.0.2.2:8000` (compose do `api/`). Base das rotas: `/api/auth/app/v1`.
 - `ApiClient.send`: status + corpo sem lançar em 4xx (allauth usa 401 pra etapa pendente). `get`/`post`/`delete` seguem lançando `ApiException`.
-- Rotas: `POST auth/login`, `auth/signup`, `auth/email/verify`, `auth/email/verify/resend`, `auth/password/request`, `auth/password/reset`, `auth/provider/token`, `tokens/refresh`. `GET auth/password/reset` (valida código). `DELETE auth/session` (sair).
+- Rotas: `POST auth/login`, `auth/signup`, `auth/email/verify`, `auth/email/verify/resend`, `auth/password/request`, `auth/password/reset`, `auth/provider/token`, `tokens/refresh`. `GET auth/password/reset` (valida código), `config` (client ID dos providers). `DELETE auth/session` (sair).
 - Header: etapa pendente = `X-Session-Token`. Logado = `Authorization: Bearer`. Código de reset = `X-Password-Reset-Key`.
 - Mensagem: a da API (pt-BR). 429 → "Muitas tentativas...". 409/410 → "Essa etapa expirou...". 5xx → `ApiException`.
-- Google: `--dart-define=GOOGLE_SERVER_CLIENT_ID=<client ID web>` (mesmo `GOOGLE_CLIENT_ID` do backend; é o `aud` do id_token). iOS: `--dart-define=GOOGLE_IOS_CLIENT_ID=<client ID iOS>` + URL scheme com o client ID iOS invertido no `Info.plist` (falta: precisa do ID). Android: client OAuth Android com o SHA-1 da chave no Google Cloud.
+- Google: o client ID web vem da API (`GET config`, provider `google`), que lê o `GOOGLE_CLIENT_ID` do `.env` do backend. É o `serverClientId` do `google_sign_in` e o `aud` do id_token. Nada a passar no `flutter run`. Sem client ID na API, o botão avisa "Esse login não está disponível agora.". iOS: `--dart-define=GOOGLE_IOS_CLIENT_ID=<client ID iOS>` + URL scheme com o client ID iOS invertido no `Info.plist` (falta: precisa do ID). Android: client OAuth Android com o SHA-1 da chave no Google Cloud.
 - Apple: só iOS (botão some no Android). `APPLE_CLIENT_ID` = bundle ID `com.tagarela.tagarela` (padrão; mesmo `APPLE_CLIENT_ID` do backend). Entitlement `com.apple.developer.applesignin` em `ios/Runner/Runner.entitlements`; no Xcode, time com a capability Sign in with Apple.
 - Token: refresh no `flutter_secure_storage` (chave `refresh_token`). Access não é guardado: nenhuma rota de dados pede login ainda.
 
