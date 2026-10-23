@@ -7,6 +7,7 @@
 - Dependências: só 3 plugins nativos, da conta. `google_sign_in` (login Google), `sign_in_with_apple` (login Apple), `flutter_secure_storage` (refresh token no Keychain/Keystore). Fora isso, zero pacote.
 - Fontes embutidas em `assets/fonts/` (sem pacote, funciona offline).
 - Java 21 fixado no projeto via `mise.toml`. Gradle 9 exige JVM 17+.
+- `kotlin.incremental=false` em `android/gradle.properties`: no Windows, projeto e pub cache em drives diferentes quebram o cache incremental do Kotlin ("Could not close incremental caches" no plugin `google_sign_in_android`).
 
 ## Pastas
 
