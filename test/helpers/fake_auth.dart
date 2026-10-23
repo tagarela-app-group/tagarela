@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:tagarela/data/api_client.dart';
+import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/social_sign_in.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
@@ -30,6 +31,11 @@ class FakeAuthApi implements ApiClient {
       'status': 200,
       'data': {'access_token': 'access-2', 'refresh_token': 'refresh-2'},
     }),
+    'GET /auth/session': const ApiResponse(200, {
+      'status': 200,
+      'data': {'user': user},
+      'meta': {'is_authenticated': true},
+    }),
     'DELETE /auth/session': const ApiResponse(401, {'status': 401}),
     'GET /config': config({'google': 'web-client-id'}),
   };
@@ -41,12 +47,18 @@ class FakeAuthApi implements ApiClient {
 
   FakeRequest last(String route) => requests.lastWhere((r) => r.route == route);
 
+  static const user = {
+    'id': 1,
+    'email': 'ana@example.com',
+    'display': 'Ana Souza',
+    'name': 'Ana Souza',
+    'picture': 'https://example.com/ana.png',
+  };
+
   static ApiResponse signedIn([String refresh = 'refresh-1']) =>
       ApiResponse(200, {
         'status': 200,
-        'data': {
-          'user': {'id': 1, 'email': 'ana@example.com', 'display': 'Ana'},
-        },
+        'data': {'user': user},
         'meta': {
           'is_authenticated': true,
           'access_token': 'access-1',
@@ -115,9 +127,10 @@ class FakeAuthApi implements ApiClient {
 }
 
 class FakeTokenStorage implements TokenStorage {
-  FakeTokenStorage([this.token]);
+  FakeTokenStorage([this.token, this.user]);
 
   String? token;
+  User? user;
 
   @override
   Future<String?> read() async => token;
@@ -126,7 +139,16 @@ class FakeTokenStorage implements TokenStorage {
   Future<void> write(String token) async => this.token = token;
 
   @override
-  Future<void> clear() async => token = null;
+  Future<User?> readUser() async => user;
+
+  @override
+  Future<void> writeUser(User user) async => this.user = user;
+
+  @override
+  Future<void> clear() async {
+    token = null;
+    user = null;
+  }
 }
 
 class FakeSocialSignIn implements SocialSignIn {
@@ -166,3 +188,12 @@ AuthStore fakeAuthStore({
   storage ?? FakeTokenStorage(),
   social ?? FakeSocialSignIn(),
 );
+
+Future<AuthStore> signedInAuthStore({
+  FakeAuthApi? api,
+  FakeTokenStorage? storage,
+}) async {
+  final auth = fakeAuthStore(api: api, storage: storage);
+  await auth.login('ana@example.com', 'x');
+  return auth;
+}

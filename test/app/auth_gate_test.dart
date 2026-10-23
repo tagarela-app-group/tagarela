@@ -41,7 +41,8 @@ void main() {
     final scope = await pumpGate(tester, FakeTokenStorage('refresh-1'));
 
     expect(find.byType(HomeShell), findsOneWidget);
-    expect(scope.user.data, isNotNull);
+    expect(scope.home.data, isNotNull);
+    expect(scope.auth.user?.name, 'Ana Souza');
   });
 
   testWidgets('sessão recusada pela API volta pro login', (tester) async {

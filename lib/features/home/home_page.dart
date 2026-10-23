@@ -7,6 +7,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
+import 'package:tagarela/features/profile/user_avatar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.onSeeVocabulary});
@@ -16,21 +17,22 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
-    final stores = <Store>[scope.user, scope.home, scope.vocabulary];
+    final stores = <Store>[scope.home, scope.vocabulary];
 
     return ListenableBuilder(
-      listenable: Listenable.merge(stores),
+      listenable: Listenable.merge([...stores, scope.auth]),
       builder: (context, _) {
+        final header = _HomeHeader(user: scope.auth.user, now: DateTime.now());
         if (!stores.isReady) {
           return SheetPage(
-            header: const PageHeader(title: 'Vamos tagarelar?'),
+            header: header,
             children: [AsyncStatus(error: stores.error, onRetry: stores.retry)],
           );
         }
         final home = scope.home.data!;
         final groups = scope.vocabulary.data!;
         return SheetPage(
-          header: _HomeHeader(user: scope.user.data!),
+          header: header,
           children: [
             WordOfDayCard(word: home.wordOfDay),
             VocabularySummary(
@@ -47,10 +49,20 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _HomeHeader extends StatelessWidget {
-  const _HomeHeader({required this.user});
+String greeting(DateTime now, String name) {
+  final period = switch (now.hour) {
+    >= 5 && < 12 => 'Bom dia',
+    >= 12 && < 18 => 'Boa tarde',
+    _ => 'Boa noite',
+  };
+  return name.isEmpty ? '$period!' : '$period, $name';
+}
 
-  final User user;
+class _HomeHeader extends StatelessWidget {
+  const _HomeHeader({required this.user, required this.now});
+
+  final User? user;
+  final DateTime now;
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +70,13 @@ class _HomeHeader extends StatelessWidget {
     return Row(
       spacing: AppSpacing.s3,
       children: [
-        AppBubble(child: Text(user.initials)),
+        UserAvatar(user: user),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Bom dia, ${user.name}',
+                greeting(now, user?.firstName ?? ''),
                 style: AppText.bodyMd.copyWith(color: c.onHeaderSoft),
               ),
               Text(
@@ -72,28 +84,6 @@ class _HomeHeader extends StatelessWidget {
                 style: AppText.titleMd.copyWith(color: AppPalette.white),
               ),
             ],
-          ),
-        ),
-        Semantics(
-          label: 'Sequência de ${user.streakDays} dias',
-          excludeSemantics: true,
-          child: Container(
-            height: 40,
-            padding: const EdgeInsets.only(left: 10, right: 14),
-            decoration: BoxDecoration(
-              color: c.headerChip,
-              borderRadius: BorderRadius.circular(AppRadius.pill),
-            ),
-            child: Row(
-              spacing: 6,
-              children: [
-                const Icon(AppIcons.streak, size: 20, color: AppPalette.mango),
-                Text(
-                  '${user.streakDays}',
-                  style: AppText.button.copyWith(color: AppPalette.white),
-                ),
-              ],
-            ),
           ),
         ),
       ],

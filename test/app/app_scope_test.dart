@@ -17,12 +17,7 @@ void main() {
 
     await scope.loadAll();
 
-    for (final store in <Store>[
-      scope.user,
-      scope.home,
-      scope.vocabulary,
-      scope.inbox,
-    ]) {
+    for (final store in <Store>[scope.home, scope.vocabulary, scope.inbox]) {
       expect(store.data, isNotNull, reason: '$store');
     }
   });

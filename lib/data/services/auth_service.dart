@@ -16,9 +16,10 @@ sealed class AuthResult {
 }
 
 class AuthSignedIn extends AuthResult {
-  const AuthSignedIn(this.tokens);
+  const AuthSignedIn(this.tokens, [this.user]);
 
   final AuthTokens tokens;
+  final User? user;
 }
 
 class AuthPending extends AuthResult {
@@ -137,6 +138,17 @@ class AuthService {
     return AuthTokens.fromJson((response.body! as Json)['data']! as Json);
   }
 
+  Future<User> session(String accessToken) async {
+    final response = _check(
+      await _call(
+        'GET',
+        '/auth/session',
+        headers: {'Authorization': 'Bearer $accessToken'},
+      ),
+    );
+    return _user(response.body as Json?)!;
+  }
+
   Future<void> logout(String accessToken) => _call(
     'DELETE',
     '/auth/session',
@@ -157,7 +169,7 @@ class AuthService {
     final json = response.body as Json?;
     final meta = json?['meta'] as Json?;
     if (response.statusCode == 200) {
-      return AuthSignedIn(AuthTokens.fromJson(meta!));
+      return AuthSignedIn(AuthTokens.fromJson(meta!), _user(json));
     }
     final step = _pendingStep(json);
     if (response.statusCode == 401 && step != null) {
@@ -182,6 +194,11 @@ class AuthService {
   static ApiResponse _check(ApiResponse response) {
     if (response.statusCode == 200) return response;
     throw _error(response);
+  }
+
+  static User? _user(Json? json) {
+    final user = (json?['data'] as Json?)?['user'] as Json?;
+    return user == null ? null : User.fromJson(user);
   }
 
   static AuthStep? _pendingStep(Json? json) {

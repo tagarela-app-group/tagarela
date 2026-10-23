@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tagarela/data/api_client.dart';
+import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 
@@ -26,11 +28,28 @@ void main() {
       expect(api.requests, isEmpty);
     });
 
-    test('token válido: logado e guarda o refresh novo', () async {
+    test(
+      'token válido: logado, guarda o refresh novo e busca o usuário',
+      () async {
+        storage.token = 'refresh-1';
+
+        expect(await store.restore(), isTrue);
+        expect(store.isSignedIn, isTrue);
+        expect(storage.token, 'refresh-2');
+        expect(store.user?.name, 'Ana Souza');
+        expect(storage.user?.picture, 'https://example.com/ana.png');
+        expect(
+          api.last('GET /auth/session').headers['Authorization'],
+          'Bearer access-2',
+        );
+      },
+    );
+
+    test('sessão falha depois do refresh: guarda o refresh novo', () async {
       storage.token = 'refresh-1';
+      api.responses['GET /auth/session'] = const ApiResponse(500, null);
 
       expect(await store.restore(), isTrue);
-      expect(store.isSignedIn, isTrue);
       expect(storage.token, 'refresh-2');
     });
 
@@ -45,12 +64,14 @@ void main() {
       expect(storage.token, isNull);
     });
 
-    test('sem rede: entra com o token salvo', () async {
+    test('sem rede: entra com o token e o usuário salvos', () async {
       storage.token = 'refresh-1';
+      storage.user = const User(name: 'Ana', email: 'ana@example.com');
       api.error = const SocketException('offline');
 
       expect(await store.restore(), isTrue);
       expect(storage.token, 'refresh-1');
+      expect(store.user?.name, 'Ana');
     });
   });
 
@@ -61,7 +82,15 @@ void main() {
     final result = await store.login('ana@example.com', 'x');
 
     expect(result, isA<AuthSignedIn>());
-    expect((store.isSignedIn, storage.token, notified), (true, 'refresh-1', 1));
+    expect((store.isSignedIn, storage.token), (true, 'refresh-1'));
+    expect(notified, greaterThan(0));
+  });
+
+  test('login guarda o usuário da resposta', () async {
+    await store.login('ana@example.com', 'x');
+
+    expect(store.user?.name, 'Ana Souza');
+    expect(storage.user?.email, 'ana@example.com');
   });
 
   test('etapa pendente não salva token', () async {
@@ -117,6 +146,7 @@ void main() {
     await store.logout();
 
     expect((store.isSignedIn, storage.token), (false, null));
+    expect((store.user, storage.user), (null, null));
     expect(api.routes, [
       'POST /auth/login',
       'POST /tokens/refresh',

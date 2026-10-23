@@ -21,6 +21,10 @@ void main() {
     expect(result, isA<AuthSignedIn>());
     final tokens = (result as AuthSignedIn).tokens;
     expect((tokens.access, tokens.refresh), ('access-1', 'refresh-1'));
+    expect(
+      (result.user?.name, result.user?.picture),
+      ('Ana Souza', 'https://example.com/ana.png'),
+    );
     expect(api.last('POST /auth/login').body, {
       'email': 'ana@example.com',
       'password': 'x',
@@ -94,6 +98,16 @@ void main() {
       'process': 'login',
       'token': {'client_id': 'web', 'id_token': 'tok'},
     });
+  });
+
+  test('session manda Bearer e devolve o usuário', () async {
+    final user = await service.session('access-9');
+
+    expect((user.name, user.email), ('Ana Souza', 'ana@example.com'));
+    expect(
+      api.last('GET /auth/session').headers['Authorization'],
+      'Bearer access-9',
+    );
   });
 
   test('client_id do provider vem do /config da API', () async {
