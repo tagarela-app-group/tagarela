@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 
-/// Superfície padrão. Com `color` próprio fica sem sombra.
 class AppCard extends StatelessWidget {
   const AppCard({
     super.key,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/components/app_button.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-/// Título de seção do body, com ação opcional à direita.
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
     super.key,

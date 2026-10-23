@@ -7,15 +7,12 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'fake_api_client.dart';
 
 extension PumpApp on WidgetTester {
-  /// Tela alta o bastante para listas não cortarem itens.
   void useTallScreen() {
     view.physicalSize = const Size(800, 1600);
     view.devicePixelRatio = 1;
     addTearDown(view.reset);
   }
 
-  /// Monta uma tela inteira com tema e `AppScope` sobre a API fake.
-  /// `load: true` carrega os stores antes (como depois do login).
   Future<AppScope> pumpPage(
     Widget page, {
     FakeApiClient? api,
@@ -32,7 +29,6 @@ extension PumpApp on WidgetTester {
     return scope;
   }
 
-  /// Monta um componente solto dentro de um `Scaffold`.
   Future<void> pumpComponent(Widget child, {ThemeData? theme}) =>
       pumpPage(Scaffold(body: child), theme: theme, load: false);
 }

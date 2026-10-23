@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
 
-/// Atalho para a revisão do dia.
 class ReviewCard extends StatelessWidget {
   const ReviewCard({super.key, required this.count, required this.onStart});
 

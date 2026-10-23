@@ -1,14 +1,11 @@
 import 'package:flutter/painting.dart';
 
 abstract final class AppFonts {
-  /// Títulos, números e termos em inglês.
   static const display = 'Bricolage';
 
-  /// Texto, rótulos e UI.
   static const body = 'DMSans';
 }
 
-/// Escala de texto. Sem cor: herda do tema (`ink`).
 abstract final class AppText {
   static const display = TextStyle(
     fontFamily: AppFonts.display,
@@ -90,7 +87,6 @@ abstract final class AppText {
     fontWeight: FontWeight.w700,
   );
 
-  /// Usar com texto em caixa alta.
   static const overline = TextStyle(
     fontFamily: AppFonts.body,
     fontSize: 12,
@@ -99,7 +95,6 @@ abstract final class AppText {
     letterSpacing: 0.96,
   );
 
-  /// Usar com texto em caixa alta.
   static const tag = TextStyle(
     fontFamily: AppFonts.body,
     fontSize: 10,

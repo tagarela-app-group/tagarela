@@ -5,16 +5,7 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-enum AppButtonVariant {
-  /// Ação principal. Um por tela.
-  primary,
-  tonal,
-  outline,
-
-  /// Sobre fundo manga.
-  ink,
-  text,
-}
+enum AppButtonVariant { primary, tonal, outline, ink, text }
 
 enum AppButtonSize {
   large(56),
@@ -43,7 +34,6 @@ class AppButton extends StatelessWidget {
   final AppButtonVariant variant;
   final AppButtonSize size;
 
-  /// Ocupa toda a largura disponível.
   final bool expand;
 
   @override

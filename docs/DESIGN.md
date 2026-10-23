@@ -70,7 +70,7 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `SheetPage` | Toda tela: header + body arredondado rolável |
 | `PageHeader` | Título/subtítulo (+ leading/trailing) no header |
 | `SectionHeader` | Título de seção + ação texto |
-| `AppButton` | Variantes primary, tonal, outline, ink (sobre manga), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading` |
+| `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading` |
 | `AppIconButton` | Botão redondo de ícone. Variantes onHeader, ink, primary, ghost. `tooltip` obrigatório |
 | `AppCard` | Superfície com sombra. `onTap` opcional. `color` próprio = sem sombra |
 | `AppTextField` | Rótulo acima, ícone, halo no foco, erro, `obscure` com olho |

@@ -1,7 +1,6 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/painting.dart';
 
-/// Grade de 4. Nome = múltiplo de 4 (s4 = 16).
 abstract final class AppSpacing {
   static const s1 = 4.0;
   static const s2 = 8.0;
@@ -13,7 +12,6 @@ abstract final class AppSpacing {
   static const s10 = 40.0;
   static const s14 = 56.0;
 
-  /// Margem lateral das telas.
   static const screen = s5;
 }
 
@@ -26,7 +24,6 @@ abstract final class AppRadius {
   static const sheet = 32.0;
   static const pill = 999.0;
 
-  /// Assinatura da marca: balão de fala (canto inferior esquerdo quase reto).
   static BorderRadius bubble(double radius) => BorderRadius.only(
     topLeft: Radius.circular(radius),
     topRight: Radius.circular(radius),
@@ -35,7 +32,6 @@ abstract final class AppRadius {
   );
 }
 
-/// Desfoque do que fica atrás (sigma).
 abstract final class AppBlur {
   static const scrim = 2.0;
 }

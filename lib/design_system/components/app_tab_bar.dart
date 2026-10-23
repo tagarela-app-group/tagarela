@@ -10,11 +10,9 @@ class AppTabItem {
   final IconData icon;
   final String label;
 
-  /// 0 = sem badge.
   final int badge;
 }
 
-/// Tab bar inferior. `centerGap` abre espaço no meio para o botão de captura.
 class AppTabBar extends StatelessWidget {
   const AppTabBar({
     super.key,
@@ -24,7 +22,6 @@ class AppTabBar extends StatelessWidget {
     this.centerGap = 0,
   });
 
-  /// Altura sem a área segura inferior.
   static const height = 64.0;
 
   final List<AppTabItem> items;
@@ -95,7 +92,6 @@ class _Tab extends StatelessWidget {
                 color: selected ? c.primarySoft : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
-              // Stack do tamanho da pílula: ícone no centro, badge no canto.
               child: Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.center,
@@ -124,7 +120,6 @@ class _Tab extends StatelessWidget {
   }
 }
 
-/// Contador em alert com anel da cor da tab bar, que separa do ícone.
 class _Badge extends StatelessWidget {
   const _Badge({required this.count});
 

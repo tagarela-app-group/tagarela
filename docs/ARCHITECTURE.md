@@ -66,7 +66,8 @@ Fluxo: tela → store → service → `ApiClient` → API.
 ## Layout de tela
 
 - Toda tela = `SheetPage(header, children)`. Já traz Scaffold, safe area, scroll, topo arredondado.
-- `HomeShell` troca `MediaQuery.padding.bottom` das abas por `ArcMenu.overhang` (espaço do botão +).
+- `HomeShell` troca `MediaQuery.padding.bottom` das abas por `ArcMenu.overhang` (espaço do botão +). Área segura inferior fica com a tab bar.
+- Teclado: `HomeShell` com `resizeToAvoidBottomInset: false`. Cada aba (`SheetPage`) cuida do teclado; a tab bar fica parada.
 
 ## Convenções
 

@@ -3,17 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 
-enum AppIconButtonVariant {
-  /// Sobre o header colorido.
-  onHeader,
+enum AppIconButtonVariant { onHeader, ink, primary, ghost }
 
-  /// Tinta com ícone manga. Sobre fundo manga.
-  ink,
-  primary,
-  ghost,
-}
-
-/// Botão redondo só com ícone. `tooltip` é obrigatório (acessibilidade).
 class AppIconButton extends StatelessWidget {
   const AppIconButton({
     super.key,

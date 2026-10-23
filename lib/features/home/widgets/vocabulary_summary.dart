@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
 
-/// Resumo: total, aprendendo e dominado.
 class VocabularySummary extends StatelessWidget {
   const VocabularySummary({
     super.key,

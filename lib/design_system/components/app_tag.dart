@@ -4,7 +4,6 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-/// Etiqueta pequena com contorno (ex.: PALAVRA, EXPRESSÃO).
 class AppTag extends StatelessWidget {
   const AppTag({super.key, required this.label});
 

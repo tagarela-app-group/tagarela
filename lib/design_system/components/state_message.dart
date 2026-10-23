@@ -7,7 +7,6 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-/// Mensagem centrada no body: lista vazia, erro.
 class StateMessage extends StatelessWidget {
   const StateMessage({
     super.key,

@@ -7,7 +7,6 @@ import 'package:tagarela/features/inbox/inbox_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
 
-/// Abas principais + botão de captura (menu em arco).
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
 
@@ -29,15 +28,12 @@ class _HomeShellState extends State<HomeShell> {
     final inbox = AppScope.of(context).inbox;
 
     return Scaffold(
-      // Cada aba (SheetPage) cuida do teclado; a tab bar fica parada.
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Column(
             children: [
               Expanded(
-                // Abas não tocam a área segura inferior (fica com a tab bar),
-                // mas deixam espaço para o botão que invade o conteúdo.
                 child: MediaQuery(
                   data: media.copyWith(
                     padding: media.padding.copyWith(bottom: ArcMenu.overhang),

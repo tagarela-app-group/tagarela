@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 
-/// Ícone sobre quadrado tingido. Grupos, origem de captura, atalhos.
 class IconTile extends StatelessWidget {
   const IconTile({
     super.key,

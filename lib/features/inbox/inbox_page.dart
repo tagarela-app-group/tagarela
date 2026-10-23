@@ -5,7 +5,6 @@ import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/inbox/widgets/inbox_item_card.dart';
 
-/// Termos capturados aguardando análise ou revisão.
 class InboxPage extends StatelessWidget {
   const InboxPage({super.key});
 

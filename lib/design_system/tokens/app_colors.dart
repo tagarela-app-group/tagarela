@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Cores fixas da marca. Iguais nos dois temas.
 abstract final class AppPalette {
   static const violet = Color(0xFF5B47F5);
   static const mango = Color(0xFFFFB23F);
@@ -11,7 +10,6 @@ abstract final class AppPalette {
   static const white = Color(0xFFFFFFFF);
 }
 
-/// Tons de destaque para grupos e origens de captura.
 enum AppAccent { violet, coral, mint, mango, sky, pink }
 
 class AccentColors {
@@ -21,7 +19,6 @@ class AccentColors {
   final Color fg;
 }
 
-/// Tokens semânticos. Ler via `context.colors`.
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
@@ -180,7 +177,6 @@ class AppColors extends ThemeExtension<AppColors> {
   @override
   AppColors copyWith() => this;
 
-  // Troca de tema sem interpolar cor a cor.
   @override
   AppColors lerp(covariant AppColors? other, double t) =>
       t < 0.5 ? this : (other ?? this);

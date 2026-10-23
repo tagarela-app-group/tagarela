@@ -11,9 +11,6 @@ class InboxService {
     return [for (final i in list) InboxItem.fromJson(i! as Json)];
   }
 
-  /// Vira termo no grupo sugerido e sai do Inbox.
-  /// json-server não tem ação composta: são duas chamadas.
-  /// API real: trocar por um endpoint só (ex.: `POST /inbox/:id/accept`).
   Future<void> accept(InboxItem item) async {
     final suggestion = item.suggestion!;
     await _api.post('/terms', {

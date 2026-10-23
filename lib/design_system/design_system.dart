@@ -1,5 +1,3 @@
-/// Ponto único de import do design system:
-/// `import 'package:tagarela/design_system/design_system.dart';`
 library;
 
 export 'package:tagarela/design_system/components/app_bubble.dart';
