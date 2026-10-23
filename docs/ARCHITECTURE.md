@@ -4,7 +4,7 @@
 
 - Flutter 3.44 / Dart 3.12. Só Android e iOS.
 - HTTP via `dart:io`. Estado via `ChangeNotifier` + `setState`. Navegação com `Navigator`.
-- Dependências: conta (`google_sign_in`, `sign_in_with_apple`, `flutter_secure_storage`), captura offline (`drift` + `drift_flutter`: SQLite local; `path_provider`: pasta do app) e `audioplayers` (ouvir a gravação). Fora isso, zero pacote. Ver Dependências.
+- Dependências: conta (`google_sign_in`, `sign_in_with_apple`, `flutter_secure_storage`), captura offline (`drift` + `drift_flutter`: SQLite local; `path_provider`: pasta do app) `audioplayers` (ouvir a gravação) e captura no aparelho (`record`: gravar; `image_picker`: câmera e galeria; `permission_handler`: microfone, câmera e abrir as configurações). Fora isso, zero pacote. Ver Dependências.
 - Fontes embutidas em `assets/fonts/` (sem pacote, funciona offline).
 - Java 21 fixado no projeto via `mise.toml`. Gradle 9 exige JVM 17+.
 - `kotlin.incremental=false` em `android/gradle.properties`: no Windows, projeto e pub cache em drives diferentes quebram o cache incremental do Kotlin ("Could not close incremental caches" no plugin `google_sign_in_android`).
@@ -23,10 +23,12 @@ lib/
     database.dart        único ponto que conhece drift: tabelas captures e capture_cursors (+ database.g.dart gerado)
     media_storage.dart   único ponto que conhece path_provider: foto/áudio na pasta do app
     audio_playback.dart  único ponto que conhece audioplayers: um player pro app todo (toca um áudio por vez)
+    capture_device.dart  único ponto que conhece record, image_picker e permission_handler: gravar, foto, permissão
     services/            1 por recurso da API (sem estado)
     stores/              estado compartilhado (1 por recurso)
   features/<feature>/    <feature>_page.dart + widgets/ (só da feature)
   features/auth/         login, cadastro, código, esqueci senha, nova senha + auth_form.dart (mixin de envio)
+  features/capture/      painéis de captura (texto, foto, áudio) abertos pelo + do HomeShell + aviso "Salvo no Inbox"
 assets/
   fonts/                 Bricolage Grotesque + DM Sans (TTF estático) + OFL
   images/                google.png (botão de login)
@@ -60,7 +62,7 @@ Fluxo: tela → store → service → `ApiClient` → API.
 - Service: chama endpoint e converte JSON em model. Sem estado. Trocar de API = mexer só em service (e `fromJson`).
 - Store: `Store<T>` (`ChangeNotifier`) guarda `data` e `error` de um recurso. `data` e `error` nulos = carregando. Ação (ex.: `CaptureStore.confirm`) grava, chama service e atualiza `data`.
 - Recurso que a API ainda não tem (Home: estatística e palavra do dia; Vocabulário: grupos e termos): store sem service, fonte local vazia (`HomeStore.empty`, `VocabularyStore()`). Teste passa dados no construtor. Tela some com o card sem dado (palavra do dia, revisão) e mostra estado vazio (Vocabulário). API ganhou o recurso: store volta a chamar service.
-- `AppScope`: guarda os stores e o `AudioPlayback`; tela pega via `AppScope.of(context)`. `loadAll()` ao entrar: limpa mídia vencida e carrega tudo. `AuthStore`, `CaptureStore` e `AudioPlayback` vêm prontos de fora (`main.dart`), pra teste trocar API, banco, mídia e player.
+- `AppScope`: guarda os stores, o `AudioPlayback` e o `CaptureDevice`; tela pega via `AppScope.of(context)`. `loadAll()` ao entrar: limpa mídia vencida e carrega tudo. `AuthStore`, `CaptureStore`, `AudioPlayback` e `CaptureDevice` vêm prontos de fora (`main.dart`), pra teste trocar API, banco, mídia, player e aparelho.
 - Sessão expirada (refresh recusado no meio do uso, `AuthStore.sessionExpired`): `HomeShell` volta pro login e avisa "Sua sessão expirou. Entre de novo.". Sair pelo Perfil não marca.
 - `AuthStore` (`ChangeNotifier`, fora do `Store<T>`): guarda só o refresh token (`isSignedIn`). Método por fluxo, devolve `AuthResult`: `AuthSignedIn` (salva token) ou `AuthPending` (etapa + session token, passado pra tela seguinte). Erro da API: `AuthException` (mensagem por campo, `null` = geral).
 - `restore()`: refresh no início. Recusado → apaga token. Sem rede → entra com o token salvo.
@@ -80,6 +82,12 @@ Fluxo: tela → store → service → `ApiClient` → API.
 - Merge (`Capture.merge`): servidor manda, menos o que está pendente no celular (texto/termos em `update`, status em `confirm`, descarte em `discard`). Arquivo local sempre fica.
 - Descartar nunca enviada: só some do celular, sem chamar a API.
 - Mídia: apagada só 30 dias depois de analisada ou descartada (`Capture.mediaRetention`, `cleanMedia`). Pendente, pronta ou com erro: nunca. Texto fica sempre.
+- Telas: `+` do `HomeShell` abre `AppSheet` (texto, foto ou áudio). Salvar = `createText`/`createMedia`, que devolvem a captura depois da tentativa de envio (`pending` vazio = enviou). Painel fecha com a captura; `HomeShell` mostra o aviso (`showCaptureSaved`).
+- Texto: até 500 caracteres no app (API aceita 2000).
+- Foto: `image_picker`, lado maior até 2000 px, JPEG qualidade 85. Câmera pede permissão; galeria não precisa (seletor do sistema).
+- Áudio: `record`, AAC-LC em m4a, mono, 16 kHz, 48 kbps. Abre já gravando; para no toque ou sozinho em 60 s (`CaptureDevice.maxRecording`). Tempo pela contagem do timer (`Timer.tick`).
+- Arquivo temporário (foto escolhida, gravação): apagado ao fechar o painel, salvando ou não (`CaptureDevice.discard`). Salvar copia antes pra pasta do app. Fechar gravando cancela a gravação.
+- Permissão negada (microfone, câmera): painel mostra aviso com "Abrir configurações" (`openAppSettings`) e fecha. Android: `RECORD_AUDIO` e `CAMERA` no `AndroidManifest.xml`. iOS: `NSMicrophoneUsageDescription`, `NSCameraUsageDescription`, `NSPhotoLibraryUsageDescription` no `Info.plist`; com Swift Package Manager o `permission_handler` liga cada permissão pela chave presente no `Info.plist` (sem Podfile).
 
 ## API
 
@@ -120,10 +128,10 @@ Conta (`AuthService`, allauth headless; detalhe dos fluxos em `api/docs/ARCHITEC
 
 - Pasta `test/` espelha `lib/`: `lib/x/y.dart` → `test/x/y_test.dart`.
 - Só `flutter_test` (vem no SDK). Sem pacote de mock: fake manual.
-- Escopo de teste: `testScope(child: ...)` / `pumpPage(...)` em `test/helpers/pump_app.dart`. Padrão: Home e Vocabulário com `fixtures.dart` (dados de exemplo), capturas vazias (`fakeCaptures()`), player fake. Trocar: `home:`, `vocabulary:`, `captures:`, `playback:`, `auth:`.
+- Escopo de teste: `testScope(child: ...)` / `pumpPage(...)` em `test/helpers/pump_app.dart`. Padrão: Home e Vocabulário com `fixtures.dart` (dados de exemplo), capturas vazias (`fakeCaptures()`), player fake, aparelho fake. Trocar: `home:`, `vocabulary:`, `captures:`, `playback:`, `device:`, `auth:`.
 - Erro de carregamento: `test/helpers/failing_stores.dart` (`FailingHomeStore`, `FailingVocabularyStore`; `failing = false` recupera).
 - Montar widget via `test/helpers/pump_app.dart`: `pumpPage` (tela com tema + `AppScope` com stores carregados; `load: false` = carregando), `pumpComponent` (componente dentro de `Scaffold`). Tela de teste: 800x1600.
-- Captura: `test/helpers/fake_capture_api.dart` (`FakeCaptureApi`: servidor de capturas em memória, `offline`, `rejections`, `process(id, texto)`, `calls`, `bodies`, `files`, página de 2). Banco: `AppDatabase(NativeDatabase.memory())`. Mídia: `MediaStorage(() async => pastaTemporaria)` em teste de store; em teste de tela, `FakeMediaStorage` (I/O real trava o `testWidgets`). `fakeCaptures()` em `test/helpers/fake_capture_store.dart` monta store + banco + API + mídia; `sampleCapture(id, ...)` cria captura; `FakeAudioPlayback` no lugar do player.
+- Captura: `test/helpers/fake_capture_api.dart` (`FakeCaptureApi`: servidor de capturas em memória, `offline`, `rejections`, `process(id, texto)`, `calls`, `bodies`, `files`, página de 2). Banco: `AppDatabase(NativeDatabase.memory())`. Mídia: `MediaStorage(() async => pastaTemporaria)` em teste de store; em teste de tela, `FakeMediaStorage` (I/O real trava o `testWidgets`). `fakeCaptures()` em `test/helpers/fake_capture_store.dart` monta store + banco + API + mídia; `sampleCapture(id, ...)` cria captura; `FakeAudioPlayback` no lugar do player; `FakeCaptureDevice` no lugar do aparelho (`camera`/`microphone` = permissão, `nextPhoto` (`null` = desistiu), `recording`, `recordings`, `cancelled`, `discarded`, `settingsOpened`, `origins`). Painel: `tester.openSheet(painel, ...)` em `test/helpers/open_sheet.dart` devolve a lista de resultados ao fechar. Gravação: `pump(Duration)`, não `pumpAndSettle` (timer de 200 ms).
 - Conta: `test/helpers/fake_auth.dart`. `FakeAuthApi` (resposta por rota `MÉTODO caminho`, padrão = caminho feliz; `errors`, `pending`, `signedIn` montam resposta; `error` simula sem rede; `last(rota)` = request enviado), `FakeTokenStorage`, `FakeSocialSignIn` (token ou `null` = cancelado), `fakeAuthStore()`. `pumpPage(auth: ...)`. Campo por rótulo: `textField('E-mail')`. iOS: `variant: TargetPlatformVariant.only(TargetPlatform.iOS)`.
 - Unit test: model, service, lógica pura.
 - Widget test: componente e tela com comportamento (toque, estado, navegação).
@@ -134,9 +142,9 @@ Conta (`AuthService`, allauth headless; detalhe dos fluxos em `api/docs/ARCHITEC
 
 Antes de adicionar pacote: checar pub.dev (likes, último publish), issues abertas (build/toolchain). Contar ao usuário antes de instalar. Plugin nativo ou pacote pouco mantido: perguntar.
 
-Hoje: `google_sign_in` ^7.2, `sign_in_with_apple` ^8.2 (exige Flutter ≥3.44), `flutter_secure_storage` ^11.2, `drift` ^2.35.1, `drift_flutter` ^0.3.1, `path_provider` ^2.1.6, `audioplayers` ^6.8.1. Dev: `drift_dev` ^2.35.1, `build_runner`. iOS via Swift Package Manager (sem Podfile).
+Hoje: `google_sign_in` ^7.2, `sign_in_with_apple` ^8.2 (exige Flutter ≥3.44), `flutter_secure_storage` ^11.2, `drift` ^2.35.1, `drift_flutter` ^0.3.1, `path_provider` ^2.1.6, `audioplayers` ^6.8.1, `record` ^7.1.2, `image_picker` ^1.2.4, `permission_handler` ^12.0.3. Dev: `drift_dev` ^2.35.1, `build_runner`. iOS via Swift Package Manager (sem Podfile).
 
-- Versão nova só com 2+ semanas de publicada (lockfile fixa). Vale pra transitiva também: `synchronized` ficou na 3.4.2 (3.5.0 tinha 10 dias). SQLite nativo vem do `sqlite3` (hooks de build, sem `sqlite3_flutter_libs`): `flutter test` usa o mesmo banco em memória.
+- Versão nova só com 2+ semanas de publicada (lockfile fixa). Vale pra transitiva também: `synchronized` ficou na 3.4.2 (3.5.0 tinha 10 dias); `permission_handler_apple` na 9.6.2 (9.6.3 e 9.6.4 tinham 0 e 2 dias); `permission_handler` na 12 porque a 13 traz o `permission_handler_android` 14, que exige compileSdk 37 (Flutter e AGP 9.0.1 usam 36). SQLite nativo vem do `sqlite3` (hooks de build, sem `sqlite3_flutter_libs`): `flutter test` usa o mesmo banco em memória.
 - Mudou tabela do drift: `dart run build_runner build` → `dart format lib` → commitar `database.g.dart` junto (a esteira não gera código). Mudou coluna: subir `schemaVersion` + migração.
 
 ## Git e CI

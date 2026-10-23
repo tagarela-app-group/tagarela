@@ -19,6 +19,16 @@ void main() {
     }
   });
 
+  test('aviso: fundo tinta, ação manga no claro e violeta no escuro', () {
+    expect(AppTheme.light.snackBarTheme.backgroundColor, AppColors.light.ink);
+    expect(AppTheme.light.snackBarTheme.actionTextColor, AppPalette.mango);
+    expect(AppTheme.dark.snackBarTheme.backgroundColor, AppColors.dark.ink);
+    expect(
+      AppTheme.dark.snackBarTheme.actionTextColor,
+      AppColors.light.primaryText,
+    );
+  });
+
   test('lerp troca de tema na metade, sem interpolar', () {
     expect(AppColors.light.lerp(AppColors.dark, 0.4), AppColors.light);
     expect(AppColors.light.lerp(AppColors.dark, 0.5), AppColors.dark);

@@ -28,6 +28,7 @@ void main() {
       auth: fakeAuthStore(),
       captures: captures.store,
       playback: FakeAudioPlayback(),
+      device: FakeCaptureDevice(),
       child: const SizedBox(),
     );
 

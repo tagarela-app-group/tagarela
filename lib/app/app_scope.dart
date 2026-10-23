@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'package:tagarela/data/audio_playback.dart';
+import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
@@ -12,6 +13,7 @@ class AppScope extends InheritedWidget {
     required this.auth,
     required this.captures,
     required this.playback,
+    required this.device,
     HomeStore? home,
     VocabularyStore? vocabulary,
     required super.child,
@@ -21,6 +23,7 @@ class AppScope extends InheritedWidget {
   final AuthStore auth;
   final CaptureStore captures;
   final AudioPlayback playback;
+  final CaptureDevice device;
   final HomeStore home;
   final VocabularyStore vocabulary;
 

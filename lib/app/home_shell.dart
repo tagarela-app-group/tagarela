@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
+import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
+import 'package:tagarela/features/capture/audio_capture_sheet.dart';
+import 'package:tagarela/features/capture/capture_saved.dart';
+import 'package:tagarela/features/capture/photo_capture_sheet.dart';
+import 'package:tagarela/features/capture/text_capture_sheet.dart';
 import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/inbox/inbox_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
@@ -32,6 +37,19 @@ class _HomeShellState extends State<HomeShell> {
   AuthStore? _auth;
 
   void _goTo(int tab) => setState(() => _tab = tab);
+
+  Future<void> _capture(CaptureSource source) async {
+    final saved = await AppSheet.show<Capture>(
+      context,
+      (_) => switch (source) {
+        CaptureSource.text => const TextCaptureSheet(),
+        CaptureSource.photo => const PhotoCaptureSheet(),
+        CaptureSource.audio => const AudioCaptureSheet(),
+      },
+    );
+    if (saved == null || !mounted) return;
+    showCaptureSaved(context, saved, onSee: () => _goTo(_inboxTab));
+  }
 
   @override
   void didChangeDependencies() {
@@ -115,16 +133,26 @@ class _HomeShellState extends State<HomeShell> {
               title: 'O que você ouviu hoje?',
               subtitle: 'Fotografe, grave ou digite. A análise vai pro Inbox.',
               items: [
-                for (final (icon, label, color) in const [
-                  (AppIcons.camera, 'Câmera', AppPalette.mango),
-                  (AppIcons.audio, 'Áudio', AppPalette.coral),
-                  (AppIcons.text, 'Texto', AppPalette.mint),
+                for (final (icon, label, color, source) in const [
+                  (
+                    AppIcons.camera,
+                    'Câmera',
+                    AppPalette.mango,
+                    CaptureSource.photo,
+                  ),
+                  (
+                    AppIcons.audio,
+                    'Áudio',
+                    AppPalette.coral,
+                    CaptureSource.audio,
+                  ),
+                  (AppIcons.text, 'Texto', AppPalette.mint, CaptureSource.text),
                 ])
                   ArcMenuItem(
                     icon: icon,
                     label: label,
                     color: color,
-                    onTap: () => _goTo(_inboxTab),
+                    onTap: () => _capture(source),
                   ),
               ],
             ),

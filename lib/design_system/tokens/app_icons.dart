@@ -6,6 +6,8 @@ abstract final class AppIcons {
   static const inbox = Icons.inbox_outlined;
   static const profile = Icons.person_outline_rounded;
   static const back = Icons.chevron_left_rounded;
+  static const forward = Icons.chevron_right_rounded;
+  static const close = Icons.close_rounded;
   static const more = Icons.more_vert_rounded;
 
   static const add = Icons.add_rounded;
@@ -14,12 +16,14 @@ abstract final class AppIcons {
   static const play = Icons.play_arrow_rounded;
   static const stop = Icons.stop_rounded;
   static const info = Icons.info_outline_rounded;
+  static const check = Icons.check_rounded;
   static const newGroup = Icons.create_new_folder_outlined;
   static const review = Icons.autorenew_rounded;
   static const showPassword = Icons.visibility_outlined;
   static const hidePassword = Icons.visibility_off_outlined;
 
   static const camera = Icons.photo_camera_outlined;
+  static const gallery = Icons.image_outlined;
   static const audio = Icons.mic_none_rounded;
   static const text = Icons.title_rounded;
 

@@ -34,7 +34,15 @@ Brasileiro, inglês básico/intermediário, celular na mão, pouco tempo.
 | Inbox | Abas Todas, Prontas, Pendentes, Analisadas. Seções: precisa de atenção (erro: descartar ou processar agora), prontas (descartar ou escolher termos; com termos: editar ou confirmar análise), processando, esperando envio, analisadas (apagadas, no fim). Foto em miniatura; áudio com player. Puxar a lista sincroniza. Vazio: "Inbox zerado". |
 | Perfil | Dados do usuário, sair. |
 
-Botão + central (todas as abas): menu em arco com Câmera, Áudio, Texto. Captura vai pro Inbox.
+Botão + central (todas as abas): menu em arco com Câmera, Áudio, Texto. Cada um abre um painel de baixo:
+
+| Painel | Conteúdo |
+| --- | --- |
+| Texto | Campo de até 500 caracteres. "Salvar no Inbox" só com texto. |
+| Foto | Tirar foto ou escolher da galeria → prévia com "Trocar foto" e "Salvar no Inbox". Foto fica só no celular. |
+| Áudio | Abre gravando (até 1 min, toca pra parar) → ouvir, "Regravar" ou "Salvar no Inbox". Áudio fica só no celular. |
+
+Fechar descarta sem perguntar. Sem permissão de microfone ou câmera: aviso com "Abrir configurações". Salvou: aviso "Salvo no Inbox" com "Ver" (abre o Inbox). Texto do aviso: enviou o texto = "Pronto pra escolher os termos."; enviou foto/áudio = "Já está processando."; sem internet = "Puxe a lista no Inbox quando tiver internet.".
 
 ## Princípios
 
@@ -44,4 +52,4 @@ Botão + central (todas as abas): menu em arco com Câmera, Áudio, Texto. Captu
 
 ## Estado atual
 
-Tudo fala com a API Django (`api/`), sem mock. Conta real (sessão salva; expirou = volta pro login com aviso). Inbox real, offline first, sincroniza quando a pessoa age. Home e Vocabulário vazios até a API ter vocabulário (palavra do dia e revisão somem). Telas de captura e de escolher termos: próximos passos.
+Tudo fala com a API Django (`api/`), sem mock. Conta real (sessão salva; expirou = volta pro login com aviso). Inbox real, offline first, sincroniza quando a pessoa age. Home e Vocabulário vazios até a API ter vocabulário (palavra do dia e revisão somem). Captura por texto, foto e áudio. Tela de escolher termos: próximo passo.

@@ -134,17 +134,52 @@ void main() {
     expect(_currentTab(tester), 1);
   });
 
-  testWidgets('captura pelo + leva ao Inbox', (tester) async {
-    await tester.pumpPage(const HomeShell());
-
+  Future<void> openFromMenu(WidgetTester tester, IconData icon) async {
     await tester.tap(_inMenu(AppIcons.add));
     await tester.pumpAndSettle();
     expect(find.text('O que você ouviu hoje?'), findsOneWidget);
+    await tester.tap(_inMenu(icon));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+  }
 
-    await tester.tap(_inMenu(AppIcons.camera));
+  testWidgets('+ abre a captura de cada tipo', (tester) async {
+    await tester.pumpPage(const HomeShell());
+
+    for (final (icon, title) in const [
+      (AppIcons.camera, 'Foto'),
+      (AppIcons.audio, 'Gravando…'),
+      (AppIcons.text, 'Digitar texto'),
+    ]) {
+      await openFromMenu(tester, icon);
+      expect(find.byType(AppSheet), findsOneWidget, reason: title);
+      expect(find.text(title), findsOneWidget);
+      expect(find.text('O que você ouviu hoje?'), findsNothing);
+
+      await tester.tap(find.byTooltip('Fechar'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(AppSheet), findsNothing);
+      expect(_currentTab(tester), 0);
+    }
+  });
+
+  testWidgets('salvar avisa e Ver abre o Inbox', (tester) async {
+    await tester.pumpPage(const HomeShell());
+
+    await openFromMenu(tester, AppIcons.text);
+    await tester.enterText(find.byType(TextField), 'mind the gap');
+    await tester.pump();
+    await tester.tap(find.text('Salvar no Inbox'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Salvo no Inbox'), findsOneWidget);
+    expect(find.text('Pronto pra escolher os termos.'), findsOneWidget);
+
+    await tester.tap(find.text('Ver'));
     await tester.pumpAndSettle();
 
     expect(_currentTab(tester), 2);
-    expect(find.text('O que você ouviu hoje?'), findsNothing);
+    expect(find.text('mind the gap'), findsOneWidget);
   });
 }

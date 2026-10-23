@@ -31,6 +31,9 @@ abstract final class AppTheme {
         behavior: SnackBarBehavior.floating,
         backgroundColor: c.ink,
         contentTextStyle: AppText.bodyMd.copyWith(color: c.bg),
+        actionTextColor: brightness == Brightness.light
+            ? AppPalette.mango
+            : AppColors.light.primaryText,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
         ),

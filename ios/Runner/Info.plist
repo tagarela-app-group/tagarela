@@ -24,6 +24,12 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Pra fotografar o texto que você quer aprender.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Pra gravar a frase que você ouviu.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pra escolher uma foto com o texto que você quer aprender.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
