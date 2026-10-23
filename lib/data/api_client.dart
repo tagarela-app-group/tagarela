@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+
+typedef AccessToken = Future<String?> Function({bool renew});
 
 class ApiClient {
-  ApiClient({this.baseUrl = defaultBaseUrl});
+  ApiClient({this.baseUrl = defaultBaseUrl, this.accessToken});
 
   static const defaultBaseUrl = String.fromEnvironment(
     'API_URL',
@@ -17,6 +20,7 @@ class ApiClient {
   static const _timeout = Duration(seconds: 10);
 
   final String baseUrl;
+  final AccessToken? accessToken;
   final _http = HttpClient()..connectionTimeout = _timeout;
 
   Future<Object?> get(String path) => _send('GET', path);
@@ -24,19 +28,86 @@ class ApiClient {
   Future<Object?> post(String path, Map<String, Object?> body) =>
       _send('POST', path, body);
 
+  Future<Object?> patch(String path, Map<String, Object?> body) =>
+      _send('PATCH', path, body);
+
   Future<void> delete(String path) => _send('DELETE', path);
+
+  Future<Object?> putFile(
+    String path, {
+    required String field,
+    required File file,
+    required String contentType,
+  }) async {
+    final boundary = 'tagarela-${DateTime.now().microsecondsSinceEpoch}';
+    final name = file.uri.pathSegments.last;
+    final bytes =
+        (BytesBuilder(copy: false)
+              ..add(
+                utf8.encode(
+                  '--$boundary\r\n'
+                  'Content-Disposition: form-data; name="$field"; filename="$name"\r\n'
+                  'Content-Type: $contentType\r\n\r\n',
+                ),
+              )
+              ..add(await file.readAsBytes())
+              ..add(utf8.encode('\r\n--$boundary--\r\n')))
+            .takeBytes();
+    final type = ContentType(
+      'multipart',
+      'form-data',
+      parameters: {'boundary': boundary},
+    );
+    final response = await _authorized(
+      (auth) => _request('PUT', path, type, bytes, auth),
+    );
+    return _checked(response, 'PUT', path);
+  }
 
   Future<ApiResponse> send(
     String method,
     String path, {
     Object? body,
     Map<String, String> headers = const {},
-  }) async {
+  }) {
+    final bytes = body == null ? null : utf8.encode(jsonEncode(body));
+    return _authorized(
+      (auth) => _request(method, path, ContentType.json, bytes, {
+        ...headers,
+        ...auth,
+      }),
+    );
+  }
+
+  Future<Object?> _send(String method, String path, [Object? body]) async =>
+      _checked(await send(method, path, body: body), method, path);
+
+  Future<ApiResponse> _authorized(
+    Future<ApiResponse> Function(Map<String, String> auth) request,
+  ) async {
+    final source = accessToken;
+    if (source == null) return request(const {});
+    final token = await source();
+    final response = await request(_bearer(token));
+    if (response.statusCode != HttpStatus.unauthorized || token == null) {
+      return response;
+    }
+    final renewed = await source(renew: true);
+    if (renewed == null) return response;
+    return request(_bearer(renewed));
+  }
+
+  Future<ApiResponse> _request(
+    String method,
+    String path,
+    ContentType contentType,
+    List<int>? bytes,
+    Map<String, String> headers,
+  ) async {
     final request = await _http.openUrl(method, Uri.parse('$baseUrl$path'));
-    request.headers.contentType = ContentType.json;
+    request.headers.contentType = contentType;
     headers.forEach(request.headers.set);
-    if (body != null) {
-      final bytes = utf8.encode(jsonEncode(body));
+    if (bytes != null) {
       request.contentLength = bytes.length;
       request.add(bytes);
     }
@@ -46,8 +117,11 @@ class ApiClient {
     return ApiResponse(response.statusCode, _decode(text, response.statusCode));
   }
 
-  Future<Object?> _send(String method, String path, [Object? body]) async {
-    final response = await send(method, path, body: body);
+  static Map<String, String> _bearer(String? token) => {
+    if (token != null) 'Authorization': 'Bearer $token',
+  };
+
+  static Object? _checked(ApiResponse response, String method, String path) {
     if (response.statusCode >= 400) {
       throw ApiException(response.statusCode, '$method $path');
     }
@@ -77,6 +151,11 @@ class ApiException implements Exception {
 
   final int statusCode;
   final String request;
+
+  bool get rejected =>
+      statusCode >= 400 &&
+      statusCode < 500 &&
+      statusCode != HttpStatus.unauthorized;
 
   @override
   String toString() => 'ApiException: $statusCode em $request';

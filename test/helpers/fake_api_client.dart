@@ -17,6 +17,9 @@ class FakeApiClient implements ApiClient {
   String get baseUrl => 'fake://';
 
   @override
+  AccessToken? get accessToken => null;
+
+  @override
   Future<Object?> get(String path) async {
     _record('GET', path);
     final uri = Uri.parse(path);
@@ -41,6 +44,18 @@ class FakeApiClient implements ApiClient {
     (db[path.substring(1)] as List).add(item);
     return item;
   }
+
+  @override
+  Future<Object?> patch(String path, Map<String, Object?> body) =>
+      throw UnimplementedError();
+
+  @override
+  Future<Object?> putFile(
+    String path, {
+    required String field,
+    required File file,
+    required String contentType,
+  }) => throw UnimplementedError();
 
   @override
   Future<ApiResponse> send(

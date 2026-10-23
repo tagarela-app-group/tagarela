@@ -13,6 +13,8 @@ class AuthStore extends ChangeNotifier {
   final SocialSignIn _social;
 
   String? _refreshToken;
+  String? _accessToken;
+  Future<void>? _renewing;
   User? _user;
 
   bool get isSignedIn => _refreshToken != null;
@@ -34,6 +36,14 @@ class AuthStore extends ChangeNotifier {
       return true;
     }
     return isSignedIn;
+  }
+
+  Future<String?> accessToken({bool renew = false}) async {
+    if (_refreshToken == null) return null;
+    if (renew || _accessToken == null) {
+      await (_renewing ??= _renew().whenComplete(() => _renewing = null));
+    }
+    return _accessToken;
   }
 
   Future<AuthResult> login(String email, String password) =>
@@ -97,8 +107,17 @@ class AuthStore extends ChangeNotifier {
     return result;
   }
 
+  Future<void> _renew() async {
+    try {
+      await _save(await _service.refresh(_refreshToken!));
+    } on AuthException {
+      await _forget();
+    }
+  }
+
   Future<void> _save(AuthTokens tokens) async {
     _refreshToken = tokens.refresh;
+    _accessToken = tokens.access;
     await _storage.write(tokens.refresh);
     notifyListeners();
   }
@@ -111,6 +130,7 @@ class AuthStore extends ChangeNotifier {
 
   Future<void> _forget() async {
     _refreshToken = null;
+    _accessToken = null;
     _user = null;
     await _storage.clear();
     notifyListeners();

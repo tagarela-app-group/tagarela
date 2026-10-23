@@ -96,7 +96,7 @@ void main() {
   testWidgets('câmera: mostra texto capturado', (tester) async {
     await tester.pumpComponent(
       InboxItemCard(
-        item: _item(source: CaptureSource.camera, content: 'Exit'),
+        item: _item(source: CaptureSource.photo, content: 'Exit'),
       ),
     );
 

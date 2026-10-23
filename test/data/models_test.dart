@@ -138,7 +138,7 @@ void main() {
   test('InboxItem.fromJson com e sem sugestão', () {
     final ready = InboxItem.fromJson({
       'id': '1',
-      'source': 'camera',
+      'source': 'photo',
       'content': 'Mind the gap',
       'capturedAt': 'há 1 h',
       'status': 'ready',
@@ -157,7 +157,7 @@ void main() {
       'status': 'queued',
     });
 
-    expect(ready.source, CaptureSource.camera);
+    expect(ready.source, CaptureSource.photo);
     expect(ready.status, InboxStatus.ready);
     expect(ready.suggestion!.groupId, '1');
     expect(ready.suggestion!.kind, TermKind.expression);
@@ -170,8 +170,124 @@ void main() {
     expect(TermKind.expression.label, 'Expressão');
     expect(TermStatus.learning.label, 'Aprendendo');
     expect(TermStatus.mastered.label, 'Dominado');
-    expect(CaptureSource.camera.label, 'Câmera');
+    expect(CaptureSource.photo.label, 'Câmera');
     expect(CaptureSource.audio.label, 'Áudio');
     expect(CaptureSource.text.label, 'Texto');
+  });
+
+  group('Capture', () {
+    Json json({String status = 'ready', String text = 'mind the gap'}) => {
+      'id': 'c1',
+      'source': 'photo',
+      'status': status,
+      'text': text,
+      'original_text': 'MIND THE GAP',
+      'terms': [
+        {'text': 'mind', 'start': 0, 'end': 4},
+      ],
+      'error': '',
+      'captured_at': '2026-10-23T10:00:00Z',
+      'processed_at': '2026-10-23T10:00:05Z',
+      'analyzed_at': null,
+      'discarded_at': null,
+      'updated_at': '2026-10-23T10:00:05Z',
+    };
+
+    test('fromJson lê o formato da API', () {
+      final capture = Capture.fromJson(json(status: 'waiting_file'));
+
+      expect(capture.source, CaptureSource.photo);
+      expect(capture.status, CaptureStatus.waitingFile);
+      expect(capture.terms, [
+        const CaptureTerm(text: 'mind', start: 0, end: 4),
+      ]);
+      expect(capture.error, isNull);
+      expect(capture.processedAt, DateTime.utc(2026, 10, 23, 10, 0, 5));
+      expect(capture.analyzedAt, isNull);
+      expect(
+        Capture.fromJson({...json(), 'error': 'no_text'}).error,
+        'no_text',
+      );
+    });
+
+    test('merge sem pendência fica igual ao servidor', () {
+      final local = Capture(
+        id: 'c1',
+        source: CaptureSource.photo,
+        status: CaptureStatus.processing,
+        capturedAt: DateTime.utc(2026, 10, 23, 10),
+        mediaPath: 'captures/photo/c1.jpg',
+      );
+
+      final merged = local.merge(Capture.fromJson(json()));
+
+      expect(merged.status, CaptureStatus.ready);
+      expect(merged.text, 'mind the gap');
+      expect(merged.updatedAt, DateTime.utc(2026, 10, 23, 10, 0, 5));
+      expect(merged.mediaPath, 'captures/photo/c1.jpg');
+    });
+
+    test('merge mantém edição, confirmação e descarte pendentes', () {
+      final analyzedAt = DateTime.utc(2026, 10, 24);
+      final local = Capture.fromJson(json()).copyWith(
+        status: CaptureStatus.analyzed,
+        text: 'mind the gap!',
+        terms: const [],
+        analyzedAt: analyzedAt,
+        discardedAt: analyzedAt,
+        pending: const {
+          CaptureSync.update,
+          CaptureSync.confirm,
+          CaptureSync.discard,
+        },
+      );
+
+      final merged = local.merge(Capture.fromJson(json(text: 'outro')));
+
+      expect(merged.text, 'mind the gap!');
+      expect(merged.terms, isEmpty);
+      expect(merged.status, CaptureStatus.analyzed);
+      expect(merged.analyzedAt, analyzedAt);
+      expect(merged.discardedAt, analyzedAt);
+      expect(merged.pending, local.pending);
+    });
+
+    test('mídia vence 30 dias depois de analisada ou descartada', () {
+      final now = DateTime(2026, 12, 1);
+      final base = Capture.fromJson(
+        json(),
+      ).copyWith(mediaPath: () => 'captures/photo/c1.jpg');
+
+      expect(base.mediaExpired(now), isFalse);
+      expect(
+        base
+            .copyWith(analyzedAt: now.subtract(const Duration(days: 31)))
+            .mediaExpired(now),
+        isTrue,
+      );
+      expect(
+        base
+            .copyWith(discardedAt: now.subtract(const Duration(days: 30)))
+            .mediaExpired(now),
+        isFalse,
+      );
+      expect(
+        base
+            .copyWith(
+              analyzedAt: now.subtract(const Duration(days: 31)),
+              mediaPath: () => null,
+            )
+            .mediaExpired(now),
+        isFalse,
+      );
+    });
+
+    test('CaptureStatus.fromApi usa o nome da API', () {
+      expect(
+        CaptureStatus.values.map((s) => CaptureStatus.fromApi(s.apiName)),
+        CaptureStatus.values,
+      );
+      expect(CaptureStatus.waitingFile.apiName, 'waiting_file');
+    });
   });
 }
