@@ -80,7 +80,7 @@ Duas URLs: dados no mock, conta na API Django.
 Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `api/docs/ARCHITECTURE.md`, seção Auth):
 
 - URL: `--dart-define=AUTH_URL=...`. Padrão `http://10.0.2.2:8000` (compose do `api/`). Base das rotas: `/api/auth/app/v1`.
-- `ApiClient.send`: status + corpo sem lançar em 4xx (allauth usa 401 pra etapa pendente). `get`/`post`/`delete` seguem lançando `ApiException`.
+- `ApiClient.send`: status + corpo sem lançar em 4xx (allauth usa 401 pra etapa pendente). `get`/`post`/`delete` seguem lançando `ApiException`. Corpo sempre com `Content-Length`: o `runserver` do Django ignora corpo chunked (o padrão do `HttpClient` do Dart) e a API veria o POST vazio.
 - Rotas: `POST auth/login`, `auth/signup`, `auth/email/verify`, `auth/email/verify/resend`, `auth/password/request`, `auth/password/reset`, `auth/provider/token`, `tokens/refresh`. `GET auth/password/reset` (valida código), `config` (client ID dos providers). `DELETE auth/session` (sair).
 - Header: etapa pendente = `X-Session-Token`. Logado = `Authorization: Bearer`. Código de reset = `X-Password-Reset-Key`.
 - Mensagem: a da API (pt-BR). 429 → "Muitas tentativas...". 409/410 → "Essa etapa expirou...". 5xx → `ApiException`.

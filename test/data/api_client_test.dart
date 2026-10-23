@@ -9,12 +9,18 @@ void main() {
   late HttpServer server;
   late ApiClient api;
   final received = <String>[];
+  final framing = <(int, bool)>[];
 
   setUp(() async {
     received.clear();
+    framing.clear();
     server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
     api = ApiClient(baseUrl: 'http://${server.address.host}:${server.port}');
     server.listen((request) async {
+      framing.add((
+        request.headers.contentLength,
+        request.headers.chunkedTransferEncoding,
+      ));
       final body = await utf8.decoder.bind(request).join();
       received.add('${request.method} ${request.uri} $body'.trim());
       final response = request.response;
@@ -48,6 +54,12 @@ void main() {
   test('POST envia corpo JSON', () async {
     await api.post('/terms', {'text': 'olá'});
     expect(received, ['POST /terms {"text":"olá"}']);
+  });
+
+  test('POST manda Content-Length em vez de corpo chunked', () async {
+    await api.post('/terms', {'text': 'olá'});
+
+    expect(framing, [(utf8.encode('{"text":"olá"}').length, false)]);
   });
 
   test('DELETE com resposta vazia', () async {

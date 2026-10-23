@@ -22,16 +22,16 @@ class SocialSignIn {
     defaultValue: 'com.tagarela.tagarela',
   );
 
-  bool _googleReady = false;
+  String? _googleClientId;
 
   Future<SocialToken?> google(String serverClientId) async {
     final google = GoogleSignIn.instance;
-    if (!_googleReady) {
+    if (_googleClientId != serverClientId) {
       await google.initialize(
         clientId: googleIosClientId.isEmpty ? null : googleIosClientId,
         serverClientId: serverClientId,
       );
-      _googleReady = true;
+      _googleClientId = serverClientId;
     }
     try {
       final idToken = (await google.authenticate()).authentication.idToken;
