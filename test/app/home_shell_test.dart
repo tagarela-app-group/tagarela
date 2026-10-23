@@ -3,11 +3,19 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/home_shell.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/home/home_page.dart';
+import 'package:tagarela/features/inbox/inbox_page.dart';
+import 'package:tagarela/features/profile/profile_page.dart';
+import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
 
 import '../helpers/pump_app.dart';
 
-int _currentTab(WidgetTester tester) =>
-    tester.widget<IndexedStack>(find.byType(IndexedStack)).index!;
+int _currentTab(WidgetTester tester) => const [
+  HomePage,
+  VocabularyPage,
+  InboxPage,
+  ProfilePage,
+].indexWhere((page) => tester.any(find.byType(page)));
 
 Finder _tab(String label) =>
     find.descendant(of: find.byType(AppTabBar), matching: find.text(label));
@@ -37,28 +45,29 @@ void main() {
     }
   });
 
-  testWidgets('troca de aba entra com fade', (tester) async {
+  testWidgets('aba nova entra com fade por cima da antiga', (tester) async {
     await tester.pumpPage(const HomeShell());
     double opacity() => tester
         .widget<FadeTransition>(
           find
               .ancestor(
-                of: find.byType(IndexedStack),
+                of: find.byType(VocabularyPage),
                 matching: find.byType(FadeTransition),
               )
               .first,
         )
         .opacity
         .value;
-    expect(opacity(), 1);
 
     await tester.tap(_tab('Vocabulário'));
     await tester.pump();
     await tester.pump(AppMotion.slow ~/ 4);
     expect(opacity(), inExclusiveRange(0, 1));
+    expect(find.byType(HomePage), findsOneWidget);
 
     await tester.pumpAndSettle();
     expect(opacity(), 1);
+    expect(find.byType(HomePage), findsNothing);
   });
 
   testWidgets('badge do Inbox acompanha o store', (tester) async {

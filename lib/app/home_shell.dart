@@ -36,7 +36,6 @@ class _HomeShellState extends State<HomeShell> {
     final inbox = AppScope.of(context).inbox;
 
     return Scaffold(
-      backgroundColor: context.colors.header,
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -47,7 +46,7 @@ class _HomeShellState extends State<HomeShell> {
                   data: media.copyWith(
                     padding: media.padding.copyWith(bottom: ArcMenu.overhang),
                   ),
-                  child: _FadeIndexedStack(
+                  child: _FadeTabStack(
                     index: _tab,
                     children: [
                       HomePage(onSeeVocabulary: () => _goTo(_vocabularyTab)),
@@ -107,23 +106,27 @@ class _HomeShellState extends State<HomeShell> {
   }
 }
 
-class _FadeIndexedStack extends StatefulWidget {
-  const _FadeIndexedStack({required this.index, required this.children});
+class _FadeTabStack extends StatefulWidget {
+  const _FadeTabStack({required this.index, required this.children});
 
   final int index;
   final List<Widget> children;
 
   @override
-  State<_FadeIndexedStack> createState() => _FadeIndexedStackState();
+  State<_FadeTabStack> createState() => _FadeTabStackState();
 }
 
-class _FadeIndexedStackState extends State<_FadeIndexedStack>
+class _FadeTabStackState extends State<_FadeTabStack>
     with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(
-    vsync: this,
-    duration: AppMotion.slow,
-    value: 1,
-  );
+  static const _still = AlwaysStoppedAnimation(Offset.zero);
+
+  late final _controller =
+      AnimationController(vsync: this, duration: AppMotion.slow, value: 1)
+        ..addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            setState(() => _previous = null);
+          }
+        });
   late final _curve = CurvedAnimation(
     parent: _controller,
     curve: AppMotion.standard,
@@ -133,10 +136,14 @@ class _FadeIndexedStackState extends State<_FadeIndexedStack>
     end: Offset.zero,
   ).animate(_curve);
 
+  int? _previous;
+
   @override
-  void didUpdateWidget(_FadeIndexedStack oldWidget) {
+  void didUpdateWidget(_FadeTabStack oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.index != widget.index) _controller.forward(from: 0);
+    if (oldWidget.index == widget.index) return;
+    _previous = oldWidget.index;
+    _controller.forward(from: 0);
   }
 
   @override
@@ -148,11 +155,38 @@ class _FadeIndexedStackState extends State<_FadeIndexedStack>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _curve,
-      child: SlideTransition(
-        position: _slide,
-        child: IndexedStack(index: widget.index, children: widget.children),
+    final order = [
+      for (var i = 0; i < widget.children.length; i++)
+        if (i != widget.index && i != _previous) i,
+      ?_previous,
+      widget.index,
+    ];
+    return Stack(
+      fit: StackFit.expand,
+      children: [for (final i in order) _layer(i)],
+    );
+  }
+
+  Widget _layer(int i) {
+    final current = i == widget.index;
+    final hidden = !current && i != _previous;
+    return KeyedSubtree(
+      key: ValueKey(i),
+      child: Offstage(
+        offstage: hidden,
+        child: TickerMode(
+          enabled: !hidden,
+          child: IgnorePointer(
+            ignoring: !current,
+            child: FadeTransition(
+              opacity: current ? _curve : kAlwaysCompleteAnimation,
+              child: SlideTransition(
+                position: current ? _slide : _still,
+                child: widget.children[i],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
