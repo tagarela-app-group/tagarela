@@ -39,6 +39,24 @@ void main() {
     expect(find.text('E-mail inválido'), findsOneWidget);
   });
 
+  testWidgets('mostra helperText e troca pelo erro quando houver', (
+    tester,
+  ) async {
+    await tester.pumpComponent(
+      const AppTextField(helperText: 'Mínimo de 8 caracteres.'),
+    );
+    expect(find.text('Mínimo de 8 caracteres.'), findsOneWidget);
+
+    await tester.pumpComponent(
+      const AppTextField(
+        helperText: 'Mínimo de 8 caracteres.',
+        errorText: 'Senha curta.',
+      ),
+    );
+    expect(find.text('Mínimo de 8 caracteres.'), findsNothing);
+    expect(find.text('Senha curta.'), findsOneWidget);
+  });
+
   testWidgets('campo comum não tem botão de senha', (tester) async {
     await tester.pumpComponent(const AppTextField());
 

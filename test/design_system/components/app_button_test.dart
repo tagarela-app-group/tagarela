@@ -53,6 +53,28 @@ void main() {
     }
   });
 
+  for (final (theme, colors) in [
+    (AppTheme.light, AppColors.light),
+    (AppTheme.dark, AppColors.dark),
+  ]) {
+    testWidgets('contrast usa contrast/onContrast (${theme.brightness.name})', (
+      tester,
+    ) async {
+      await tester.pumpComponent(
+        AppButton(
+          label: 'Apple',
+          onPressed: () {},
+          variant: AppButtonVariant.contrast,
+        ),
+        theme: theme,
+      );
+
+      final style = tester.widget<TextButton>(find.byType(TextButton)).style!;
+      expect(style.backgroundColor!.resolve({}), colors.contrast);
+      expect(style.foregroundColor!.resolve({}), colors.onContrast);
+    });
+  }
+
   testWidgets('expand ocupa a largura toda', (tester) async {
     await tester.pumpComponent(
       Column(

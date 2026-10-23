@@ -12,6 +12,7 @@ class AppTextField extends StatefulWidget {
     this.label,
     this.hint,
     this.icon,
+    this.helperText,
     this.errorText,
     this.obscure = false,
     this.controller,
@@ -23,6 +24,7 @@ class AppTextField extends StatefulWidget {
   final String? label;
   final String? hint;
   final IconData? icon;
+  final String? helperText;
   final String? errorText;
   final bool obscure;
   final TextEditingController? controller;
@@ -129,6 +131,14 @@ class _AppTextFieldState extends State<AppTextField> {
             style: AppText.label.copyWith(
               color: c.alert,
               fontWeight: FontWeight.w600,
+            ),
+          )
+        else if (widget.helperText != null)
+          Text(
+            widget.helperText!,
+            style: AppText.label.copyWith(
+              color: c.inkSoft,
+              fontWeight: FontWeight.w400,
             ),
           ),
       ],

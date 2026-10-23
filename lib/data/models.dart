@@ -225,3 +225,16 @@ class Suggestion {
   final String groupId;
   final String groupName;
 }
+
+class AuthTokens {
+  const AuthTokens({required this.access, required this.refresh});
+
+  AuthTokens.fromJson(Json json)
+    : this(
+        access: json['access_token']! as String,
+        refresh: json['refresh_token']! as String,
+      );
+
+  final String access;
+  final String refresh;
+}

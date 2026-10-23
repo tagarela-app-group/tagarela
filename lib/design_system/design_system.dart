@@ -4,6 +4,7 @@ export 'package:tagarela/design_system/components/app_bubble.dart';
 export 'package:tagarela/design_system/components/app_button.dart';
 export 'package:tagarela/design_system/components/app_card.dart';
 export 'package:tagarela/design_system/components/app_chip.dart';
+export 'package:tagarela/design_system/components/app_code_field.dart';
 export 'package:tagarela/design_system/components/app_icon_button.dart';
 export 'package:tagarela/design_system/components/app_tab_bar.dart';
 export 'package:tagarela/design_system/components/app_tag.dart';

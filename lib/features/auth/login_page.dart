@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
 
-import 'package:tagarela/app/app_scope.dart';
-import 'package:tagarela/app/home_shell.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/auth/auth_form.dart';
+import 'package:tagarela/features/auth/forgot_password_page.dart';
+import 'package:tagarela/features/auth/signup_page.dart';
+import 'package:tagarela/features/auth/widgets/social_buttons.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> with AuthForm {
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+
+  @override
+  Set<String> get fields => const {'email', 'password'};
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  void _login() {
+    final email = _email.text.trim();
+    submit(
+      () => auth.login(email, _password.text),
+      (result) => onResult(result, email: email),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-
-    void enter() {
-      AppScope.of(context).loadAll();
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeShell()));
-    }
 
     return SheetPage(
       header: const _LoginHeader(),
@@ -32,26 +53,31 @@ class LoginPage extends StatelessWidget {
             ),
           ],
         ),
-        const AppTextField(
+        AppTextField(
           label: 'E-mail',
           hint: 'voce@email.com',
           icon: AppIcons.mail,
+          controller: _email,
+          errorText: errors['email'],
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const AppTextField(
+            AppTextField(
               label: 'Senha',
               hint: 'Sua senha',
               icon: AppIcons.lock,
+              controller: _password,
+              errorText: errors['password'],
               obscure: true,
               textInputAction: TextInputAction.done,
             ),
             AppButton(
               label: 'Esqueci minha senha',
-              onPressed: () {},
+              onPressed: () =>
+                  push(ForgotPasswordPage(email: _email.text.trim())),
               variant: AppButtonVariant.text,
               size: AppButtonSize.small,
             ),
@@ -59,25 +85,25 @@ class LoginPage extends StatelessWidget {
         ),
         AppButton(
           label: 'Entrar',
-          onPressed: enter,
+          onPressed: busy ? null : _login,
           size: AppButtonSize.large,
           expand: true,
         ),
-        Row(
-          spacing: AppSpacing.s3,
-          children: [
-            const Expanded(child: Divider()),
-            Text('ou', style: AppText.bodyMd.copyWith(color: c.inkSoft)),
-            const Expanded(child: Divider()),
-          ],
-        ),
-        AppButton(
-          label: 'Continuar com Google',
-          onPressed: enter,
-          leading: Image.asset('assets/images/google.png', width: 20),
-          variant: AppButtonVariant.outline,
-          size: AppButtonSize.large,
-          expand: true,
+        SocialButtons(
+          onGoogle: busy
+              ? null
+              : () => submit(
+                  auth.signInWithGoogle,
+                  onResult,
+                  failure: 'Não deu pra entrar com o Google. Tente de novo.',
+                ),
+          onApple: busy
+              ? null
+              : () => submit(
+                  auth.signInWithApple,
+                  onResult,
+                  failure: 'Não deu pra entrar com a Apple. Tente de novo.',
+                ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +114,7 @@ class LoginPage extends StatelessWidget {
             ),
             AppButton(
               label: 'Criar conta',
-              onPressed: () {},
+              onPressed: () => push(const SignupPage()),
               variant: AppButtonVariant.text,
               size: AppButtonSize.small,
             ),

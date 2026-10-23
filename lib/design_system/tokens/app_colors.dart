@@ -8,6 +8,7 @@ abstract final class AppPalette {
   static const coral = Color(0xFFFF5D5D);
   static const ink = Color(0xFF17152B);
   static const white = Color(0xFFFFFFFF);
+  static const black = Color(0xFF000000);
 }
 
 enum AppAccent { violet, coral, mint, mango, sky, pink }
@@ -44,6 +45,8 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.masteredText,
     required this.alert,
     required this.onAlert,
+    required this.contrast,
+    required this.onContrast,
     required this.scrim,
     required this.cardShadow,
     required this.buttonShadow,
@@ -73,6 +76,8 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color masteredText;
   final Color alert;
   final Color onAlert;
+  final Color contrast;
+  final Color onContrast;
   final Color scrim;
   final List<BoxShadow> cardShadow;
   final List<BoxShadow> buttonShadow;
@@ -104,6 +109,8 @@ class AppColors extends ThemeExtension<AppColors> {
     masteredText: Color(0xFF0A6B4F),
     alert: Color(0xFFD93636),
     onAlert: AppPalette.white,
+    contrast: AppPalette.black,
+    onContrast: AppPalette.white,
     scrim: Color(0x9E17152B),
     cardShadow: [
       BoxShadow(color: Color(0x0A17152B), offset: Offset(0, 1), blurRadius: 2),
@@ -153,6 +160,8 @@ class AppColors extends ThemeExtension<AppColors> {
     masteredText: Color(0xFF4FD6A8),
     alert: Color(0xFFFF8A80),
     onAlert: AppPalette.ink,
+    contrast: AppPalette.white,
+    onContrast: AppPalette.black,
     scrim: Color(0xB805040C),
     cardShadow: [BoxShadow(color: Color(0x0DFFFFFF), spreadRadius: 1)],
     buttonShadow: [],

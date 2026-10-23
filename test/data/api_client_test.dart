@@ -21,6 +21,14 @@ void main() {
       switch (request.uri.path) {
         case '/missing':
           response.statusCode = 404;
+        case '/html-error':
+          response.statusCode = 404;
+          response.write('<html>não achou</html>');
+        case '/pending':
+          response.statusCode = 401;
+          response.write(
+            jsonEncode({'token': request.headers.value('X-Session-Token')}),
+          );
         case '/empty':
           break;
         default:
@@ -56,6 +64,25 @@ void main() {
             .having((e) => e.toString(), 'toString', contains('GET /missing')),
       ),
     );
+  });
+
+  test('send devolve status e corpo sem lançar em 4xx, com headers', () async {
+    final response = await api.send(
+      'POST',
+      '/pending',
+      body: {'a': 1},
+      headers: {'X-Session-Token': 'abc'},
+    );
+
+    expect(response.statusCode, 401);
+    expect(response.body, {'token': 'abc'});
+    expect(received, ['POST /pending {"a":1}']);
+  });
+
+  test('send com erro sem JSON devolve corpo nulo', () async {
+    final response = await api.send('GET', '/html-error');
+
+    expect((response.statusCode, response.body), (404, null));
   });
 
   test('servidor fora do ar vira exceção de rede', () async {

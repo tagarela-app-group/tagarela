@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
 
+import '../../helpers/fake_auth.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
@@ -16,8 +17,14 @@ void main() {
     expect(find.text(user.initials), findsOneWidget);
   });
 
-  testWidgets('"Sair" volta ao login e limpa a pilha', (tester) async {
-    await tester.pumpPage(const ProfilePage());
+  testWidgets('"Sair" encerra a sessão, volta ao login e limpa a pilha', (
+    tester,
+  ) async {
+    final api = FakeAuthApi();
+    final storage = FakeTokenStorage();
+    final auth = fakeAuthStore(api: api, storage: storage);
+    await auth.login('ana@example.com', 'x');
+    await tester.pumpPage(const ProfilePage(), auth: auth);
 
     await tester.tap(find.text('Sair'));
     await tester.pumpAndSettle();
@@ -26,5 +33,7 @@ void main() {
     expect(find.byType(ProfilePage), findsNothing);
     final navigator = tester.state<NavigatorState>(find.byType(Navigator));
     expect(navigator.canPop(), isFalse);
+    expect(storage.token, isNull);
+    expect(api.routes, contains('DELETE /auth/session'));
   });
 }

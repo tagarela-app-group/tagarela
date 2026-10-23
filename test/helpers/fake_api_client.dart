@@ -43,6 +43,14 @@ class FakeApiClient implements ApiClient {
   }
 
   @override
+  Future<ApiResponse> send(
+    String method,
+    String path, {
+    Object? body,
+    Map<String, String> headers = const {},
+  }) => throw UnimplementedError();
+
+  @override
   Future<void> delete(String path) async {
     _record('DELETE', path);
     final [_, collection, id] = path.split('/');

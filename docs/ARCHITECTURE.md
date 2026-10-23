@@ -3,9 +3,11 @@
 ## Stack
 
 - Flutter 3.44 / Dart 3.12. Só Android e iOS.
-- Zero dependência externa. HTTP via `dart:io`. Estado via `ChangeNotifier` + `setState`. Navegação com `Navigator`.
+- HTTP via `dart:io`. Estado via `ChangeNotifier` + `setState`. Navegação com `Navigator`.
+- Dependências: só 3 plugins nativos, da conta. `google_sign_in` (login Google), `sign_in_with_apple` (login Apple), `flutter_secure_storage` (refresh token no Keychain/Keystore). Fora isso, zero pacote.
 - Fontes embutidas em `assets/fonts/` (sem pacote, funciona offline).
 - Java 21 fixado no projeto via `mise.toml`. Gradle 9 exige JVM 17+.
+- `kotlin.incremental=false` em `android/gradle.properties`: no Windows, projeto e pub cache em drives diferentes quebram o cache incremental do Kotlin ("Could not close incremental caches" no plugin `google_sign_in_android`).
 
 ## Pastas
 
@@ -16,9 +18,12 @@ lib/
   design_system/         tokens, tema, componentes. Ver DESIGN.md
     design_system.dart   barrel: único import do DS
   data/                  models.dart, api_client.dart, store.dart
+    social_sign_in.dart  único ponto que conhece google_sign_in e sign_in_with_apple
+    token_storage.dart   único ponto que conhece flutter_secure_storage
     services/            1 por recurso da API (sem estado)
     stores/              estado compartilhado (1 por recurso)
   features/<feature>/    <feature>_page.dart + widgets/ (só da feature)
+  features/auth/         login, cadastro, código, esqueci senha, nova senha + auth_form.dart (mixin de envio)
 assets/
   fonts/                 Bricolage Grotesque + DM Sans (TTF estático) + OFL
   images/                google.png (botão de login)
@@ -37,10 +42,12 @@ docs/                    PRODUCT, ARCHITECTURE, DESIGN
 
 ## Navegação
 
-- `LoginPage` → `pushReplacement` → `HomeShell`.
+- Início: `AuthGate` restaura a sessão (splash enquanto isso). Com sessão → `HomeShell`. Sem → `LoginPage`.
+- Entrou (login, código, nova senha, Google, Apple): `HomeShell.open` = `loadAll()` + `pushAndRemoveUntil` (sem voltar).
+- Login → `push` de Cadastro / Esqueci a senha. Etapa pendente → `push` da tela de código. Voltar = `pop`.
 - `HomeShell`: `IndexedStack` (Início, Vocabulário, Inbox, Perfil) + `AppTabBar` + `ArcMenu`.
 - Grupo: `push` de `GroupPage` (tela cheia, sem tab bar).
-- Sair: `pushAndRemoveUntil` → `LoginPage`.
+- Sair: `AuthStore.logout()` + `pushAndRemoveUntil` → `LoginPage`.
 
 ## Dados e estado
 
@@ -49,11 +56,18 @@ Fluxo: tela → store → service → `ApiClient` → API.
 - `ApiClient`: único ponto de rede. JSON, timeout 10 s. Status ≥ 400 vira `ApiException`.
 - Service: chama endpoint e converte JSON em model. Sem estado. Trocar de API = mexer só em service (e `fromJson`).
 - Store: `Store<T>` (`ChangeNotifier`) guarda `data` e `error` de um recurso. `data` e `error` nulos = carregando. Ação (ex.: `InboxStore.accept`) chama service e atualiza `data`.
-- `AppScope`: cria os stores; tela pega via `AppScope.of(context)`. `loadAll()` no login.
+- `AppScope`: cria os stores; tela pega via `AppScope.of(context)`. `loadAll()` ao entrar. `AuthStore` vem pronto de fora (`main.dart`), pra teste trocar API, storage e login social.
+- `AuthStore` (`ChangeNotifier`, fora do `Store<T>`): guarda só o refresh token (`isSignedIn`). Método por fluxo, devolve `AuthResult`: `AuthSignedIn` (salva token) ou `AuthPending` (etapa + session token, passado pra tela seguinte). Erro da API: `AuthException` (mensagem por campo, `null` = geral).
+- `restore()`: refresh no início. Recusado → apaga token. Sem rede → entra com o token salvo.
+- `logout()`: apaga o token na hora. Depois tenta refresh + `DELETE` da sessão na API (falhou = ignora).
+- Tela de auth: mixin `AuthForm` (`submit` com `busy`, erro do campo no `AppTextField`, erro geral ou de campo que a tela não tem em `SnackBar`, sem rede = "Sem conexão...").
 - Tela: `ListenableBuilder` no store. Sem `data`: `AsyncStatus` (carregando, ou erro com "Tentar de novo"). Vários stores: `<Store>[...]` + `isReady` / `error` / `retry`.
 - Estado só da tela (aba, filtro, campo): `setState`.
 
 ## API
+
+Duas URLs: dados no mock, conta na API Django.
+
 
 - URL base: `--dart-define=API_URL=...`. Padrão `http://10.0.2.2:3000` (emulador Android enxerga o PC em 10.0.2.2).
 - Mock: `npx json-server server/db.json` (porta 3000). Celular físico: `API_URL=http://<IP do PC>:3000`.
@@ -62,6 +76,17 @@ Fluxo: tela → store → service → `ApiClient` → API.
 - http sem TLS só no debug (`usesCleartextTraffic` em `android/app/src/debug`). Release: só https. iOS (ATS): não configurado.
 - Online: hospedar o db.json (ex.: my-json-server lê `db.json` na raiz de um repo GitHub; só leitura) e passar a URL https.
 - `InboxService.accept` faz 2 chamadas (POST termo + DELETE item) por limite do json-server. API real: 1 endpoint.
+
+Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `api/docs/ARCHITECTURE.md`, seção Auth):
+
+- URL: `--dart-define=AUTH_URL=...`. Padrão `http://10.0.2.2:8000` (compose do `api/`). Base das rotas: `/api/auth/app/v1`.
+- `ApiClient.send`: status + corpo sem lançar em 4xx (allauth usa 401 pra etapa pendente). `get`/`post`/`delete` seguem lançando `ApiException`.
+- Rotas: `POST auth/login`, `auth/signup`, `auth/email/verify`, `auth/email/verify/resend`, `auth/password/request`, `auth/password/reset`, `auth/provider/token`, `tokens/refresh`. `GET auth/password/reset` (valida código). `DELETE auth/session` (sair).
+- Header: etapa pendente = `X-Session-Token`. Logado = `Authorization: Bearer`. Código de reset = `X-Password-Reset-Key`.
+- Mensagem: a da API (pt-BR). 429 → "Muitas tentativas...". 409/410 → "Essa etapa expirou...". 5xx → `ApiException`.
+- Google: `--dart-define=GOOGLE_SERVER_CLIENT_ID=<client ID web>` (mesmo `GOOGLE_CLIENT_ID` do backend; é o `aud` do id_token). iOS: `--dart-define=GOOGLE_IOS_CLIENT_ID=<client ID iOS>` + URL scheme com o client ID iOS invertido no `Info.plist` (falta: precisa do ID). Android: client OAuth Android com o SHA-1 da chave no Google Cloud.
+- Apple: só iOS (botão some no Android). `APPLE_CLIENT_ID` = bundle ID `com.tagarela.tagarela` (padrão; mesmo `APPLE_CLIENT_ID` do backend). Entitlement `com.apple.developer.applesignin` em `ios/Runner/Runner.entitlements`; no Xcode, time com a capability Sign in with Apple.
+- Token: refresh no `flutter_secure_storage` (chave `refresh_token`). Access não é guardado: nenhuma rota de dados pede login ainda.
 
 ## Layout de tela
 
@@ -84,6 +109,7 @@ Fluxo: tela → store → service → `ApiClient` → API.
 - API fake: `test/helpers/fake_api_client.dart`. Usa `server/db.json` em memória (GET, `_embed`, POST, DELETE). `failing = true` simula erro. Services, stores e telas testam sobre ela.
 - Montar widget via `test/helpers/pump_app.dart`: `pumpPage` (tela com tema + `AppScope` com stores carregados; `load: false` = carregando), `pumpComponent` (componente dentro de `Scaffold`). Tela de teste: 800x1600.
 - Contrato do `db.json`: `test/server/db_json_test.dart`.
+- Conta: `test/helpers/fake_auth.dart`. `FakeAuthApi` (resposta por rota `MÉTODO caminho`, padrão = caminho feliz; `errors`, `pending`, `signedIn` montam resposta; `error` simula sem rede; `last(rota)` = request enviado), `FakeTokenStorage`, `FakeSocialSignIn` (token ou `null` = cancelado), `fakeAuthStore()`. `pumpPage(auth: ...)`. Campo por rótulo: `textField('E-mail')`. iOS: `variant: TargetPlatformVariant.only(TargetPlatform.iOS)`.
 - Unit test: model, service, lógica pura.
 - Widget test: componente e tela com comportamento (toque, estado, navegação).
 - Código novo ou alterado: teste junto. Bug corrigido: teste que reproduz o bug.
@@ -92,6 +118,8 @@ Fluxo: tela → store → service → `ApiClient` → API.
 ## Dependências
 
 Antes de adicionar pacote: checar pub.dev (likes, último publish), issues abertas (build/toolchain). Contar ao usuário antes de instalar. Plugin nativo ou pacote pouco mantido: perguntar.
+
+Hoje: `google_sign_in` ^7.2, `sign_in_with_apple` ^8.2 (exige Flutter ≥3.44), `flutter_secure_storage` ^11.2. iOS via Swift Package Manager (sem Podfile).
 
 ## Git e CI
 
