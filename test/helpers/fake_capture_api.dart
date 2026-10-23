@@ -140,7 +140,8 @@ class FakeCaptureApi implements ApiClient {
     return jsonDecode(jsonEncode(handler()));
   }
 
-  Json _capture(String path) => server[path.split('/')[4]]!;
+  Json _capture(String path) =>
+      server[path.split('/')[4]] ?? (throw ApiException(404, path));
 
   Json _touch(Json capture) {
     _clock = _clock.add(const Duration(seconds: 1));

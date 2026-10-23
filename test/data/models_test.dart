@@ -135,42 +135,12 @@ void main() {
     });
   });
 
-  test('InboxItem.fromJson com e sem sugestão', () {
-    final ready = InboxItem.fromJson({
-      'id': '1',
-      'source': 'photo',
-      'content': 'Mind the gap',
-      'capturedAt': 'há 1 h',
-      'status': 'ready',
-      'suggestion': {
-        'translation': 'cuidado com o vão',
-        'kind': 'expression',
-        'groupId': '1',
-        'groupName': 'Viagem',
-      },
-    });
-    final queued = InboxItem.fromJson({
-      'id': '2',
-      'source': 'audio',
-      'content': '0:04',
-      'capturedAt': 'agora',
-      'status': 'queued',
-    });
-
-    expect(ready.source, CaptureSource.photo);
-    expect(ready.status, InboxStatus.ready);
-    expect(ready.suggestion!.groupId, '1');
-    expect(ready.suggestion!.kind, TermKind.expression);
-    expect(queued.status, InboxStatus.queued);
-    expect(queued.suggestion, isNull);
-  });
-
   test('rótulos dos enums em pt-BR', () {
     expect(TermKind.word.label, 'Palavra');
     expect(TermKind.expression.label, 'Expressão');
     expect(TermStatus.learning.label, 'Aprendendo');
     expect(TermStatus.mastered.label, 'Dominado');
-    expect(CaptureSource.photo.label, 'Câmera');
+    expect(CaptureSource.photo.label, 'Foto');
     expect(CaptureSource.audio.label, 'Áudio');
     expect(CaptureSource.text.label, 'Texto');
   });
@@ -280,6 +250,23 @@ void main() {
             .mediaExpired(now),
         isFalse,
       );
+    });
+
+    test('seção do Inbox e se precisa de ação vêm do status', () {
+      Capture at(CaptureStatus status) =>
+          Capture.fromJson(json()).copyWith(status: status);
+
+      expect(
+        CaptureStatus.values.map((s) => (at(s).section, at(s).needsAction)),
+        [
+          (CaptureSection.waiting, false),
+          (CaptureSection.processing, false),
+          (CaptureSection.attention, true),
+          (CaptureSection.ready, true),
+          (CaptureSection.done, false),
+        ],
+      );
+      expect(CaptureSection.waiting.label, 'Esperando envio');
     });
 
     test('CaptureStatus.fromApi usa o nome da API', () {

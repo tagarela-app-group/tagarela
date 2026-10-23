@@ -164,65 +164,13 @@ class WordOfDay {
 }
 
 enum CaptureSource {
-  photo('Câmera'),
+  photo('Foto'),
   audio('Áudio'),
   text('Texto');
 
   const CaptureSource(this.label);
 
   final String label;
-}
-
-enum InboxStatus { ready, analyzing, queued }
-
-class InboxItem {
-  const InboxItem({
-    required this.id,
-    required this.source,
-    required this.content,
-    required this.capturedAt,
-    required this.status,
-    this.suggestion,
-  });
-
-  InboxItem.fromJson(Json json)
-    : this(
-        id: json['id']! as String,
-        source: CaptureSource.values.byName(json['source']! as String),
-        content: json['content']! as String,
-        capturedAt: json['capturedAt']! as String,
-        status: InboxStatus.values.byName(json['status']! as String),
-        suggestion: switch (json['suggestion']) {
-          final Json s => Suggestion.fromJson(s),
-          _ => null,
-        },
-      );
-
-  final String id;
-  final CaptureSource source;
-
-  final String content;
-
-  final String capturedAt;
-  final InboxStatus status;
-  final Suggestion? suggestion;
-}
-
-class Suggestion {
-  const Suggestion(this.translation, this.kind, this.groupId, this.groupName);
-
-  Suggestion.fromJson(Json json)
-    : this(
-        json['translation']! as String,
-        TermKind.values.byName(json['kind']! as String),
-        json['groupId']! as String,
-        json['groupName']! as String,
-      );
-
-  final String translation;
-  final TermKind kind;
-  final String groupId;
-  final String groupName;
 }
 
 enum CaptureStatus {
@@ -241,6 +189,18 @@ enum CaptureStatus {
 }
 
 enum CaptureSync { create, file, update, confirm, discard }
+
+enum CaptureSection {
+  attention('Precisa de atenção'),
+  ready('Prontas'),
+  processing('Processando'),
+  waiting('Esperando envio'),
+  done('Analisadas');
+
+  const CaptureSection(this.label);
+
+  final String label;
+}
 
 class CaptureTerm {
   const CaptureTerm({
@@ -329,6 +289,17 @@ class Capture {
   final DateTime? updatedAt;
   final String? mediaPath;
   final Set<CaptureSync> pending;
+
+  CaptureSection get section => switch (status) {
+    CaptureStatus.failed => CaptureSection.attention,
+    CaptureStatus.ready => CaptureSection.ready,
+    CaptureStatus.processing => CaptureSection.processing,
+    CaptureStatus.waitingFile => CaptureSection.waiting,
+    CaptureStatus.analyzed => CaptureSection.done,
+  };
+
+  bool get needsAction =>
+      status == CaptureStatus.ready || status == CaptureStatus.failed;
 
   bool mediaExpired(DateTime now) {
     final closedAt = analyzedAt ?? discardedAt;

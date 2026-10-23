@@ -37,4 +37,26 @@ void main() {
     );
     expect((box.decoration as BoxDecoration).boxShadow, isNull);
   });
+
+  testWidgets('muted: sem fundo, sem sombra, com borda', (tester) async {
+    await tester.pumpComponent(const AppCard(muted: true, child: Text('Card')));
+
+    final box = tester.widget<DecoratedBox>(
+      find
+          .descendant(
+            of: find.byType(AppCard),
+            matching: find.byType(DecoratedBox),
+          )
+          .first,
+    );
+    final material = tester.widget<Material>(
+      find
+          .descendant(of: find.byType(AppCard), matching: find.byType(Material))
+          .first,
+    );
+    final shape = material.shape! as RoundedRectangleBorder;
+    expect((box.decoration as BoxDecoration).boxShadow, isNull);
+    expect(material.color, Colors.transparent);
+    expect(shape.side.color, AppColors.light.line);
+  });
 }

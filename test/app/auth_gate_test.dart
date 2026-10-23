@@ -7,7 +7,6 @@ import 'package:tagarela/app/home_shell.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 
-import '../helpers/fake_api_client.dart';
 import '../helpers/fake_auth.dart';
 import '../helpers/pump_app.dart';
 
@@ -21,8 +20,7 @@ void main() {
     FakeTokenStorage storage,
   ) async {
     tester.useTallScreen();
-    final scope = AppScope(
-      api: FakeApiClient(),
+    final scope = testScope(
       auth: fakeAuthStore(api: api, storage: storage),
       child: MaterialApp(theme: AppTheme.light, home: const AuthGate()),
     );
@@ -42,6 +40,7 @@ void main() {
 
     expect(find.byType(HomeShell), findsOneWidget);
     expect(scope.home.data, isNotNull);
+    expect(scope.captures.data, isEmpty);
     expect(scope.auth.user?.name, 'Ana Souza');
   });
 

@@ -225,6 +225,18 @@ void main() {
 
       expect(await store.accessToken(renew: true), isNull);
       expect((store.isSignedIn, storage.token), (false, null));
+      expect(store.sessionExpired, isTrue);
+
+      await store.login('ana@example.com', 'x');
+      expect(store.sessionExpired, isFalse);
+    });
+
+    test('sair por conta própria não marca sessão expirada', () async {
+      await store.login('ana@example.com', 'x');
+
+      await store.logout();
+
+      expect(store.sessionExpired, isFalse);
     });
   });
 }

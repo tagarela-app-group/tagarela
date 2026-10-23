@@ -2,11 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/app_scope.dart';
+import 'package:tagarela/data/audio_playback.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
+import 'package:tagarela/data/stores/capture_store.dart';
+import 'package:tagarela/data/stores/home_store.dart';
+import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
-import 'fake_api_client.dart';
 import 'fake_auth.dart';
+import 'fake_capture_store.dart';
+import 'fixtures.dart';
+
+AppScope testScope({
+  required Widget child,
+  AuthStore? auth,
+  CaptureStore? captures,
+  AudioPlayback? playback,
+  HomeStore? home,
+  VocabularyStore? vocabulary,
+}) => AppScope(
+  auth: auth ?? fakeAuthStore(),
+  captures: captures ?? fakeCaptures().store,
+  playback: playback ?? FakeAudioPlayback(),
+  home: home ?? HomeStore(sampleHome),
+  vocabulary: vocabulary ?? VocabularyStore(sampleGroups),
+  child: child,
+);
 
 extension PumpApp on WidgetTester {
   void useTallScreen() {
@@ -17,15 +38,21 @@ extension PumpApp on WidgetTester {
 
   Future<AppScope> pumpPage(
     Widget page, {
-    FakeApiClient? api,
     AuthStore? auth,
+    CaptureStore? captures,
+    AudioPlayback? playback,
+    HomeStore? home,
+    VocabularyStore? vocabulary,
     bool load = true,
     ThemeData? theme,
   }) async {
     useTallScreen();
-    final scope = AppScope(
-      api: api ?? FakeApiClient(),
-      auth: auth ?? fakeAuthStore(),
+    final scope = testScope(
+      auth: auth,
+      captures: captures,
+      playback: playback,
+      home: home,
+      vocabulary: vocabulary,
       child: MaterialApp(theme: theme ?? AppTheme.light, home: page),
     );
     if (load) await scope.loadAll();

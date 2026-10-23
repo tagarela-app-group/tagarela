@@ -34,14 +34,15 @@ class HomePage extends StatelessWidget {
         return SheetPage(
           header: header,
           children: [
-            WordOfDayCard(word: home.wordOfDay),
+            if (home.wordOfDay case final word?) WordOfDayCard(word: word),
             VocabularySummary(
               learning: groups.learningCount,
               mastered: groups.masteredCount,
               weekGain: home.stats.weekGain,
               onSeeAll: onSeeVocabulary,
             ),
-            ReviewCard(count: home.stats.reviewCount, onStart: () {}),
+            if (home.stats.reviewCount > 0)
+              ReviewCard(count: home.stats.reviewCount, onStart: () {}),
           ],
         );
       },

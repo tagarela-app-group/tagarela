@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
+import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/inbox/inbox_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
@@ -27,13 +29,38 @@ class _HomeShellState extends State<HomeShell> {
   static const _inboxTab = 2;
 
   int _tab = 0;
+  AuthStore? _auth;
 
   void _goTo(int tab) => setState(() => _tab = tab);
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _auth ??= AppScope.of(context).auth..addListener(_onAuthChanged);
+  }
+
+  @override
+  void dispose() {
+    _auth?.removeListener(_onAuthChanged);
+    super.dispose();
+  }
+
+  void _onAuthChanged() {
+    if (!_auth!.sessionExpired) return;
+    final messenger = ScaffoldMessenger.of(context);
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const LoginPage()),
+      (_) => false,
+    );
+    messenger.showSnackBar(
+      const SnackBar(content: Text('Sua sessão expirou. Entre de novo.')),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    final inbox = AppScope.of(context).inbox;
+    final captures = AppScope.of(context).captures;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -58,7 +85,7 @@ class _HomeShellState extends State<HomeShell> {
                 ),
               ),
               ListenableBuilder(
-                listenable: inbox,
+                listenable: captures,
                 builder: (context, _) => AppTabBar(
                   currentIndex: _tab,
                   onTap: _goTo,
@@ -72,7 +99,9 @@ class _HomeShellState extends State<HomeShell> {
                     AppTabItem(
                       icon: AppIcons.inbox,
                       label: 'Inbox',
-                      badge: inbox.data?.length ?? 0,
+                      badge:
+                          captures.data?.where((c) => c.needsAction).length ??
+                          0,
                     ),
                     const AppTabItem(icon: AppIcons.profile, label: 'Perfil'),
                   ],

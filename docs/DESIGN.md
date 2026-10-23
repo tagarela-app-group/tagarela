@@ -68,18 +68,18 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 
 | Componente | Uso |
 | --- | --- |
-| `SheetPage` | Toda tela: header + body arredondado rolável |
+| `SheetPage` | Toda tela: header + body arredondado rolável. `onRefresh` = puxar pra atualizar |
 | `PageHeader` | Título/subtítulo (+ leading/trailing) no header |
 | `SectionHeader` | Título de seção + ação texto |
 | `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), contrast (botão Apple), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading`. `loading`: spinner 18 na cor do texto no lugar do `leading`, rótulo e cor da variante ficam, toque ignorado. Enquanto um botão carrega, os outros da tela ficam desabilitados |
 | `AppIconButton` | Botão redondo de ícone. Variantes onHeader, ink, primary, ghost. `tooltip` obrigatório |
-| `AppCard` | Superfície com sombra. `onTap` opcional. `color` próprio = sem sombra |
+| `AppCard` | Superfície com sombra. `onTap` opcional. `color` próprio = sem sombra. `muted` = sem fundo nem sombra, borda `line` (item encerrado, ex.: captura analisada) |
 | `AppTextField` | Rótulo acima, ícone, halo no foco, `helperText` (some com erro), erro, `obscure` com olho |
 | `AppCodeField` | Código numérico em caixas (padrão 6, 56 de altura, raio md). Caixa da vez com halo, erro em `alert`. Campo real escondido (`oneTimeCode`, só dígito). `onCompleted` ao completar |
 | `AppChip` | Filtro. Selecionado = tinta cheia |
-| `StatusPill` | Status: learning, mastered, primary, neutral |
+| `StatusPill` | Status: learning, mastered, primary, neutral, alert (coral: erro) |
 | `AppTag` | Etiqueta caixa alta com contorno (PALAVRA, EXPRESSÃO) |
-| `IconTile` | Ícone em quadrado tingido por `AppAccent` |
+| `IconTile` | Ícone em quadrado tingido por `AppAccent`. Sem acento = neutro (`surfaceAlt` + `inkSoft`) |
 | `AppBubble` | Forma balão: logo, avatar, itens do arco. `image`: foto recortada no balão, por cima do conteúdo (as iniciais aparecem enquanto carrega ou se falhar) |
 | `SpeechBubbleIcon` | Balão de fala redondo cheio, desenhado. Fundo da palavra do dia |
 | `SegmentBar` | Barra proporcional; com `total` vira progresso |

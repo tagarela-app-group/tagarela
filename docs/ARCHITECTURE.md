@@ -4,7 +4,7 @@
 
 - Flutter 3.44 / Dart 3.12. Só Android e iOS.
 - HTTP via `dart:io`. Estado via `ChangeNotifier` + `setState`. Navegação com `Navigator`.
-- Dependências: conta (`google_sign_in`, `sign_in_with_apple`, `flutter_secure_storage`) e captura offline (`drift` + `drift_flutter`: SQLite local; `path_provider`: pasta do app). Fora isso, zero pacote. Ver Dependências.
+- Dependências: conta (`google_sign_in`, `sign_in_with_apple`, `flutter_secure_storage`), captura offline (`drift` + `drift_flutter`: SQLite local; `path_provider`: pasta do app) e `audioplayers` (ouvir a gravação). Fora isso, zero pacote. Ver Dependências.
 - Fontes embutidas em `assets/fonts/` (sem pacote, funciona offline).
 - Java 21 fixado no projeto via `mise.toml`. Gradle 9 exige JVM 17+.
 - `kotlin.incremental=false` em `android/gradle.properties`: no Windows, projeto e pub cache em drives diferentes quebram o cache incremental do Kotlin ("Could not close incremental caches" no plugin `google_sign_in_android`).
@@ -22,6 +22,7 @@ lib/
     token_storage.dart   único ponto que conhece flutter_secure_storage
     database.dart        único ponto que conhece drift: tabelas captures e capture_cursors (+ database.g.dart gerado)
     media_storage.dart   único ponto que conhece path_provider: foto/áudio na pasta do app
+    audio_playback.dart  único ponto que conhece audioplayers: um player pro app todo (toca um áudio por vez)
     services/            1 por recurso da API (sem estado)
     stores/              estado compartilhado (1 por recurso)
   features/<feature>/    <feature>_page.dart + widgets/ (só da feature)
@@ -29,7 +30,6 @@ lib/
 assets/
   fonts/                 Bricolage Grotesque + DM Sans (TTF estático) + OFL
   images/                google.png (botão de login)
-server/                  db.json: mock da API (json-server). Ver API
 test/                    espelha lib/. Ver Testes
 docs/                    PRODUCT, ARCHITECTURE, DESIGN
 build.yaml               opção do drift_dev (data como texto ISO, mantém fuso e microssegundo)
@@ -41,7 +41,7 @@ build.yaml               opção do drift_dev (data como texto ISO, mantém fuso
 - Widget só de uma feature: `features/<feature>/widgets/`.
 - Subwidget usado só em um arquivo: classe privada (`_Nome`) no mesmo arquivo.
 - Modelo de dados: `data/models.dart` (com `fromJson`). Conta sobre dados (totais, filtros): no model, não no widget.
-- Chamada de API: `data/services/`. Estado compartilhado: `data/stores/`. Dado fake: `server/db.json`.
+- Chamada de API: `data/services/`. Estado compartilhado: `data/stores/`. Dado de exemplo pra teste: `test/helpers/fixtures.dart`.
 
 ## Navegação
 
@@ -58,8 +58,10 @@ Fluxo: tela → store → service → `ApiClient` → API.
 
 - `ApiClient`: único ponto de rede. JSON, timeout 10 s. Status ≥ 400 vira `ApiException`.
 - Service: chama endpoint e converte JSON em model. Sem estado. Trocar de API = mexer só em service (e `fromJson`).
-- Store: `Store<T>` (`ChangeNotifier`) guarda `data` e `error` de um recurso. `data` e `error` nulos = carregando. Ação (ex.: `InboxStore.accept`) chama service e atualiza `data`.
-- `AppScope`: cria os stores; tela pega via `AppScope.of(context)`. `loadAll()` ao entrar. `AuthStore` vem pronto de fora (`main.dart`), pra teste trocar API, storage e login social.
+- Store: `Store<T>` (`ChangeNotifier`) guarda `data` e `error` de um recurso. `data` e `error` nulos = carregando. Ação (ex.: `CaptureStore.confirm`) grava, chama service e atualiza `data`.
+- Recurso que a API ainda não tem (Home: estatística e palavra do dia; Vocabulário: grupos e termos): store sem service, fonte local vazia (`HomeStore.empty`, `VocabularyStore()`). Teste passa dados no construtor. Tela some com o card sem dado (palavra do dia, revisão) e mostra estado vazio (Vocabulário). API ganhou o recurso: store volta a chamar service.
+- `AppScope`: guarda os stores e o `AudioPlayback`; tela pega via `AppScope.of(context)`. `loadAll()` ao entrar: limpa mídia vencida e carrega tudo. `AuthStore`, `CaptureStore` e `AudioPlayback` vêm prontos de fora (`main.dart`), pra teste trocar API, banco, mídia e player.
+- Sessão expirada (refresh recusado no meio do uso, `AuthStore.sessionExpired`): `HomeShell` volta pro login e avisa "Sua sessão expirou. Entre de novo.". Sair pelo Perfil não marca.
 - `AuthStore` (`ChangeNotifier`, fora do `Store<T>`): guarda só o refresh token (`isSignedIn`). Método por fluxo, devolve `AuthResult`: `AuthSignedIn` (salva token) ou `AuthPending` (etapa + session token, passado pra tela seguinte). Erro da API: `AuthException` (mensagem por campo, `null` = geral).
 - `restore()`: refresh no início. Recusado → apaga token. Sem rede → entra com o token salvo.
 - `logout()`: apaga o token na hora. Depois tenta refresh + `DELETE` da sessão na API (falhou = ignora).
@@ -69,7 +71,7 @@ Fluxo: tela → store → service → `ApiClient` → API.
 
 ### Captura (offline first)
 
-- Fonte da verdade: banco local (`AppDatabase`). `CaptureStore` (`Store<List<Capture>>`) lê do banco; API é sincronização. Ainda sem tela (Inbox entra no próximo passo).
+- Fonte da verdade: banco local (`AppDatabase`). `CaptureStore` (`Store<List<Capture>>`) lê do banco; API é sincronização. Tela: Inbox.
 - Dono: cada linha guarda o e-mail da conta (`AuthStore.user`). Outra conta no mesmo celular não vê nem envia. Sair não apaga nada.
 - Criar: id UUID v4 gerado no app (`Random.secure`). Texto nasce `ready`; foto/áudio nasce `waiting_file` com o arquivo copiado pra `captures/<photo|audio>/<id>.<ext>` na pasta de documentos do app.
 - Pendência (`Capture.pending`): `create`, `file`, `update`, `confirm`, `discard`. Ação grava local + marca pendência + tenta enviar na hora (sem rede: fica pendente, sem erro).
@@ -81,20 +83,14 @@ Fluxo: tela → store → service → `ApiClient` → API.
 
 ## API
 
-Duas URLs: dados no mock, conta na API Django.
+Uma URL só: API Django (`api/`). Sem mock.
 
-
-- URL base: `--dart-define=API_URL=...`. Padrão `http://10.0.2.2:3000` (emulador Android enxerga o PC em 10.0.2.2).
-- Mock: `npx json-server server/db.json` (porta 3000). Celular físico: `API_URL=http://<IP do PC>:3000`.
-- Rotas: `GET /stats`, `/wordOfDay`, `/groups?_embed=terms`, `/inbox`. `POST /terms`. `DELETE /inbox/:id`.
-- IDs sempre string (json-server v1 gera string).
+- URL base: `--dart-define=API_URL=...`. Padrão `http://10.0.2.2:8000` (compose do `api/`; emulador Android enxerga o PC em 10.0.2.2). Celular físico: `API_URL=http://<IP do PC>:8000`.
 - http sem TLS só no debug (`usesCleartextTraffic` em `android/app/src/debug`). Release: só https. iOS (ATS): não configurado.
-- Online: hospedar o db.json (ex.: my-json-server lê `db.json` na raiz de um repo GitHub; só leitura) e passar a URL https.
-- `InboxService.accept` faz 2 chamadas (POST termo + DELETE item) por limite do json-server. API real: 1 endpoint.
 
-Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `api/docs/ARCHITECTURE.md`, seção Auth):
+Conta (`AuthService`, allauth headless; detalhe dos fluxos em `api/docs/ARCHITECTURE.md`, seção Auth):
 
-- URL: `--dart-define=AUTH_URL=...`. Padrão `http://10.0.2.2:8000` (compose do `api/`). Base das rotas: `/api/auth/app/v1`.
+- Base das rotas: `/api/auth/app/v1`. `AuthService` usa um `ApiClient` sem token; dados usam outro com `accessToken`.
 - `ApiClient.send`: status + corpo sem lançar em 4xx (allauth usa 401 pra etapa pendente). `get`/`post`/`delete` seguem lançando `ApiException`. Corpo sempre com `Content-Length`: o `runserver` do Django ignora corpo chunked (o padrão do `HttpClient` do Dart) e a API veria o POST vazio.
 - Rotas: `POST auth/login`, `auth/signup`, `auth/email/verify`, `auth/email/verify/resend`, `auth/password/request`, `auth/password/reset`, `auth/provider/token`, `tokens/refresh`. `GET auth/password/reset` (valida código), `config` (client ID dos providers). `DELETE auth/session` (sair).
 - Header: etapa pendente = `X-Session-Token`. Logado = `Authorization: Bearer`. Código de reset = `X-Password-Reset-Key`.
@@ -104,7 +100,7 @@ Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `ap
 - Token: refresh no `flutter_secure_storage` (chave `refresh_token`). Access só na memória (`AuthStore.accessToken`): vem do login; sem ele (app reaberto) ou com `renew`, faz refresh. Pedidos juntos dividem um refresh só (refresh troca o par). Refresh recusado = desloga.
 - `ApiClient(accessToken: auth.accessToken)`: manda `Authorization: Bearer` em toda chamada. 401 → renova uma vez e repete. `putFile`: multipart com `Content-Length` (mesmo motivo do corpo JSON).
 - Captura: `/api/v1/captures` (criar, `PUT {id}/file`, `PATCH {id}`, `POST {id}/confirm`, `DELETE {id}`, lista com `updated_since`). Contrato em `api/docs/ARCHITECTURE.md`.
-- Usuário: vem da API em `data.user` (`name`, `email`, `picture` = foto do Google). `AuthStore.user` guarda o do login e, ao abrir o app, busca `GET auth/session` depois do refresh. Fica salvo no `flutter_secure_storage` (chave `user`) pra aparecer offline; sair apaga. Home (saudação + avatar) e Perfil leem daqui; não há mais `/user` no json-server.
+- Usuário: vem da API em `data.user` (`name`, `email`, `picture` = foto do Google). `AuthStore.user` guarda o do login e, ao abrir o app, busca `GET auth/session` depois do refresh. Fica salvo no `flutter_secure_storage` (chave `user`) pra aparecer offline; sair apaga. Home (saudação + avatar) e Perfil leem daqui.
 
 ## Layout de tela
 
@@ -124,10 +120,10 @@ Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `ap
 
 - Pasta `test/` espelha `lib/`: `lib/x/y.dart` → `test/x/y_test.dart`.
 - Só `flutter_test` (vem no SDK). Sem pacote de mock: fake manual.
-- API fake: `test/helpers/fake_api_client.dart`. Usa `server/db.json` em memória (GET, `_embed`, POST, DELETE). `failing = true` simula erro. Services, stores e telas testam sobre ela.
+- Escopo de teste: `testScope(child: ...)` / `pumpPage(...)` em `test/helpers/pump_app.dart`. Padrão: Home e Vocabulário com `fixtures.dart` (dados de exemplo), capturas vazias (`fakeCaptures()`), player fake. Trocar: `home:`, `vocabulary:`, `captures:`, `playback:`, `auth:`.
+- Erro de carregamento: `test/helpers/failing_stores.dart` (`FailingHomeStore`, `FailingVocabularyStore`; `failing = false` recupera).
 - Montar widget via `test/helpers/pump_app.dart`: `pumpPage` (tela com tema + `AppScope` com stores carregados; `load: false` = carregando), `pumpComponent` (componente dentro de `Scaffold`). Tela de teste: 800x1600.
-- Contrato do `db.json`: `test/server/db_json_test.dart`.
-- Captura: `test/helpers/fake_capture_api.dart` (`FakeCaptureApi`: servidor de capturas em memória, `offline`, `rejections`, `process(id, texto)`, `calls`, `bodies`, `files`, página de 2). Banco: `AppDatabase(NativeDatabase.memory())`. Mídia: `MediaStorage(() async => pastaTemporaria)`.
+- Captura: `test/helpers/fake_capture_api.dart` (`FakeCaptureApi`: servidor de capturas em memória, `offline`, `rejections`, `process(id, texto)`, `calls`, `bodies`, `files`, página de 2). Banco: `AppDatabase(NativeDatabase.memory())`. Mídia: `MediaStorage(() async => pastaTemporaria)` em teste de store; em teste de tela, `FakeMediaStorage` (I/O real trava o `testWidgets`). `fakeCaptures()` em `test/helpers/fake_capture_store.dart` monta store + banco + API + mídia; `sampleCapture(id, ...)` cria captura; `FakeAudioPlayback` no lugar do player.
 - Conta: `test/helpers/fake_auth.dart`. `FakeAuthApi` (resposta por rota `MÉTODO caminho`, padrão = caminho feliz; `errors`, `pending`, `signedIn` montam resposta; `error` simula sem rede; `last(rota)` = request enviado), `FakeTokenStorage`, `FakeSocialSignIn` (token ou `null` = cancelado), `fakeAuthStore()`. `pumpPage(auth: ...)`. Campo por rótulo: `textField('E-mail')`. iOS: `variant: TargetPlatformVariant.only(TargetPlatform.iOS)`.
 - Unit test: model, service, lógica pura.
 - Widget test: componente e tela com comportamento (toque, estado, navegação).
@@ -138,9 +134,9 @@ Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `ap
 
 Antes de adicionar pacote: checar pub.dev (likes, último publish), issues abertas (build/toolchain). Contar ao usuário antes de instalar. Plugin nativo ou pacote pouco mantido: perguntar.
 
-Hoje: `google_sign_in` ^7.2, `sign_in_with_apple` ^8.2 (exige Flutter ≥3.44), `flutter_secure_storage` ^11.2, `drift` ^2.35.1, `drift_flutter` ^0.3.1, `path_provider` ^2.1.6. Dev: `drift_dev` ^2.35.1, `build_runner`. iOS via Swift Package Manager (sem Podfile).
+Hoje: `google_sign_in` ^7.2, `sign_in_with_apple` ^8.2 (exige Flutter ≥3.44), `flutter_secure_storage` ^11.2, `drift` ^2.35.1, `drift_flutter` ^0.3.1, `path_provider` ^2.1.6, `audioplayers` ^6.8.1. Dev: `drift_dev` ^2.35.1, `build_runner`. iOS via Swift Package Manager (sem Podfile).
 
-- Versão nova só com 2+ semanas de publicada (lockfile fixa). SQLite nativo vem do `sqlite3` (hooks de build, sem `sqlite3_flutter_libs`): `flutter test` usa o mesmo banco em memória.
+- Versão nova só com 2+ semanas de publicada (lockfile fixa). Vale pra transitiva também: `synchronized` ficou na 3.4.2 (3.5.0 tinha 10 dias). SQLite nativo vem do `sqlite3` (hooks de build, sem `sqlite3_flutter_libs`): `flutter test` usa o mesmo banco em memória.
 - Mudou tabela do drift: `dart run build_runner build` → `dart format lib` → commitar `database.g.dart` junto (a esteira não gera código). Mudou coluna: subir `schemaVersion` + migração.
 
 ## Git e CI

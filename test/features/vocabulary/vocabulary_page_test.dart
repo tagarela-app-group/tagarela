@@ -6,7 +6,9 @@ import 'package:tagarela/features/vocabulary/group_page.dart';
 import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
 import 'package:tagarela/features/vocabulary/widgets/group_card.dart';
 
-import '../../helpers/fake_api_client.dart';
+import 'package:tagarela/data/stores/vocabulary_store.dart';
+
+import '../../helpers/failing_stores.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
@@ -47,12 +49,27 @@ void main() {
     expect(find.byType(GroupCard), findsNothing);
   });
 
+  testWidgets('sem termos: estado vazio, sem contagem', (tester) async {
+    await tester.pumpPage(
+      const VocabularyPage(),
+      vocabulary: VocabularyStore(),
+    );
+
+    expect(find.text('Nenhum termo ainda'), findsOneWidget);
+    expect(
+      find.text('Capture e confirme a análise pra começar.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('termos em'), findsNothing);
+    expect(find.byType(GroupCard), findsNothing);
+  });
+
   testWidgets('erro: "Tentar de novo" recarrega', (tester) async {
-    final api = FakeApiClient()..failing = true;
-    await tester.pumpPage(const VocabularyPage(), api: api);
+    final vocabulary = FailingVocabularyStore();
+    await tester.pumpPage(const VocabularyPage(), vocabulary: vocabulary);
     expect(find.byType(StateMessage), findsOneWidget);
 
-    api.failing = false;
+    vocabulary.failing = false;
     await tester.tap(find.text('Tentar de novo'));
     await tester.pump();
 

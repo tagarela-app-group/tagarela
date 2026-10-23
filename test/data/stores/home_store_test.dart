@@ -1,28 +1,25 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/services/home_service.dart';
 import 'package:tagarela/data/stores/home_store.dart';
 
-import '../../helpers/fake_api_client.dart';
+import '../../helpers/fixtures.dart';
 
 void main() {
-  test('junta stats e palavra do dia', () async {
-    final api = FakeApiClient();
-    final store = HomeStore(HomeService(api));
+  test('sem fonte: vazia até a API ter o recurso', () async {
+    final store = HomeStore();
 
     await store.load();
 
-    expect(api.calls, ['GET /stats', 'GET /wordOfDay']);
-    expect(store.data!.stats.weekGain, api.db['stats']['weekGain']);
-    expect(store.data!.wordOfDay.text, api.db['wordOfDay']['text']);
+    expect(store.data!.wordOfDay, isNull);
+    expect(store.data!.stats.weekGain, 0);
+    expect(store.data!.stats.reviewCount, 0);
   });
 
-  test('falha em qualquer chamada vira erro', () async {
-    final store = HomeStore(HomeService(FakeApiClient()..failing = true));
+  test('com dados devolve o que recebeu', () async {
+    final store = HomeStore(sampleHome);
 
     await store.load();
 
-    expect(store.data, isNull);
-    expect(store.error, isNotNull);
+    expect(store.data, same(sampleHome));
   });
 }

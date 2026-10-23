@@ -1,12 +1,11 @@
 import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/data/store.dart';
 
 class VocabularyStore extends Store<List<TermGroup>> {
-  VocabularyStore(this._service);
+  VocabularyStore([this._groups = const []]);
 
-  final VocabularyService _service;
+  final List<TermGroup> _groups;
 
   @override
-  Future<List<TermGroup>> fetch() => _service.fetchGroups();
+  Future<List<TermGroup>> fetch() async => _groups;
 }

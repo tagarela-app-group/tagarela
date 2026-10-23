@@ -15,9 +15,12 @@ class AuthStore extends ChangeNotifier {
   String? _refreshToken;
   String? _accessToken;
   Future<void>? _renewing;
+  bool _sessionExpired = false;
   User? _user;
 
   bool get isSignedIn => _refreshToken != null;
+
+  bool get sessionExpired => _sessionExpired;
 
   User? get user => _user;
 
@@ -111,6 +114,7 @@ class AuthStore extends ChangeNotifier {
     try {
       await _save(await _service.refresh(_refreshToken!));
     } on AuthException {
+      _sessionExpired = true;
       await _forget();
     }
   }
@@ -118,6 +122,7 @@ class AuthStore extends ChangeNotifier {
   Future<void> _save(AuthTokens tokens) async {
     _refreshToken = tokens.refresh;
     _accessToken = tokens.access;
+    _sessionExpired = false;
     await _storage.write(tokens.refresh);
     notifyListeners();
   }

@@ -35,4 +35,28 @@ void main() {
     expect(find.text('Item 39'), findsOneWidget);
     expect(find.text('Header'), findsOneWidget);
   });
+
+  testWidgets('onRefresh: puxar a lista chama a função', (tester) async {
+    var refreshed = 0;
+    await tester.pumpComponent(
+      SheetPage(
+        header: const Text('Header'),
+        onRefresh: () async => refreshed++,
+        children: const [Text('Item')],
+      ),
+    );
+
+    await tester.fling(find.text('Item'), const Offset(0, 400), 1000);
+    await tester.pumpAndSettle();
+
+    expect(refreshed, 1);
+  });
+
+  testWidgets('sem onRefresh: sem RefreshIndicator', (tester) async {
+    await tester.pumpComponent(
+      const SheetPage(header: Text('Header'), children: [Text('Item')]),
+    );
+
+    expect(find.byType(RefreshIndicator), findsNothing);
+  });
 }

@@ -6,6 +6,5 @@ Comece por [CLAUDE.md](CLAUDE.md).
 
 ```sh
 flutter pub get
-npx json-server server/db.json   # API mock na porta 3000
-flutter run                      # ou --dart-define=API_URL=https://...
+flutter run   # API do repo api/ no ar (docker compose up); ou --dart-define=API_URL=https://...
 ```
