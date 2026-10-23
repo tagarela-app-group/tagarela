@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/auth/auth_form.dart';
 
 class SocialButtons extends StatelessWidget {
   const SocialButtons({
     super.key,
     required this.onGoogle,
     required this.onApple,
+    this.loading,
   });
 
   final VoidCallback? onGoogle;
   final VoidCallback? onApple;
+  final AuthAction? loading;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +40,7 @@ class SocialButtons extends StatelessWidget {
           variant: AppButtonVariant.outline,
           size: AppButtonSize.large,
           expand: true,
+          loading: loading == AuthAction.google,
         ),
         if (isIos)
           AppButton(
@@ -46,6 +50,7 @@ class SocialButtons extends StatelessWidget {
             variant: AppButtonVariant.contrast,
             size: AppButtonSize.large,
             expand: true,
+            loading: loading == AuthAction.apple,
           ),
       ],
     );

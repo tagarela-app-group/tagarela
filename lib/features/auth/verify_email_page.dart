@@ -43,13 +43,16 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> with AuthForm {
           email: widget.email,
           controller: _code,
           errorText: errors['key'],
-          busy: busy,
+          loading: loading,
           onConfirm: () => submit(
             () => auth.verifyEmail(_code.text, widget.sessionToken),
             onResult,
           ),
-          onResend: () =>
-              submit(() => auth.resendEmailCode(widget.sessionToken), (_) {}),
+          onResend: () => submit(
+            () => auth.resendEmailCode(widget.sessionToken),
+            (_) {},
+            button: AuthAction.resend,
+          ),
           onChangeEmail: () => Navigator.of(context).pop(),
         ),
       ],

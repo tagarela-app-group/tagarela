@@ -77,14 +77,17 @@ class _SignupPageState extends State<SignupPage> with AuthForm {
           onPressed: busy ? null : _signup,
           size: AppButtonSize.large,
           expand: true,
+          loading: loading == AuthAction.submit,
         ),
         SocialButtons(
+          loading: loading,
           onGoogle: busy
               ? null
               : () => submit(
                   auth.signInWithGoogle,
                   onResult,
                   failure: 'Não deu pra entrar com o Google. Tente de novo.',
+                  button: AuthAction.google,
                 ),
           onApple: busy
               ? null
@@ -92,6 +95,7 @@ class _SignupPageState extends State<SignupPage> with AuthForm {
                   auth.signInWithApple,
                   onResult,
                   failure: 'Não deu pra entrar com a Apple. Tente de novo.',
+                  button: AuthAction.apple,
                 ),
         ),
         Row(

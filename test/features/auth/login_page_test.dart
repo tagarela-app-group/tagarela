@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -35,6 +36,9 @@ void main() {
     await tester.tap(find.widgetWithText(AppButton, 'Entrar'));
     await tester.pumpAndSettle();
   }
+
+  AppButton button(WidgetTester tester, String label) =>
+      tester.widget<AppButton>(find.widgetWithText(AppButton, label));
 
   void expectInApp(WidgetTester tester) {
     expect(find.byType(HomeShell), findsOneWidget);
@@ -149,6 +153,42 @@ void main() {
       find.text('Não deu pra entrar com o Google. Tente de novo.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('"Entrar" mostra loading e trava o Google até responder', (
+    tester,
+  ) async {
+    api.hold = Completer();
+    await pumpLogin(tester);
+
+    await tester.enterText(textField('E-mail'), 'ana@example.com');
+    await tester.enterText(textField('Senha'), 's3nha-forte');
+    await tester.tap(find.widgetWithText(AppButton, 'Entrar'));
+    await tester.pump();
+
+    expect(button(tester, 'Entrar').loading, isTrue);
+    expect(button(tester, 'Continuar com Google').loading, isFalse);
+    expect(button(tester, 'Continuar com Google').onPressed, isNull);
+
+    api.hold!.complete();
+    await tester.pumpAndSettle();
+    expectInApp(tester);
+  });
+
+  testWidgets('Google mostra loading só no botão dele', (tester) async {
+    api.hold = Completer();
+    await pumpLogin(tester);
+
+    await tester.tap(find.text('Continuar com Google'));
+    await tester.pump();
+
+    expect(button(tester, 'Continuar com Google').loading, isTrue);
+    expect(button(tester, 'Entrar').loading, isFalse);
+    expect(button(tester, 'Entrar').onPressed, isNull);
+
+    api.hold!.complete();
+    await tester.pumpAndSettle();
+    expectInApp(tester);
   });
 
   testWidgets('Google sem configuração na API avisa', (tester) async {

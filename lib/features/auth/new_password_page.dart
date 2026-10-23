@@ -63,6 +63,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> with AuthForm {
                   ),
                   onResult,
                 ),
+          loading: busy,
           size: AppButtonSize.large,
           expand: true,
         ),

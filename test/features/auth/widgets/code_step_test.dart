@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/auth/auth_form.dart';
 import 'package:tagarela/features/auth/widgets/code_step.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -15,12 +16,12 @@ void main() {
     controller = TextEditingController();
   });
 
-  Future<void> pumpStep(WidgetTester tester, {bool busy = false}) =>
+  Future<void> pumpStep(WidgetTester tester, {AuthAction? loading}) =>
       tester.pumpComponent(
         CodeStep(
           email: 'ana@example.com',
           controller: controller,
-          busy: busy,
+          loading: loading,
           onConfirm: () => calls.add('confirm'),
           onResend: () async => calls.add('resend'),
           onChangeEmail: () => calls.add('change'),
@@ -45,14 +46,25 @@ void main() {
     expect(button(tester, 'Confirmar').onPressed, isNotNull);
   });
 
-  testWidgets('ocupado não confirma', (tester) async {
-    await pumpStep(tester, busy: true);
+  testWidgets('confirmando: loading no "Confirmar" e não confirma de novo', (
+    tester,
+  ) async {
+    await pumpStep(tester, loading: AuthAction.submit);
 
     await tester.enterText(find.byType(TextField), '482913');
     await tester.pump();
 
     expect(calls, isEmpty);
     expect(button(tester, 'Confirmar').onPressed, isNull);
+    expect(button(tester, 'Confirmar').loading, isTrue);
+  });
+
+  testWidgets('reenviando: loading só no "Reenviar código"', (tester) async {
+    await pumpStep(tester, loading: AuthAction.resend);
+    await tester.pump(CodeStep.resendAfter);
+
+    expect(button(tester, 'Reenviar código').loading, isTrue);
+    expect(button(tester, 'Confirmar').loading, isFalse);
   });
 
   testWidgets('contagem regressiva libera o reenvio e reinicia', (

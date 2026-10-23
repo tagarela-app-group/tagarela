@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/social_sign_in.dart';
@@ -33,6 +35,7 @@ class FakeAuthApi implements ApiClient {
   };
 
   Exception? error;
+  Completer<void>? hold;
 
   List<String> get routes => [for (final r in requests) r.route];
 
@@ -95,6 +98,7 @@ class FakeAuthApi implements ApiClient {
   }) async {
     final route = '$method ${path.replaceFirst(prefix, '')}';
     requests.add((route: route, body: body, headers: headers));
+    if (hold case final hold?) await hold.future;
     if (error case final error?) throw error;
     return responses[route] ?? (throw StateError('sem resposta pra $route'));
   }

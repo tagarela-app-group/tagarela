@@ -45,7 +45,7 @@ class _ResetCodePageState extends State<ResetCodePage> with AuthForm {
   Future<void> _resend() =>
       submit(() => auth.requestPasswordReset(widget.email), (result) {
         if (result is AuthPending) _sessionToken = result.sessionToken;
-      });
+      }, button: AuthAction.resend);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _ResetCodePageState extends State<ResetCodePage> with AuthForm {
           email: widget.email,
           controller: _code,
           errorText: errors['key'],
-          busy: busy,
+          loading: loading,
           onConfirm: _confirm,
           onResend: _resend,
           onChangeEmail: () => Navigator.of(context).pop(),

@@ -37,6 +37,36 @@ void main() {
     expect(find.byIcon(AppIcons.add), findsOneWidget);
   });
 
+  testWidgets('loading troca o leading por spinner e ignora toque', (
+    tester,
+  ) async {
+    var taps = 0;
+    await tester.pumpComponent(
+      AppButton(
+        label: 'Google',
+        onPressed: () => taps++,
+        leading: const Icon(AppIcons.add),
+        loading: true,
+      ),
+    );
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byIcon(AppIcons.add), findsNothing);
+    expect(find.text('Google'), findsOneWidget);
+
+    await tester.tap(find.text('Google'), warnIfMissed: false);
+    expect(taps, 0);
+  });
+
+  testWidgets('loading sem onPressed mantém a cor da variante', (tester) async {
+    await tester.pumpComponent(
+      const AppButton(label: 'Entrar', onPressed: null, loading: true),
+    );
+
+    final button = tester.widget<TextButton>(find.byType(TextButton));
+    expect(button.enabled, isTrue);
+  });
+
   testWidgets('todas as variantes e tamanhos montam', (tester) async {
     for (final variant in AppButtonVariant.values) {
       for (final size in AppButtonSize.values) {

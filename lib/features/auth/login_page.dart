@@ -88,14 +88,17 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
           onPressed: busy ? null : _login,
           size: AppButtonSize.large,
           expand: true,
+          loading: loading == AuthAction.submit,
         ),
         SocialButtons(
+          loading: loading,
           onGoogle: busy
               ? null
               : () => submit(
                   auth.signInWithGoogle,
                   onResult,
                   failure: 'Não deu pra entrar com o Google. Tente de novo.',
+                  button: AuthAction.google,
                 ),
           onApple: busy
               ? null
@@ -103,6 +106,7 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
                   auth.signInWithApple,
                   onResult,
                   failure: 'Não deu pra entrar com a Apple. Tente de novo.',
+                  button: AuthAction.apple,
                 ),
         ),
         Row(
