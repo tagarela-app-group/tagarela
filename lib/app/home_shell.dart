@@ -10,6 +10,14 @@ import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
 
+  static void open(BuildContext context) {
+    AppScope.of(context).loadAll();
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const HomeShell()),
+      (_) => false,
+    );
+  }
+
   @override
   State<HomeShell> createState() => _HomeShellState();
 }

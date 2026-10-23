@@ -5,7 +5,7 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-enum AppButtonVariant { primary, tonal, outline, ink, text }
+enum AppButtonVariant { primary, tonal, outline, ink, contrast, text }
 
 enum AppButtonSize {
   large(56),
@@ -45,6 +45,7 @@ class AppButton extends StatelessWidget {
       AppButtonVariant.tonal => (c.primarySoft, c.primaryText),
       AppButtonVariant.outline => (Colors.transparent, c.ink),
       AppButtonVariant.ink => (AppPalette.ink, AppPalette.white),
+      AppButtonVariant.contrast => (c.contrast, c.onContrast),
       AppButtonVariant.text => (Colors.transparent, c.primaryText),
     };
 

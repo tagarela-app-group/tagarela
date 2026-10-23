@@ -28,17 +28,22 @@ class ProfilePage extends StatelessWidget {
               AsyncStatus(error: userStore.error, onRetry: userStore.load),
             AppButton(
               label: 'Sair',
-              onPressed: () =>
-                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const LoginPage()),
-                    (_) => false,
-                  ),
+              onPressed: () => _logout(context),
               variant: AppButtonVariant.outline,
               expand: true,
             ),
           ],
         );
       },
+    );
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    final navigator = Navigator.of(context, rootNavigator: true);
+    await AppScope.of(context).auth.logout();
+    navigator.pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const LoginPage()),
+      (_) => false,
     );
   }
 }

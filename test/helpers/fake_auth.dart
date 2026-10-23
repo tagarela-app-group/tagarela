@@ -1,0 +1,149 @@
+import 'package:tagarela/data/api_client.dart';
+import 'package:tagarela/data/services/auth_service.dart';
+import 'package:tagarela/data/social_sign_in.dart';
+import 'package:tagarela/data/stores/auth_store.dart';
+import 'package:tagarela/data/token_storage.dart';
+
+typedef FakeRequest = ({
+  String route,
+  Object? body,
+  Map<String, String> headers,
+});
+
+class FakeAuthApi implements ApiClient {
+  static const prefix = '/api/auth/app/v1';
+
+  final requests = <FakeRequest>[];
+
+  final responses = <String, ApiResponse>{
+    'POST /auth/login': signedIn(),
+    'POST /auth/signup': pending('verify_email'),
+    'POST /auth/email/verify': signedIn(),
+    'POST /auth/email/verify/resend': const ApiResponse(200, {'status': 200}),
+    'POST /auth/password/request': pending('password_reset_by_code'),
+    'GET /auth/password/reset': const ApiResponse(200, {'status': 200}),
+    'POST /auth/password/reset': signedIn(),
+    'POST /auth/provider/token': signedIn(),
+    'POST /tokens/refresh': const ApiResponse(200, {
+      'status': 200,
+      'data': {'access_token': 'access-2', 'refresh_token': 'refresh-2'},
+    }),
+    'DELETE /auth/session': const ApiResponse(401, {'status': 401}),
+  };
+
+  Exception? error;
+
+  List<String> get routes => [for (final r in requests) r.route];
+
+  FakeRequest last(String route) => requests.lastWhere((r) => r.route == route);
+
+  static ApiResponse signedIn([String refresh = 'refresh-1']) =>
+      ApiResponse(200, {
+        'status': 200,
+        'data': {
+          'user': {'id': 1, 'email': 'ana@example.com', 'display': 'Ana'},
+        },
+        'meta': {
+          'is_authenticated': true,
+          'access_token': 'access-1',
+          'refresh_token': refresh,
+        },
+      });
+
+  static ApiResponse pending(String flow, [String session = 'session-1']) =>
+      ApiResponse(401, {
+        'status': 401,
+        'data': {
+          'flows': [
+            {'id': 'login'},
+            {'id': flow, 'is_pending': true},
+          ],
+        },
+        'meta': {'is_authenticated': false, 'session_token': session},
+      });
+
+  static ApiResponse errors(Map<String?, String> messages) => ApiResponse(400, {
+    'status': 400,
+    'errors': [
+      for (final MapEntry(:key, :value) in messages.entries)
+        {'message': value, 'code': 'invalid', 'param': ?key},
+    ],
+  });
+
+  @override
+  String get baseUrl => 'fake-auth://';
+
+  @override
+  Future<ApiResponse> send(
+    String method,
+    String path, {
+    Object? body,
+    Map<String, String> headers = const {},
+  }) async {
+    final route = '$method ${path.replaceFirst(prefix, '')}';
+    requests.add((route: route, body: body, headers: headers));
+    if (error case final error?) throw error;
+    return responses[route] ?? (throw StateError('sem resposta pra $route'));
+  }
+
+  @override
+  Future<Object?> get(String path) => throw UnimplementedError();
+
+  @override
+  Future<Object?> post(String path, Map<String, Object?> body) =>
+      throw UnimplementedError();
+
+  @override
+  Future<void> delete(String path) => throw UnimplementedError();
+}
+
+class FakeTokenStorage implements TokenStorage {
+  FakeTokenStorage([this.token]);
+
+  String? token;
+
+  @override
+  Future<String?> read() async => token;
+
+  @override
+  Future<void> write(String token) async => this.token = token;
+
+  @override
+  Future<void> clear() async => token = null;
+}
+
+class FakeSocialSignIn implements SocialSignIn {
+  SocialToken? googleToken = const SocialToken(
+    provider: 'google',
+    clientId: 'web-client-id',
+    idToken: 'google-id-token',
+  );
+  SocialToken? appleToken = const SocialToken(
+    provider: 'apple',
+    clientId: 'com.tagarela.tagarela',
+    idToken: 'apple-id-token',
+  );
+  Exception? error;
+
+  @override
+  Future<SocialToken?> google() async {
+    if (error case final error?) throw error;
+    return googleToken;
+  }
+
+  @override
+  Future<SocialToken?> apple() async {
+    if (error case final error?) throw error;
+    return appleToken;
+  }
+}
+
+AuthStore fakeAuthStore({
+  FakeAuthApi? api,
+  FakeTokenStorage? storage,
+  FakeSocialSignIn? social,
+}) => AuthStore(
+  AuthService(api ?? FakeAuthApi()),
+  storage ?? FakeTokenStorage(),
+  social ?? FakeSocialSignIn(),
+);

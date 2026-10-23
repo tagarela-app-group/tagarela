@@ -24,7 +24,10 @@ Brasileiro, inglês básico/intermediário, celular na mão, pouco tempo.
 
 | Tela | Conteúdo |
 | --- | --- |
-| Login | E-mail + senha, Google, esqueci senha, criar conta. |
+| Login | E-mail + senha, Google, Apple (só iOS), esqueci senha, criar conta. |
+| Criar conta | Nome, e-mail, senha (mín. 8). Google/Apple. Depois: código no e-mail. |
+| Código | 6 dígitos do e-mail (confirmar cadastro ou trocar senha). Reenviar após 1 min. Trocar e-mail. |
+| Esqueci a senha | E-mail → código → nova senha → já entra. |
 | Início | Palavra do dia, resumo do vocabulário (total, aprendendo, dominado), revisão de hoje, sequência de dias. |
 | Vocabulário | Grade de grupos (% dominado). Busca e filtros: a definir. |
 | Grupo | Termos do grupo: tipo, tradução, status, nível. Filtro todos/aprendendo/dominado. |
@@ -41,4 +44,4 @@ Botão + central (todas as abas): menu em arco com Câmera, Áudio, Texto. Captu
 
 ## Estado atual
 
-Telas com dados mock (`lib/data/mock_data.dart`). Sem backend, sem auth real, sem captura real.
+Conta real: login, cadastro, código e nova senha falam com a API Django (`api/`). Sessão fica salva (sai só no "Sair" ou com sessão recusada). Resto das telas: dados mock (json-server, `server/db.json`). Perfil ainda mostra o usuário mock. Sem captura real.

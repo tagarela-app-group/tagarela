@@ -5,10 +5,15 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/store.dart';
 
 import '../helpers/fake_api_client.dart';
+import '../helpers/fake_auth.dart';
 
 void main() {
   test('loadAll carrega todos os stores', () async {
-    final scope = AppScope(api: FakeApiClient(), child: const SizedBox());
+    final scope = AppScope(
+      api: FakeApiClient(),
+      auth: fakeAuthStore(),
+      child: const SizedBox(),
+    );
 
     await scope.loadAll();
 
@@ -26,6 +31,7 @@ void main() {
     late AppScope found;
     final scope = AppScope(
       api: FakeApiClient(),
+      auth: fakeAuthStore(),
       child: Builder(
         builder: (context) {
           found = AppScope.of(context);

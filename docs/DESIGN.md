@@ -17,6 +17,7 @@ Ler via `context.colors` (`AppColors`, ThemeExtension). Cor fixa de marca: `AppP
 | Âmbar `learning` | Aprendendo |
 | Menta `mastered` | Dominado, sucesso |
 | Coral / `alert` | Badge, erro, áudio |
+| `contrast` / `onContrast` | Botão Apple: preto no claro, branco no escuro (regra da Apple) |
 | Tinta `ink` / `inkSoft` | Texto principal / secundário |
 
 - Superfícies: `bg` (body) → `surface` (card, tab bar, campo) → `surfaceAlt` (trilho, segmentado, sugestão). Borda: `line`.
@@ -59,7 +60,7 @@ Estilos sem cor: herdam `ink`. Mudar cor com `copyWith(color:)`.
 
 ## Ícones (`AppIcons`)
 
-Material outlined/rounded, centralizado em `app_icons.dart`. Trocar pacote = mexer só lá. 22 em tab bar/header, 16–20 em linhas.
+Material outlined/rounded, centralizado em `app_icons.dart`. Trocar pacote = mexer só lá. 22 em tab bar/header, 16–20 em linhas. Logo Apple: `AppIcons.apple`. Logo Google: imagem `assets/images/google.png` (colorido).
 
 Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, mesma API do `Icon`).
 
@@ -70,10 +71,11 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `SheetPage` | Toda tela: header + body arredondado rolável |
 | `PageHeader` | Título/subtítulo (+ leading/trailing) no header |
 | `SectionHeader` | Título de seção + ação texto |
-| `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading` |
+| `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), contrast (botão Apple), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading` |
 | `AppIconButton` | Botão redondo de ícone. Variantes onHeader, ink, primary, ghost. `tooltip` obrigatório |
 | `AppCard` | Superfície com sombra. `onTap` opcional. `color` próprio = sem sombra |
-| `AppTextField` | Rótulo acima, ícone, halo no foco, erro, `obscure` com olho |
+| `AppTextField` | Rótulo acima, ícone, halo no foco, `helperText` (some com erro), erro, `obscure` com olho |
+| `AppCodeField` | Código numérico em caixas (padrão 6, 56 de altura, raio md). Caixa da vez com halo, erro em `alert`. Campo real escondido (`oneTimeCode`, só dígito). `onCompleted` ao completar |
 | `AppChip` | Filtro. Selecionado = tinta cheia |
 | `StatusPill` | Status: learning, mastered, primary, neutral |
 | `AppTag` | Etiqueta caixa alta com contorno (PALAVRA, EXPRESSÃO) |
