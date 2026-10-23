@@ -29,3 +29,4 @@ Mockup (fonte visual): https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR. Canvas
 11. Task finalizada: branch própria + commit + push + PR pra `develop`, na hora, sem perguntar. Fluxo em `docs/ARCHITECTURE.md` (Git e CI). Commit e PR sem `Co-Authored-By` nem outra assinatura de IA.
 12. Merge: PR pra `develop` com esteira verde = eu faço. PR `develop` → `main` (prod) = só o usuário aprova. Nunca commitar direto na `develop` nem na `main`.
 13. Mudança no app que afete o visual: atualizar o mockup junto, sempre. Mockup = registro fiel do app.
+14. Sem comentário no código. Vale pra config também (workflow, pubspec, analysis_options). Nome claro explica o quê. Porquê vai no doc do assunto ou no PR.

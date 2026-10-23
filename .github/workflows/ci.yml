@@ -7,7 +7,6 @@ on:
     branches: [develop, main]
   workflow_dispatch:
 
-# Push novo no mesmo PR cancela a rodada anterior.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -16,7 +15,6 @@ permissions:
   contents: read
 
 env:
-  # Mesma versão do Flutter usada localmente.
   FLUTTER_VERSION: 3.44.8
 
 jobs:
@@ -64,8 +62,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Confere todo lockfile do repo (pubspec.lock, Podfile.lock...) contra
-      # a base OSV. Versão fixa: o Google avisa que muda até em patch.
       - name: OSV-Scanner
         uses: google/osv-scanner-action/osv-scanner-action@v2.7.0
         with:
@@ -96,7 +92,6 @@ jobs:
       - name: Dependências (lockfile travado)
         run: flutter pub get --enforce-lockfile
 
-      # Release assinado com a chave de debug (config padrão do projeto).
       - name: Build APK
         run: flutter build apk --release
 
@@ -109,7 +104,6 @@ jobs:
   ios:
     name: Build iOS
     needs: check
-    # macOS é lento: só no caminho pra produção (PR ou push na main).
     if: github.base_ref == 'main' || github.ref == 'refs/heads/main'
     runs-on: macos-latest
     timeout-minutes: 45
