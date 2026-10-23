@@ -36,6 +36,7 @@ class _HomeShellState extends State<HomeShell> {
     final inbox = AppScope.of(context).inbox;
 
     return Scaffold(
+      backgroundColor: context.colors.header,
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -46,7 +47,7 @@ class _HomeShellState extends State<HomeShell> {
                   data: media.copyWith(
                     padding: media.padding.copyWith(bottom: ArcMenu.overhang),
                   ),
-                  child: IndexedStack(
+                  child: _FadeIndexedStack(
                     index: _tab,
                     children: [
                       HomePage(onSeeVocabulary: () => _goTo(_vocabularyTab)),
@@ -101,6 +102,57 @@ class _HomeShellState extends State<HomeShell> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _FadeIndexedStack extends StatefulWidget {
+  const _FadeIndexedStack({required this.index, required this.children});
+
+  final int index;
+  final List<Widget> children;
+
+  @override
+  State<_FadeIndexedStack> createState() => _FadeIndexedStackState();
+}
+
+class _FadeIndexedStackState extends State<_FadeIndexedStack>
+    with SingleTickerProviderStateMixin {
+  late final _controller = AnimationController(
+    vsync: this,
+    duration: AppMotion.slow,
+    value: 1,
+  );
+  late final _curve = CurvedAnimation(
+    parent: _controller,
+    curve: AppMotion.standard,
+  );
+  late final _slide = Tween(
+    begin: const Offset(0, 0.02),
+    end: Offset.zero,
+  ).animate(_curve);
+
+  @override
+  void didUpdateWidget(_FadeIndexedStack oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.index != widget.index) _controller.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _curve.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _curve,
+      child: SlideTransition(
+        position: _slide,
+        child: IndexedStack(index: widget.index, children: widget.children),
       ),
     );
   }

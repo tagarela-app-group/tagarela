@@ -37,6 +37,30 @@ void main() {
     }
   });
 
+  testWidgets('troca de aba entra com fade', (tester) async {
+    await tester.pumpPage(const HomeShell());
+    double opacity() => tester
+        .widget<FadeTransition>(
+          find
+              .ancestor(
+                of: find.byType(IndexedStack),
+                matching: find.byType(FadeTransition),
+              )
+              .first,
+        )
+        .opacity
+        .value;
+    expect(opacity(), 1);
+
+    await tester.tap(_tab('Vocabulário'));
+    await tester.pump();
+    await tester.pump(AppMotion.slow ~/ 4);
+    expect(opacity(), inExclusiveRange(0, 1));
+
+    await tester.pumpAndSettle();
+    expect(opacity(), 1);
+  });
+
   testWidgets('badge do Inbox acompanha o store', (tester) async {
     final scope = await tester.pumpPage(const HomeShell());
     Finder badge(int n) =>
