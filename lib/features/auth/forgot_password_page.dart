@@ -61,6 +61,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with AuthForm {
         AppButton(
           label: 'Enviar código',
           onPressed: busy ? null : _send,
+          loading: busy,
           size: AppButtonSize.large,
           expand: true,
         ),

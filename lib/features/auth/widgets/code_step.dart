@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/auth/auth_form.dart';
 
 class CodeStep extends StatefulWidget {
   const CodeStep({
@@ -13,7 +14,7 @@ class CodeStep extends StatefulWidget {
     required this.onResend,
     required this.onChangeEmail,
     this.errorText,
-    this.busy = false,
+    this.loading,
   });
 
   static const length = 6;
@@ -25,7 +26,9 @@ class CodeStep extends StatefulWidget {
   final Future<void> Function() onResend;
   final VoidCallback onChangeEmail;
   final String? errorText;
-  final bool busy;
+  final AuthAction? loading;
+
+  bool get busy => loading != null;
 
   @override
   State<CodeStep> createState() => _CodeStepState();
@@ -104,6 +107,7 @@ class _CodeStepState extends State<CodeStep> {
           onPressed: complete && !widget.busy ? _confirm : null,
           size: AppButtonSize.large,
           expand: true,
+          loading: widget.loading == AuthAction.submit,
         ),
         Column(
           spacing: AppSpacing.s1,
@@ -120,6 +124,7 @@ class _CodeStepState extends State<CodeStep> {
                 onPressed: widget.busy ? null : _resend,
                 variant: AppButtonVariant.text,
                 size: AppButtonSize.small,
+                loading: widget.loading == AuthAction.resend,
               ),
             Text('Confira também a caixa de spam.', style: soft),
           ],

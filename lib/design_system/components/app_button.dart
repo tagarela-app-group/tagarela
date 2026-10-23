@@ -26,6 +26,7 @@ class AppButton extends StatelessWidget {
     this.variant = AppButtonVariant.primary,
     this.size = AppButtonSize.medium,
     this.expand = false,
+    this.loading = false,
   });
 
   final String label;
@@ -35,6 +36,9 @@ class AppButton extends StatelessWidget {
   final AppButtonSize size;
 
   final bool expand;
+  final bool loading;
+
+  static void _ignore() {}
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +53,9 @@ class AppButton extends StatelessWidget {
       AppButtonVariant.text => (Colors.transparent, c.primaryText),
     };
 
+    final enabled = onPressed != null || loading;
     final button = TextButton(
-      onPressed: onPressed,
+      onPressed: loading ? _ignore : onPressed,
       style: TextButton.styleFrom(
         backgroundColor: bg,
         foregroundColor: fg,
@@ -74,21 +79,34 @@ class AppButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         spacing: AppSpacing.s3,
-        children: [?leading, Text(label)],
+        children: [
+          ?(loading
+              ? SizedBox.square(
+                  dimension: 18,
+                  child: CircularProgressIndicator(
+                    color: fg,
+                    strokeWidth: 2.5,
+                    semanticsLabel: 'Carregando',
+                  ),
+                )
+              : leading),
+          Text(label),
+        ],
       ),
     );
 
     final hasShadow =
         variant == AppButtonVariant.primary &&
         size == AppButtonSize.large &&
-        onPressed != null;
-    if (!hasShadow) return button;
+        enabled;
+    final body = IgnorePointer(ignoring: loading, child: button);
+    if (!hasShadow) return body;
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.md),
         boxShadow: c.buttonShadow,
       ),
-      child: button,
+      child: body,
     );
   }
 }
