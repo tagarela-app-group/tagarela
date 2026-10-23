@@ -35,7 +35,11 @@ class ApiClient {
     final request = await _http.openUrl(method, Uri.parse('$baseUrl$path'));
     request.headers.contentType = ContentType.json;
     headers.forEach(request.headers.set);
-    if (body != null) request.add(utf8.encode(jsonEncode(body)));
+    if (body != null) {
+      final bytes = utf8.encode(jsonEncode(body));
+      request.contentLength = bytes.length;
+      request.add(bytes);
+    }
 
     final response = await request.close().timeout(_timeout);
     final text = await response.transform(utf8.decoder).join();
