@@ -142,9 +142,9 @@ Conta (`AuthService`, allauth headless; detalhe dos fluxos em `api/docs/ARCHITEC
 
 Antes de adicionar pacote: checar pub.dev (likes, último publish), issues abertas (build/toolchain). Contar ao usuário antes de instalar. Plugin nativo ou pacote pouco mantido: perguntar.
 
-Hoje: `google_sign_in` ^7.2, `sign_in_with_apple` ^8.2 (exige Flutter ≥3.44), `flutter_secure_storage` ^11.2, `drift` ^2.35.1, `drift_flutter` ^0.3.1, `path_provider` ^2.1.6, `audioplayers` ^6.8.1, `record` ^7.1.2, `image_picker` ^1.2.4, `permission_handler` ^13.0.2. Dev: `drift_dev` ^2.35.1, `build_runner`. iOS via Swift Package Manager (sem Podfile).
+Hoje: `google_sign_in` ^7.2, `sign_in_with_apple` ^8.2 (exige Flutter ≥3.44), `flutter_secure_storage` ^11.2, `drift` ^2.35.1, `drift_flutter` ^0.3.1, `path_provider` ^2.1.6, `audioplayers` ^6.8.1, `record` ^7.1.2, `image_picker` ^1.2.4, `permission_handler` ^12.0.3. Dev: `drift_dev` ^2.35.1, `build_runner`. iOS via Swift Package Manager (sem Podfile).
 
-- Versão nova só com 2+ semanas de publicada (lockfile fixa). Vale pra transitiva também: `synchronized` ficou na 3.4.2 (3.5.0 tinha 10 dias); `permission_handler_apple` na 9.6.2 (9.6.3 e 9.6.4 tinham 0 e 2 dias). SQLite nativo vem do `sqlite3` (hooks de build, sem `sqlite3_flutter_libs`): `flutter test` usa o mesmo banco em memória.
+- Versão nova só com 2+ semanas de publicada (lockfile fixa). Vale pra transitiva também: `synchronized` ficou na 3.4.2 (3.5.0 tinha 10 dias); `permission_handler_apple` na 9.6.2 (9.6.3 e 9.6.4 tinham 0 e 2 dias); `permission_handler` na 12 porque a 13 traz o `permission_handler_android` 14, que exige compileSdk 37 (Flutter e AGP 9.0.1 usam 36). SQLite nativo vem do `sqlite3` (hooks de build, sem `sqlite3_flutter_libs`): `flutter test` usa o mesmo banco em memória.
 - Mudou tabela do drift: `dart run build_runner build` → `dart format lib` → commitar `database.g.dart` junto (a esteira não gera código). Mudou coluna: subir `schemaVersion` + migração.
 
 ## Git e CI
