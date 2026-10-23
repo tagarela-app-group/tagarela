@@ -10,12 +10,15 @@ class SheetPage extends StatelessWidget {
     required this.header,
     required this.children,
     this.gap = AppSpacing.s5,
+    this.onRefresh,
   });
 
   final Widget header;
   final List<Widget> children;
 
   final double gap;
+
+  final RefreshCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +50,21 @@ class SheetPage extends StatelessWidget {
                 ),
                 child: ColoredBox(
                   color: c.bg,
-                  child: ListView.separated(
-                    padding: EdgeInsets.fromLTRB(
-                      AppSpacing.screen,
-                      AppSpacing.s6,
-                      AppSpacing.screen,
-                      AppSpacing.s6 + bottom,
+                  child: _refreshable(
+                    ListView.separated(
+                      physics: onRefresh == null
+                          ? null
+                          : const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.fromLTRB(
+                        AppSpacing.screen,
+                        AppSpacing.s6,
+                        AppSpacing.screen,
+                        AppSpacing.s6 + bottom,
+                      ),
+                      itemCount: children.length,
+                      separatorBuilder: (_, _) => SizedBox(height: gap),
+                      itemBuilder: (_, i) => children[i],
                     ),
-                    itemCount: children.length,
-                    separatorBuilder: (_, _) => SizedBox(height: gap),
-                    itemBuilder: (_, i) => children[i],
                   ),
                 ),
               ),
@@ -65,5 +73,12 @@ class SheetPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _refreshable(Widget list) {
+    final refresh = onRefresh;
+    return refresh == null
+        ? list
+        : RefreshIndicator(onRefresh: refresh, child: list);
   }
 }

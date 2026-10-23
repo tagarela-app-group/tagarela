@@ -7,6 +7,7 @@ environment:
   sdk: ^3.12.2
 
 dependencies:
+  audioplayers: ^6.8.1
   drift: ^2.35.1
   drift_flutter: ^0.3.1
   flutter:
@@ -15,7 +16,6 @@ dependencies:
   google_sign_in: ^7.2.0
   path_provider: ^2.1.6
   sign_in_with_apple: ^8.2.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

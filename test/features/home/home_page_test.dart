@@ -8,7 +8,10 @@ import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
 
-import '../../helpers/fake_api_client.dart';
+import 'package:tagarela/data/stores/home_store.dart';
+import 'package:tagarela/data/stores/vocabulary_store.dart';
+
+import '../../helpers/failing_stores.dart';
 import '../../helpers/fake_auth.dart';
 import '../../helpers/pump_app.dart';
 
@@ -51,7 +54,7 @@ void main() {
   testWidgets('header aparece mesmo quando os dados falham', (tester) async {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}),
-      api: FakeApiClient()..failing = true,
+      home: FailingHomeStore(),
       auth: await signedInAuthStore(),
     );
 
@@ -93,13 +96,31 @@ void main() {
     expect(taps, 1);
   });
 
+  testWidgets('sem dados: só o resumo zerado', (tester) async {
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}),
+      home: HomeStore(),
+      vocabulary: VocabularyStore(),
+    );
+
+    expect(find.byType(WordOfDayCard), findsNothing);
+    expect(find.byType(ReviewCard), findsNothing);
+    final summary = tester.widget<VocabularySummary>(
+      find.byType(VocabularySummary),
+    );
+    expect((summary.learning, summary.mastered, summary.weekGain), (0, 0, 0));
+  });
+
   testWidgets('espera todos os stores; erro tenta de novo', (tester) async {
-    final api = FakeApiClient()..failing = true;
-    await tester.pumpPage(HomePage(onSeeVocabulary: () {}), api: api);
+    final vocabulary = FailingVocabularyStore();
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}),
+      vocabulary: vocabulary,
+    );
     expect(find.byType(WordOfDayCard), findsNothing);
     expect(find.text('Não deu pra carregar'), findsOneWidget);
 
-    api.failing = false;
+    vocabulary.failing = false;
     await tester.tap(find.text('Tentar de novo'));
     await tester.pump();
 

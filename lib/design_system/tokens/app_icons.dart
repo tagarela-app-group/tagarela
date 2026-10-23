@@ -12,6 +12,8 @@ abstract final class AppIcons {
   static const search = Icons.search_rounded;
   static const listen = Icons.volume_up_outlined;
   static const play = Icons.play_arrow_rounded;
+  static const stop = Icons.stop_rounded;
+  static const info = Icons.info_outline_rounded;
   static const newGroup = Icons.create_new_folder_outlined;
   static const review = Icons.autorenew_rounded;
   static const showPassword = Icons.visibility_outlined;

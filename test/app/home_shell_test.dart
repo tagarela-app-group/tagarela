@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/home_shell.dart';
+import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/inbox/inbox_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
 
+import '../helpers/fake_auth.dart';
+import '../helpers/fake_capture_store.dart';
 import '../helpers/pump_app.dart';
 
 int _currentTab(WidgetTester tester) => const [
@@ -70,19 +74,55 @@ void main() {
     expect(find.byType(HomePage), findsNothing);
   });
 
-  testWidgets('badge do Inbox acompanha o store', (tester) async {
-    final scope = await tester.pumpPage(const HomeShell());
+  testWidgets('badge do Inbox conta prontas e com erro', (tester) async {
+    final captures = fakeCaptures();
+    for (final (id, status) in [
+      ('a', CaptureStatus.ready),
+      ('b', CaptureStatus.failed),
+      ('c', CaptureStatus.processing),
+    ]) {
+      await captures.db.saveCapture(
+        'ana@example.com',
+        sampleCapture(id, status: status),
+      );
+    }
+    await tester.pumpPage(const HomeShell(), captures: captures.store);
     Finder badge(int n) =>
         find.descendant(of: find.byType(AppTabBar), matching: find.text('$n'));
-    final count = scope.inbox.data!.length;
-    expect(badge(count), findsOneWidget);
+    expect(badge(2), findsOneWidget);
 
     await tester.tap(_tab('Inbox'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Descartar').first);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(badge(count - 1), findsOneWidget);
+    expect(badge(1), findsOneWidget);
+  });
+
+  testWidgets('sessão expirada volta pro login com aviso', (tester) async {
+    final api = FakeAuthApi();
+    final auth = await signedInAuthStore(api: api);
+    await tester.pumpPage(const HomeShell(), auth: auth);
+    api.responses['POST /tokens/refresh'] = FakeAuthApi.errors({
+      'refresh_token': 'Inválido.',
+    });
+
+    await auth.accessToken(renew: true);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginPage), findsOneWidget);
+    expect(find.text('Sua sessão expirou. Entre de novo.'), findsOneWidget);
+  });
+
+  testWidgets('sair pelo Perfil não mostra aviso de sessão', (tester) async {
+    final auth = await signedInAuthStore();
+    await tester.pumpPage(const HomeShell(), auth: auth);
+
+    await auth.logout();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HomeShell), findsOneWidget);
+    expect(find.text('Sua sessão expirou. Entre de novo.'), findsNothing);
   });
 
   testWidgets('"Ver tudo" da Início abre Vocabulário', (tester) async {

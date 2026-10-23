@@ -1,17 +1,18 @@
 import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/services/home_service.dart';
 import 'package:tagarela/data/store.dart';
 
-typedef HomeData = ({Stats stats, WordOfDay wordOfDay});
+typedef HomeData = ({Stats stats, WordOfDay? wordOfDay});
 
 class HomeStore extends Store<HomeData> {
-  HomeStore(this._service);
+  HomeStore([this._data = empty]);
 
-  final HomeService _service;
+  static const HomeData empty = (
+    stats: Stats(weekGain: 0, reviewCount: 0),
+    wordOfDay: null,
+  );
+
+  final HomeData _data;
 
   @override
-  Future<HomeData> fetch() async => (
-    stats: await _service.fetchStats(),
-    wordOfDay: await _service.fetchWordOfDay(),
-  );
+  Future<HomeData> fetch() async => _data;
 }

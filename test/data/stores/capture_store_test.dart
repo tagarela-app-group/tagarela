@@ -99,6 +99,11 @@ void main() {
         'PUT ${FakeCaptureApi.path}/${capture.id}/file',
       ]);
       expect(api.files[capture.id]?.contentType, 'image/jpeg');
+      expect((await store.mediaFile(capture))?.readAsBytesSync(), [1, 2, 3]);
+      expect(
+        await store.mediaFile(only().copyWith(mediaPath: () => null)),
+        isNull,
+      );
       expect(only().status, CaptureStatus.processing);
       expect(only().pending, isEmpty);
     });

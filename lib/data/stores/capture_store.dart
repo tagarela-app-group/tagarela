@@ -26,6 +26,11 @@ class CaptureStore extends Store<List<Capture>> {
     ];
   }
 
+  Future<File?> mediaFile(Capture capture) async {
+    final path = capture.mediaPath;
+    return path == null ? null : _media.find(path);
+  }
+
   Future<Capture> createText(String text) => _create(
     Capture(
       id: _newId(),
@@ -108,7 +113,11 @@ class CaptureStore extends Store<List<Capture>> {
     final at = now ?? DateTime.now();
     for (final capture in await _db.capturesWithMedia()) {
       if (!capture.mediaExpired(at)) continue;
-      await _media.delete(capture.mediaPath!);
+      try {
+        await _media.delete(capture.mediaPath!);
+      } on FileSystemException {
+        continue;
+      }
       await _db.clearMedia(capture.id);
     }
   }

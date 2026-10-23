@@ -9,11 +9,6 @@ class ApiClient {
 
   static const defaultBaseUrl = String.fromEnvironment(
     'API_URL',
-    defaultValue: 'http://10.0.2.2:3000',
-  );
-
-  static const authBaseUrl = String.fromEnvironment(
-    'AUTH_URL',
     defaultValue: 'http://10.0.2.2:8000',
   );
 

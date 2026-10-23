@@ -3,79 +3,125 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/inbox/widgets/inbox_item_card.dart';
+import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 
-class InboxPage extends StatelessWidget {
+enum InboxTab {
+  all('Todas', CaptureSection.values),
+  ready('Prontas', [CaptureSection.ready]),
+  pending('Pendentes', [
+    CaptureSection.attention,
+    CaptureSection.processing,
+    CaptureSection.waiting,
+  ]),
+  done('Analisadas', [CaptureSection.done]);
+
+  const InboxTab(this.label, this.sections);
+
+  final String label;
+  final List<CaptureSection> sections;
+}
+
+class InboxPage extends StatefulWidget {
   const InboxPage({super.key});
 
-  Future<void> _resolve(
-    BuildContext context,
-    InboxItem item, {
-    required bool added,
-  }) async {
-    final inbox = AppScope.of(context).inbox;
+  @override
+  State<InboxPage> createState() => _InboxPageState();
+}
+
+class _InboxPageState extends State<InboxPage> {
+  InboxTab _tab = InboxTab.all;
+
+  Future<void> _run(Future<void> Function() action) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
-      added ? await inbox.accept(item) : await inbox.discard(item);
+      await action();
     } on Exception {
       messenger.showSnackBar(
-        const SnackBar(content: Text('Não deu pra salvar. Tente de novo.')),
-      );
-      return;
-    }
-    if (added) {
-      messenger.showSnackBar(
-        SnackBar(content: Text('Adicionado em ${item.suggestion!.groupName}')),
+        const SnackBar(
+          content: Text('Sem conexão. Tente de novo quando tiver internet.'),
+        ),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final inbox = AppScope.of(context).inbox;
+    final captures = AppScope.of(context).captures;
 
     return ListenableBuilder(
-      listenable: inbox,
+      listenable: captures,
       builder: (context, _) {
-        final items = inbox.data;
+        final items = captures.data;
         return SheetPage(
           header: PageHeader(
             title: 'Inbox',
-            subtitle: items == null
-                ? null
-                : '${items.length} termos aguardando análise',
+            subtitle: items == null ? null : summary(items),
           ),
           gap: AppSpacing.s3,
+          onRefresh: () => _run(captures.sync),
           children: items == null
-              ? [AsyncStatus(error: inbox.error, onRetry: inbox.load)]
-              : _list(context, items),
+              ? [AsyncStatus(error: captures.error, onRetry: captures.load)]
+              : _list(items),
         );
       },
     );
   }
 
-  List<Widget> _list(BuildContext context, List<InboxItem> items) {
-    final ready = items.where((i) => i.status == InboxStatus.ready).toList();
-    final pending = items.where((i) => i.status != InboxStatus.ready).toList();
-    return [
-      if (items.isEmpty)
-        const StateMessage(
+  List<Widget> _list(List<Capture> items) {
+    if (items.isEmpty) {
+      return const [
+        StateMessage(
           icon: AppIcons.inbox,
           title: 'Inbox zerado',
           message: 'Use o + para capturar um termo novo.',
         ),
-      if (ready.isNotEmpty)
-        _SectionLabel('Prontos para revisar · ${ready.length}'),
-      for (final item in ready)
-        InboxItemCard(
-          item: item,
-          onAdd: () => _resolve(context, item, added: true),
-          onDiscard: () => _resolve(context, item, added: false),
+      ];
+    }
+    final captures = AppScope.of(context).captures;
+    final now = DateTime.now();
+    final sections = [
+      for (final section in _tab.sections)
+        (
+          section,
+          [
+            for (final c in items)
+              if (c.section == section) c,
+          ],
         ),
-      if (pending.isNotEmpty) _SectionLabel('Em análise · ${pending.length}'),
-      for (final item in pending) InboxItemCard(item: item),
+    ].where((s) => s.$2.isNotEmpty);
+
+    return [
+      SegmentedControl(
+        options: [for (final tab in InboxTab.values) tab.label],
+        selected: _tab.index,
+        onChanged: (i) => setState(() => _tab = InboxTab.values[i]),
+      ),
+      if (sections.isEmpty)
+        const StateMessage(
+          icon: AppIcons.inbox,
+          title: 'Nada por aqui',
+          message: 'Nenhuma captura nessa aba.',
+        ),
+      for (final (section, group) in sections) ...[
+        _SectionLabel('${section.label} · ${group.length}'),
+        for (final capture in group)
+          CaptureCard(
+            key: ValueKey(capture.id),
+            capture: capture,
+            now: now,
+            onDiscard: () => captures.discard(capture),
+            onProcess: () => _run(() => captures.processNow(capture)),
+            onConfirm: () => captures.confirm(capture),
+          ),
+      ],
     ];
   }
+}
+
+String summary(List<Capture> items) {
+  final count = items.length == 1 ? '1 captura' : '${items.length} capturas';
+  final waiting = items.where((c) => c.pending.isNotEmpty).length;
+  return waiting == 0 ? count : '$count · $waiting esperando envio';
 }
 
 class _SectionLabel extends StatelessWidget {

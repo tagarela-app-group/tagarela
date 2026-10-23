@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/theme.dart';
+import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-enum StatusTone { learning, mastered, primary, neutral }
+enum StatusTone { learning, mastered, primary, neutral, alert }
 
 class StatusPill extends StatelessWidget {
   const StatusPill({super.key, required this.label, required this.tone});
@@ -20,6 +21,10 @@ class StatusPill extends StatelessWidget {
       StatusTone.mastered => (c.masteredSoft, c.masteredText),
       StatusTone.primary => (c.primarySoft, c.primaryText),
       StatusTone.neutral => (c.surfaceAlt, c.inkSoft),
+      StatusTone.alert => (
+        c.accent(AppAccent.coral).soft,
+        c.accent(AppAccent.coral).fg,
+      ),
     };
 
     return Container(

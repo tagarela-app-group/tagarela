@@ -11,6 +11,7 @@ class AppCard extends StatelessWidget {
     this.color,
     this.padding = const EdgeInsets.all(AppSpacing.s4),
     this.radius = AppRadius.lg,
+    this.muted = false,
   });
 
   final Widget child;
@@ -18,6 +19,8 @@ class AppCard extends StatelessWidget {
   final Color? color;
   final EdgeInsetsGeometry padding;
   final double radius;
+
+  final bool muted;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +31,14 @@ class AppCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        boxShadow: color == null ? c.cardShadow : null,
+        boxShadow: color == null && !muted ? c.cardShadow : null,
       ),
       child: Material(
-        color: color ?? c.surface,
-        borderRadius: borderRadius,
+        color: muted ? Colors.transparent : color ?? c.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: borderRadius,
+          side: muted ? BorderSide(color: c.line, width: 1.5) : BorderSide.none,
+        ),
         clipBehavior: Clip.antiAlias,
         child: onTap == null ? content : InkWell(onTap: onTap, child: content),
       ),

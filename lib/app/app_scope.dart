@@ -1,35 +1,36 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:tagarela/data/api_client.dart';
-import 'package:tagarela/data/services/home_service.dart';
-import 'package:tagarela/data/services/inbox_service.dart';
-import 'package:tagarela/data/services/vocabulary_service.dart';
+import 'package:tagarela/data/audio_playback.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
+import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
-import 'package:tagarela/data/stores/inbox_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 
 class AppScope extends InheritedWidget {
   AppScope({
     super.key,
-    required ApiClient api,
     required this.auth,
+    required this.captures,
+    required this.playback,
+    HomeStore? home,
+    VocabularyStore? vocabulary,
     required super.child,
-  }) : home = HomeStore(HomeService(api)),
-       vocabulary = VocabularyStore(VocabularyService(api)) {
-    inbox = InboxStore(InboxService(api), vocabulary: vocabulary);
-  }
+  }) : home = home ?? HomeStore(),
+       vocabulary = vocabulary ?? VocabularyStore();
 
   final AuthStore auth;
+  final CaptureStore captures;
+  final AudioPlayback playback;
   final HomeStore home;
   final VocabularyStore vocabulary;
-  late final InboxStore inbox;
 
   static AppScope of(BuildContext context) =>
       context.getInheritedWidgetOfExactType<AppScope>()!;
 
-  Future<void> loadAll() =>
-      Future.wait([home.load(), vocabulary.load(), inbox.load()]);
+  Future<void> loadAll() async {
+    await captures.cleanMedia();
+    await Future.wait([home.load(), vocabulary.load(), captures.load()]);
+  }
 
   @override
   bool updateShouldNotify(AppScope oldWidget) => false;

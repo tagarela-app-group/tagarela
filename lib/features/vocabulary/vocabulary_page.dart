@@ -20,7 +20,7 @@ class VocabularyPage extends StatelessWidget {
         return SheetPage(
           header: PageHeader(
             title: 'Vocabulário',
-            subtitle: groups == null
+            subtitle: groups == null || groups.isEmpty
                 ? null
                 : '${groups.termCount} termos em ${groups.length} grupos',
             trailing: AppIconButton(
@@ -31,12 +31,22 @@ class VocabularyPage extends StatelessWidget {
             ),
           ),
           gap: AppSpacing.s4,
-          children: groups == null
-              ? [AsyncStatus(error: vocabulary.error, onRetry: vocabulary.load)]
-              : [
-                  const SectionHeader(title: 'Seus grupos'),
-                  _GroupGrid(groups: groups),
-                ],
+          children: switch (groups) {
+            null => [
+              AsyncStatus(error: vocabulary.error, onRetry: vocabulary.load),
+            ],
+            [] => const [
+              StateMessage(
+                icon: AppIcons.vocabulary,
+                title: 'Nenhum termo ainda',
+                message: 'Capture e confirme a análise pra começar.',
+              ),
+            ],
+            _ => [
+              const SectionHeader(title: 'Seus grupos'),
+              _GroupGrid(groups: groups),
+            ],
+          },
         );
       },
     );
