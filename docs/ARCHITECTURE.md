@@ -4,7 +4,7 @@
 
 - Flutter 3.44 / Dart 3.12. Só Android e iOS.
 - HTTP via `dart:io`. Estado via `ChangeNotifier` + `setState`. Navegação com `Navigator`.
-- Dependências: só 3 plugins nativos, da conta. `google_sign_in` (login Google), `sign_in_with_apple` (login Apple), `flutter_secure_storage` (refresh token no Keychain/Keystore). Fora isso, zero pacote.
+- Dependências: conta (`google_sign_in`, `sign_in_with_apple`, `flutter_secure_storage`) e captura offline (`drift` + `drift_flutter`: SQLite local; `path_provider`: pasta do app). Fora isso, zero pacote. Ver Dependências.
 - Fontes embutidas em `assets/fonts/` (sem pacote, funciona offline).
 - Java 21 fixado no projeto via `mise.toml`. Gradle 9 exige JVM 17+.
 - `kotlin.incremental=false` em `android/gradle.properties`: no Windows, projeto e pub cache em drives diferentes quebram o cache incremental do Kotlin ("Could not close incremental caches" no plugin `google_sign_in_android`).
@@ -20,6 +20,8 @@ lib/
   data/                  models.dart, api_client.dart, store.dart
     social_sign_in.dart  único ponto que conhece google_sign_in e sign_in_with_apple
     token_storage.dart   único ponto que conhece flutter_secure_storage
+    database.dart        único ponto que conhece drift: tabelas captures e capture_cursors (+ database.g.dart gerado)
+    media_storage.dart   único ponto que conhece path_provider: foto/áudio na pasta do app
     services/            1 por recurso da API (sem estado)
     stores/              estado compartilhado (1 por recurso)
   features/<feature>/    <feature>_page.dart + widgets/ (só da feature)
@@ -30,6 +32,7 @@ assets/
 server/                  db.json: mock da API (json-server). Ver API
 test/                    espelha lib/. Ver Testes
 docs/                    PRODUCT, ARCHITECTURE, DESIGN
+build.yaml               opção do drift_dev (data como texto ISO, mantém fuso e microssegundo)
 ```
 
 ## Onde colocar
@@ -64,6 +67,18 @@ Fluxo: tela → store → service → `ApiClient` → API.
 - Tela: `ListenableBuilder` no store. Sem `data`: `AsyncStatus` (carregando, ou erro com "Tentar de novo"). Vários stores: `<Store>[...]` + `isReady` / `error` / `retry`.
 - Estado só da tela (aba, filtro, campo): `setState`.
 
+### Captura (offline first)
+
+- Fonte da verdade: banco local (`AppDatabase`). `CaptureStore` (`Store<List<Capture>>`) lê do banco; API é sincronização. Ainda sem tela (Inbox entra no próximo passo).
+- Dono: cada linha guarda o e-mail da conta (`AuthStore.user`). Outra conta no mesmo celular não vê nem envia. Sair não apaga nada.
+- Criar: id UUID v4 gerado no app (`Random.secure`). Texto nasce `ready`; foto/áudio nasce `waiting_file` com o arquivo copiado pra `captures/<photo|audio>/<id>.<ext>` na pasta de documentos do app.
+- Pendência (`Capture.pending`): `create`, `file`, `update`, `confirm`, `discard`. Ação grava local + marca pendência + tenta enviar na hora (sem rede: fica pendente, sem erro).
+- Sincronizar só por ação da pessoa (decisão do produto, por enquanto): criar, editar, confirmar, descartar, `processNow` ("Processar agora") e `sync()` (puxar a lista). Sem timer, sem segundo plano. `processing` → `ready` só aparece puxando a lista.
+- `sync()`: envia pendências em ordem (`create` → `file` → `update` → `confirm`; `discard` sozinho) e puxa mudanças (`GET captures?updated_since=<cursor>`, paginado por `cursor`). Cursor por dono em `capture_cursors` = maior `updated_at` vindo do pull (não do envio, pra não pular mudança de outro aparelho). Sem rede: lança, pendência fica. API recusa (4xx menos 401): larga só aquela etapa e segue.
+- Merge (`Capture.merge`): servidor manda, menos o que está pendente no celular (texto/termos em `update`, status em `confirm`, descarte em `discard`). Arquivo local sempre fica.
+- Descartar nunca enviada: só some do celular, sem chamar a API.
+- Mídia: apagada só 30 dias depois de analisada ou descartada (`Capture.mediaRetention`, `cleanMedia`). Pendente, pronta ou com erro: nunca. Texto fica sempre.
+
 ## API
 
 Duas URLs: dados no mock, conta na API Django.
@@ -86,7 +101,9 @@ Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `ap
 - Mensagem: a da API (pt-BR). 429 → "Muitas tentativas...". 409/410 → "Essa etapa expirou...". 5xx → `ApiException`.
 - Google: o client ID web vem da API (`GET config`, provider `google`), que lê o `GOOGLE_CLIENT_ID` do `.env` do backend. É o `serverClientId` do `google_sign_in` e o `aud` do id_token. Nada a passar no `flutter run`. Sem client ID na API, o botão avisa "Esse login não está disponível agora.". iOS: `--dart-define=GOOGLE_IOS_CLIENT_ID=<client ID iOS>` + URL scheme com o client ID iOS invertido no `Info.plist` (falta: precisa do ID). Android: client OAuth Android com o SHA-1 da chave no Google Cloud.
 - Apple: só iOS (botão some no Android). `APPLE_CLIENT_ID` = bundle ID `com.tagarela.tagarela` (padrão; mesmo `APPLE_CLIENT_ID` do backend). Entitlement `com.apple.developer.applesignin` em `ios/Runner/Runner.entitlements`; no Xcode, time com a capability Sign in with Apple.
-- Token: refresh no `flutter_secure_storage` (chave `refresh_token`). Access não é guardado: nenhuma rota de dados pede login ainda.
+- Token: refresh no `flutter_secure_storage` (chave `refresh_token`). Access só na memória (`AuthStore.accessToken`): vem do login; sem ele (app reaberto) ou com `renew`, faz refresh. Pedidos juntos dividem um refresh só (refresh troca o par). Refresh recusado = desloga.
+- `ApiClient(accessToken: auth.accessToken)`: manda `Authorization: Bearer` em toda chamada. 401 → renova uma vez e repete. `putFile`: multipart com `Content-Length` (mesmo motivo do corpo JSON).
+- Captura: `/api/v1/captures` (criar, `PUT {id}/file`, `PATCH {id}`, `POST {id}/confirm`, `DELETE {id}`, lista com `updated_since`). Contrato em `api/docs/ARCHITECTURE.md`.
 - Usuário: vem da API em `data.user` (`name`, `email`, `picture` = foto do Google). `AuthStore.user` guarda o do login e, ao abrir o app, busca `GET auth/session` depois do refresh. Fica salvo no `flutter_secure_storage` (chave `user`) pra aparecer offline; sair apaga. Home (saudação + avatar) e Perfil leem daqui; não há mais `/user` no json-server.
 
 ## Layout de tela
@@ -110,6 +127,7 @@ Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `ap
 - API fake: `test/helpers/fake_api_client.dart`. Usa `server/db.json` em memória (GET, `_embed`, POST, DELETE). `failing = true` simula erro. Services, stores e telas testam sobre ela.
 - Montar widget via `test/helpers/pump_app.dart`: `pumpPage` (tela com tema + `AppScope` com stores carregados; `load: false` = carregando), `pumpComponent` (componente dentro de `Scaffold`). Tela de teste: 800x1600.
 - Contrato do `db.json`: `test/server/db_json_test.dart`.
+- Captura: `test/helpers/fake_capture_api.dart` (`FakeCaptureApi`: servidor de capturas em memória, `offline`, `rejections`, `process(id, texto)`, `calls`, `bodies`, `files`, página de 2). Banco: `AppDatabase(NativeDatabase.memory())`. Mídia: `MediaStorage(() async => pastaTemporaria)`.
 - Conta: `test/helpers/fake_auth.dart`. `FakeAuthApi` (resposta por rota `MÉTODO caminho`, padrão = caminho feliz; `errors`, `pending`, `signedIn` montam resposta; `error` simula sem rede; `last(rota)` = request enviado), `FakeTokenStorage`, `FakeSocialSignIn` (token ou `null` = cancelado), `fakeAuthStore()`. `pumpPage(auth: ...)`. Campo por rótulo: `textField('E-mail')`. iOS: `variant: TargetPlatformVariant.only(TargetPlatform.iOS)`.
 - Unit test: model, service, lógica pura.
 - Widget test: componente e tela com comportamento (toque, estado, navegação).
@@ -120,7 +138,10 @@ Conta (`AuthService`, API Django com allauth headless; detalhe dos fluxos em `ap
 
 Antes de adicionar pacote: checar pub.dev (likes, último publish), issues abertas (build/toolchain). Contar ao usuário antes de instalar. Plugin nativo ou pacote pouco mantido: perguntar.
 
-Hoje: `google_sign_in` ^7.2, `sign_in_with_apple` ^8.2 (exige Flutter ≥3.44), `flutter_secure_storage` ^11.2. iOS via Swift Package Manager (sem Podfile).
+Hoje: `google_sign_in` ^7.2, `sign_in_with_apple` ^8.2 (exige Flutter ≥3.44), `flutter_secure_storage` ^11.2, `drift` ^2.35.1, `drift_flutter` ^0.3.1, `path_provider` ^2.1.6. Dev: `drift_dev` ^2.35.1, `build_runner`. iOS via Swift Package Manager (sem Podfile).
+
+- Versão nova só com 2+ semanas de publicada (lockfile fixa). SQLite nativo vem do `sqlite3` (hooks de build, sem `sqlite3_flutter_libs`): `flutter test` usa o mesmo banco em memória.
+- Mudou tabela do drift: `dart run build_runner build` → `dart format lib` → commitar `database.g.dart` junto (a esteira não gera código). Mudou coluna: subir `schemaVersion` + migração.
 
 ## Git e CI
 

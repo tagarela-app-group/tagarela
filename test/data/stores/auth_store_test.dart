@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -165,5 +166,65 @@ void main() {
     await store.logout();
 
     expect((store.isSignedIn, storage.token), (false, null));
+  });
+
+  group('accessToken', () {
+    test('sem sessão: null, sem chamar a API', () async {
+      expect(await store.accessToken(), isNull);
+      expect(api.requests, isEmpty);
+    });
+
+    test('depois do login: usa o access do login, sem refresh', () async {
+      await store.login('ana@example.com', 'x');
+
+      expect(await store.accessToken(), 'access-1');
+      expect(api.routes, isNot(contains('POST /tokens/refresh')));
+    });
+
+    test('renew: troca o par e guarda o refresh novo', () async {
+      await store.login('ana@example.com', 'x');
+
+      expect(await store.accessToken(renew: true), 'access-2');
+      expect(api.last('POST /tokens/refresh').body, {
+        'refresh_token': 'refresh-1',
+      });
+      expect(storage.token, 'refresh-2');
+    });
+
+    test('sessão restaurada offline: busca access no primeiro uso', () async {
+      storage.token = 'refresh-1';
+      api.error = const SocketException('sem rede');
+      await store.restore();
+      api.error = null;
+
+      expect(await store.accessToken(), 'access-2');
+    });
+
+    test('pedidos juntos: um refresh só', () async {
+      await store.login('ana@example.com', 'x');
+      api.hold = Completer<void>();
+
+      final tokens = Future.wait([
+        store.accessToken(renew: true),
+        store.accessToken(renew: true),
+      ]);
+      api.hold!.complete();
+
+      expect(await tokens, ['access-2', 'access-2']);
+      expect(
+        api.routes.where((r) => r == 'POST /tokens/refresh'),
+        hasLength(1),
+      );
+    });
+
+    test('refresh recusado: desloga e devolve null', () async {
+      await store.login('ana@example.com', 'x');
+      api.responses['POST /tokens/refresh'] = FakeAuthApi.errors({
+        'refresh_token': 'Inválido.',
+      });
+
+      expect(await store.accessToken(renew: true), isNull);
+      expect((store.isSignedIn, storage.token), (false, null));
+    });
   });
 }

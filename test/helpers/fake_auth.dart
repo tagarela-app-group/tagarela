@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/models.dart';
@@ -102,6 +103,9 @@ class FakeAuthApi implements ApiClient {
   String get baseUrl => 'fake-auth://';
 
   @override
+  AccessToken? get accessToken => null;
+
+  @override
   Future<ApiResponse> send(
     String method,
     String path, {
@@ -121,6 +125,18 @@ class FakeAuthApi implements ApiClient {
   @override
   Future<Object?> post(String path, Map<String, Object?> body) =>
       throw UnimplementedError();
+
+  @override
+  Future<Object?> patch(String path, Map<String, Object?> body) =>
+      throw UnimplementedError();
+
+  @override
+  Future<Object?> putFile(
+    String path, {
+    required String field,
+    required File file,
+    required String contentType,
+  }) => throw UnimplementedError();
 
   @override
   Future<void> delete(String path) => throw UnimplementedError();

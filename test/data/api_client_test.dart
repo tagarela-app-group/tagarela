@@ -10,10 +10,19 @@ void main() {
   late ApiClient api;
   final received = <String>[];
   final framing = <(int, bool)>[];
+  final authorization = <String?>[];
+  final contentTypes = <String?>[];
+
+  ApiClient withToken(AccessToken accessToken) => ApiClient(
+    baseUrl: 'http://${server.address.host}:${server.port}',
+    accessToken: accessToken,
+  );
 
   setUp(() async {
     received.clear();
     framing.clear();
+    authorization.clear();
+    contentTypes.clear();
     server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
     api = ApiClient(baseUrl: 'http://${server.address.host}:${server.port}');
     server.listen((request) async {
@@ -21,6 +30,8 @@ void main() {
         request.headers.contentLength,
         request.headers.chunkedTransferEncoding,
       ));
+      authorization.add(request.headers.value('Authorization'));
+      contentTypes.add(request.headers.value('Content-Type'));
       final body = await utf8.decoder.bind(request).join();
       received.add('${request.method} ${request.uri} $body'.trim());
       final response = request.response;
@@ -37,6 +48,9 @@ void main() {
           );
         case '/empty':
           break;
+        case '/secure'
+            when request.headers.value('Authorization') != 'Bearer novo':
+          response.statusCode = 401;
         default:
           response.write(jsonEncode({'ok': true, 'nome': 'ação'}));
       }
@@ -95,6 +109,82 @@ void main() {
     final response = await api.send('GET', '/html-error');
 
     expect((response.statusCode, response.body), (404, null));
+  });
+
+  test('PATCH envia corpo JSON', () async {
+    await api.patch('/captures/1', {'text': 'olá'});
+    expect(received, ['PATCH /captures/1 {"text":"olá"}']);
+  });
+
+  test('sem fonte de token não manda Authorization', () async {
+    await api.get('/user');
+    expect(authorization, [null]);
+  });
+
+  test('manda Bearer; 401 renova uma vez e repete', () async {
+    final renews = <bool>[];
+    final secure = withToken(({renew = false}) async {
+      renews.add(renew);
+      return renew ? 'novo' : 'velho';
+    });
+
+    expect(await secure.get('/secure'), {'ok': true, 'nome': 'ação'});
+    expect(authorization, ['Bearer velho', 'Bearer novo']);
+    expect(renews, [false, true]);
+  });
+
+  test('renovação recusada devolve o 401 sem repetir', () async {
+    final secure = withToken(({renew = false}) async => renew ? null : 'velho');
+
+    await expectLater(
+      secure.get('/secure'),
+      throwsA(isA<ApiException>().having((e) => e.statusCode, 'status', 401)),
+    );
+    expect(authorization, ['Bearer velho']);
+  });
+
+  test('putFile manda multipart com Content-Length e Bearer', () async {
+    final folder = await Directory.systemTemp.createTemp('api_client_test');
+    addTearDown(() => folder.delete(recursive: true));
+    final file = File('${folder.path}/foto.jpg')..writeAsStringSync('img');
+    final secure = withToken(({renew = false}) async => 'novo');
+
+    await secure.putFile(
+      '/captures/1/file',
+      field: 'file',
+      file: file,
+      contentType: 'image/jpeg',
+    );
+
+    final boundary = contentTypes.single!.split('boundary=').last;
+    expect(contentTypes.single, startsWith('multipart/form-data'));
+    expect(authorization, ['Bearer novo']);
+    expect(framing.single.$2, isFalse);
+    expect(
+      received.single,
+      'PUT /captures/1/file --$boundary\r\n'
+      'Content-Disposition: form-data; name="file"; filename="foto.jpg"\r\n'
+      'Content-Type: image/jpeg\r\n\r\n'
+      'img\r\n--$boundary--',
+    );
+  });
+
+  test('putFile com erro vira ApiException', () async {
+    final folder = await Directory.systemTemp.createTemp('api_client_test');
+    addTearDown(() => folder.delete(recursive: true));
+    final file = File('${folder.path}/foto.jpg')..writeAsStringSync('img');
+
+    expect(
+      api.putFile('/missing', field: 'file', file: file, contentType: 'x/y'),
+      throwsA(isA<ApiException>().having((e) => e.statusCode, 'status', 404)),
+    );
+  });
+
+  test('rejected: 4xx menos 401', () {
+    expect(
+      [400, 404, 409, 401, 500].map((s) => ApiException(s, 'x').rejected),
+      [true, true, true, false, false],
+    );
   });
 
   test('servidor fora do ar vira exceção de rede', () async {

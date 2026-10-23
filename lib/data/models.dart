@@ -164,7 +164,7 @@ class WordOfDay {
 }
 
 enum CaptureSource {
-  camera('Câmera'),
+  photo('Câmera'),
   audio('Áudio'),
   text('Texto');
 
@@ -223,6 +223,170 @@ class Suggestion {
   final TermKind kind;
   final String groupId;
   final String groupName;
+}
+
+enum CaptureStatus {
+  waitingFile('waiting_file'),
+  processing('processing'),
+  failed('failed'),
+  ready('ready'),
+  analyzed('analyzed');
+
+  const CaptureStatus(this.apiName);
+
+  final String apiName;
+
+  static CaptureStatus fromApi(String name) =>
+      values.firstWhere((s) => s.apiName == name);
+}
+
+enum CaptureSync { create, file, update, confirm, discard }
+
+class CaptureTerm {
+  const CaptureTerm({
+    required this.text,
+    required this.start,
+    required this.end,
+  });
+
+  CaptureTerm.fromJson(Json json)
+    : this(
+        text: json['text']! as String,
+        start: json['start']! as int,
+        end: json['end']! as int,
+      );
+
+  final String text;
+  final int start;
+  final int end;
+
+  Json toJson() => {'text': text, 'start': start, 'end': end};
+
+  @override
+  bool operator ==(Object other) =>
+      other is CaptureTerm &&
+      other.text == text &&
+      other.start == start &&
+      other.end == end;
+
+  @override
+  int get hashCode => Object.hash(text, start, end);
+}
+
+class Capture {
+  const Capture({
+    required this.id,
+    required this.source,
+    required this.status,
+    required this.capturedAt,
+    this.text = '',
+    this.originalText = '',
+    this.terms = const [],
+    this.error,
+    this.processedAt,
+    this.analyzedAt,
+    this.discardedAt,
+    this.updatedAt,
+    this.mediaPath,
+    this.pending = const {},
+  });
+
+  Capture.fromJson(Json json)
+    : this(
+        id: json['id']! as String,
+        source: CaptureSource.values.byName(json['source']! as String),
+        status: CaptureStatus.fromApi(json['status']! as String),
+        text: json['text']! as String,
+        originalText: json['original_text']! as String,
+        terms: [
+          for (final t in json['terms']! as List<Object?>)
+            CaptureTerm.fromJson(t! as Json),
+        ],
+        error: switch (json['error']) {
+          final String e when e.isNotEmpty => e,
+          _ => null,
+        },
+        capturedAt: DateTime.parse(json['captured_at']! as String),
+        processedAt: _date(json['processed_at']),
+        analyzedAt: _date(json['analyzed_at']),
+        discardedAt: _date(json['discarded_at']),
+        updatedAt: _date(json['updated_at']),
+      );
+
+  static const mediaRetention = Duration(days: 30);
+
+  final String id;
+  final CaptureSource source;
+  final CaptureStatus status;
+  final String text;
+  final String originalText;
+  final List<CaptureTerm> terms;
+  final String? error;
+  final DateTime capturedAt;
+  final DateTime? processedAt;
+  final DateTime? analyzedAt;
+  final DateTime? discardedAt;
+  final DateTime? updatedAt;
+  final String? mediaPath;
+  final Set<CaptureSync> pending;
+
+  bool mediaExpired(DateTime now) {
+    final closedAt = analyzedAt ?? discardedAt;
+    return mediaPath != null &&
+        closedAt != null &&
+        now.difference(closedAt) > mediaRetention;
+  }
+
+  Capture merge(Capture server) {
+    final editing = pending.contains(CaptureSync.update);
+    final confirming = pending.contains(CaptureSync.confirm);
+    return Capture(
+      id: id,
+      source: source,
+      status: confirming ? status : server.status,
+      text: editing ? text : server.text,
+      originalText: server.originalText,
+      terms: editing ? terms : server.terms,
+      error: server.error,
+      capturedAt: server.capturedAt,
+      processedAt: server.processedAt,
+      analyzedAt: confirming ? analyzedAt : server.analyzedAt,
+      discardedAt: pending.contains(CaptureSync.discard)
+          ? discardedAt
+          : server.discardedAt,
+      updatedAt: server.updatedAt,
+      mediaPath: mediaPath,
+      pending: pending,
+    );
+  }
+
+  Capture copyWith({
+    CaptureStatus? status,
+    String? text,
+    List<CaptureTerm>? terms,
+    DateTime? analyzedAt,
+    DateTime? discardedAt,
+    ValueGetter<String?>? mediaPath,
+    Set<CaptureSync>? pending,
+  }) => Capture(
+    id: id,
+    source: source,
+    status: status ?? this.status,
+    text: text ?? this.text,
+    originalText: originalText,
+    terms: terms ?? this.terms,
+    error: error,
+    capturedAt: capturedAt,
+    processedAt: processedAt,
+    analyzedAt: analyzedAt ?? this.analyzedAt,
+    discardedAt: discardedAt ?? this.discardedAt,
+    updatedAt: updatedAt,
+    mediaPath: mediaPath == null ? this.mediaPath : mediaPath(),
+    pending: pending ?? this.pending,
+  );
+
+  static DateTime? _date(Object? value) =>
+      value is String ? DateTime.parse(value) : null;
 }
 
 class AuthTokens {

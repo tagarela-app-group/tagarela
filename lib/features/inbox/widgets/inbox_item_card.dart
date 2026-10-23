@@ -104,7 +104,7 @@ class _SourceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (icon, accent) = switch (item.source) {
-      CaptureSource.camera => (AppIcons.camera, AppAccent.mango),
+      CaptureSource.photo => (AppIcons.camera, AppAccent.mango),
       CaptureSource.audio => (AppIcons.audio, AppAccent.coral),
       CaptureSource.text => (AppIcons.text, AppAccent.violet),
     };
