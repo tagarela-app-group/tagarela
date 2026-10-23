@@ -174,12 +174,21 @@ void main() {
       ]);
     });
 
+    test('confirmar sem texto nem termos novos só confirma', () async {
+      final capture = await store.createText(text);
+      api.calls.clear();
+
+      await store.confirm(only());
+
+      expect(api.calls, ['POST ${FakeCaptureApi.path}/${capture.id}/confirm']);
+      expect(only().status, CaptureStatus.analyzed);
+    });
+
     test('termos e confirmação offline sobem em ordem', () async {
       final capture = await store.createText(text);
       api.offline = true;
 
-      await store.saveTerms(only(), text, const [mindTheGap]);
-      await store.confirm(only());
+      await store.confirm(only(), text: text, terms: const [mindTheGap]);
 
       expect(only().status, CaptureStatus.analyzed);
       expect(only().pending, {CaptureSync.update, CaptureSync.confirm});

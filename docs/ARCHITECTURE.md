@@ -29,6 +29,7 @@ lib/
   features/<feature>/    <feature>_page.dart + widgets/ (só da feature)
   features/auth/         login, cadastro, código, esqueci senha, nova senha + auth_form.dart (mixin de envio)
   features/capture/      painéis de captura (texto, foto, áudio) abertos pelo + do HomeShell + aviso "Salvo no Inbox"
+  features/inbox/        Inbox + tela Escolher termos (pick_terms_page.dart) + term_selection.dart (marcar, editar texto, posição dos termos)
 assets/
   fonts/                 Bricolage Grotesque + DM Sans (TTF estático) + OFL
   images/                google.png (botão de login)
@@ -39,7 +40,7 @@ build.yaml               opção do drift_dev (data como texto ISO, mantém fuso
 
 ## Onde colocar
 
-- Widget usado em 2+ features ou genérico: `design_system/components/` (perguntar antes).
+- Widget usado em 2+ features ou genérico: `design_system/components/`.
 - Widget só de uma feature: `features/<feature>/widgets/`.
 - Subwidget usado só em um arquivo: classe privada (`_Nome`) no mesmo arquivo.
 - Modelo de dados: `data/models.dart` (com `fromJson`). Conta sobre dados (totais, filtros): no model, não no widget.
@@ -87,6 +88,11 @@ Fluxo: tela → store → service → `ApiClient` → API.
 - Foto: `image_picker`, lado maior até 2000 px, JPEG qualidade 85. Câmera pede permissão; galeria não precisa (seletor do sistema).
 - Áudio: `record`, AAC-LC em m4a, mono, 16 kHz, 48 kbps. Abre já gravando; para no toque ou sozinho em 60 s (`CaptureDevice.maxRecording`). Tempo pela contagem do timer (`Timer.tick`).
 - Arquivo temporário (foto escolhida, gravação): apagado ao fechar o painel, salvando ou não (`CaptureDevice.discard`). Salvar copia antes pra pasta do app. Fechar gravando cancela a gravação.
+- Escolher termos (`PickTermsPage`, aberta pelo card pronto): estado local até confirmar. Confirmar = `confirm(capture, text:, terms:)`: uma mudança com `update` + `confirm` pendentes. Voltar descarta o que foi marcado. Lixeira = `discard`.
+- Termo (`TermSelection`): palavra = trecho sem espaço, sem a pontuação das pontas (letra, número e acento ficam). Toque = palavra; arrasto (começa onde o dedo desceu) = da primeira à última palavra. Mesmo trecho de novo = desmarca. Ordem: início, depois o maior.
+- Posição do termo: a API conta em code points (Python), o Dart em UTF-16. `TermSelection` converte na entrada (`TermSelection.of`) e na saída (`toTerms`); emoji não desalinha.
+- Editar texto: compara o antigo com o novo (prefixo e sufixo comuns). Termo antes do trecho mudado fica; depois, desloca; encostou na mudança ou a palavra mudou: cai. Texto vazio volta ao anterior.
+- Limites da API no app: texto até 2000 ao editar (transcrição de 60 s passa de 500), termo até 100 caracteres, até 50 termos. Passou: aviso, não marca.
 - Permissão negada (microfone, câmera): painel mostra aviso com "Abrir configurações" (`openAppSettings`) e fecha. Android: `RECORD_AUDIO` e `CAMERA` no `AndroidManifest.xml`. iOS: `NSMicrophoneUsageDescription`, `NSCameraUsageDescription`, `NSPhotoLibraryUsageDescription` no `Info.plist`; com Swift Package Manager o `permission_handler` liga cada permissão pela chave presente no `Info.plist` (sem Podfile).
 
 ## API
@@ -131,7 +137,7 @@ Conta (`AuthService`, allauth headless; detalhe dos fluxos em `api/docs/ARCHITEC
 - Escopo de teste: `testScope(child: ...)` / `pumpPage(...)` em `test/helpers/pump_app.dart`. Padrão: Home e Vocabulário com `fixtures.dart` (dados de exemplo), capturas vazias (`fakeCaptures()`), player fake, aparelho fake. Trocar: `home:`, `vocabulary:`, `captures:`, `playback:`, `device:`, `auth:`.
 - Erro de carregamento: `test/helpers/failing_stores.dart` (`FailingHomeStore`, `FailingVocabularyStore`; `failing = false` recupera).
 - Montar widget via `test/helpers/pump_app.dart`: `pumpPage` (tela com tema + `AppScope` com stores carregados; `load: false` = carregando), `pumpComponent` (componente dentro de `Scaffold`). Tela de teste: 800x1600.
-- Captura: `test/helpers/fake_capture_api.dart` (`FakeCaptureApi`: servidor de capturas em memória, `offline`, `rejections`, `process(id, texto)`, `calls`, `bodies`, `files`, página de 2). Banco: `AppDatabase(NativeDatabase.memory())`. Mídia: `MediaStorage(() async => pastaTemporaria)` em teste de store; em teste de tela, `FakeMediaStorage` (I/O real trava o `testWidgets`). `fakeCaptures()` em `test/helpers/fake_capture_store.dart` monta store + banco + API + mídia; `sampleCapture(id, ...)` cria captura; `FakeAudioPlayback` no lugar do player; `FakeCaptureDevice` no lugar do aparelho (`camera`/`microphone` = permissão, `nextPhoto` (`null` = desistiu), `recording`, `recordings`, `cancelled`, `discarded`, `settingsOpened`, `origins`). Painel: `tester.openSheet(painel, ...)` em `test/helpers/open_sheet.dart` devolve a lista de resultados ao fechar. Gravação: `pump(Duration)`, não `pumpAndSettle` (timer de 200 ms).
+- Captura: `test/helpers/fake_capture_api.dart` (`FakeCaptureApi`: servidor de capturas em memória, `offline`, `rejections`, `process(id, texto)`, `calls`, `bodies`, `files`, página de 2). Banco: `AppDatabase(NativeDatabase.memory())`. Mídia: `MediaStorage(() async => pastaTemporaria)` em teste de store; em teste de tela, `FakeMediaStorage` (I/O real trava o `testWidgets`). `fakeCaptures()` em `test/helpers/fake_capture_store.dart` monta store + banco + API + mídia; `sampleCapture(id, ...)` cria captura; `FakeAudioPlayback` no lugar do player; `FakeCaptureDevice` no lugar do aparelho (`camera`/`microphone` = permissão, `nextPhoto` (`null` = desistiu), `recording`, `recordings`, `cancelled`, `discarded`, `settingsOpened`, `origins`). Tela que volta (`Navigator.pop`): abrir por um botão numa tela anterior, nunca como `home`. Arrasto: `tester.dragFrom` (começa na palavra onde o dedo desceu). Painel: `tester.openSheet(painel, ...)` em `test/helpers/open_sheet.dart` devolve a lista de resultados ao fechar. Gravação: `pump(Duration)`, não `pumpAndSettle` (timer de 200 ms).
 - Conta: `test/helpers/fake_auth.dart`. `FakeAuthApi` (resposta por rota `MÉTODO caminho`, padrão = caminho feliz; `errors`, `pending`, `signedIn` montam resposta; `error` simula sem rede; `last(rota)` = request enviado), `FakeTokenStorage`, `FakeSocialSignIn` (token ou `null` = cancelado), `fakeAuthStore()`. `pumpPage(auth: ...)`. Campo por rótulo: `textField('E-mail')`. iOS: `variant: TargetPlatformVariant.only(TargetPlatform.iOS)`.
 - Unit test: model, service, lógica pura.
 - Widget test: componente e tela com comportamento (toque, estado, navegação).

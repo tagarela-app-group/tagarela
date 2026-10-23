@@ -57,23 +57,21 @@ class CaptureStore extends Store<List<Capture>> {
     );
   }
 
-  Future<void> saveTerms(
-    Capture capture,
-    String text,
-    List<CaptureTerm> terms,
-  ) => _change(
-    capture.copyWith(
-      text: text,
-      terms: terms,
-      pending: {...capture.pending, CaptureSync.update},
-    ),
-  );
-
-  Future<void> confirm(Capture capture) => _change(
+  Future<void> confirm(
+    Capture capture, {
+    String? text,
+    List<CaptureTerm>? terms,
+  }) => _change(
     capture.copyWith(
       status: CaptureStatus.analyzed,
+      text: text,
+      terms: terms,
       analyzedAt: DateTime.now(),
-      pending: {...capture.pending, CaptureSync.confirm},
+      pending: {
+        ...capture.pending,
+        if (text != null || terms != null) CaptureSync.update,
+        CaptureSync.confirm,
+      },
     ),
   );
 

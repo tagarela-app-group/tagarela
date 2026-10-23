@@ -20,7 +20,7 @@ Mockup (fonte visual): https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR. Canvas
 2. Cada coisa no seu lugar. Conteúdo novo vai no doc do assunto. Doc não repete outro doc.
 3. Docs: só o necessário. Objetivo, estilo caveman, sem perder informação.
 4. UI: reutilizar componente de `lib/design_system/` antes de criar algo.
-5. Componente novo no design system: perguntar ao usuário antes de criar.
+5. Nada no design system serve: criar o componente lá, sem perguntar.
 6. Cor, fonte, espaço, raio, ícone: sempre token (`docs/DESIGN.md`). Nunca valor solto.
 7. Mudou estrutura, componente ou tela: atualizar o doc do assunto junto.
 8. Seguir sempre boas práticas de código, estrutura e arquitetura.

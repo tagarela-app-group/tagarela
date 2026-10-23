@@ -32,6 +32,7 @@ Brasileiro, inglês básico/intermediário, celular na mão, pouco tempo.
 | Vocabulário | Grade de grupos (% dominado). Sem termos: "Nenhum termo ainda". Busca e filtros: a definir. |
 | Grupo | Termos do grupo: tipo, tradução, status, nível. Filtro todos/aprendendo/dominado. |
 | Inbox | Abas Todas, Prontas, Pendentes, Analisadas. Seções: precisa de atenção (erro: descartar ou processar agora), prontas (descartar ou escolher termos; com termos: editar ou confirmar análise), processando, esperando envio, analisadas (apagadas, no fim). Foto em miniatura; áudio com player. Puxar a lista sincroniza. Vazio: "Inbox zerado". |
+| Escolher termos | Abre pelo card pronto (Escolher termos ou Editar). Toque numa palavra marca só ela; arrastar marca a expressão; palavra dentro de expressão vale. Termo aparece como escrito, sem a pontuação da ponta. Lista "Termos escolhidos" com X. "Editar texto" corrige no próprio card; termos fora do trecho mudado continuam. "Confirmar análise · N termos" (sem termo: "Escolha pelo menos um termo"). Voltar descarta o que foi marcado; lixeira descarta a captura. |
 | Perfil | Dados do usuário, sair. |
 
 Botão + central (todas as abas): menu em arco com Câmera, Áudio, Texto. Cada um abre um painel de baixo:
@@ -52,4 +53,4 @@ Fechar descarta sem perguntar. Sem permissão de microfone ou câmera: aviso com
 
 ## Estado atual
 
-Tudo fala com a API Django (`api/`), sem mock. Conta real (sessão salva; expirou = volta pro login com aviso). Inbox real, offline first, sincroniza quando a pessoa age. Home e Vocabulário vazios até a API ter vocabulário (palavra do dia e revisão somem). Captura por texto, foto e áudio. Tela de escolher termos: próximo passo.
+Tudo fala com a API Django (`api/`), sem mock. Conta real (sessão salva; expirou = volta pro login com aviso). Inbox real, offline first, sincroniza quando a pessoa age. Home e Vocabulário vazios até a API ter vocabulário (palavra do dia e revisão somem). Captura por texto, foto e áudio. Escolher termos e confirmar análise. Ficha do termo (IA): a definir.
