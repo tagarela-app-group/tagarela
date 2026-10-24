@@ -86,7 +86,7 @@ class ApiClient {
 
   static Object? _checked(ApiResponse response, String method, String path) {
     if (response.statusCode >= 400) {
-      throw ApiException(response.statusCode, '$method $path');
+      throw ApiException(response.statusCode, '$method $path', response.body);
     }
     return response.body;
   }
@@ -110,10 +110,19 @@ class ApiResponse {
 }
 
 class ApiException implements Exception {
-  const ApiException(this.statusCode, this.request);
+  const ApiException(this.statusCode, this.request, [this.body]);
 
   final int statusCode;
   final String request;
+  final Object? body;
+
+  String? fieldError(String field) => switch (body) {
+    final Map<String, Object?> json => switch (json[field]) {
+      [final String message, ...] => message,
+      _ => null,
+    },
+    _ => null,
+  };
 
   bool get rejected =>
       statusCode >= 400 &&

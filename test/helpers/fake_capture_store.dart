@@ -123,6 +123,7 @@ typedef FakeCaptures = ({
 FakeCaptures fakeCaptures({
   String? Function()? owner,
   TextExtractor? extractor,
+  Future<void> Function()? onConfirmed,
 }) {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   final api = FakeCaptureApi();
@@ -134,6 +135,7 @@ FakeCaptures fakeCaptures({
     media,
     owner: owner ?? () => 'ana@example.com',
     extractor: extractor ?? FakeTextExtractor(),
+    onConfirmed: onConfirmed,
   );
   return (store: store, db: db, api: api, media: media);
 }

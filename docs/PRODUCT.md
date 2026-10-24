@@ -6,7 +6,7 @@ Pessoa ouve/lê inglês no dia a dia (série, trabalho, viagem) e esquece termo.
 
 ## Proposta
 
-Capturar termo na hora (foto, áudio, texto). App analisa, sugere tradução e grupo. Termo entra no vocabulário e volta em revisão espaçada (SRS) até dominar.
+Capturar termo na hora (foto, áudio, texto). Confirmou: termo entra no vocabulário (sem repetir), a pessoa organiza em grupos e ele volta em revisão espaçada (SRS) até dominar. IA sugere tradução.
 
 ## Usuário
 
@@ -14,8 +14,9 @@ Brasileiro, inglês básico/intermediário, celular na mão, pouco tempo.
 
 ## Conceitos
 
-- **Termo**: palavra solta ou expressão.
-- **Grupo**: coleção de termos por tema (Viagem, Trabalho...).
+- **Termo**: palavra solta ou expressão. Um por pessoa: confirmar o mesmo termo de novo (maiúscula e espaço não contam) não entra outra vez.
+- **Grupo**: coleção de termos por tema (Viagem, Trabalho...), criada pela pessoa: nome, ícone (48, em páginas de 12) e cor (6). Grupo é sempre escolha da pessoa, nunca da IA.
+- **Sem grupo**: onde cai o termo confirmado. A captura não pergunta grupo (uma captura tem termos de assuntos diferentes); a pessoa move depois.
 - **Nível**: 0 a 5 (SRS). Nível 4+ = dominado. Abaixo = aprendendo.
 - **Inbox**: capturas (texto, foto, áudio) até a pessoa escolher os termos e confirmar a análise.
 - **Palavra do dia**: um termo novo por dia, com fonética, tradução e exemplo.
@@ -29,8 +30,11 @@ Brasileiro, inglês básico/intermediário, celular na mão, pouco tempo.
 | Código | 6 dígitos do e-mail (confirmar cadastro ou trocar senha). Reenviar após 1 min. Trocar e-mail. |
 | Esqueci a senha | E-mail → código → nova senha → já entra. |
 | Início | Saudação pelo primeiro nome conforme a hora (bom dia, boa tarde, boa noite) com a foto do Google ou as iniciais (primeiro e último nome), palavra do dia, resumo do vocabulário (total, aprendendo, dominado), revisão de hoje. Sem sequência de dias. Sem nada (zero termos, sem palavra do dia, sem revisão): aviso centralizado "Seu inglês começa aqui" com "Fazer a primeira captura" (abre o menu +). |
-| Vocabulário | Grade de grupos (% dominado). Sem termos: "Nenhum termo ainda". Busca e filtros: a definir. |
-| Grupo | Termos do grupo: tipo, tradução, status, nível. Filtro todos/aprendendo/dominado. |
+| Vocabulário | Header "N termos em M grupos" + botão Novo grupo. Card tracejado "Sem grupo · N termos pra pôr num grupo · Organizar" no topo (some quando esvazia). Grade de grupos, mais novo primeiro (% dominado; vazio = "Sem termos ainda"). Só termo solto, sem grupo: "Nenhum grupo ainda" com "Criar grupo". Nada: "Nenhum termo ainda". Puxar a lista atualiza. |
+| Novo grupo | Painel: nome (até 30), ícone (12 por página, "‹ Voltar · 1/4 · Avançar ›"), cor; prévia no topo. Nome repetido: "Você já tem um grupo com esse nome.". Botão "Dê um nome ao grupo" até ter nome. Criou: aviso "Grupo criado · <nome> está no topo da lista." com "Abrir". |
+| Grupo | Termos do grupo: tipo, tradução (some sem tradução), status, nível. Filtro todos/aprendendo/dominado. Sem termos: "Nenhum termo aqui ainda" (termos novos chegam em Sem grupo). ⋮ = Mover termos. |
+| Sem grupo | Mesma tela do grupo, sem filtro nem barra, com a dica "Mova cada um pro grupo dele." e "Mover termos" no topo. Vazio: "Tudo organizado". |
+| Mover termos | Seleção: X sai (voltar do sistema também), "Selecionar todos" (do filtro), toque marca, "N selecionados". Botão "Mover N termos" abre "Mover pra qual grupo?": "+ Novo grupo" (cria e já move) e os outros grupos; um toque move. Sem outro grupo: "Você ainda não tem grupos" + "Criar grupo". Moveu: aviso "N termos movidos · Agora estão em X." com "Desfazer". Sem rede: avisa e mantém a seleção. Editar e apagar grupo: a definir. |
 | Inbox | Abas Todas, Prontas, Pendentes, Analisadas. Seções: precisa de atenção (erro: descartar ou processar agora; sem texto = "Não achei texto na foto" / "Não ouvi fala em inglês"), prontas (descartar ou escolher termos; com termos: editar ou confirmar análise), processando (áudio antes do modelo baixar: "Esperando o modelo de áudio baixar…", transcreve sozinho quando termina), analisadas (apagadas, no fim). Foto em miniatura; áudio com player. Puxar a lista sincroniza. Vazio: "Inbox zerado". |
 | Escolher termos | Abre pelo card pronto (Escolher termos ou Editar). Toque numa palavra marca só ela; arrastar marca a expressão; palavra dentro de expressão vale. Termo aparece como escrito, sem a pontuação da ponta. Lista "Termos escolhidos" com X. "Editar texto" corrige no próprio card; termos fora do trecho mudado continuam. "Confirmar análise · N termos" (sem termo: "Escolha pelo menos um termo"). Voltar descarta o que foi marcado; lixeira descarta a captura. |
 | Perfil | Topo centralizado: foto grande (ou iniciais), nome e e-mail. Card de progresso: capturas, termos e dominados. "Funciona sem internet": texto de fotos (pronto) e áudio em inglês (pronto, baixando com %, ou esperando internet; sem botão). "Conta": e-mail e privacidade (foto e áudio ficam só no celular). Sair. |
@@ -55,4 +59,4 @@ Texto da foto e do áudio sai no próprio celular, sem internet (foto: ML Kit no
 
 ## Estado atual
 
-Tudo fala com a API Django (`api/`), sem mock. Conta real (sessão salva; expirou = volta pro login com aviso). Inbox real, offline first, sincroniza quando a pessoa age. Home e Vocabulário vazios até a API ter vocabulário (Home com o aviso de primeira captura, Vocabulário com "Nenhum termo ainda"). Captura por texto, foto e áudio. Escolher termos e confirmar análise. Ficha do termo (IA): a definir.
+Tudo fala com a API Django (`api/`), sem mock. Conta real (sessão salva; expirou = volta pro login com aviso). Inbox real, offline first, sincroniza quando a pessoa age. Vocabulário real: termo entra ao confirmar a análise, grupos e mover precisam de internet. Tradução vazia e nível 0 até a ficha (IA) e a revisão (SRS). Home: resumo do vocabulário real; palavra do dia e revisão vazias até a API ter. Captura por texto, foto e áudio. Escolher termos e confirmar análise. Ficha do termo (IA): a definir.

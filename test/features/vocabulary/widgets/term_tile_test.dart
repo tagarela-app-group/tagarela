@@ -9,7 +9,9 @@ import '../../../helpers/pump_app.dart';
 void main() {
   testWidgets('termo aprendendo', (tester) async {
     await tester.pumpComponent(
-      const TermTile(term: Term('jet lag', 'cansaço', TermKind.expression, 1)),
+      const TermTile(
+        term: Term('t1', 'jet lag', 'cansaço', TermKind.expression, 1),
+      ),
     );
 
     expect(find.text('jet lag'), findsOneWidget);
@@ -25,7 +27,7 @@ void main() {
 
   testWidgets('termo dominado', (tester) async {
     await tester.pumpComponent(
-      const TermTile(term: Term('layover', 'escala', TermKind.word, 5)),
+      const TermTile(term: Term('t2', 'layover', 'escala', TermKind.word, 5)),
     );
 
     expect(find.text('PALAVRA'), findsOneWidget);
@@ -34,5 +36,47 @@ void main() {
       tester.widget<StatusPill>(find.byType(StatusPill)).tone,
       StatusTone.mastered,
     );
+  });
+
+  testWidgets('sem tradução: some a linha', (tester) async {
+    await tester.pumpComponent(
+      const TermTile(
+        term: Term('t3', 'touch base', '', TermKind.expression, 0),
+      ),
+    );
+
+    expect(find.text('touch base'), findsOneWidget);
+    expect(find.text(''), findsNothing);
+  });
+
+  testWidgets('selecionando: caixa marcada, borda e toque', (tester) async {
+    var taps = 0;
+    await tester.pumpComponent(
+      TermTile(
+        term: const Term('t1', 'jet lag', 'cansaço', TermKind.expression, 1),
+        selecting: true,
+        selected: true,
+        onTap: () => taps++,
+      ),
+    );
+
+    expect(
+      tester.widget<AppCheckbox>(find.byType(AppCheckbox)).checked,
+      isTrue,
+    );
+    expect(tester.widget<AppCard>(find.byType(AppCard)).selected, isTrue);
+
+    await tester.tap(find.text('jet lag'));
+    expect(taps, 1);
+  });
+
+  testWidgets('fora da seleção: sem caixa', (tester) async {
+    await tester.pumpComponent(
+      const TermTile(
+        term: Term('t1', 'jet lag', 'cansaço', TermKind.expression, 1),
+      ),
+    );
+
+    expect(find.byType(AppCheckbox), findsNothing);
   });
 }

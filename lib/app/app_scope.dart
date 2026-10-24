@@ -18,11 +18,10 @@ class AppScope extends InheritedWidget {
     required this.playback,
     required this.device,
     required this.speech,
+    required this.vocabulary,
     HomeStore? home,
-    VocabularyStore? vocabulary,
     required super.child,
-  }) : home = home ?? HomeStore(),
-       vocabulary = vocabulary ?? VocabularyStore();
+  }) : home = home ?? HomeStore();
 
   final AuthStore auth;
   final CaptureStore captures;

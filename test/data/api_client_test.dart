@@ -38,6 +38,13 @@ void main() {
       switch (request.uri.path) {
         case '/missing':
           response.statusCode = 404;
+        case '/invalid':
+          response.statusCode = 400;
+          response.write(
+            jsonEncode({
+              'name': ['Você já tem um grupo com esse nome.'],
+            }),
+          );
         case '/html-error':
           response.statusCode = 404;
           response.write('<html>não achou</html>');
@@ -90,6 +97,20 @@ void main() {
             .having((e) => e.toString(), 'toString', contains('GET /missing')),
       ),
     );
+  });
+
+  test('ApiException traz o corpo e a mensagem do campo', () async {
+    final error = await api
+        .post('/invalid', {})
+        .then<ApiException?>(
+          (_) => null,
+          onError: (Object e) => e as ApiException,
+        );
+
+    expect(error!.statusCode, 400);
+    expect(error.fieldError('name'), 'Você já tem um grupo com esse nome.');
+    expect(error.fieldError('icon'), isNull);
+    expect(const ApiException(500, 'x').fieldError('name'), isNull);
   });
 
   test('send devolve status e corpo sem lançar em 4xx, com headers', () async {

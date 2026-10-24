@@ -35,6 +35,7 @@ lib/
   features/capture/      painéis de captura (texto, foto, áudio) abertos pelo + do HomeShell + aviso "Salvo no Inbox"
   features/inbox/        Inbox + tela Escolher termos (pick_terms_page.dart) + term_selection.dart (marcar, editar texto, posição dos termos)
   features/profile/      Perfil + widgets/ (progress_card, offline_section, profile_section)
+  features/vocabulary/   Vocabulário + group_page.dart (grupo ou Sem grupo, seleção e mover) + widgets/ (group_card, term_tile, new_group_sheet, move_sheet) + count_label.dart ("1 termo", "2 grupos")
 packages/
   on_device_extraction/  plugin local (pub workspace): MethodChannel → Kotlin (ML Kit + Moonshine) e Swift (Vision + Moonshine). Ver Extração no aparelho
 assets/
@@ -59,7 +60,7 @@ build.yaml               opção do drift_dev (data como texto ISO, mantém fuso
 - Entrou (login, código, nova senha, Google, Apple): `HomeShell.open` = `loadAll()` + `pushAndRemoveUntil` (sem voltar).
 - Login → `push` de Cadastro / Esqueci a senha. Etapa pendente → `push` da tela de código. Voltar = `pop`.
 - `HomeShell`: `IndexedStack` (Início, Vocabulário, Inbox, Perfil) + `AppTabBar` + `ArcMenu`.
-- Grupo: `push` de `GroupPage` (tela cheia, sem tab bar).
+- Grupo: `push` de `GroupPage(groupId:)` ou `GroupPage.ungrouped()` (Sem grupo), tela cheia, sem tab bar. Lê o grupo do `VocabularyStore` pelo id (atualiza depois de mover). Abrir fecha o aviso aberto; sair também.
 - Sair: `AuthStore.logout()` + `pushAndRemoveUntil` → `LoginPage`.
 
 ## Dados e estado
@@ -69,8 +70,8 @@ Fluxo: tela → store → service → `ApiClient` → API.
 - `ApiClient`: único ponto de rede da API. JSON, timeout 10 s. Download do modelo de áudio: `ModelStorage`. Status ≥ 400 vira `ApiException`.
 - Service: chama endpoint e converte JSON em model. Sem estado. Trocar de API = mexer só em service (e `fromJson`).
 - Store: `Store<T>` (`ChangeNotifier`) guarda `data` e `error` de um recurso. `data` e `error` nulos = carregando. Ação (ex.: `CaptureStore.confirm`) grava, chama service e atualiza `data`.
-- Recurso que a API ainda não tem (Home: estatística e palavra do dia; Vocabulário: grupos e termos): store sem service, fonte local vazia (`HomeStore.empty`, `VocabularyStore()`). Teste passa dados no construtor. Tela some com o card sem dado (palavra do dia, revisão) e mostra estado vazio (Vocabulário). API ganhou o recurso: store volta a chamar service.
-- `AppScope`: guarda os stores, o `AudioPlayback` e o `CaptureDevice`; tela pega via `AppScope.of(context)`. `loadAll()` ao entrar: limpa mídia vencida, carrega tudo e retoma extração pendente (`extractPending`). Modo aparelho: chama `speech.ensure()` sem esperar (baixa o modelo se falta) e, quando o modelo fica pronto (`whenReady`), roda `extractPending` de novo. `AuthStore`, `CaptureStore`, `SpeechModelStore`, `AudioPlayback` e `CaptureDevice` vêm prontos de fora (`main.dart`), pra teste trocar API, banco, mídia, extrator, modelo, player e aparelho.
+- Recurso que a API ainda não tem (Home: estatística e palavra do dia): store sem service, fonte local vazia (`HomeStore.empty`). Teste passa dados no construtor. Tela some com o card sem dado (palavra do dia, revisão). API ganhou o recurso: store volta a chamar service.
+- `AppScope`: guarda os stores, o `AudioPlayback` e o `CaptureDevice`; tela pega via `AppScope.of(context)`. `loadAll()` ao entrar: limpa mídia vencida, carrega tudo e retoma extração pendente (`extractPending`). Modo aparelho: chama `speech.ensure()` sem esperar (baixa o modelo se falta) e, quando o modelo fica pronto (`whenReady`), roda `extractPending` de novo. `AuthStore`, `CaptureStore`, `VocabularyStore`, `SpeechModelStore`, `AudioPlayback` e `CaptureDevice` vêm prontos de fora (`main.dart`), pra teste trocar API, banco, mídia, extrator, modelo, player e aparelho. Os dois `Service` de dados dividem um `ApiClient` com token.
 - Sessão expirada (refresh recusado no meio do uso, `AuthStore.sessionExpired`): `HomeShell` volta pro login e avisa "Sua sessão expirou. Entre de novo.". Sair pelo Perfil não marca.
 - `AuthStore` (`ChangeNotifier`, fora do `Store<T>`): guarda só o refresh token (`isSignedIn`). Método por fluxo, devolve `AuthResult`: `AuthSignedIn` (salva token) ou `AuthPending` (etapa + session token, passado pra tela seguinte). Erro da API: `AuthException` (mensagem por campo, `null` = geral).
 - `restore()`: refresh no início. Recusado → apaga token. Sem rede → entra com o token salvo.
@@ -78,6 +79,16 @@ Fluxo: tela → store → service → `ApiClient` → API.
 - Tela de auth: mixin `AuthForm` (`submit` com `busy`, erro do campo no `AppTextField`, erro geral ou de campo que a tela não tem em `SnackBar`, sem rede = "Sem conexão...").
 - Tela: `ListenableBuilder` no store. Sem `data`: `AsyncStatus` (carregando, ou erro com "Tentar de novo"). Vários stores: `<Store>[...]` + `isReady` / `error` / `retry`.
 - Estado só da tela (aba, filtro, campo): `setState`.
+
+### Vocabulário
+
+- `VocabularyStore` (`Store<Vocabulary>`) + `VocabularyService`. `Vocabulary` = `groups` (mais novo primeiro) + `ungrouped` (Sem grupo). Totais (`termCount`, `masteredCount`, `learningCount`) somam os dois: Home e Perfil leem daqui.
+- Só online, sem banco local: ler, criar grupo e mover chamam a API na hora. Erro: tela avisa (mover: SnackBar, seleção fica; criar: erro no campo, painel fica).
+- `createGroup`: `POST groups`, põe o grupo devolvido no topo (`withGroup`) sem recarregar. `move(ids, groupId)`: `POST terms/move` (`null` = Sem grupo) e troca `data` pelo vocabulário da resposta. Desfazer = `move` de volta pro grupo de origem.
+- Termo novo: nasce na API ao confirmar a captura. `CaptureStore(onConfirmed:)` chama `vocabulary.load` (sem esperar) quando a confirmação sobe (na hora ou no `sync`). Offline: só recarrega quando subir.
+- Nome repetido: o painel checa no `data` (ignora maiúscula e espaço sobrando, `Vocabulary.hasGroupNamed`) e trava o botão. API recusou mesmo assim (outro aparelho): mostra a mensagem dela (`ApiException.fieldError('name')`).
+- Ícone do grupo: enum `GroupIcon` (`models.dart`), 48, nome = id da API, rótulo pt-BR, ícone de `AppIcons`. Id desconhecido: `AppIcons.vocabulary`. Ordem do enum = ordem no painel.
+- `ApiException.body`: corpo da resposta de erro. `fieldError(campo)` = 1ª mensagem do campo.
 
 ### Captura (offline first)
 
@@ -137,6 +148,7 @@ Conta (`AuthService`, allauth headless; detalhe dos fluxos em `api/docs/ARCHITEC
 - Token: refresh no `flutter_secure_storage` (chave `refresh_token`). Access só na memória (`AuthStore.accessToken`): vem do login; sem ele (app reaberto) ou com `renew`, faz refresh. Pedidos juntos dividem um refresh só (refresh troca o par). Refresh recusado = desloga.
 - `ApiClient(accessToken: auth.accessToken)`: manda `Authorization: Bearer` em toda chamada. 401 → renova uma vez e repete.
 - Captura: `/api/v1/captures` (criar com `text`, `PATCH {id}`, `POST {id}/confirm`, `DELETE {id}`, lista com `updated_since`). Contrato em `api/docs/ARCHITECTURE.md`.
+- Vocabulário: `GET /api/v1/vocabulary`, `POST /api/v1/groups` (`{name, icon, accent}`), `POST /api/v1/terms/move` (`{terms, group}`). Contrato em `api/docs/ARCHITECTURE.md` (Vocabulário).
 - Usuário: vem da API em `data.user` (`name`, `email`, `picture` = foto do Google). `AuthStore.user` guarda o do login e, ao abrir o app, busca `GET auth/session` depois do refresh. Fica salvo no `flutter_secure_storage` (chave `user`) pra aparecer offline; sair apaga. Home (saudação + avatar) e Perfil leem daqui.
 
 ## Layout de tela
@@ -158,8 +170,9 @@ Conta (`AuthService`, allauth headless; detalhe dos fluxos em `api/docs/ARCHITEC
 
 - Pasta `test/` espelha `lib/`: `lib/x/y.dart` → `test/x/y_test.dart`.
 - Só `flutter_test` (vem no SDK). Sem pacote de mock: fake manual.
-- Escopo de teste: `testScope(child: ...)` / `pumpPage(...)` em `test/helpers/pump_app.dart`. Padrão: Home e Vocabulário com `fixtures.dart` (dados de exemplo), capturas vazias (`fakeCaptures()`), player fake, aparelho fake. Trocar: `home:`, `vocabulary:`, `captures:`, `playback:`, `device:`, `auth:`.
+- Escopo de teste: `testScope(child: ...)` / `pumpPage(...)` em `test/helpers/pump_app.dart`. Padrão: Home com `fixtures.dart` (dados de exemplo), Vocabulário com `fakeVocabulary()` (API fake com `sampleVocabularyJson`), capturas vazias (`fakeCaptures()`), player fake, aparelho fake. Trocar: `home:`, `vocabulary:`, `captures:`, `playback:`, `device:`, `auth:`.
 - Erro de carregamento: `test/helpers/failing_stores.dart` (`FailingHomeStore`, `FailingVocabularyStore`; `failing = false` recupera).
+- Vocabulário: `test/helpers/fake_vocabulary_api.dart`. `FakeVocabularyApi` (grupos e Sem grupo em memória, `offline`, `rejections`, `calls`, `bodies`, nome repetido = 400 com mensagem, `termsOf(grupo)`), `fakeVocabulary(seed)` (store + API), `emptyVocabulary()`. Painel que devolve valor: `tester.openSheetOf<T>(painel, vocabulary: ...)`.
 - Montar widget via `test/helpers/pump_app.dart`: `pumpPage` (tela com tema + `AppScope` com stores carregados; `load: false` = carregando), `pumpComponent` (componente dentro de `Scaffold`). Tela de teste: 800x1600.
 - Captura: `test/helpers/fake_capture_api.dart` (`FakeCaptureApi`: servidor de capturas em memória, `offline`, `rejections`, `calls`, `bodies`, página de 2). Banco: `AppDatabase(NativeDatabase.memory())`. Mídia: `MediaStorage(() async => pastaTemporaria)` em teste de store; em teste de tela, `FakeMediaStorage` (I/O real trava o `testWidgets`). `fakeCaptures()` em `test/helpers/fake_capture_store.dart` monta store + banco + API + mídia; `sampleCapture(id, ...)` cria captura; `FakeAudioPlayback` no lugar do player; `FakeCaptureDevice` no lugar do aparelho (`camera`/`microphone` = permissão, `nextPhoto` (`null` = desistiu), `recording`, `recordings`, `cancelled`, `discarded`, `settingsOpened`, `origins`). Tela que volta (`Navigator.pop`): abrir por um botão numa tela anterior, nunca como `home`. Arrasto: `tester.dragFrom` (começa na palavra onde o dedo desceu). Painel: `tester.openSheet(painel, ...)` em `test/helpers/open_sheet.dart` devolve a lista de resultados ao fechar. Gravação: `pump(Duration)`, não `pumpAndSettle` (timer de 200 ms).
 - Conta: `test/helpers/fake_auth.dart`. `FakeAuthApi` (resposta por rota `MÉTODO caminho`, padrão = caminho feliz; `errors`, `pending`, `signedIn` montam resposta; `error` simula sem rede; `last(rota)` = request enviado), `FakeTokenStorage`, `FakeSocialSignIn` (token ou `null` = cancelado), `fakeAuthStore()`. `pumpPage(auth: ...)`. Campo por rótulo: `textField('E-mail')`. iOS: `variant: TargetPlatformVariant.only(TargetPlatform.iOS)`.

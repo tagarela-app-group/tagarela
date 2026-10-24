@@ -14,6 +14,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'fake_auth.dart';
 import 'fake_capture_store.dart';
 import 'fake_extraction.dart';
+import 'fake_vocabulary_api.dart';
 import 'fixtures.dart';
 
 AppScope testScope({
@@ -32,7 +33,7 @@ AppScope testScope({
   device: device ?? FakeCaptureDevice(),
   speech: speech ?? fakeSpeechModel().store,
   home: home ?? HomeStore(sampleHome),
-  vocabulary: vocabulary ?? VocabularyStore(sampleGroups),
+  vocabulary: vocabulary ?? fakeVocabulary().store,
   child: child,
 );
 

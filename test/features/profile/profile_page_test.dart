@@ -3,13 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/profile/widgets/progress_card.dart';
 
+import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/fake_auth.dart';
 import '../../helpers/fake_capture_store.dart';
 import '../../helpers/fake_extraction.dart';
@@ -44,8 +43,8 @@ void main() {
 
     final card = tester.widget<ProgressCard>(find.byType(ProgressCard));
     expect(card.captures, 2);
-    expect(card.terms, sampleGroups.termCount);
-    expect(card.mastered, sampleGroups.masteredCount);
+    expect(card.terms, sampleVocabulary.termCount);
+    expect(card.mastered, sampleVocabulary.masteredCount);
     expect(find.text('Capturas'), findsOneWidget);
     expect(find.text('Termos'), findsOneWidget);
     expect(find.text('Dominados'), findsOneWidget);
@@ -55,7 +54,7 @@ void main() {
     await tester.pumpPage(
       const ProfilePage(),
       auth: await signedInAuthStore(),
-      vocabulary: VocabularyStore(),
+      vocabulary: emptyVocabulary(),
     );
 
     final card = tester.widget<ProgressCard>(find.byType(ProgressCard));

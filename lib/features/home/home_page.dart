@@ -36,8 +36,8 @@ class HomePage extends StatelessWidget {
           );
         }
         final home = scope.home.data!;
-        final groups = scope.vocabulary.data!;
-        if (groups.termCount == 0 &&
+        final vocabulary = scope.vocabulary.data!;
+        if (vocabulary.termCount == 0 &&
             home.wordOfDay == null &&
             home.stats.reviewCount == 0) {
           return SheetPage(
@@ -62,8 +62,8 @@ class HomePage extends StatelessWidget {
           children: [
             if (home.wordOfDay case final word?) WordOfDayCard(word: word),
             VocabularySummary(
-              learning: groups.learningCount,
-              mastered: groups.masteredCount,
+              learning: vocabulary.learningCount,
+              mastered: vocabulary.masteredCount,
               weekGain: home.stats.weekGain,
               onSeeAll: onSeeVocabulary,
             ),

@@ -11,15 +11,15 @@ import 'package:tagarela/design_system/tokens/app_typography.dart';
 class AppSheet extends StatelessWidget {
   const AppSheet({
     super.key,
-    required this.icon,
-    required this.accent,
+    this.icon,
+    this.accent,
     required this.title,
     required this.subtitle,
     required this.child,
   });
 
-  final IconData icon;
-  final AppAccent accent;
+  final IconData? icon;
+  final AppAccent? accent;
   final String title;
   final String subtitle;
   final Widget child;
@@ -70,7 +70,7 @@ class AppSheet extends StatelessWidget {
           Row(
             spacing: AppSpacing.s3,
             children: [
-              IconTile(icon: icon, accent: accent),
+              if (icon != null) IconTile(icon: icon, accent: accent),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +94,7 @@ class AppSheet extends StatelessWidget {
               ),
             ],
           ),
-          child,
+          Flexible(child: SingleChildScrollView(child: child)),
         ],
       ),
     );

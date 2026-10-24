@@ -59,4 +59,28 @@ void main() {
     expect(material.color, Colors.transparent);
     expect(shape.side.color, AppColors.light.line);
   });
+
+  testWidgets('selected: borda primary de 2, sem sombra', (tester) async {
+    await tester.pumpComponent(
+      const AppCard(selected: true, child: Text('Card')),
+    );
+
+    final box = tester.widget<DecoratedBox>(
+      find
+          .descendant(
+            of: find.byType(AppCard),
+            matching: find.byType(DecoratedBox),
+          )
+          .first,
+    );
+    final material = tester.widget<Material>(
+      find
+          .descendant(of: find.byType(AppCard), matching: find.byType(Material))
+          .first,
+    );
+    final shape = material.shape! as RoundedRectangleBorder;
+    expect((box.decoration as BoxDecoration).boxShadow, isNull);
+    expect(shape.side.color, AppColors.light.primary);
+    expect(shape.side.width, 2);
+  });
 }

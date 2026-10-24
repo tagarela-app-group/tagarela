@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
-Term _term(int level) => Term('word', 'palavra', TermKind.word, level);
+Term _term(int level) =>
+    Term('t$level', 'word', 'palavra', TermKind.word, level);
 
 TermGroup _group(List<Term> terms) => TermGroup(
   id: '1',
@@ -49,6 +50,7 @@ void main() {
         'accent': 'sky',
         'terms': [
           {
+            'id': 't1',
             'text': 'layover',
             'translation': 'escala',
             'kind': 'word',
@@ -61,6 +63,7 @@ void main() {
         (g.id, g.name, g.icon, g.accent),
         ('7', 'Viagem', AppIcons.travel, AppAccent.sky),
       );
+      expect(g.terms.single.id, 't1');
       expect(g.terms.single.text, 'layover');
       expect(g.terms.single.kind, TermKind.word);
     });
@@ -79,16 +82,105 @@ void main() {
     });
   });
 
-  test('totais da lista de grupos', () {
-    final groups = [
-      _group([_term(5), _term(1)]),
-      _group([_term(4), _term(4), _term(0)]),
-    ];
+  group('GroupIcon', () {
+    test('48 ícones, cada um com rótulo e ícone próprios', () {
+      expect(GroupIcon.values, hasLength(48));
+      expect(GroupIcon.values.map((i) => i.icon).toSet(), hasLength(48));
+      expect(GroupIcon.values.every((i) => i.label.isNotEmpty), isTrue);
+    });
 
-    expect(groups.termCount, 5);
-    expect(groups.masteredCount, 3);
-    expect(groups.learningCount, 2);
-    expect(<TermGroup>[].termCount, 0);
+    test('nome do enum = id da API', () {
+      final g = TermGroup.fromJson({
+        'id': '1',
+        'name': 'Bichos',
+        'icon': 'paw',
+        'accent': 'mango',
+        'terms': <Object?>[],
+      });
+
+      expect(g.icon, GroupIcon.paw.icon);
+    });
+  });
+
+  group('Vocabulary', () {
+    final vocabulary = Vocabulary(
+      groups: [
+        _group([_term(5), _term(1)]),
+        _group([_term(4), _term(4), _term(0)]),
+      ],
+      ungrouped: [_term(5), _term(2)],
+    );
+
+    test('totais somam grupos e Sem grupo', () {
+      expect(vocabulary.termCount, 7);
+      expect(vocabulary.masteredCount, 4);
+      expect(vocabulary.learningCount, 3);
+      expect(const Vocabulary().termCount, 0);
+    });
+
+    test('isEmpty só sem grupo e sem termo solto', () {
+      expect(const Vocabulary().isEmpty, isTrue);
+      expect(Vocabulary(ungrouped: [_term(1)]).isEmpty, isFalse);
+      expect(Vocabulary(groups: [_group([])]).isEmpty, isFalse);
+    });
+
+    test('fromJson lê grupos e Sem grupo', () {
+      final v = Vocabulary.fromJson({
+        'groups': [
+          {
+            'id': 'g1',
+            'name': 'Viagem',
+            'icon': 'travel',
+            'accent': 'sky',
+            'terms': <Object?>[],
+          },
+        ],
+        'ungrouped': [
+          {
+            'id': 'u1',
+            'text': 'touch base',
+            'translation': '',
+            'kind': 'expression',
+            'level': 0,
+          },
+        ],
+      });
+
+      expect(v.groups.single.name, 'Viagem');
+      expect(v.ungrouped.single.text, 'touch base');
+      expect(v.ungrouped.single.translation, isEmpty);
+    });
+
+    test('group acha pelo id', () {
+      final v = Vocabulary(groups: [_group([])]);
+
+      expect(v.group('1')?.name, 'Grupo');
+      expect(v.group('9'), isNull);
+    });
+
+    test('hasGroupNamed ignora maiúscula e espaço sobrando', () {
+      final v = Vocabulary(groups: [_group([])]);
+
+      expect(v.hasGroupNamed('  grupo '), isTrue);
+      expect(v.hasGroupNamed('GRUPO'), isTrue);
+      expect(v.hasGroupNamed('Grupos'), isFalse);
+    });
+
+    test('withGroup põe o grupo novo no topo', () {
+      final v = Vocabulary(groups: [_group([])], ungrouped: [_term(1)]);
+      final novo = TermGroup(
+        id: '2',
+        name: 'Música',
+        icon: AppIcons.music,
+        accent: AppAccent.pink,
+        terms: const [],
+      );
+
+      final next = v.withGroup(novo);
+
+      expect(next.groups.map((g) => g.id), ['2', '1']);
+      expect(next.ungrouped, v.ungrouped);
+    });
   });
 
   group('User', () {

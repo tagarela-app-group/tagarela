@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/app/home_shell.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/stores/home_store.dart';
-import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/home/home_page.dart';
@@ -12,6 +11,7 @@ import 'package:tagarela/features/inbox/inbox_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
 
+import '../helpers/fake_vocabulary_api.dart';
 import '../helpers/fake_auth.dart';
 import '../helpers/fake_capture_store.dart';
 import '../helpers/pump_app.dart';
@@ -133,7 +133,7 @@ void main() {
     await tester.pumpPage(
       const HomeShell(),
       home: HomeStore(),
-      vocabulary: VocabularyStore(),
+      vocabulary: emptyVocabulary(),
     );
     expect(find.text('O que você ouviu hoje?'), findsNothing);
 

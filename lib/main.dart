@@ -10,10 +10,12 @@ import 'package:tagarela/data/media_storage.dart';
 import 'package:tagarela/data/model_storage.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/services/capture_service.dart';
+import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/data/social_sign_in.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
+import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/data/text_extractor.dart';
 import 'package:tagarela/data/token_storage.dart';
 
@@ -24,16 +26,20 @@ void main() {
     TokenStorage(),
     SocialSignIn(),
   );
+  final api = ApiClient(accessToken: auth.accessToken);
+  final vocabulary = VocabularyStore(VocabularyService(api));
   runApp(
     AppScope(
       auth: auth,
       captures: CaptureStore(
-        CaptureService(ApiClient(accessToken: auth.accessToken)),
+        CaptureService(api),
         AppDatabase(),
         MediaStorage(),
         owner: () => auth.user?.email,
         extractor: TextExtractor(models),
+        onConfirmed: vocabulary.load,
       ),
+      vocabulary: vocabulary,
       playback: AudioPlayback(),
       device: CaptureDevice(),
       speech: SpeechModelStore(models),

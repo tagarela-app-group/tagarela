@@ -59,4 +59,36 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.byType(AppSheet), findsOneWidget);
   });
+
+  testWidgets('sem ícone: só título e subtítulo; conteúdo longo rola', (
+    tester,
+  ) async {
+    await tester.pumpComponent(
+      Builder(
+        builder: (context) => TextButton(
+          onPressed: () => AppSheet.show<void>(
+            context,
+            (_) => AppSheet(
+              title: 'Mover pra qual grupo?',
+              subtitle: '2 termos de Viagem',
+              child: Column(
+                children: [
+                  for (var i = 0; i < 40; i++)
+                    SizedBox(height: 80, child: Text('linha $i')),
+                ],
+              ),
+            ),
+          ),
+          child: const Text('abrir'),
+        ),
+      ),
+    );
+    await tester.tap(find.text('abrir'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Mover pra qual grupo?'), findsOneWidget);
+    expect(find.byType(IconTile), findsNothing);
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
+  });
 }

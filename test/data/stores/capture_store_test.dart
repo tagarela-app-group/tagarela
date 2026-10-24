@@ -21,6 +21,7 @@ void main() {
   late String? owner;
   late CaptureStore store;
   late FakeTextExtractor extractor;
+  late int confirmed;
 
   const text = 'Please mind the gap between the train and the platform.';
   const mindTheGap = CaptureTerm(text: 'mind the gap', start: 7, end: 19);
@@ -31,12 +32,14 @@ void main() {
     root = await Directory.systemTemp.createTemp('captures_test');
     owner = 'ana@example.com';
     extractor = FakeTextExtractor();
+    confirmed = 0;
     store = CaptureStore(
       CaptureService(api),
       db,
       MediaStorage(() async => root),
       owner: () => owner,
       extractor: extractor,
+      onConfirmed: () async => confirmed++,
     );
   });
 
@@ -299,6 +302,23 @@ void main() {
 
       expect(api.calls, ['POST ${FakeCaptureApi.path}/${capture.id}/confirm']);
       expect(only().status, CaptureStatus.analyzed);
+      expect(confirmed, 1);
+    });
+
+    test('vocabulário só recarrega quando a confirmação sobe', () async {
+      await store.createText(text);
+      expect(confirmed, 0);
+      api.offline = true;
+
+      await store.confirm(only(), terms: const [mindTheGap]);
+      expect(confirmed, 0);
+
+      api.offline = false;
+      await store.sync();
+      expect(confirmed, 1);
+
+      await store.sync();
+      expect(confirmed, 1);
     });
 
     test('termos e confirmação offline sobem em ordem', () async {

@@ -3,11 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/vocabulary/count_label.dart';
 import 'package:tagarela/features/vocabulary/group_page.dart';
 import 'package:tagarela/features/vocabulary/widgets/group_card.dart';
+import 'package:tagarela/features/vocabulary/widgets/new_group_sheet.dart';
 
 class VocabularyPage extends StatelessWidget {
   const VocabularyPage({super.key});
+
+  static void _open(BuildContext context, GroupPage page) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
+
+  static Future<void> _newGroup(BuildContext context) async {
+    final group = await AppSheet.show<TermGroup>(
+      context,
+      (_) => const NewGroupSheet(),
+    );
+    if (group == null || !context.mounted) return;
+    AppToast.show(
+      context,
+      title: 'Grupo criado',
+      message: '${group.name} está no topo da lista.',
+      actionLabel: 'Abrir',
+      onAction: () => _open(context, GroupPage(groupId: group.id)),
+      aboveTabBar: true,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,27 +39,27 @@ class VocabularyPage extends StatelessWidget {
     return ListenableBuilder(
       listenable: vocabulary,
       builder: (context, _) {
-        final groups = vocabulary.data;
+        final data = vocabulary.data;
+        final empty = data == null || data.isEmpty;
         return SheetPage(
           header: PageHeader(
             title: 'Vocabulário',
-            subtitle: groups == null || groups.isEmpty
-                ? null
-                : '${groups.termCount} termos em ${groups.length} grupos',
+            subtitle: empty ? null : _subtitle(data),
             trailing: AppIconButton(
               icon: AppIcons.newGroup,
               tooltip: 'Novo grupo',
-              onPressed: () {},
+              onPressed: () => _newGroup(context),
               variant: AppIconButtonVariant.onHeader,
             ),
           ),
           gap: AppSpacing.s4,
-          centerLast: groups == null || groups.isEmpty,
-          children: switch (groups) {
+          onRefresh: vocabulary.load,
+          centerLast: empty,
+          children: switch (data) {
             null => [
               AsyncStatus(error: vocabulary.error, onRetry: vocabulary.load),
             ],
-            [] => const [
+            Vocabulary(isEmpty: true) => const [
               StateMessage(
                 icon: AppIcons.vocabulary,
                 title: 'Nenhum termo ainda',
@@ -44,24 +67,56 @@ class VocabularyPage extends StatelessWidget {
               ),
             ],
             _ => [
-              const SectionHeader(title: 'Seus grupos'),
-              _GroupGrid(groups: groups),
+              if (data.ungrouped.isNotEmpty)
+                OptionRow(
+                  icon: AppIcons.ungrouped,
+                  accent: AppAccent.violet,
+                  title: 'Sem grupo',
+                  subtitle:
+                      '${termsLabel(data.ungrouped.length)} pra pôr num grupo',
+                  dashed: true,
+                  color: context.colors.surface,
+                  trailing: Text(
+                    'Organizar',
+                    style: AppText.button.copyWith(
+                      color: context.colors.primaryText,
+                    ),
+                  ),
+                  onTap: () => _open(context, const GroupPage.ungrouped()),
+                ),
+              if (data.groups.isEmpty)
+                StateMessage(
+                  icon: AppIcons.newGroup,
+                  title: 'Nenhum grupo ainda',
+                  message: 'Crie um grupo pra organizar seus termos.',
+                  actionLabel: 'Criar grupo',
+                  onAction: () => _newGroup(context),
+                )
+              else ...[
+                const SectionHeader(title: 'Seus grupos'),
+                _GroupGrid(
+                  groups: data.groups,
+                  onOpen: (group) =>
+                      _open(context, GroupPage(groupId: group.id)),
+                ),
+              ],
             ],
           },
         );
       },
     );
   }
+
+  static String _subtitle(Vocabulary data) => data.groups.isEmpty
+      ? termsLabel(data.termCount)
+      : '${termsLabel(data.termCount)} em ${groupsLabel(data.groups.length)}';
 }
 
 class _GroupGrid extends StatelessWidget {
-  const _GroupGrid({required this.groups});
+  const _GroupGrid({required this.groups, required this.onOpen});
 
   final List<TermGroup> groups;
-
-  void _open(BuildContext context, TermGroup group) => Navigator.of(
-    context,
-  ).push(MaterialPageRoute(builder: (_) => GroupPage(group: group)));
+  final ValueChanged<TermGroup> onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +131,7 @@ class _GroupGrid extends StatelessWidget {
               children: [
                 for (final group in groups.skip(i).take(2))
                   Expanded(
-                    child: GroupCard(
-                      group: group,
-                      onTap: () => _open(context, group),
-                    ),
+                    child: GroupCard(group: group, onTap: () => onOpen(group)),
                   ),
                 if (i + 1 == groups.length) const Spacer(),
               ],
