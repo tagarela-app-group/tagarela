@@ -9,11 +9,7 @@ import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 enum InboxTab {
   all('Todas', CaptureSection.values),
   ready('Prontas', [CaptureSection.ready]),
-  pending('Pendentes', [
-    CaptureSection.attention,
-    CaptureSection.processing,
-    CaptureSection.waiting,
-  ]),
+  pending('Pendentes', [CaptureSection.attention, CaptureSection.processing]),
   done('Analisadas', [CaptureSection.done]);
 
   const InboxTab(this.label, this.sections);

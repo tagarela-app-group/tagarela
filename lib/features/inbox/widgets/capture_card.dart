@@ -128,15 +128,7 @@ class _CaptureCardState extends State<CaptureCard> {
                   icon: AppIcons.review,
                   text: 'Lendo o texto da foto…',
                 )
-              : _Transcribing(onDevice: capture.waitsExtraction),
-        ),
-      ],
-      CaptureStatus.waitingFile => [
-        withMedia(
-          const _StatusLine(
-            icon: AppIcons.offline,
-            text: 'Puxe a lista pra enviar quando tiver internet.',
-          ),
+              : const _Transcribing(),
         ),
       ],
       CaptureStatus.analyzed => [
@@ -198,7 +190,6 @@ class _Header extends StatelessWidget {
       CaptureStatus.failed => ('Erro', StatusTone.alert),
       CaptureStatus.ready => ('Pronta', StatusTone.primary),
       CaptureStatus.processing => ('Processando', StatusTone.learning),
-      CaptureStatus.waitingFile => ('Não enviada', StatusTone.neutral),
       CaptureStatus.analyzed => ('Analisada', StatusTone.neutral),
     };
     final muted = capture.status == CaptureStatus.analyzed;
@@ -437,9 +428,7 @@ class _StatusLine extends StatelessWidget {
 }
 
 class _Transcribing extends StatelessWidget {
-  const _Transcribing({required this.onDevice});
-
-  final bool onDevice;
+  const _Transcribing();
 
   @override
   Widget build(BuildContext context) {
@@ -448,7 +437,7 @@ class _Transcribing extends StatelessWidget {
       listenable: speech,
       builder: (context, _) => _StatusLine(
         icon: AppIcons.review,
-        text: onDevice && !speech.ready
+        text: !speech.ready
             ? 'Esperando o modelo de áudio baixar…'
             : 'Transcrevendo o áudio…',
       ),

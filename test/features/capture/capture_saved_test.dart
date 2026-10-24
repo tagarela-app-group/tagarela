@@ -17,13 +17,7 @@ void main() {
       'Já está processando.',
     );
     expect(
-      savedMessage(
-        sampleCapture(
-          'f',
-          source: CaptureSource.photo,
-          pending: const {CaptureSync.create, CaptureSync.file},
-        ),
-      ),
+      savedMessage(sampleCapture('f', pending: const {CaptureSync.create})),
       'Puxe a lista no Inbox quando tiver internet.',
     );
     expect(

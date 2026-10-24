@@ -74,20 +74,6 @@ void main() {
   });
 
   group('Funciona sem internet', () {
-    testWidgets('modo servidor: sem a seção e sem o aviso de privacidade', (
-      tester,
-    ) async {
-      await tester.pumpPage(
-        const ProfilePage(),
-        auth: await signedInAuthStore(),
-      );
-
-      expect(find.text('FUNCIONA SEM INTERNET'), findsNothing);
-      expect(find.text('CONTA'), findsOneWidget);
-      expect(find.text('E-mail'), findsOneWidget);
-      expect(find.text('Privacidade'), findsNothing);
-    });
-
     testWidgets('baixa o modelo sozinho, sem botão, e fica pronto', (
       tester,
     ) async {

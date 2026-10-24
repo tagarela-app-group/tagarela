@@ -155,7 +155,6 @@ void main() {
       'terms': [
         {'text': 'mind', 'start': 0, 'end': 4},
       ],
-      'error': '',
       'captured_at': '2026-10-23T10:00:00Z',
       'processed_at': '2026-10-23T10:00:05Z',
       'analyzed_at': null,
@@ -164,20 +163,16 @@ void main() {
     };
 
     test('fromJson lê o formato da API', () {
-      final capture = Capture.fromJson(json(status: 'waiting_file'));
+      final capture = Capture.fromJson(json(status: 'analyzed'));
 
       expect(capture.source, CaptureSource.photo);
-      expect(capture.status, CaptureStatus.waitingFile);
+      expect(capture.status, CaptureStatus.analyzed);
       expect(capture.terms, [
         const CaptureTerm(text: 'mind', start: 0, end: 4),
       ]);
       expect(capture.error, isNull);
       expect(capture.processedAt, DateTime.utc(2026, 10, 23, 10, 0, 5));
       expect(capture.analyzedAt, isNull);
-      expect(
-        Capture.fromJson({...json(), 'error': 'no_text'}).error,
-        'no_text',
-      );
     });
 
     test('merge sem pendência fica igual ao servidor', () {
@@ -259,14 +254,12 @@ void main() {
       expect(
         CaptureStatus.values.map((s) => (at(s).section, at(s).needsAction)),
         [
-          (CaptureSection.waiting, false),
           (CaptureSection.processing, false),
           (CaptureSection.attention, true),
           (CaptureSection.ready, true),
           (CaptureSection.done, false),
         ],
       );
-      expect(CaptureSection.waiting.label, 'Esperando envio');
     });
 
     test('CaptureStatus.fromApi usa o nome da API', () {
@@ -274,7 +267,7 @@ void main() {
         CaptureStatus.values.map((s) => CaptureStatus.fromApi(s.apiName)),
         CaptureStatus.values,
       );
-      expect(CaptureStatus.waitingFile.apiName, 'waiting_file');
+      expect(CaptureStatus.analyzed.apiName, 'analyzed');
     });
   });
 }

@@ -17,11 +17,6 @@ import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/text_extractor.dart';
 import 'package:tagarela/data/token_storage.dart';
 
-const _extraction = String.fromEnvironment(
-  'EXTRACTION',
-  defaultValue: 'device',
-);
-
 void main() {
   final models = ModelStorage();
   final auth = AuthStore(
@@ -37,7 +32,7 @@ void main() {
         AppDatabase(),
         MediaStorage(),
         owner: () => auth.user?.email,
-        extractor: _extraction == 'server' ? null : TextExtractor(models),
+        extractor: TextExtractor(models),
       ),
       playback: AudioPlayback(),
       device: CaptureDevice(),
