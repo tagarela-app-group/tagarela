@@ -100,3 +100,13 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 - Ícone só com cor; ativo muda cor, não forma.
 - Valor visual novo: virar token aqui antes de usar.
 - Aviso rápido: `SnackBar` do tema (fundo `ink`, texto `bg`, ação manga no claro e violeta no escuro), flutuante acima da tab bar.
+
+## Mockup
+
+Canvas em abas por assunto: Conta, Início, Captura, Inbox, Vocabulário, Perfil, Design system, Propostas.
+
+- Cada aba: linha de cima no tema claro, de baixo no escuro. Mesma coluna = mesma tela. Estados em ordem do fluxo, da esquerda pra direita. Notas à direita da última coluna. E-mails ficam numa linha embaixo, na aba Conta.
+- Tela nova: na aba do assunto, no fim da linha (ou junto do estado vizinho), com a escura embaixo.
+- Ideia ainda não aprovada: aba Propostas, com nota laranja dizendo o que muda. Aprovou e entrou no app: vai pra aba do assunto, no lugar da antiga, e sai de Propostas.
+- Nenhuma tela some: estado que ainda existe no app continua na aba dele.
+- Board do design system: uma parte por aba (Princípios, Cores, Tipografia, Forma, Ícones, Movimento, Componentes, Tema escuro), cada uma começa com "O que é" e "Quando usar". Componentes: uma família por aba. Componente novo entra na família dele (ou numa nova).
