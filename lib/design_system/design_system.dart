@@ -1,8 +1,10 @@
 library;
 
+export 'package:tagarela/design_system/components/accent_picker.dart';
 export 'package:tagarela/design_system/components/app_bubble.dart';
 export 'package:tagarela/design_system/components/app_button.dart';
 export 'package:tagarela/design_system/components/app_card.dart';
+export 'package:tagarela/design_system/components/app_checkbox.dart';
 export 'package:tagarela/design_system/components/app_chip.dart';
 export 'package:tagarela/design_system/components/app_code_field.dart';
 export 'package:tagarela/design_system/components/app_icon_button.dart';
@@ -10,8 +12,10 @@ export 'package:tagarela/design_system/components/app_sheet.dart';
 export 'package:tagarela/design_system/components/app_tab_bar.dart';
 export 'package:tagarela/design_system/components/app_tag.dart';
 export 'package:tagarela/design_system/components/app_text_field.dart';
+export 'package:tagarela/design_system/components/app_toast.dart';
 export 'package:tagarela/design_system/components/arc_menu.dart';
 export 'package:tagarela/design_system/components/async_status.dart';
+export 'package:tagarela/design_system/components/icon_picker.dart';
 export 'package:tagarela/design_system/components/icon_tile.dart';
 export 'package:tagarela/design_system/components/level_dots.dart';
 export 'package:tagarela/design_system/components/option_row.dart';

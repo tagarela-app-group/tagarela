@@ -11,7 +11,7 @@ TermGroup _group(List<int> levels) => TermGroup(
   name: 'Comida',
   icon: AppIcons.travel,
   accent: AppAccent.mint,
-  terms: [for (final l in levels) Term('t', 't', TermKind.word, l)],
+  terms: [for (final l in levels) Term('t$l', 't', 't', TermKind.word, l)],
 );
 
 void main() {
@@ -30,7 +30,7 @@ void main() {
   testWidgets('grupo vazio = 0% sem dividir por zero', (tester) async {
     await tester.pumpComponent(GroupCard(group: _group([]), onTap: () {}));
 
-    expect(find.text('0 termos'), findsOneWidget);
+    expect(find.text('Sem termos ainda'), findsOneWidget);
     expect(find.text('0% dominado'), findsOneWidget);
   });
 

@@ -65,16 +65,18 @@ class Stats {
 }
 
 class Term {
-  const Term(this.text, this.translation, this.kind, this.level);
+  const Term(this.id, this.text, this.translation, this.kind, this.level);
 
   Term.fromJson(Json json)
     : this(
+        json['id']! as String,
         json['text']! as String,
         json['translation']! as String,
         TermKind.values.byName(json['kind']! as String),
         json['level']! as int,
       );
 
+  final String id;
   final String text;
   final String translation;
   final TermKind kind;
@@ -83,6 +85,62 @@ class Term {
 
   TermStatus get status =>
       level >= 4 ? TermStatus.mastered : TermStatus.learning;
+}
+
+enum GroupIcon {
+  layers('Geral', AppIcons.layers),
+  talk('Conversa', AppIcons.talk),
+  work('Trabalho', AppIcons.work),
+  travel('Viagem', AppIcons.travel),
+  food('Comida', AppIcons.food),
+  tv('Séries', AppIcons.tv),
+  music('Música', AppIcons.music),
+  study('Estudos', AppIcons.study),
+  heart('Favoritos', AppIcons.heart),
+  game('Jogos', AppIcons.game),
+  shopping('Compras', AppIcons.shopping),
+  sport('Esporte', AppIcons.sport),
+  health('Saúde', AppIcons.health),
+  home('Casa', AppIcons.home),
+  nature('Natureza', AppIcons.nature),
+  paw('Animais', AppIcons.paw),
+  tech('Tecnologia', AppIcons.tech),
+  money('Dinheiro', AppIcons.money),
+  car('Transporte', AppIcons.car),
+  family('Família', AppIcons.family),
+  book('Livros', AppIcons.book),
+  art('Arte', AppIcons.art),
+  party('Festa', AppIcons.party),
+  weather('Clima', AppIcons.weather),
+  phone('Celular', AppIcons.phone),
+  mail('E-mail', AppIcons.mail),
+  code('Programação', AppIcons.code),
+  science('Ciência', AppIcons.science),
+  news('Notícias', AppIcons.news),
+  movie('Cinema', AppIcons.movie),
+  camera('Fotografia', AppIcons.camera),
+  place('Lugares', AppIcons.place),
+  city('Cidade', AppIcons.city),
+  globe('Mundo', AppIcons.globe),
+  calendar('Datas', AppIcons.calendar),
+  clock('Rotina', AppIcons.clock),
+  star('Importante', AppIcons.star),
+  idea('Ideias', AppIcons.idea),
+  smile('Sentimentos', AppIcons.smile),
+  shirt('Roupas', AppIcons.shirt),
+  restaurant('Restaurante', AppIcons.restaurant),
+  drink('Bebidas', AppIcons.drink),
+  mountain('Aventura', AppIcons.mountain),
+  gift('Presentes', AppIcons.gift),
+  flag('Países', AppIcons.flag),
+  podcast('Podcasts', AppIcons.podcast),
+  goal('Metas', AppIcons.goal),
+  writing('Escrita', AppIcons.writing);
+
+  const GroupIcon(this.label, this.icon);
+
+  final String label;
+  final IconData icon;
 }
 
 class TermGroup {
@@ -98,23 +156,13 @@ class TermGroup {
     : this(
         id: json['id']! as String,
         name: json['name']! as String,
-        icon: _icons[json['icon']] ?? AppIcons.vocabulary,
+        icon:
+            GroupIcon.values.asNameMap()[json['icon']]?.icon ??
+            AppIcons.vocabulary,
         accent:
             AppAccent.values.asNameMap()[json['accent']] ?? AppAccent.violet,
-        terms: [
-          for (final t in json['terms']! as List<Object?>)
-            Term.fromJson(t! as Json),
-        ],
+        terms: _terms(json['terms']),
       );
-
-  static const _icons = {
-    'travel': AppIcons.travel,
-    'work': AppIcons.work,
-    'talk': AppIcons.talk,
-    'layers': AppIcons.layers,
-    'tv': AppIcons.tv,
-    'food': AppIcons.food,
-  };
 
   final String id;
   final String name;
@@ -122,17 +170,57 @@ class TermGroup {
   final AppAccent accent;
   final List<Term> terms;
 
-  int get masteredCount =>
-      terms.where((t) => t.status == TermStatus.mastered).length;
+  int get masteredCount => terms.masteredCount;
 
   List<Term> termsWith(TermStatus? status) =>
       status == null ? terms : terms.where((t) => t.status == status).toList();
 }
 
-extension TermGroupList on List<TermGroup> {
-  int get termCount => fold(0, (sum, g) => sum + g.terms.length);
-  int get masteredCount => fold(0, (sum, g) => sum + g.masteredCount);
+List<Term> _terms(Object? json) => [
+  for (final t in json! as List<Object?>) Term.fromJson(t! as Json),
+];
+
+extension TermList on List<Term> {
+  int get masteredCount => where((t) => t.status == TermStatus.mastered).length;
+}
+
+class Vocabulary {
+  const Vocabulary({this.groups = const [], this.ungrouped = const []});
+
+  Vocabulary.fromJson(Json json)
+    : this(
+        groups: [
+          for (final g in json['groups']! as List<Object?>)
+            TermGroup.fromJson(g! as Json),
+        ],
+        ungrouped: _terms(json['ungrouped']),
+      );
+
+  final List<TermGroup> groups;
+  final List<Term> ungrouped;
+
+  bool get isEmpty => groups.isEmpty && ungrouped.isEmpty;
+
+  int get termCount =>
+      groups.fold(ungrouped.length, (sum, g) => sum + g.terms.length);
+
+  int get masteredCount =>
+      groups.fold(ungrouped.masteredCount, (sum, g) => sum + g.masteredCount);
+
   int get learningCount => termCount - masteredCount;
+
+  TermGroup? group(String id) => groups.where((g) => g.id == id).firstOrNull;
+
+  bool hasGroupNamed(String name) {
+    final key = groupNameKey(name);
+    return groups.any((g) => groupNameKey(g.name) == key);
+  }
+
+  Vocabulary withGroup(TermGroup group) =>
+      Vocabulary(groups: [group, ...groups], ungrouped: ungrouped);
+
+  static String groupNameKey(String name) =>
+      name.trim().split(RegExp(r'\s+')).join(' ').toLowerCase();
 }
 
 class WordOfDay {

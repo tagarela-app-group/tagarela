@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -16,6 +17,7 @@ class CaptureStore extends Store<List<Capture>> {
     this._media, {
     required this._owner,
     required this._extractor,
+    this._onConfirmed,
   });
 
   final CaptureService _service;
@@ -23,6 +25,7 @@ class CaptureStore extends Store<List<Capture>> {
   final MediaStorage _media;
   final String? Function() _owner;
   final TextExtractor _extractor;
+  final Future<void> Function()? _onConfirmed;
 
   Future<void> _extractions = Future.value();
   var _queued = 0;
@@ -250,7 +253,9 @@ class CaptureStore extends Store<List<Capture>> {
     }
     await step(CaptureSync.create, () => _service.create(current));
     await step(CaptureSync.update, () => _service.update(current));
+    if (!current.pending.contains(CaptureSync.confirm)) return;
     await step(CaptureSync.confirm, () => _service.confirm(current.id));
+    if (_onConfirmed case final reload?) unawaited(reload());
   }
 
   Future<void> _pull(String owner) async {

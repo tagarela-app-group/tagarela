@@ -9,8 +9,8 @@ import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
 
 import 'package:tagarela/data/stores/home_store.dart';
-import 'package:tagarela/data/stores/vocabulary_store.dart';
 
+import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/failing_stores.dart';
 import '../../helpers/fake_auth.dart';
 import '../../helpers/pump_app.dart';
@@ -109,7 +109,7 @@ void main() {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () => captures++),
       home: HomeStore(),
-      vocabulary: VocabularyStore(),
+      vocabulary: emptyVocabulary(),
     );
 
     expect(find.byType(WordOfDayCard), findsNothing);
@@ -132,7 +132,7 @@ void main() {
         stats: const Stats(weekGain: 0, reviewCount: 3),
         wordOfDay: null,
       )),
-      vocabulary: VocabularyStore(),
+      vocabulary: emptyVocabulary(),
     );
 
     expect(find.byType(ReviewCard), findsOneWidget);

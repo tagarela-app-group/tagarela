@@ -10,6 +10,7 @@ import 'package:tagarela/data/store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/text_extractor.dart';
 
+import '../helpers/fake_vocabulary_api.dart';
 import '../helpers/fake_auth.dart';
 import '../helpers/fake_capture_store.dart';
 import '../helpers/fake_extraction.dart';
@@ -34,6 +35,7 @@ void main() {
       playback: FakeAudioPlayback(),
       device: FakeCaptureDevice(),
       speech: fakeSpeechModel().store,
+      vocabulary: emptyVocabulary(),
       child: const SizedBox(),
     );
 
@@ -41,7 +43,7 @@ void main() {
 
     expect(scope.home.data!.wordOfDay, isNull);
     expect(scope.home.data!.stats.reviewCount, 0);
-    expect(scope.vocabulary.data, isEmpty);
+    expect(scope.vocabulary.data!.isEmpty, isTrue);
   });
 
   test('loadAll limpa mídia vencida antes de listar', () async {

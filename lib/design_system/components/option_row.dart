@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/components/icon_tile.dart';
@@ -13,25 +15,36 @@ class OptionRow extends StatelessWidget {
     required this.icon,
     required this.accent,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.onTap,
+    this.trailing,
+    this.dashed = false,
+    this.color,
   });
 
   final IconData icon;
   final AppAccent accent;
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final VoidCallback? onTap;
+
+  final Widget? trailing;
+
+  final bool dashed;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(AppRadius.lg),
-      side: BorderSide(color: c.line, width: 1.5),
-    );
+    final radius = BorderRadius.circular(AppRadius.lg);
+    final ShapeBorder shape = dashed
+        ? _DashedBorder(radius: radius, color: c.primary)
+        : RoundedRectangleBorder(
+            borderRadius: radius,
+            side: BorderSide(color: c.line, width: 1.5),
+          );
     return Material(
-      type: MaterialType.transparency,
+      color: color ?? Colors.transparent,
       shape: shape,
       child: InkWell(
         onTap: onTap,
@@ -53,21 +66,61 @@ class OptionRow extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Text(
-                      subtitle,
-                      style: AppText.label.copyWith(
-                        color: c.inkSoft,
-                        fontWeight: FontWeight.w400,
+                    if (subtitle case final subtitle?)
+                      Text(
+                        subtitle,
+                        style: AppText.label.copyWith(
+                          color: c.inkSoft,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
-              Icon(AppIcons.forward, size: 20, color: c.inkSoft),
+              trailing ?? Icon(AppIcons.forward, size: 20, color: c.inkSoft),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+class _DashedBorder extends ShapeBorder {
+  const _DashedBorder({required this.radius, required this.color});
+
+  static const _width = 1.5;
+  static const _dash = 6.0;
+  static const _gap = 4.0;
+
+  final BorderRadius radius;
+  final Color color;
+
+  @override
+  EdgeInsetsGeometry get dimensions => const EdgeInsets.all(_width);
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
+      getOuterPath(rect.deflate(_width), textDirection: textDirection);
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
+      Path()..addRRect(radius.toRRect(rect));
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _width;
+    final outline = Path()..addRRect(radius.toRRect(rect.deflate(_width / 2)));
+    for (final PathMetric metric in outline.computeMetrics()) {
+      for (var d = 0.0; d < metric.length; d += _dash + _gap) {
+        canvas.drawPath(metric.extractPath(d, d + _dash), paint);
+      }
+    }
+  }
+
+  @override
+  ShapeBorder scale(double t) => this;
 }

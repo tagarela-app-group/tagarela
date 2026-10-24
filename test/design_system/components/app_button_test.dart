@@ -115,4 +115,23 @@ void main() {
 
     expect(tester.getSize(find.byType(TextButton)).width, 800);
   });
+
+  testWidgets('onHeader: pílula no tom do header, texto branco', (
+    tester,
+  ) async {
+    await tester.pumpComponent(
+      AppButton(
+        label: 'Mover termos',
+        onPressed: () {},
+        variant: AppButtonVariant.onHeader,
+        size: AppButtonSize.small,
+      ),
+    );
+
+    final style = tester.widget<TextButton>(find.byType(TextButton)).style!;
+    final shape = style.shape!.resolve({})! as RoundedRectangleBorder;
+    expect(style.backgroundColor!.resolve({}), AppColors.light.headerChip);
+    expect(style.foregroundColor!.resolve({}), AppPalette.white);
+    expect(shape.borderRadius, BorderRadius.circular(AppRadius.pill));
+  });
 }

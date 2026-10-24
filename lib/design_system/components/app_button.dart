@@ -5,7 +5,7 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-enum AppButtonVariant { primary, tonal, outline, ink, contrast, text }
+enum AppButtonVariant { primary, tonal, outline, ink, contrast, text, onHeader }
 
 enum AppButtonSize {
   large(56),
@@ -51,7 +51,11 @@ class AppButton extends StatelessWidget {
       AppButtonVariant.ink => (AppPalette.ink, AppPalette.white),
       AppButtonVariant.contrast => (c.contrast, c.onContrast),
       AppButtonVariant.text => (Colors.transparent, c.primaryText),
+      AppButtonVariant.onHeader => (c.headerChip, AppPalette.white),
     };
+    final radius = variant == AppButtonVariant.onHeader
+        ? AppRadius.pill
+        : AppRadius.md;
 
     final enabled = onPressed != null || loading;
     final button = TextButton(
@@ -69,7 +73,7 @@ class AppButton extends StatelessWidget {
             ? AppText.button.copyWith(fontSize: 16)
             : AppText.button,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderRadius: BorderRadius.circular(radius),
         ),
         side: variant == AppButtonVariant.outline
             ? BorderSide(color: c.line, width: 1.5)

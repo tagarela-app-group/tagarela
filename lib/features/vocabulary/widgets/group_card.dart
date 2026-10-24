@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/vocabulary/count_label.dart';
 
 class GroupCard extends StatelessWidget {
   const GroupCard({super.key, required this.group, required this.onTap});
@@ -27,7 +28,7 @@ class GroupCard extends StatelessWidget {
             children: [
               Text(group.name, style: AppText.titleSm),
               Text(
-                '$total termos',
+                total == 0 ? 'Sem termos ainda' : termsLabel(total),
                 style: AppText.bodyMd.copyWith(color: c.inkSoft),
               ),
             ],

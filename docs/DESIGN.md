@@ -62,6 +62,8 @@ Estilos sem cor: herdam `ink`. Mudar cor com `copyWith(color:)`.
 
 Material outlined/rounded, centralizado em `app_icons.dart`. Trocar pacote = mexer só lá. 22 em tab bar/header, 16–20 em linhas. Logo Apple: `AppIcons.apple`. Logo Google: imagem `assets/images/google.png` (colorido).
 
+Grupo: 48 ícones (`AppIcons.travel`, `music`, `paw`...), um por tema; catálogo com rótulo em `GroupIcon` (`models.dart`). `AppIcons.ungrouped` (pasta aberta) = Sem grupo. `AppIcons.move` = mover termos.
+
 Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, mesma API do `Icon`).
 
 ## Componentes
@@ -71,9 +73,9 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `SheetPage` | Toda tela: header + body arredondado rolável. `onRefresh` = puxar pra atualizar. `footer` = barra fixa embaixo (fundo `bg`, linha `line` em cima), fora da rolagem. `centerLast` = último filho centralizado no espaço que sobra (estado de tela) |
 | `PageHeader` | Título/subtítulo (+ leading/trailing) no header. `centered`: leading em cima e textos no meio, sem trailing (Perfil) |
 | `SectionHeader` | Título de seção + ação texto |
-| `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), contrast (botão Apple), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading`. `loading`: spinner 18 na cor do texto no lugar do `leading`, rótulo e cor da variante ficam, toque ignorado. Enquanto um botão carrega, os outros da tela ficam desabilitados |
+| `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), contrast (botão Apple), text, onHeader (pílula `headerChip` + branco, no header: "Mover termos", "Selecionar todos"). Tamanhos large 56, medium 48, small 44. `expand`, `leading`. `loading`: spinner 18 na cor do texto no lugar do `leading`, rótulo e cor da variante ficam, toque ignorado. Enquanto um botão carrega, os outros da tela ficam desabilitados |
 | `AppIconButton` | Botão redondo de ícone. Variantes onHeader, ink, primary, soft (`surfaceAlt` + `ink`: fechar painel), ghost. `tooltip` obrigatório |
-| `AppCard` | Superfície com sombra. `onTap` opcional. `color` próprio = sem sombra. `muted` = sem fundo nem sombra, borda `line` (item encerrado, ex.: captura analisada) |
+| `AppCard` | Superfície com sombra. `onTap` opcional. `color` próprio = sem sombra. `muted` = sem fundo nem sombra, borda `line` (item encerrado, ex.: captura analisada). `selected` = borda `primary` 2, sem sombra (item marcado na seleção) |
 | `AppTextField` | Rótulo acima, ícone, halo no foco, `helperText` (some com erro), erro, `obscure` com olho. `lines` > 1 = várias linhas (rola dentro). `maxLength` = limite + contador `n/max` à direita do rodapé. `autofocus` |
 | `AppCodeField` | Código numérico em caixas (padrão 6, 56 de altura, raio md). Caixa da vez com halo, erro em `alert`. Campo real escondido (`oneTimeCode`, só dígito). `onCompleted` ao completar |
 | `AppChip` | Filtro. Selecionado = tinta cheia |
@@ -89,9 +91,13 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `StateMessage` | Ícone (ou `glyph`, ex.: `SpeechBubbleIcon`) + título + texto + ação tonal opcional (`actionIcon` = ícone na ação). Lista vazia, erro, permissão negada. Estado de tela: sempre centralizado (`SheetPage.centerLast`) |
 | `AsyncStatus` | Body sem dado: spinner, ou erro (`StateMessage`) com "Tentar de novo". Centralizado (`SheetPage.centerLast`) |
 | `ArcMenu` | Botão + (64, raio `lg`, anel de 6 da cor da tab bar) que abre opções em arco (150°, 90°, 30°, raio 118) sobre scrim com blur. Arco tracejado decorativo liga as opções. + desenhado: 20 de lado, traço 2,8, ponta redonda (o `add` do Material é fino demais). Abrir de fora: `GlobalKey<ArcMenuState>` + `open()` |
-| `AppSheet` | Painel que sobe de baixo: puxador, `IconTile` + título + subtítulo, Fechar (`soft`), conteúdo. Raio `sheet` no topo, sobre `scrim`. Abre com `AppSheet.show(context, builder)`; sobe com o teclado |
+| `AppSheet` | Painel que sobe de baixo: puxador, `IconTile` (opcional) + título + subtítulo, Fechar (`soft`), conteúdo (rola se não couber, ex.: teclado aberto). Raio `sheet` no topo, sobre `scrim`. Abre com `AppSheet.show(context, builder)`; sobe com o teclado |
 | `TermChip` | Pílula do termo escolhido: `primarySoft` + `primaryText`. Sem `onRemove`: 30 de altura, texto `label` (card do Inbox). Com `onRemove`: 40, texto `button` + X "Remover <termo>". `muted` = `surfaceAlt` + `inkSoft` (analisada) |
-| `OptionRow` | Linha de escolha: `IconTile` 48 + título + subtítulo + seta. Borda `line` 1.5, raio `lg`. Ex.: Tirar foto, Escolher da galeria |
+| `OptionRow` | Linha de escolha: `IconTile` 48 + título + subtítulo (opcional) + seta (ou `trailing`). Borda `line` 1.5, raio `lg`. `dashed` = borda tracejada `primary` (criar ou organizar: "+ Novo grupo", card Sem grupo). `color` = fundo (padrão transparente). Ex.: Tirar foto, Escolher da galeria, grupo no Mover |
+| `IconPicker` | Grade de ícones 6 colunas, 12 por página. Rótulo + "‹ Voltar" (da 2ª página) + "1/4" + "Avançar ›" (some na última, sem mexer o layout). Célula 48, raio `md`: escolhida = fundo `soft` + borda e ícone `fg` do acento; resto `surfaceAlt` + `inkSoft`. Abre na página do escolhido |
+| `AccentPicker` | As 6 cores de `AppAccent` em bolinhas de 36 (toque 48). Escolhida: anel `surface` 3 + anel da cor 5 + check |
+| `AppCheckbox` | Caixa 24, raio 8, borda `line` 2. Marcada: `primary` cheio + check `onPrimary` |
+| `AppToast` | Aviso rápido: círculo `mastered` com check + título + texto + ação. Some sozinho (4 s), mesmo com ação. `aboveTabBar` = acima da tab bar e do botão + (abas) |
 
 ## Regras
 
@@ -99,7 +105,7 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 - Status sempre `StatusPill`; aprendendo = âmbar, dominado = menta.
 - Ícone só com cor; ativo muda cor, não forma.
 - Valor visual novo: virar token aqui antes de usar.
-- Aviso rápido: `SnackBar` do tema (fundo `ink`, texto `bg`, ação manga no claro e violeta no escuro), flutuante acima da tab bar.
+- Aviso rápido: `AppToast` sobre o `SnackBar` do tema (fundo `ink`, texto `bg`, ação manga no claro e violeta no escuro), flutuante. Erro simples: `SnackBar` só com texto.
 
 ## Mockup
 

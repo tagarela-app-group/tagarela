@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
@@ -26,5 +27,31 @@ void main() {
 
     await tester.tap(find.text('Tirar foto'));
     expect(taps, 1);
+  });
+
+  testWidgets('tracejada, sem subtítulo e com fim próprio', (tester) async {
+    await tester.pumpComponent(
+      OptionRow(
+        icon: AppIcons.add,
+        accent: AppAccent.violet,
+        title: 'Novo grupo',
+        dashed: true,
+        trailing: const Text('Organizar'),
+        onTap: () {},
+      ),
+    );
+
+    expect(find.text('Novo grupo'), findsOneWidget);
+    expect(find.text('Organizar'), findsOneWidget);
+    expect(find.byIcon(AppIcons.forward), findsNothing);
+    final material = tester.widget<Material>(
+      find
+          .descendant(
+            of: find.byType(OptionRow),
+            matching: find.byType(Material),
+          )
+          .first,
+    );
+    expect(material.shape, isNot(isA<RoundedRectangleBorder>()));
   });
 }

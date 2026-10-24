@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
-import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/user_avatar.dart';
@@ -24,7 +23,7 @@ class ProfilePage extends StatelessWidget {
       ]),
       builder: (context, _) {
         final user = scope.auth.user;
-        final groups = scope.vocabulary.data;
+        final vocabulary = scope.vocabulary.data;
         return SheetPage(
           header: user == null
               ? const PageHeader(title: 'Perfil')
@@ -42,8 +41,8 @@ class ProfilePage extends StatelessWidget {
           children: [
             ProgressCard(
               captures: scope.captures.data?.length ?? 0,
-              terms: groups?.termCount ?? 0,
-              mastered: groups?.masteredCount ?? 0,
+              terms: vocabulary?.termCount ?? 0,
+              mastered: vocabulary?.masteredCount ?? 0,
             ),
             const OfflineSection(),
             if (user != null)
