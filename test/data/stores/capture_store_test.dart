@@ -199,7 +199,7 @@ void main() {
     });
 
     test(
-      'sem o modelo de áudio: erro, nada sobe, processar agora refaz',
+      'sem o modelo de áudio: fica processando, nada sobe, e transcreve depois',
       () async {
         extractor.results[CaptureSource.audio] = ExtractionError.modelMissing;
         await store.createMedia(
@@ -208,15 +208,16 @@ void main() {
         );
         await store.extractions;
 
-        expect(only().status, CaptureStatus.failed);
-        expect(only().error, 'model_missing');
+        expect(only().status, CaptureStatus.processing);
+        expect(only().error, isNull);
         expect(only().pending, {CaptureSync.extract, CaptureSync.create});
+        expect(extractor.released, 1);
 
         await store.sync();
         expect(sent(), isEmpty);
 
         extractor.results.remove(CaptureSource.audio);
-        await store.processNow(only());
+        await store.extractPending();
         await store.extractions;
 
         expect(only().status, CaptureStatus.ready);

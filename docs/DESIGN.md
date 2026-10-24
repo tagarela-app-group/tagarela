@@ -69,7 +69,7 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | Componente | Uso |
 | --- | --- |
 | `SheetPage` | Toda tela: header + body arredondado rolável. `onRefresh` = puxar pra atualizar. `footer` = barra fixa embaixo (fundo `bg`, linha `line` em cima), fora da rolagem. `centerLast` = último filho centralizado no espaço que sobra (estado de tela) |
-| `PageHeader` | Título/subtítulo (+ leading/trailing) no header |
+| `PageHeader` | Título/subtítulo (+ leading/trailing) no header. `centered`: leading em cima e textos no meio, sem trailing (Perfil) |
 | `SectionHeader` | Título de seção + ação texto |
 | `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), contrast (botão Apple), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading`. `loading`: spinner 18 na cor do texto no lugar do `leading`, rótulo e cor da variante ficam, toque ignorado. Enquanto um botão carrega, os outros da tela ficam desabilitados |
 | `AppIconButton` | Botão redondo de ícone. Variantes onHeader, ink, primary, soft (`surfaceAlt` + `ink`: fechar painel), ghost. `tooltip` obrigatório |
@@ -80,7 +80,7 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `StatusPill` | Status: learning, mastered, primary, neutral, alert (coral: erro) |
 | `AppTag` | Etiqueta caixa alta com contorno (PALAVRA, EXPRESSÃO) |
 | `IconTile` | Ícone em quadrado tingido por `AppAccent`. Sem acento = neutro (`surfaceAlt` + `inkSoft`). `glyph` = desenho no lugar do ícone (recebe tamanho e cor via `IconTheme`) |
-| `AppBubble` | Forma balão: logo, avatar, itens do arco. `image`: foto recortada no balão, por cima do conteúdo (as iniciais aparecem enquanto carrega ou se falhar) |
+| `AppBubble` | Forma balão: logo, avatar, itens do arco. `image`: foto recortada no balão, por cima do conteúdo (as iniciais aparecem enquanto carrega ou se falhar). `ring`: anel de 4 na cor dada (avatar do Perfil usa `headerChip`) |
 | `SpeechBubbleIcon` | Balão de fala redondo cheio, desenhado. Fundo da palavra do dia |
 | `SegmentBar` | Barra proporcional; com `total` vira progresso |
 | `LevelDots` | Nível SRS em 5 traços |

@@ -3,97 +3,144 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
+import 'package:tagarela/features/profile/widgets/progress_card.dart';
 
 import '../../helpers/fake_auth.dart';
+import '../../helpers/fake_capture_store.dart';
 import '../../helpers/fake_extraction.dart';
+import '../../helpers/fixtures.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
-  testWidgets('mostra nome, e-mail e avatar do usuário logado', (tester) async {
+  testWidgets('topo centralizado: avatar grande com anel, nome e e-mail', (
+    tester,
+  ) async {
     await tester.pumpPage(const ProfilePage(), auth: await signedInAuthStore());
 
     expect(find.text('Ana Souza'), findsOneWidget);
-    expect(find.text('ana@example.com'), findsOneWidget);
+    expect(find.text('ana@example.com'), findsNWidgets(2));
     expect(find.text('AS'), findsOneWidget);
-    expect(tester.widget<AppBubble>(find.byType(AppBubble)).image, isNotNull);
+    final bubble = tester.widget<AppBubble>(find.byType(AppBubble));
+    expect(bubble.image, isNotNull);
+    expect(bubble.size, 84);
+    expect(bubble.ring, isNotNull);
+    expect(tester.widget<PageHeader>(find.byType(PageHeader)).centered, isTrue);
   });
 
-  testWidgets('sem usuário mostra só o título e o "Sair"', (tester) async {
+  testWidgets('progresso: capturas, termos e dominados', (tester) async {
+    final captures = fakeCaptures();
+    await captures.db.saveCapture('ana@example.com', sampleCapture('c1'));
+    await captures.db.saveCapture('ana@example.com', sampleCapture('c2'));
+    await tester.pumpPage(
+      const ProfilePage(),
+      auth: await signedInAuthStore(),
+      captures: captures.store,
+    );
+
+    final card = tester.widget<ProgressCard>(find.byType(ProgressCard));
+    expect(card.captures, 2);
+    expect(card.terms, sampleGroups.termCount);
+    expect(card.mastered, sampleGroups.masteredCount);
+    expect(find.text('Capturas'), findsOneWidget);
+    expect(find.text('Termos'), findsOneWidget);
+    expect(find.text('Dominados'), findsOneWidget);
+  });
+
+  testWidgets('sem vocabulário: progresso zerado', (tester) async {
+    await tester.pumpPage(
+      const ProfilePage(),
+      auth: await signedInAuthStore(),
+      vocabulary: VocabularyStore(),
+    );
+
+    final card = tester.widget<ProgressCard>(find.byType(ProgressCard));
+    expect((card.captures, card.terms, card.mastered), (0, 0, 0));
+  });
+
+  testWidgets('sem usuário mostra só o título, o progresso e o "Sair"', (
+    tester,
+  ) async {
     await tester.pumpPage(const ProfilePage());
 
     expect(find.text('Perfil'), findsOneWidget);
+    expect(find.byType(ProgressCard), findsOneWidget);
+    expect(find.text('CONTA'), findsNothing);
     expect(find.text('Sair'), findsOneWidget);
   });
 
-  group('Transcrição offline', () {
-    testWidgets('sem modelo: baixar mostra o progresso e fica pronto', (
+  group('Funciona sem internet', () {
+    testWidgets('modo servidor: sem a seção e sem o aviso de privacidade', (
+      tester,
+    ) async {
+      await tester.pumpPage(
+        const ProfilePage(),
+        auth: await signedInAuthStore(),
+      );
+
+      expect(find.text('FUNCIONA SEM INTERNET'), findsNothing);
+      expect(find.text('CONTA'), findsOneWidget);
+      expect(find.text('E-mail'), findsOneWidget);
+      expect(find.text('Privacidade'), findsNothing);
+    });
+
+    testWidgets('baixa o modelo sozinho, sem botão, e fica pronto', (
       tester,
     ) async {
       final speech = fakeSpeechModel();
       speech.storage
         ..steps = const [0.42]
         ..hold = Completer();
-      await tester.pumpPage(const ProfilePage(), speech: speech.store);
-
-      expect(find.text('Transcrição offline'), findsOneWidget);
-      expect(find.text('Não baixado'), findsOneWidget);
-      expect(
-        find.text('Transcreve o áudio no celular, sem internet. 45 MB.'),
-        findsOneWidget,
+      await tester.pumpPage(
+        const ProfilePage(),
+        auth: await signedInAuthStore(),
+        captures: fakeCaptures(extractor: FakeTextExtractor()).store,
+        speech: speech.store,
       );
-
-      await tester.tap(find.text('Baixar modelo'));
       await tester.pump();
 
+      expect(find.text('FUNCIONA SEM INTERNET'), findsOneWidget);
+      expect(find.text('Texto de fotos'), findsOneWidget);
+      expect(find.text('Áudio em inglês'), findsOneWidget);
       expect(find.text('Baixando'), findsOneWidget);
-      expect(find.text('Baixando 42% de 45 MB.'), findsOneWidget);
-      expect(find.byType(SegmentBar), findsOneWidget);
-      expect(find.text('Baixar modelo'), findsNothing);
+      expect(find.text('Baixando o modelo: 42% de 45 MB'), findsOneWidget);
+      expect(find.byType(AppButton), findsOneWidget);
+      expect(find.text('Privacidade'), findsOneWidget);
 
       speech.storage.hold!.complete();
       await tester.pumpAndSettle();
 
-      expect(find.text('Pronto'), findsOneWidget);
+      expect(find.text('Pronto'), findsNWidgets(2));
       expect(
-        find.text('O áudio é transcrito no celular. 45 MB.'),
+        find.text('Transcrito no celular · modelo de 45 MB'),
         findsOneWidget,
       );
-      expect(find.byType(SegmentBar), findsNothing);
     });
 
-    testWidgets('pronto: remover volta pra baixar', (tester) async {
-      final speech = fakeSpeechModel(ready: true);
-      await tester.pumpPage(const ProfilePage(), speech: speech.store);
-
-      await tester.tap(find.text('Remover modelo'));
-      await tester.pumpAndSettle();
-
-      expect(speech.storage.removed, 1);
-      expect(find.text('Baixar modelo'), findsOneWidget);
-    });
-
-    testWidgets('erro no download: tentar de novo', (tester) async {
+    testWidgets('sem rede: esperando, sem botão de tentar', (tester) async {
       final speech = fakeSpeechModel();
       speech.storage.offline = true;
-      await tester.pumpPage(const ProfilePage(), speech: speech.store);
+      await tester.pumpPage(
+        const ProfilePage(),
+        auth: await signedInAuthStore(),
+        captures: fakeCaptures(extractor: FakeTextExtractor()).store,
+        speech: speech.store,
+      );
+      await tester.pump();
 
-      await tester.tap(find.text('Baixar modelo'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Erro'), findsOneWidget);
+      expect(find.text('Esperando'), findsOneWidget);
       expect(
-        find.text('Não deu pra baixar. Confira a internet.'),
+        find.text('O modelo de 45 MB baixa sozinho quando tiver internet'),
         findsOneWidget,
       );
+      expect(find.byType(AppButton), findsOneWidget);
 
-      speech.storage.offline = false;
-      await tester.tap(find.text('Tentar de novo'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Pronto'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+      speech.store.dispose();
     });
   });
 
@@ -106,6 +153,7 @@ void main() {
     await auth.login('ana@example.com', 'x');
     await tester.pumpPage(const ProfilePage(), auth: auth);
 
+    await tester.ensureVisible(find.text('Sair'));
     await tester.tap(find.text('Sair'));
     await tester.pumpAndSettle();
 

@@ -30,7 +30,6 @@ class FakeModelStorage implements ModelStorage {
   String? path;
   bool offline = false;
   int downloads = 0;
-  int removed = 0;
   List<double> steps = const [0.25, 0.5, 1];
   Completer<void>? hold;
 
@@ -47,18 +46,18 @@ class FakeModelStorage implements ModelStorage {
     await hold?.future;
     path = 'models/${model.id}';
   }
-
-  @override
-  Future<void> remove(SpeechModel model) async {
-    removed++;
-    path = null;
-  }
 }
 
 typedef FakeSpeechModel = ({SpeechModelStore store, FakeModelStorage storage});
 
-FakeSpeechModel fakeSpeechModel({bool ready = false}) {
+FakeSpeechModel fakeSpeechModel({
+  bool ready = false,
+  Duration firstRetry = const Duration(seconds: 30),
+}) {
   final storage = FakeModelStorage()
     ..path = ready ? 'models/${SpeechModel.current.id}' : null;
-  return (store: SpeechModelStore(storage), storage: storage);
+  return (
+    store: SpeechModelStore(storage, firstRetry: firstRetry),
+    storage: storage,
+  );
 }

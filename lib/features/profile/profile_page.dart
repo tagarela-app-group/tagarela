@@ -1,37 +1,81 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
+import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/user_avatar.dart';
-import 'package:tagarela/features/profile/widgets/speech_model_card.dart';
+import 'package:tagarela/features/profile/widgets/offline_section.dart';
+import 'package:tagarela/features/profile/widgets/profile_section.dart';
+import 'package:tagarela/features/profile/widgets/progress_card.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final auth = AppScope.of(context).auth;
+    final scope = AppScope.of(context);
 
     return ListenableBuilder(
-      listenable: auth,
+      listenable: Listenable.merge([
+        scope.auth,
+        scope.captures,
+        scope.vocabulary,
+      ]),
       builder: (context, _) {
-        final user = auth.user;
+        final user = scope.auth.user;
+        final groups = scope.vocabulary.data;
+        final onDevice = scope.captures.extractsOnDevice;
         return SheetPage(
           header: user == null
               ? const PageHeader(title: 'Perfil')
               : PageHeader(
                   title: user.displayName,
                   subtitle: user.email,
-                  leading: UserAvatar(user: user, size: 56),
+                  centered: true,
+                  leading: UserAvatar(
+                    user: user,
+                    size: 84,
+                    ring: context.colors.headerChip,
+                  ),
                 ),
+          gap: AppSpacing.s3,
           children: [
-            const SpeechModelCard(),
-            AppButton(
-              label: 'Sair',
-              onPressed: () => _logout(context),
-              variant: AppButtonVariant.outline,
-              expand: true,
+            ProgressCard(
+              captures: scope.captures.data?.length ?? 0,
+              terms: groups?.termCount ?? 0,
+              mastered: groups?.masteredCount ?? 0,
+            ),
+            if (onDevice) const OfflineSection(),
+            if (user != null)
+              ProfileSection(
+                title: 'Conta',
+                rows: [
+                  ProfileRow(
+                    icon: AppIcons.mail,
+                    accent: AppAccent.violet,
+                    title: 'E-mail',
+                    text: user.email,
+                  ),
+                  if (onDevice)
+                    const ProfileRow(
+                      icon: AppIcons.lock,
+                      accent: AppAccent.mint,
+                      title: 'Privacidade',
+                      text:
+                          'Foto e áudio ficam só neste celular. '
+                          'A API guarda só o texto.',
+                    ),
+                ],
+              ),
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.s1),
+              child: AppButton(
+                label: 'Sair',
+                onPressed: () => _logout(context),
+                variant: AppButtonVariant.outline,
+                expand: true,
+              ),
             ),
           ],
         );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
@@ -7,6 +8,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
+import 'package:tagarela/data/text_extractor.dart';
 
 import '../helpers/fake_auth.dart';
 import '../helpers/fake_capture_store.dart';
@@ -85,12 +87,68 @@ void main() {
     );
 
     await scope.loadAll();
+    await scope.speech.whenReady;
     await captures.store.extractions;
 
     expect(scope.speech.state, SpeechModelState.ready);
     expect(scope.captures.data!.single.status, CaptureStatus.ready);
     expect(scope.captures.data!.single.text, 'Mind the gap.');
     expect(captures.api.server, contains('c1'));
+  });
+
+  test(
+    'loadAll baixa o modelo sozinho e transcreve o áudio que esperava',
+    () async {
+      final extractor = FakeTextExtractor()
+        ..results[CaptureSource.audio] = ExtractionError.modelMissing;
+      final captures = fakeCaptures(extractor: extractor);
+      const path = 'captures/audio/a1.m4a';
+      captures.media.files[path] = File(path);
+      await captures.db.saveCapture(
+        'ana@example.com',
+        sampleCapture(
+          'a1',
+          source: CaptureSource.audio,
+          status: CaptureStatus.processing,
+          text: '',
+          mediaPath: path,
+          pending: const {CaptureSync.extract, CaptureSync.create},
+        ),
+      );
+      final speech = fakeSpeechModel();
+      speech.storage.hold = Completer();
+      final scope = testScope(
+        captures: captures.store,
+        speech: speech.store,
+        child: const SizedBox(),
+      );
+
+      await scope.loadAll();
+      await captures.store.extractions;
+
+      expect(speech.storage.downloads, 1);
+      expect(scope.speech.state, SpeechModelState.downloading);
+      expect(scope.captures.data!.single.status, CaptureStatus.processing);
+
+      extractor.results.remove(CaptureSource.audio);
+      speech.storage.hold!.complete();
+      await scope.speech.whenReady;
+      await Future<void>.delayed(Duration.zero);
+      await captures.store.extractions;
+
+      expect(scope.captures.data!.single.status, CaptureStatus.ready);
+      expect(scope.captures.data!.single.text, 'Mind the gap.');
+    },
+  );
+
+  test('modo servidor: loadAll não baixa o modelo', () async {
+    final speech = fakeSpeechModel();
+    final scope = testScope(speech: speech.store, child: const SizedBox());
+
+    await scope.loadAll();
+
+    expect(speech.storage.downloads, 0);
+    expect(scope.speech.state, SpeechModelState.missing);
   });
 
   testWidgets('of acha o escopo na árvore', (tester) async {

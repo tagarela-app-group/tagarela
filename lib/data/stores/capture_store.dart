@@ -29,6 +29,8 @@ class CaptureStore extends Store<List<Capture>> {
 
   Future<void> get extractions => _extractions;
 
+  bool get extractsOnDevice => _extractor != null;
+
   @override
   Future<List<Capture>> fetch() async {
     final owner = _owner();
@@ -207,6 +209,7 @@ class CaptureStore extends Store<List<Capture>> {
         pending: capture.pending.difference({CaptureSync.extract}),
       );
     } on ExtractionException catch (e) {
+      if (e.error == ExtractionError.modelMissing) return;
       done = capture.copyWith(
         status: CaptureStatus.failed,
         error: () => e.error.code,

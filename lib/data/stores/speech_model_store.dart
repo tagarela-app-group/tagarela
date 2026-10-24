@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:tagarela/data/model_storage.dart';
@@ -6,25 +8,50 @@ import 'package:tagarela/data/speech_model.dart';
 enum SpeechModelState { missing, downloading, ready, failed }
 
 class SpeechModelStore extends ChangeNotifier {
-  SpeechModelStore(this._storage, {this.model = SpeechModel.current});
+  SpeechModelStore(
+    this._storage, {
+    this.model = SpeechModel.current,
+    this.firstRetry = const Duration(seconds: 30),
+  });
+
+  static const maxRetry = Duration(minutes: 10);
 
   final ModelStorage _storage;
   final SpeechModel model;
+  final Duration firstRetry;
 
   SpeechModelState state = SpeechModelState.missing;
   double progress = 0;
 
+  final _ready = Completer<void>();
+  Future<void>? _running;
+  Timer? _retry;
+  Duration? _lastRetry;
+
   int get percent => (progress * 100).floor();
 
-  Future<void> load() async {
-    if (state == SpeechModelState.downloading) return;
-    final ready = await _storage.installed(model) != null;
-    state = ready ? SpeechModelState.ready : SpeechModelState.missing;
+  bool get ready => state == SpeechModelState.ready;
+
+  Future<void> get whenReady => _ready.future;
+
+  Future<void> ensure() =>
+      _running ??= _ensure().whenComplete(() => _running = null);
+
+  Future<void> _ensure() async {
+    if (ready) return;
+    _retry?.cancel();
+    if (await _storage.installed(model) == null) await _download();
+    if (state == SpeechModelState.failed) {
+      _scheduleRetry();
+      return;
+    }
+    state = SpeechModelState.ready;
+    _lastRetry = null;
     notifyListeners();
+    if (!_ready.isCompleted) _ready.complete();
   }
 
-  Future<void> download() async {
-    if (state == SpeechModelState.downloading) return;
+  Future<void> _download() async {
     state = SpeechModelState.downloading;
     progress = 0;
     notifyListeners();
@@ -34,18 +61,26 @@ class SpeechModelStore extends ChangeNotifier {
         progress = value;
         if (changed) notifyListeners();
       }
-      state = SpeechModelState.ready;
     } on Exception {
       state = SpeechModelState.failed;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  Future<void> remove() async {
-    if (state == SpeechModelState.downloading) return;
-    await _storage.remove(model);
-    state = SpeechModelState.missing;
-    progress = 0;
-    notifyListeners();
+  void _scheduleRetry() {
+    final last = _lastRetry;
+    final next = last == null
+        ? firstRetry
+        : last * 2 < maxRetry
+        ? last * 2
+        : maxRetry;
+    _lastRetry = next;
+    _retry = Timer(next, ensure);
+  }
+
+  @override
+  void dispose() {
+    _retry?.cancel();
+    super.dispose();
   }
 }

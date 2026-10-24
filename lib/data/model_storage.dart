@@ -81,11 +81,6 @@ class ModelStorage {
     }
   }
 
-  Future<void> remove(SpeechModel model) async {
-    final folder = await _folder(model);
-    if (await folder.exists()) await folder.delete(recursive: true);
-  }
-
   Future<void> _keepOnly(SpeechModel model) async {
     await for (final entry in (await _models()).list()) {
       final name = entry.path.split(RegExp(r'[/\\]')).last;

@@ -120,15 +120,4 @@ void main() {
     expect(Directory('${root.path}/models/old').existsSync(), isFalse);
     expect(await storage.installed(next), isNotNull);
   });
-
-  test('remover apaga a pasta do modelo', () async {
-    final tiny = model([serve('a.ort', 'aaaa')]);
-    await storage.download(tiny).toList();
-
-    await storage.remove(tiny);
-    await storage.remove(tiny);
-
-    expect(await storage.installed(tiny), isNull);
-    expect(Directory('${root.path}/models/tiny').existsSync(), isFalse);
-  });
 }
