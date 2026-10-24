@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import 'package:tagarela/data/audio_playback.dart';
@@ -35,13 +37,11 @@ class AppScope extends InheritedWidget {
 
   Future<void> loadAll() async {
     await captures.cleanMedia();
-    await Future.wait([
-      home.load(),
-      vocabulary.load(),
-      captures.load(),
-      speech.load(),
-    ]);
+    await Future.wait([home.load(), vocabulary.load(), captures.load()]);
     await captures.extractPending();
+    if (!captures.extractsOnDevice) return;
+    unawaited(speech.whenReady.then((_) => captures.extractPending()));
+    unawaited(speech.ensure());
   }
 
   @override

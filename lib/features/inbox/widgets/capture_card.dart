@@ -123,12 +123,12 @@ class _CaptureCardState extends State<CaptureCard> {
       ],
       CaptureStatus.processing => [
         withMedia(
-          _StatusLine(
-            icon: AppIcons.review,
-            text: capture.source.isPhoto
-                ? 'Lendo o texto da foto…'
-                : 'Transcrevendo o áudio…',
-          ),
+          capture.source.isPhoto
+              ? const _StatusLine(
+                  icon: AppIcons.review,
+                  text: 'Lendo o texto da foto…',
+                )
+              : _Transcribing(onDevice: capture.waitsExtraction),
         ),
       ],
       CaptureStatus.waitingFile => [
@@ -148,10 +148,6 @@ class _CaptureCardState extends State<CaptureCard> {
 }
 
 _Message _failure(Capture capture) => switch (capture.error) {
-  final e when e == ExtractionError.modelMissing.code => const _Message(
-    title: 'Falta o modelo de áudio',
-    text: 'Baixe em Perfil, Transcrição offline, e toque em Processar agora.',
-  ),
   final e when e == ExtractionError.noText.code => _Message(
     title: capture.source.isPhoto
         ? 'Não achei texto na foto'
@@ -436,6 +432,26 @@ class _StatusLine extends StatelessWidget {
           child: Text(text, style: AppText.bodyMd.copyWith(color: soft)),
         ),
       ],
+    );
+  }
+}
+
+class _Transcribing extends StatelessWidget {
+  const _Transcribing({required this.onDevice});
+
+  final bool onDevice;
+
+  @override
+  Widget build(BuildContext context) {
+    final speech = AppScope.of(context).speech;
+    return ListenableBuilder(
+      listenable: speech,
+      builder: (context, _) => _StatusLine(
+        icon: AppIcons.review,
+        text: onDevice && !speech.ready
+            ? 'Esperando o modelo de áudio baixar…'
+            : 'Transcrevendo o áudio…',
+      ),
     );
   }
 }

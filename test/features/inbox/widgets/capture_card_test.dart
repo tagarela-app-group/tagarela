@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 
 import '../../../helpers/fake_capture_store.dart';
+import '../../../helpers/fake_extraction.dart';
 import '../../../helpers/pump_app.dart';
 
 void main() {
@@ -26,6 +28,7 @@ void main() {
     Capture capture, {
     bool withMedia = true,
     bool canPick = false,
+    SpeechModelStore? speech,
   }) async {
     final path = capture.mediaPath;
     if (withMedia && path != null) captures.media.files[path] = File(path);
@@ -42,6 +45,7 @@ void main() {
         ),
       ),
       captures: captures.store,
+      speech: speech,
     );
     await tester.pump();
     return taps;
@@ -91,26 +95,24 @@ void main() {
     expect(taps, ['descartar', 'processar']);
   });
 
-  testWidgets('erro sem o modelo de áudio diz onde baixar', (tester) async {
+  testWidgets('áudio esperando o modelo: avisa e troca quando fica pronto', (
+    tester,
+  ) async {
+    final speech = fakeSpeechModel();
     await pumpCard(
       tester,
-      sampleCapture(
-        'a1',
-        source: CaptureSource.audio,
-        status: CaptureStatus.failed,
-        mediaPath: 'captures/audio/a1.m4a',
-        error: 'model_missing',
-      ),
+      audio(
+        CaptureStatus.processing,
+      ).copyWith(pending: const {CaptureSync.extract, CaptureSync.create}),
+      speech: speech.store,
     );
 
-    expect(find.text('Falta o modelo de áudio'), findsOneWidget);
-    expect(
-      find.text(
-        'Baixe em Perfil, Transcrição offline, e toque em Processar agora.',
-      ),
-      findsOneWidget,
-    );
-    expect(find.text('Processar agora'), findsOneWidget);
+    expect(find.text('Esperando o modelo de áudio baixar…'), findsOneWidget);
+
+    await speech.store.ensure();
+    await tester.pump();
+
+    expect(find.text('Transcrevendo o áudio…'), findsOneWidget);
   });
 
   testWidgets('erro sem texto: foto e áudio', (tester) async {

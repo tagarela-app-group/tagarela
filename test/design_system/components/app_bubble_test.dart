@@ -17,6 +17,23 @@ final _pixel = Uint8List.fromList([
 ]);
 
 void main() {
+  testWidgets('ring: anel de 4 em volta do balão', (tester) async {
+    await tester.pumpComponent(
+      const AppBubble(ring: AppPalette.white, child: Text('AS')),
+    );
+
+    final box = tester.widget<Container>(
+      find.descendant(
+        of: find.byType(AppBubble),
+        matching: find.byType(Container),
+      ),
+    );
+    final shadow = (box.decoration! as BoxDecoration).boxShadow!.single;
+    expect(shadow.color, AppPalette.white);
+    expect(shadow.spreadRadius, AppBubble.ringWidth);
+    expect(shadow.blurRadius, 0);
+  });
+
   testWidgets('sem imagem mostra só o conteúdo', (tester) async {
     await tester.pumpComponent(const AppBubble(child: Text('AS')));
 

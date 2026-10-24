@@ -12,13 +12,17 @@ class AppBubble extends StatelessWidget {
     this.color = AppPalette.mango,
     this.foreground = AppPalette.ink,
     this.image,
+    this.ring,
   });
+
+  static const ringWidth = 4.0;
 
   final Widget child;
   final double size;
   final Color color;
   final Color foreground;
   final ImageProvider? image;
+  final Color? ring;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,9 @@ class AppBubble extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: AppRadius.bubble(size * 0.35),
+        boxShadow: ring == null
+            ? null
+            : [BoxShadow(color: ring!, spreadRadius: ringWidth)],
       ),
       child: switch (image) {
         null => content,
