@@ -142,6 +142,7 @@ Conta (`AuthService`, allauth headless; detalhe dos fluxos em `api/docs/ARCHITEC
 ## Layout de tela
 
 - Toda tela = `SheetPage(header, children)`. Já traz Scaffold, safe area, scroll, topo arredondado.
+- Estado de tela (vazio, carregando, erro): `centerLast: true` e o `StateMessage`/`AsyncStatus` por último. Fica no meio do espaço que sobra (abaixo do que vier antes, ex.: abas do Inbox). Usado em Início vazia, Vocabulário vazio, Inbox vazio e aba sem captura, e carregando/erro de todas.
 - `HomeShell` troca `MediaQuery.padding.bottom` das abas por `ArcMenu.overhang` (espaço do botão +). Área segura inferior fica com a tab bar.
 - Teclado: `HomeShell` com `resizeToAvoidBottomInset: false`. Cada aba (`SheetPage`) cuida do teclado; a tab bar fica parada.
 

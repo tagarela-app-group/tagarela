@@ -164,7 +164,7 @@ void main() {
       'text': 'Vinda de outro aparelho',
     });
 
-    await tester.fling(find.byType(ListView), const Offset(0, 400), 1000);
+    await tester.fling(find.byType(Scrollable), const Offset(0, 400), 1000);
     await tester.pumpAndSettle();
 
     expect(find.text('Vinda de outro aparelho'), findsOneWidget);

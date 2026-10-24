@@ -4,9 +4,16 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 
 class IconTile extends StatelessWidget {
-  const IconTile({super.key, required this.icon, this.accent, this.size = 44});
+  const IconTile({
+    super.key,
+    this.icon,
+    this.glyph,
+    this.accent,
+    this.size = 44,
+  }) : assert(icon != null || glyph != null);
 
-  final IconData icon;
+  final IconData? icon;
+  final Widget? glyph;
   final AppAccent? accent;
   final double size;
 
@@ -24,7 +31,11 @@ class IconTile extends StatelessWidget {
         color: soft,
         borderRadius: BorderRadius.circular(size / 3),
       ),
-      child: Icon(icon, size: size / 2, color: fg),
+      alignment: Alignment.center,
+      child: IconTheme(
+        data: IconThemeData(size: size / 2, color: fg),
+        child: glyph ?? Icon(icon, size: size / 2, color: fg),
+      ),
     );
   }
 }

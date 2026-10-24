@@ -10,9 +10,14 @@ import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
 import 'package:tagarela/features/profile/user_avatar.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key, required this.onSeeVocabulary});
+  const HomePage({
+    super.key,
+    required this.onSeeVocabulary,
+    required this.onCapture,
+  });
 
   final VoidCallback onSeeVocabulary;
+  final VoidCallback onCapture;
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +31,32 @@ class HomePage extends StatelessWidget {
         if (!stores.isReady) {
           return SheetPage(
             header: header,
+            centerLast: true,
             children: [AsyncStatus(error: stores.error, onRetry: stores.retry)],
           );
         }
         final home = scope.home.data!;
         final groups = scope.vocabulary.data!;
+        if (groups.termCount == 0 &&
+            home.wordOfDay == null &&
+            home.stats.reviewCount == 0) {
+          return SheetPage(
+            header: header,
+            centerLast: true,
+            children: [
+              StateMessage(
+                glyph: const SpeechBubbleIcon(),
+                title: 'Seu inglês começa aqui',
+                message:
+                    'Capture o que você ouviu ou leu hoje, por foto, áudio ou '
+                    'texto. Os termos que você confirmar aparecem aqui.',
+                actionLabel: 'Fazer a primeira captura',
+                actionIcon: AppIcons.add,
+                onAction: onCapture,
+              ),
+            ],
+          );
+        }
         return SheetPage(
           header: header,
           children: [

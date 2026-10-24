@@ -12,12 +12,15 @@ class SheetPage extends StatelessWidget {
     this.gap = AppSpacing.s5,
     this.onRefresh,
     this.footer,
+    this.centerLast = false,
   });
 
   final Widget header;
   final List<Widget> children;
 
   final double gap;
+
+  final bool centerLast;
 
   final RefreshCallback? onRefresh;
 
@@ -54,19 +57,13 @@ class SheetPage extends StatelessWidget {
                 child: ColoredBox(
                   color: c.bg,
                   child: _refreshable(
-                    ListView.separated(
-                      physics: onRefresh == null
-                          ? null
-                          : const AlwaysScrollableScrollPhysics(),
-                      padding: EdgeInsets.fromLTRB(
+                    _body(
+                      EdgeInsets.fromLTRB(
                         AppSpacing.screen,
                         AppSpacing.s6,
                         AppSpacing.screen,
                         AppSpacing.s6 + (footer == null ? bottom : 0),
                       ),
-                      itemCount: children.length,
-                      separatorBuilder: (_, _) => SizedBox(height: gap),
-                      itemBuilder: (_, i) => children[i],
                     ),
                   ),
                 ),
@@ -91,6 +88,43 @@ class SheetPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _body(EdgeInsets padding) {
+    final physics = onRefresh == null
+        ? null
+        : const AlwaysScrollableScrollPhysics();
+    if (!centerLast || children.isEmpty) {
+      return ListView.separated(
+        physics: physics,
+        padding: padding,
+        itemCount: children.length,
+        separatorBuilder: (_, _) => SizedBox(height: gap),
+        itemBuilder: (_, i) => children[i],
+      );
+    }
+    final above = children.sublist(0, children.length - 1);
+    return CustomScrollView(
+      physics: physics,
+      slivers: [
+        if (above.isNotEmpty)
+          SliverPadding(
+            padding: padding.copyWith(bottom: gap),
+            sliver: SliverList.separated(
+              itemCount: above.length,
+              separatorBuilder: (_, _) => SizedBox(height: gap),
+              itemBuilder: (_, i) => above[i],
+            ),
+          ),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Padding(
+            padding: above.isEmpty ? padding : padding.copyWith(top: 0),
+            child: Center(child: children.last),
+          ),
+        ),
+      ],
     );
   }
 

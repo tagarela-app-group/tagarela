@@ -33,6 +33,7 @@ class _HomeShellState extends State<HomeShell> {
   static const _vocabularyTab = 1;
   static const _inboxTab = 2;
 
+  final _menu = GlobalKey<ArcMenuState>();
   int _tab = 0;
   AuthStore? _auth;
 
@@ -94,7 +95,10 @@ class _HomeShellState extends State<HomeShell> {
                   child: _FadeTabStack(
                     index: _tab,
                     children: [
-                      HomePage(onSeeVocabulary: () => _goTo(_vocabularyTab)),
+                      HomePage(
+                        onSeeVocabulary: () => _goTo(_vocabularyTab),
+                        onCapture: () => _menu.currentState?.open(),
+                      ),
                       const VocabularyPage(),
                       const InboxPage(),
                       const ProfilePage(),
@@ -129,6 +133,7 @@ class _HomeShellState extends State<HomeShell> {
           ),
           Positioned.fill(
             child: ArcMenu(
+              key: _menu,
               anchorBottom: AppTabBar.height + media.padding.bottom,
               title: 'O que você ouviu hoje?',
               subtitle: 'Fotografe, grave ou digite. A análise vai pro Inbox.',

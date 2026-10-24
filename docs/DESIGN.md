@@ -68,7 +68,7 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 
 | Componente | Uso |
 | --- | --- |
-| `SheetPage` | Toda tela: header + body arredondado rolável. `onRefresh` = puxar pra atualizar. `footer` = barra fixa embaixo (fundo `bg`, linha `line` em cima), fora da rolagem |
+| `SheetPage` | Toda tela: header + body arredondado rolável. `onRefresh` = puxar pra atualizar. `footer` = barra fixa embaixo (fundo `bg`, linha `line` em cima), fora da rolagem. `centerLast` = último filho centralizado no espaço que sobra (estado de tela) |
 | `PageHeader` | Título/subtítulo (+ leading/trailing) no header |
 | `SectionHeader` | Título de seção + ação texto |
 | `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), contrast (botão Apple), text. Tamanhos large 56, medium 48, small 44. `expand`, `leading`. `loading`: spinner 18 na cor do texto no lugar do `leading`, rótulo e cor da variante ficam, toque ignorado. Enquanto um botão carrega, os outros da tela ficam desabilitados |
@@ -79,16 +79,16 @@ Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, m
 | `AppChip` | Filtro. Selecionado = tinta cheia |
 | `StatusPill` | Status: learning, mastered, primary, neutral, alert (coral: erro) |
 | `AppTag` | Etiqueta caixa alta com contorno (PALAVRA, EXPRESSÃO) |
-| `IconTile` | Ícone em quadrado tingido por `AppAccent`. Sem acento = neutro (`surfaceAlt` + `inkSoft`) |
+| `IconTile` | Ícone em quadrado tingido por `AppAccent`. Sem acento = neutro (`surfaceAlt` + `inkSoft`). `glyph` = desenho no lugar do ícone (recebe tamanho e cor via `IconTheme`) |
 | `AppBubble` | Forma balão: logo, avatar, itens do arco. `image`: foto recortada no balão, por cima do conteúdo (as iniciais aparecem enquanto carrega ou se falhar) |
 | `SpeechBubbleIcon` | Balão de fala redondo cheio, desenhado. Fundo da palavra do dia |
 | `SegmentBar` | Barra proporcional; com `total` vira progresso |
 | `LevelDots` | Nível SRS em 5 traços |
 | `SegmentedControl` | Abas em pílula, escolha única |
 | `AppTabBar` | Tab bar com badge e espaço central (`centerGap`). Badge: `alert`, 18, anel 2 da cor da tab bar, no canto da pílula |
-| `StateMessage` | Ícone + título + texto + ação opcional. Lista vazia, erro, permissão negada |
-| `AsyncStatus` | Body sem dado: spinner, ou erro (`StateMessage`) com "Tentar de novo" |
-| `ArcMenu` | Botão + que abre opções em arco (150°, 90°, 30°, raio 118) sobre scrim com blur. Arco tracejado decorativo liga as opções |
+| `StateMessage` | Ícone (ou `glyph`, ex.: `SpeechBubbleIcon`) + título + texto + ação tonal opcional (`actionIcon` = ícone na ação). Lista vazia, erro, permissão negada. Estado de tela: sempre centralizado (`SheetPage.centerLast`) |
+| `AsyncStatus` | Body sem dado: spinner, ou erro (`StateMessage`) com "Tentar de novo". Centralizado (`SheetPage.centerLast`) |
+| `ArcMenu` | Botão + (64, raio `lg`, anel de 6 da cor da tab bar) que abre opções em arco (150°, 90°, 30°, raio 118) sobre scrim com blur. Arco tracejado decorativo liga as opções. + desenhado: 20 de lado, traço 2,8, ponta redonda (o `add` do Material é fino demais). Abrir de fora: `GlobalKey<ArcMenuState>` + `open()` |
 | `AppSheet` | Painel que sobe de baixo: puxador, `IconTile` + título + subtítulo, Fechar (`soft`), conteúdo. Raio `sheet` no topo, sobre `scrim`. Abre com `AppSheet.show(context, builder)`; sobe com o teclado |
 | `TermChip` | Pílula do termo escolhido: `primarySoft` + `primaryText`. Sem `onRemove`: 30 de altura, texto `label` (card do Inbox). Com `onRemove`: 40, texto `button` + X "Remover <termo>". `muted` = `surfaceAlt` + `inkSoft` (analisada) |
 | `OptionRow` | Linha de escolha: `IconTile` 48 + título + subtítulo + seta. Borda `line` 1.5, raio `lg`. Ex.: Tirar foto, Escolher da galeria |

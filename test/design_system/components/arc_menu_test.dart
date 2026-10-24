@@ -30,7 +30,7 @@ Future<List<String>> _pumpMenu(WidgetTester tester) async {
 }
 
 Future<void> _open(WidgetTester tester) async {
-  await tester.tap(find.byIcon(AppIcons.add));
+  await tester.tap(find.bySemanticsLabel('Adicionar termo'));
   await tester.pumpAndSettle();
 }
 
@@ -42,6 +42,48 @@ final _dashedArc = find.descendant(
 );
 
 void main() {
+  testWidgets('open() pela key abre o menu', (tester) async {
+    final key = GlobalKey<ArcMenuState>();
+    await tester.pumpComponent(
+      ArcMenu(
+        key: key,
+        anchorBottom: 80,
+        title: 'O que você ouviu?',
+        items: [
+          ArcMenuItem(
+            icon: AppIcons.camera,
+            label: 'Câmera',
+            color: AppPalette.mango,
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+    expect(find.text('O que você ouviu?'), findsNothing);
+
+    key.currentState!.open();
+    await tester.pumpAndSettle();
+
+    expect(find.text('O que você ouviu?'), findsOneWidget);
+    expect(find.text('Câmera'), findsOneWidget);
+  });
+
+  testWidgets('+ com traço grosso e ponta redonda, como no mockup', (
+    tester,
+  ) async {
+    await _pumpMenu(tester);
+
+    final bars = tester
+        .widgetList<Container>(
+          find.descendant(
+            of: find.bySemanticsLabel('Adicionar termo'),
+            matching: find.byType(Container),
+          ),
+        )
+        .map((c) => c.constraints!.maxWidth * 10 + c.constraints!.maxHeight);
+    expect(bars, unorderedEquals([20 * 10 + 2.8, 2.8 * 10 + 20]));
+  });
+
   testWidgets('fechado mostra só o botão +', (tester) async {
     await _pumpMenu(tester);
 

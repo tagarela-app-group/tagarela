@@ -60,6 +60,7 @@ class _InboxPageState extends State<InboxPage> {
           ),
           gap: AppSpacing.s3,
           onRefresh: () => _run(captures.sync),
+          centerLast: items == null || _sections(items).isEmpty,
           children: items == null
               ? [AsyncStatus(error: captures.error, onRetry: captures.load)]
               : _list(items),
@@ -67,6 +68,17 @@ class _InboxPageState extends State<InboxPage> {
       },
     );
   }
+
+  Iterable<(CaptureSection, List<Capture>)> _sections(List<Capture> items) => [
+    for (final section in _tab.sections)
+      (
+        section,
+        [
+          for (final c in items)
+            if (c.section == section) c,
+        ],
+      ),
+  ].where((s) => s.$2.isNotEmpty);
 
   List<Widget> _list(List<Capture> items) {
     if (items.isEmpty) {
@@ -80,16 +92,7 @@ class _InboxPageState extends State<InboxPage> {
     }
     final captures = AppScope.of(context).captures;
     final now = DateTime.now();
-    final sections = [
-      for (final section in _tab.sections)
-        (
-          section,
-          [
-            for (final c in items)
-              if (c.section == section) c,
-          ],
-        ),
-    ].where((s) => s.$2.isNotEmpty);
+    final sections = _sections(items);
 
     return [
       SegmentedControl(

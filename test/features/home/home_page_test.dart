@@ -37,7 +37,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpPage(
-      HomePage(onSeeVocabulary: () {}),
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
       auth: await signedInAuthStore(),
     );
 
@@ -53,7 +53,7 @@ void main() {
 
   testWidgets('header aparece mesmo quando os dados falham', (tester) async {
     await tester.pumpPage(
-      HomePage(onSeeVocabulary: () {}),
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
       home: FailingHomeStore(),
       auth: await signedInAuthStore(),
     );
@@ -63,7 +63,9 @@ void main() {
   });
 
   testWidgets('mostra palavra do dia, resumo e revisão', (tester) async {
-    final scope = await tester.pumpPage(HomePage(onSeeVocabulary: () {}));
+    final scope = await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+    );
 
     final home = scope.home.data!;
     expect(
@@ -77,7 +79,9 @@ void main() {
   });
 
   testWidgets('resumo usa totais do vocabulário', (tester) async {
-    final scope = await tester.pumpPage(HomePage(onSeeVocabulary: () {}));
+    final scope = await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+    );
 
     final groups = scope.vocabulary.data!;
     final summary = tester.widget<VocabularySummary>(
@@ -90,31 +94,56 @@ void main() {
 
   testWidgets('"Ver tudo" chama onSeeVocabulary', (tester) async {
     var taps = 0;
-    await tester.pumpPage(HomePage(onSeeVocabulary: () => taps++));
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () => taps++, onCapture: () {}),
+    );
 
     await tester.tap(find.text('Ver tudo'));
     expect(taps, 1);
   });
 
-  testWidgets('sem dados: só o resumo zerado', (tester) async {
+  testWidgets('sem nada: aviso centralizado com a primeira captura', (
+    tester,
+  ) async {
+    var captures = 0;
     await tester.pumpPage(
-      HomePage(onSeeVocabulary: () {}),
+      HomePage(onSeeVocabulary: () {}, onCapture: () => captures++),
       home: HomeStore(),
       vocabulary: VocabularyStore(),
     );
 
     expect(find.byType(WordOfDayCard), findsNothing);
     expect(find.byType(ReviewCard), findsNothing);
-    final summary = tester.widget<VocabularySummary>(
-      find.byType(VocabularySummary),
+    expect(find.byType(VocabularySummary), findsNothing);
+    expect(find.text('Seu inglês começa aqui'), findsOneWidget);
+    expect(find.byType(SpeechBubbleIcon), findsOneWidget);
+    expect(tester.widget<SheetPage>(find.byType(SheetPage)).centerLast, isTrue);
+
+    await tester.tap(find.text('Fazer a primeira captura'));
+    expect(captures, 1);
+  });
+
+  testWidgets('só com revisão pendente: tela normal, sem o aviso', (
+    tester,
+  ) async {
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+      home: HomeStore((
+        stats: const Stats(weekGain: 0, reviewCount: 3),
+        wordOfDay: null,
+      )),
+      vocabulary: VocabularyStore(),
     );
-    expect((summary.learning, summary.mastered, summary.weekGain), (0, 0, 0));
+
+    expect(find.byType(ReviewCard), findsOneWidget);
+    expect(find.byType(VocabularySummary), findsOneWidget);
+    expect(find.text('Seu inglês começa aqui'), findsNothing);
   });
 
   testWidgets('espera todos os stores; erro tenta de novo', (tester) async {
     final vocabulary = FailingVocabularyStore();
     await tester.pumpPage(
-      HomePage(onSeeVocabulary: () {}),
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
       vocabulary: vocabulary,
     );
     expect(find.byType(WordOfDayCard), findsNothing);

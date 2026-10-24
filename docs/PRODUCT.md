@@ -28,7 +28,7 @@ Brasileiro, inglês básico/intermediário, celular na mão, pouco tempo.
 | Criar conta | Nome, e-mail, senha (mín. 8). Google/Apple. Depois: código no e-mail. |
 | Código | 6 dígitos do e-mail (confirmar cadastro ou trocar senha). Reenviar após 1 min. Trocar e-mail. |
 | Esqueci a senha | E-mail → código → nova senha → já entra. |
-| Início | Saudação pelo primeiro nome conforme a hora (bom dia, boa tarde, boa noite) com a foto do Google ou as iniciais (primeiro e último nome), palavra do dia, resumo do vocabulário (total, aprendendo, dominado), revisão de hoje. Sem sequência de dias. |
+| Início | Saudação pelo primeiro nome conforme a hora (bom dia, boa tarde, boa noite) com a foto do Google ou as iniciais (primeiro e último nome), palavra do dia, resumo do vocabulário (total, aprendendo, dominado), revisão de hoje. Sem sequência de dias. Sem nada (zero termos, sem palavra do dia, sem revisão): aviso centralizado "Seu inglês começa aqui" com "Fazer a primeira captura" (abre o menu +). |
 | Vocabulário | Grade de grupos (% dominado). Sem termos: "Nenhum termo ainda". Busca e filtros: a definir. |
 | Grupo | Termos do grupo: tipo, tradução, status, nível. Filtro todos/aprendendo/dominado. |
 | Inbox | Abas Todas, Prontas, Pendentes, Analisadas. Seções: precisa de atenção (erro: descartar ou processar agora; sem modelo de áudio = "Falta o modelo de áudio", aponta pro Perfil; sem texto = "Não achei texto na foto" / "Não ouvi fala em inglês"), prontas (descartar ou escolher termos; com termos: editar ou confirmar análise), processando, esperando envio, analisadas (apagadas, no fim). Foto em miniatura; áudio com player. Puxar a lista sincroniza. Vazio: "Inbox zerado". |
@@ -55,4 +55,4 @@ Texto da foto e do áudio sai no próprio celular, sem internet (foto: ML Kit no
 
 ## Estado atual
 
-Tudo fala com a API Django (`api/`), sem mock. Conta real (sessão salva; expirou = volta pro login com aviso). Inbox real, offline first, sincroniza quando a pessoa age. Home e Vocabulário vazios até a API ter vocabulário (palavra do dia e revisão somem). Captura por texto, foto e áudio. Escolher termos e confirmar análise. Ficha do termo (IA): a definir.
+Tudo fala com a API Django (`api/`), sem mock. Conta real (sessão salva; expirou = volta pro login com aviso). Inbox real, offline first, sincroniza quando a pessoa age. Home e Vocabulário vazios até a API ter vocabulário (Home com o aviso de primeira captura, Vocabulário com "Nenhum termo ainda"). Captura por texto, foto e áudio. Escolher termos e confirmar análise. Ficha do termo (IA): a definir.
