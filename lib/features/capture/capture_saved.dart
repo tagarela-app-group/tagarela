@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
-String savedMessage(Capture capture) => capture.pending.isNotEmpty
+String savedMessage(Capture capture) =>
+    capture.pending.contains(CaptureSync.extract)
+    ? 'Já está processando.'
+    : capture.pending.isNotEmpty
     ? 'Puxe a lista no Inbox quando tiver internet.'
     : capture.source == CaptureSource.text
     ? 'Pronto pra escolher os termos.'

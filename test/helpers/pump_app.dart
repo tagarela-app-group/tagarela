@@ -7,11 +7,13 @@ import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
+import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
 import 'fake_auth.dart';
 import 'fake_capture_store.dart';
+import 'fake_extraction.dart';
 import 'fixtures.dart';
 
 AppScope testScope({
@@ -20,6 +22,7 @@ AppScope testScope({
   CaptureStore? captures,
   AudioPlayback? playback,
   CaptureDevice? device,
+  SpeechModelStore? speech,
   HomeStore? home,
   VocabularyStore? vocabulary,
 }) => AppScope(
@@ -27,6 +30,7 @@ AppScope testScope({
   captures: captures ?? fakeCaptures().store,
   playback: playback ?? FakeAudioPlayback(),
   device: device ?? FakeCaptureDevice(),
+  speech: speech ?? fakeSpeechModel().store,
   home: home ?? HomeStore(sampleHome),
   vocabulary: vocabulary ?? VocabularyStore(sampleGroups),
   child: child,
@@ -45,6 +49,7 @@ extension PumpApp on WidgetTester {
     CaptureStore? captures,
     AudioPlayback? playback,
     CaptureDevice? device,
+    SpeechModelStore? speech,
     HomeStore? home,
     VocabularyStore? vocabulary,
     bool load = true,
@@ -56,6 +61,7 @@ extension PumpApp on WidgetTester {
       captures: captures,
       playback: playback,
       device: device,
+      speech: speech,
       home: home,
       vocabulary: vocabulary,
       child: MaterialApp(theme: theme ?? AppTheme.light, home: page),

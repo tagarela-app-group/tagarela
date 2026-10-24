@@ -23,7 +23,7 @@ class CaptureService {
           'id': capture.id,
           'source': capture.source.name,
           'captured_at': capture.capturedAt.toUtc().toIso8601String(),
-          if (capture.source == CaptureSource.text) 'text': capture.text,
+          if (capture.text.isNotEmpty) 'text': capture.text,
         })
         as Json,
   );

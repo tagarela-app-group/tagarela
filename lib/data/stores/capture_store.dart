@@ -7,14 +7,27 @@ import 'package:tagarela/data/media_storage.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/services/capture_service.dart';
 import 'package:tagarela/data/store.dart';
+import 'package:tagarela/data/text_extractor.dart';
 
 class CaptureStore extends Store<List<Capture>> {
-  CaptureStore(this._service, this._db, this._media, {required this._owner});
+  CaptureStore(
+    this._service,
+    this._db,
+    this._media, {
+    required this._owner,
+    this._extractor,
+  });
 
   final CaptureService _service;
   final AppDatabase _db;
   final MediaStorage _media;
   final String? Function() _owner;
+  final TextExtractor? _extractor;
+
+  Future<void> _extractions = Future.value();
+  var _queued = 0;
+
+  Future<void> get extractions => _extractions;
 
   @override
   Future<List<Capture>> fetch() async {
@@ -45,16 +58,21 @@ class CaptureStore extends Store<List<Capture>> {
 
   Future<Capture> createMedia(CaptureSource source, File file) async {
     final id = _newId();
-    return _create(
+    final onDevice = _extractor != null;
+    final capture = await _create(
       Capture(
         id: id,
         source: source,
-        status: CaptureStatus.waitingFile,
+        status: onDevice ? CaptureStatus.processing : CaptureStatus.waitingFile,
         capturedAt: DateTime.now(),
         mediaPath: await _media.save(id, source, file),
-        pending: const {CaptureSync.create, CaptureSync.file},
+        pending: onDevice
+            ? const {CaptureSync.extract, CaptureSync.create}
+            : const {CaptureSync.create, CaptureSync.file},
       ),
     );
+    if (onDevice) _queueExtraction(id);
+    return capture;
   }
 
   Future<void> confirm(
@@ -87,6 +105,15 @@ class CaptureStore extends Store<List<Capture>> {
   Future<void> processNow(Capture capture) async {
     final owner = _owner();
     if (owner == null) return;
+    if (_extractor != null && capture.pending.contains(CaptureSync.extract)) {
+      await _db.saveCapture(
+        owner,
+        capture.copyWith(status: CaptureStatus.processing, error: () => null),
+      );
+      await load();
+      _queueExtraction(capture.id);
+      return;
+    }
     await _db.saveCapture(
       owner,
       capture.copyWith(pending: {...capture.pending, CaptureSync.file}),
@@ -104,6 +131,14 @@ class CaptureStore extends Store<List<Capture>> {
       await _pull(owner);
     } finally {
       await load();
+    }
+  }
+
+  Future<void> extractPending() async {
+    final owner = _owner();
+    if (_extractor == null || owner == null) return;
+    for (final capture in (await _db.capturesOf(owner)).reversed) {
+      if (capture.waitsExtraction) _queueExtraction(capture.id);
     }
   }
 
@@ -138,7 +173,67 @@ class CaptureStore extends Store<List<Capture>> {
     }
   }
 
+  void _queueExtraction(String id) {
+    _queued++;
+    _extractions = _extractions
+        .then((_) async {
+          try {
+            await _extract(id);
+          } finally {
+            if (--_queued == 0) await _extractor!.release();
+          }
+        })
+        .onError((_, _) {});
+  }
+
+  Future<void> _extract(String id) async {
+    final owner = _owner();
+    final capture = await _ownCapture(owner, id);
+    final path = capture?.mediaPath;
+    if (owner == null || capture == null || !capture.waitsExtraction) return;
+    final file = path == null ? null : await _media.find(path);
+    Capture done;
+    try {
+      if (file == null) {
+        throw const ExtractionException(ExtractionError.failed);
+      }
+      final text = await _extractor!.extract(capture.source, file);
+      done = capture.copyWith(
+        status: CaptureStatus.ready,
+        text: text,
+        originalText: text,
+        error: () => null,
+        processedAt: DateTime.now(),
+        pending: capture.pending.difference({CaptureSync.extract}),
+      );
+    } on ExtractionException catch (e) {
+      done = capture.copyWith(
+        status: CaptureStatus.failed,
+        error: () => e.error.code,
+      );
+    }
+    final latest = await _ownCapture(owner, id);
+    if (latest == null || !latest.waitsExtraction) return;
+    await _db.saveCapture(owner, done);
+    try {
+      if (done.status == CaptureStatus.ready) await _push(owner, done);
+    } on Exception {
+      return;
+    } finally {
+      await load();
+    }
+  }
+
+  Future<Capture?> _ownCapture(String? owner, String id) async {
+    if (owner == null) return null;
+    for (final capture in await _db.capturesOf(owner)) {
+      if (capture.id == id) return capture;
+    }
+    return null;
+  }
+
   Future<void> _push(String owner, Capture capture) async {
+    if (capture.pending.contains(CaptureSync.extract)) return;
     var current = capture;
 
     Future<void> step(CaptureSync op, Future<Capture?> Function() call) async {

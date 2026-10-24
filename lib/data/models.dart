@@ -188,7 +188,7 @@ enum CaptureStatus {
       values.firstWhere((s) => s.apiName == name);
 }
 
-enum CaptureSync { create, file, update, confirm, discard }
+enum CaptureSync { extract, create, file, update, confirm, discard }
 
 enum CaptureSection {
   attention('Precisa de atenção'),
@@ -274,6 +274,7 @@ class Capture {
       );
 
   static const mediaRetention = Duration(days: 30);
+  static const maxTextLength = 2000;
 
   final String id;
   final CaptureSource source;
@@ -300,6 +301,10 @@ class Capture {
 
   bool get needsAction =>
       status == CaptureStatus.ready || status == CaptureStatus.failed;
+
+  bool get waitsExtraction =>
+      status == CaptureStatus.processing &&
+      pending.contains(CaptureSync.extract);
 
   bool mediaExpired(DateTime now) {
     final closedAt = analyzedAt ?? discardedAt;
@@ -334,7 +339,10 @@ class Capture {
   Capture copyWith({
     CaptureStatus? status,
     String? text,
+    String? originalText,
     List<CaptureTerm>? terms,
+    ValueGetter<String?>? error,
+    DateTime? processedAt,
     DateTime? analyzedAt,
     DateTime? discardedAt,
     ValueGetter<String?>? mediaPath,
@@ -344,11 +352,11 @@ class Capture {
     source: source,
     status: status ?? this.status,
     text: text ?? this.text,
-    originalText: originalText,
+    originalText: originalText ?? this.originalText,
     terms: terms ?? this.terms,
-    error: error,
+    error: error == null ? this.error : error(),
     capturedAt: capturedAt,
-    processedAt: processedAt,
+    processedAt: processedAt ?? this.processedAt,
     analyzedAt: analyzedAt ?? this.analyzedAt,
     discardedAt: discardedAt ?? this.discardedAt,
     updatedAt: updatedAt,

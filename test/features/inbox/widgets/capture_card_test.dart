@@ -91,6 +91,55 @@ void main() {
     expect(taps, ['descartar', 'processar']);
   });
 
+  testWidgets('erro sem o modelo de áudio diz onde baixar', (tester) async {
+    await pumpCard(
+      tester,
+      sampleCapture(
+        'a1',
+        source: CaptureSource.audio,
+        status: CaptureStatus.failed,
+        mediaPath: 'captures/audio/a1.m4a',
+        error: 'model_missing',
+      ),
+    );
+
+    expect(find.text('Falta o modelo de áudio'), findsOneWidget);
+    expect(
+      find.text(
+        'Baixe em Perfil, Transcrição offline, e toque em Processar agora.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Processar agora'), findsOneWidget);
+  });
+
+  testWidgets('erro sem texto: foto e áudio', (tester) async {
+    await pumpCard(
+      tester,
+      sampleCapture(
+        'p1',
+        source: CaptureSource.photo,
+        status: CaptureStatus.failed,
+        mediaPath: 'captures/photo/p1.jpg',
+        error: 'no_text',
+      ),
+    );
+    expect(find.text('Não achei texto na foto'), findsOneWidget);
+    expect(find.text('Tente outra foto ou descarte esta.'), findsOneWidget);
+
+    await pumpCard(
+      tester,
+      sampleCapture(
+        'a1',
+        source: CaptureSource.audio,
+        status: CaptureStatus.failed,
+        error: 'no_text',
+      ),
+    );
+    expect(find.text('Não ouvi fala em inglês'), findsOneWidget);
+    expect(find.text('Grave de novo ou descarte este áudio.'), findsOneWidget);
+  });
+
   testWidgets('pronta sem termos: Escolher termos só com destino', (
     tester,
   ) async {

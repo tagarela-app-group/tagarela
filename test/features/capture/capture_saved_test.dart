@@ -26,5 +26,16 @@ void main() {
       ),
       'Puxe a lista no Inbox quando tiver internet.',
     );
+    expect(
+      savedMessage(
+        sampleCapture(
+          'a',
+          source: CaptureSource.audio,
+          status: CaptureStatus.processing,
+          pending: const {CaptureSync.extract, CaptureSync.create},
+        ),
+      ),
+      'Já está processando.',
+    );
   });
 }

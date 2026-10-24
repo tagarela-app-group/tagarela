@@ -4,6 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/user_avatar.dart';
+import 'package:tagarela/features/profile/widgets/speech_model_card.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -25,6 +26,7 @@ class ProfilePage extends StatelessWidget {
                   leading: UserAvatar(user: user, size: 56),
                 ),
           children: [
+            const SpeechModelCard(),
             AppButton(
               label: 'Sair',
               onPressed: () => _logout(context),

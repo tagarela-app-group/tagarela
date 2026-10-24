@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/text_extractor.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
 
@@ -94,12 +95,7 @@ class _CaptureCardState extends State<CaptureCard> {
 
     return switch (capture.status) {
       CaptureStatus.failed => [
-        withMedia(
-          const _Message(
-            title: 'Não deu pra processar agora',
-            text: 'Toque em Processar agora pra tentar de novo.',
-          ),
-        ),
+        withMedia(_failure(capture)),
         _Actions(
           secondary: ('Descartar', widget.onDiscard),
           primary: ('Processar agora', widget.onProcess),
@@ -150,6 +146,25 @@ class _CaptureCardState extends State<CaptureCard> {
     };
   }
 }
+
+_Message _failure(Capture capture) => switch (capture.error) {
+  final e when e == ExtractionError.modelMissing.code => const _Message(
+    title: 'Falta o modelo de áudio',
+    text: 'Baixe em Perfil, Transcrição offline, e toque em Processar agora.',
+  ),
+  final e when e == ExtractionError.noText.code => _Message(
+    title: capture.source.isPhoto
+        ? 'Não achei texto na foto'
+        : 'Não ouvi fala em inglês',
+    text: capture.source.isPhoto
+        ? 'Tente outra foto ou descarte esta.'
+        : 'Grave de novo ou descarte este áudio.',
+  ),
+  _ => const _Message(
+    title: 'Não deu pra processar agora',
+    text: 'Toque em Processar agora pra tentar de novo.',
+  ),
+};
 
 extension on CaptureSource {
   bool get isPhoto => this == CaptureSource.photo;

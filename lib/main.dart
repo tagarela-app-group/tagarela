@@ -7,14 +7,23 @@ import 'package:tagarela/data/audio_playback.dart';
 import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/database.dart';
 import 'package:tagarela/data/media_storage.dart';
+import 'package:tagarela/data/model_storage.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/services/capture_service.dart';
 import 'package:tagarela/data/social_sign_in.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
+import 'package:tagarela/data/stores/speech_model_store.dart';
+import 'package:tagarela/data/text_extractor.dart';
 import 'package:tagarela/data/token_storage.dart';
 
+const _extraction = String.fromEnvironment(
+  'EXTRACTION',
+  defaultValue: 'device',
+);
+
 void main() {
+  final models = ModelStorage();
   final auth = AuthStore(
     AuthService(ApiClient()),
     TokenStorage(),
@@ -28,9 +37,11 @@ void main() {
         AppDatabase(),
         MediaStorage(),
         owner: () => auth.user?.email,
+        extractor: _extraction == 'server' ? null : TextExtractor(models),
       ),
       playback: AudioPlayback(),
       device: CaptureDevice(),
+      speech: SpeechModelStore(models),
       child: const TagarelaApp(),
     ),
   );
