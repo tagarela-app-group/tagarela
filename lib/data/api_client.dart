@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 typedef AccessToken = Future<String?> Function({bool renew});
 
@@ -27,37 +26,6 @@ class ApiClient {
       _send('PATCH', path, body);
 
   Future<void> delete(String path) => _send('DELETE', path);
-
-  Future<Object?> putFile(
-    String path, {
-    required String field,
-    required File file,
-    required String contentType,
-  }) async {
-    final boundary = 'tagarela-${DateTime.now().microsecondsSinceEpoch}';
-    final name = file.uri.pathSegments.last;
-    final bytes =
-        (BytesBuilder(copy: false)
-              ..add(
-                utf8.encode(
-                  '--$boundary\r\n'
-                  'Content-Disposition: form-data; name="$field"; filename="$name"\r\n'
-                  'Content-Type: $contentType\r\n\r\n',
-                ),
-              )
-              ..add(await file.readAsBytes())
-              ..add(utf8.encode('\r\n--$boundary--\r\n')))
-            .takeBytes();
-    final type = ContentType(
-      'multipart',
-      'form-data',
-      parameters: {'boundary': boundary},
-    );
-    final response = await _authorized(
-      (auth) => _request('PUT', path, type, bytes, auth),
-    );
-    return _checked(response, 'PUT', path);
-  }
 
   Future<ApiResponse> send(
     String method,

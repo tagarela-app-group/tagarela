@@ -174,7 +174,6 @@ enum CaptureSource {
 }
 
 enum CaptureStatus {
-  waitingFile('waiting_file'),
   processing('processing'),
   failed('failed'),
   ready('ready'),
@@ -188,13 +187,12 @@ enum CaptureStatus {
       values.firstWhere((s) => s.apiName == name);
 }
 
-enum CaptureSync { extract, create, file, update, confirm, discard }
+enum CaptureSync { extract, create, update, confirm, discard }
 
 enum CaptureSection {
   attention('Precisa de atenção'),
   ready('Prontas'),
   processing('Processando'),
-  waiting('Esperando envio'),
   done('Analisadas');
 
   const CaptureSection(this.label);
@@ -262,10 +260,6 @@ class Capture {
           for (final t in json['terms']! as List<Object?>)
             CaptureTerm.fromJson(t! as Json),
         ],
-        error: switch (json['error']) {
-          final String e when e.isNotEmpty => e,
-          _ => null,
-        },
         capturedAt: DateTime.parse(json['captured_at']! as String),
         processedAt: _date(json['processed_at']),
         analyzedAt: _date(json['analyzed_at']),
@@ -295,7 +289,6 @@ class Capture {
     CaptureStatus.failed => CaptureSection.attention,
     CaptureStatus.ready => CaptureSection.ready,
     CaptureStatus.processing => CaptureSection.processing,
-    CaptureStatus.waitingFile => CaptureSection.waiting,
     CaptureStatus.analyzed => CaptureSection.done,
   };
 

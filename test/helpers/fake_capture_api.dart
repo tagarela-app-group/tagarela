@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/models.dart';
 
-typedef SentFile = ({String name, String contentType, List<int> bytes});
-
 class FakeCaptureApi implements ApiClient {
   static const path = '/api/v1/captures';
   static const pageSize = 2;
@@ -13,7 +11,6 @@ class FakeCaptureApi implements ApiClient {
   final server = <String, Json>{};
   final calls = <String>[];
   final bodies = <String, Object?>{};
-  final files = <String, SentFile>{};
   final rejections = <String, int>{};
 
   bool offline = false;
@@ -24,16 +21,6 @@ class FakeCaptureApi implements ApiClient {
 
   @override
   AccessToken? get accessToken => null;
-
-  void process(String id, String text) {
-    final capture = server[id]!;
-    capture
-      ..['status'] = 'ready'
-      ..['text'] = text
-      ..['original_text'] = text
-      ..['processed_at'] = _now();
-    _touch(capture);
-  }
 
   @override
   Future<Object?> get(String path) => _handle('GET', path, null, () {
@@ -69,17 +56,16 @@ class FakeCaptureApi implements ApiClient {
               ..['analyzed_at'] = _now(),
           );
         }
-        final text = body['text'] as String?;
+        final text = body['text']! as String;
         return server[body['id']! as String] = _touch({
           'id': body['id'],
           'source': body['source'],
-          'status': text == null ? 'waiting_file' : 'ready',
-          'text': text ?? '',
-          'original_text': text ?? '',
+          'status': 'ready',
+          'text': text,
+          'original_text': text,
           'terms': <Object?>[],
-          'error': '',
           'captured_at': body['captured_at'],
-          'processed_at': text == null ? null : _now(),
+          'processed_at': _now(),
           'analyzed_at': null,
           'discarded_at': null,
         });
@@ -88,25 +74,6 @@ class FakeCaptureApi implements ApiClient {
   @override
   Future<Object?> patch(String path, Map<String, Object?> body) =>
       _handle('PATCH', path, body, () => _touch(_capture(path)..addAll(body)));
-
-  @override
-  Future<Object?> putFile(
-    String path, {
-    required String field,
-    required File file,
-    required String contentType,
-  }) => _handle('PUT', path, field, () {
-    files[path.split('/')[4]] = (
-      name: file.uri.pathSegments.last,
-      contentType: contentType,
-      bytes: file.readAsBytesSync(),
-    );
-    return _touch(
-      _capture(path)
-        ..['status'] = 'processing'
-        ..['error'] = '',
-    );
-  });
 
   @override
   Future<void> delete(String path) => _handle(

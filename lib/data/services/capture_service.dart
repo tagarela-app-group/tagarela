@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/models.dart';
 
@@ -8,14 +6,6 @@ class CaptureService {
 
   static const _path = '/api/v1/captures';
 
-  static const _contentTypes = {
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
-    'webp': 'image/webp',
-    'm4a': 'audio/mp4',
-  };
-
   final ApiClient _api;
 
   Future<Capture> create(Capture capture) async => Capture.fromJson(
@@ -23,18 +13,8 @@ class CaptureService {
           'id': capture.id,
           'source': capture.source.name,
           'captured_at': capture.capturedAt.toUtc().toIso8601String(),
-          if (capture.text.isNotEmpty) 'text': capture.text,
+          'text': capture.text,
         })
-        as Json,
-  );
-
-  Future<Capture> sendFile(String id, File file) async => Capture.fromJson(
-    await _api.putFile(
-          '$_path/$id/file',
-          field: 'file',
-          file: file,
-          contentType: _contentTypes[file.path.split('.').last.toLowerCase()]!,
-        )
         as Json,
   );
 

@@ -28,9 +28,8 @@ void main() {
     sampleCapture('processando', status: CaptureStatus.processing),
     sampleCapture(
       'esperando',
-      source: CaptureSource.photo,
-      status: CaptureStatus.waitingFile,
-      pending: const {CaptureSync.create, CaptureSync.file},
+      text: 'Ainda não enviada',
+      pending: const {CaptureSync.create},
     ),
     sampleCapture(
       'analisada',
@@ -64,9 +63,8 @@ void main() {
 
     expect(sectionLabels(tester), [
       'PRECISA DE ATENÇÃO · 1',
-      'PRONTAS · 1',
+      'PRONTAS · 2',
       'PROCESSANDO · 1',
-      'ESPERANDO ENVIO · 1',
       'ANALISADAS · 1',
     ]);
     expect(find.text('5 capturas · 1 esperando envio'), findsOneWidget);
@@ -78,14 +76,13 @@ void main() {
 
     await tester.tap(find.text('Prontas').first);
     await tester.pump();
-    expect(sectionLabels(tester), ['PRONTAS · 1']);
+    expect(sectionLabels(tester), ['PRONTAS · 2']);
 
     await tester.tap(find.text('Pendentes'));
     await tester.pump();
     expect(sectionLabels(tester), [
       'PRECISA DE ATENÇÃO · 1',
       'PROCESSANDO · 1',
-      'ESPERANDO ENVIO · 1',
     ]);
 
     await tester.tap(find.text('Analisadas').first);
@@ -139,20 +136,6 @@ void main() {
 
     expect(find.byType(PickTermsPage), findsOneWidget);
     expect(find.text('escolher'), findsOneWidget);
-  });
-
-  testWidgets('Processar agora sem rede avisa', (tester) async {
-    await seed([sampleCapture('falhou', status: CaptureStatus.failed)]);
-    captures.api.offline = true;
-    await pumpInbox(tester);
-
-    await tester.tap(find.text('Processar agora'));
-    await tester.pumpAndSettle();
-
-    expect(
-      find.text('Sem conexão. Tente de novo quando tiver internet.'),
-      findsOneWidget,
-    );
   });
 
   testWidgets('puxar a lista sincroniza com a API', (tester) async {

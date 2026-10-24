@@ -20,6 +20,7 @@ void main() {
   late Directory root;
   late String? owner;
   late CaptureStore store;
+  late FakeTextExtractor extractor;
 
   const text = 'Please mind the gap between the train and the platform.';
   const mindTheGap = CaptureTerm(text: 'mind the gap', start: 7, end: 19);
@@ -29,11 +30,13 @@ void main() {
     db = AppDatabase(NativeDatabase.memory());
     root = await Directory.systemTemp.createTemp('captures_test');
     owner = 'ana@example.com';
+    extractor = FakeTextExtractor();
     store = CaptureStore(
       CaptureService(api),
       db,
       MediaStorage(() async => root),
       owner: () => owner,
+      extractor: extractor,
     );
   });
 
@@ -87,11 +90,12 @@ void main() {
       expect(api.server.keys, [only().id]);
     });
 
-    test('foto: copia pra pasta do app, cria e manda o arquivo', () async {
+    test('foto: copia pra pasta do app e não sobe o arquivo', () async {
       final capture = await store.createMedia(
         CaptureSource.photo,
         await picture(),
       );
+      await store.extractions;
 
       expect(capture.mediaPath, 'captures/photo/${capture.id}.jpg');
       expect(File('${root.path}/${capture.mediaPath}').readAsBytesSync(), [
@@ -99,54 +103,16 @@ void main() {
         2,
         3,
       ]);
-      expect(api.calls, [
-        'POST ${FakeCaptureApi.path}',
-        'PUT ${FakeCaptureApi.path}/${capture.id}/file',
-      ]);
-      expect(api.files[capture.id]?.contentType, 'image/jpeg');
+      expect(api.calls, ['POST ${FakeCaptureApi.path}']);
       expect((await store.mediaFile(capture))?.readAsBytesSync(), [1, 2, 3]);
       expect(
         await store.mediaFile(only().copyWith(mediaPath: () => null)),
         isNull,
       );
-      expect(only().status, CaptureStatus.processing);
-      expect(only().pending, isEmpty);
-      expect(capture.status, CaptureStatus.processing);
-    });
-
-    test('áudio offline: guarda as duas etapas pendentes', () async {
-      api.offline = true;
-      final capture = await store.createMedia(
-        CaptureSource.audio,
-        await picture('gravacao.m4a'),
-      );
-
-      expect(capture.mediaPath, 'captures/audio/${capture.id}.m4a');
-      expect(only().status, CaptureStatus.waitingFile);
-      expect(only().pending, {CaptureSync.create, CaptureSync.file});
-
-      api.offline = false;
-      await store.sync();
-
-      expect(api.files[capture.id]?.contentType, 'audio/mp4');
-      expect(only().pending, isEmpty);
     });
   });
 
   group('extrair no aparelho', () {
-    late FakeTextExtractor extractor;
-
-    setUp(() {
-      extractor = FakeTextExtractor();
-      store = CaptureStore(
-        CaptureService(api),
-        db,
-        MediaStorage(() async => root),
-        owner: () => owner,
-        extractor: extractor,
-      );
-    });
-
     Iterable<String> sent() => api.calls.where((c) => !c.startsWith('GET'));
 
     test('foto: lê no celular e cria já com o texto, sem arquivo', () async {
@@ -168,7 +134,6 @@ void main() {
         api.bodies['POST ${FakeCaptureApi.path}'],
         containsPair('text', 'MIND THE GAP'),
       );
-      expect(api.files, isEmpty);
       expect(only().status, CaptureStatus.ready);
       expect(only().text, 'MIND THE GAP');
       expect(only().originalText, 'MIND THE GAP');
@@ -194,7 +159,6 @@ void main() {
 
       expect(api.server.values.single['status'], 'ready');
       expect(api.server.values.single['text'], 'Mind the gap.');
-      expect(api.files, isEmpty);
       expect(only().pending, isEmpty);
     });
 
@@ -291,18 +255,11 @@ void main() {
   });
 
   group('sync', () {
-    test('puxa o texto extraído e guarda o cursor', () async {
-      final capture = await store.createMedia(
-        CaptureSource.photo,
-        await picture(),
-      );
-      api.process(capture.id, 'MIND THE GAP');
+    test('guarda o cursor e depois pede só o que mudou', () async {
+      final capture = await store.createText(text);
 
       await store.sync();
 
-      expect(only().status, CaptureStatus.ready);
-      expect(only().text, 'MIND THE GAP');
-      expect(only().mediaPath, isNotNull);
       final cursor = await db.cursor('ana@example.com');
       final updatedAt = api.server[capture.id]!['updated_at']! as String;
       expect(cursor!.isAtSameMomentAs(DateTime.parse(updatedAt)), isTrue);
@@ -380,29 +337,36 @@ void main() {
     });
 
     test('API recusa (409): larga a etapa e segue', () async {
-      final capture = await store.createMedia(
-        CaptureSource.photo,
-        await picture(),
-      );
-      api.rejections['PUT ${FakeCaptureApi.path}/${capture.id}/file'] = 409;
+      api.rejections['POST ${FakeCaptureApi.path}'] = 409;
 
-      await store.processNow(only());
+      await store.createText(text);
 
       expect(only().pending, isEmpty);
     });
 
-    test('processar agora reenvia o arquivo', () async {
-      final capture = await store.createMedia(
-        CaptureSource.photo,
-        await picture(),
-      );
-      api.server[capture.id]!['status'] = 'failed';
+    test('processar agora lê de novo no celular', () async {
+      extractor.results[CaptureSource.photo] = ExtractionError.noText;
+      await store.createMedia(CaptureSource.photo, await picture());
+      await store.extractions;
+      expect(only().status, CaptureStatus.failed);
+
+      extractor.results.remove(CaptureSource.photo);
+      await store.processNow(only());
+      await store.extractions;
+
+      expect(only().status, CaptureStatus.ready);
+      expect(only().error, isNull);
+      expect(api.server.values.single['text'], 'Mind the gap.');
+    });
+
+    test('processar agora sem extração pendente não faz nada', () async {
+      await store.createText(text);
       api.calls.clear();
 
       await store.processNow(only());
 
-      expect(api.calls.first, 'PUT ${FakeCaptureApi.path}/${capture.id}/file');
-      expect(only().status, CaptureStatus.processing);
+      expect(api.calls, isEmpty);
+      expect(only().status, CaptureStatus.ready);
     });
   });
 

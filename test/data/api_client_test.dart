@@ -143,43 +143,6 @@ void main() {
     expect(authorization, ['Bearer velho']);
   });
 
-  test('putFile manda multipart com Content-Length e Bearer', () async {
-    final folder = await Directory.systemTemp.createTemp('api_client_test');
-    addTearDown(() => folder.delete(recursive: true));
-    final file = File('${folder.path}/foto.jpg')..writeAsStringSync('img');
-    final secure = withToken(({renew = false}) async => 'novo');
-
-    await secure.putFile(
-      '/captures/1/file',
-      field: 'file',
-      file: file,
-      contentType: 'image/jpeg',
-    );
-
-    final boundary = contentTypes.single!.split('boundary=').last;
-    expect(contentTypes.single, startsWith('multipart/form-data'));
-    expect(authorization, ['Bearer novo']);
-    expect(framing.single.$2, isFalse);
-    expect(
-      received.single,
-      'PUT /captures/1/file --$boundary\r\n'
-      'Content-Disposition: form-data; name="file"; filename="foto.jpg"\r\n'
-      'Content-Type: image/jpeg\r\n\r\n'
-      'img\r\n--$boundary--',
-    );
-  });
-
-  test('putFile com erro vira ApiException', () async {
-    final folder = await Directory.systemTemp.createTemp('api_client_test');
-    addTearDown(() => folder.delete(recursive: true));
-    final file = File('${folder.path}/foto.jpg')..writeAsStringSync('img');
-
-    expect(
-      api.putFile('/missing', field: 'file', file: file, contentType: 'x/y'),
-      throwsA(isA<ApiException>().having((e) => e.statusCode, 'status', 404)),
-    );
-  });
-
   test('rejected: 4xx menos 401', () {
     expect(
       [400, 404, 409, 401, 500].map((s) => ApiException(s, 'x').rejected),

@@ -39,7 +39,6 @@ class AppScope extends InheritedWidget {
     await captures.cleanMedia();
     await Future.wait([home.load(), vocabulary.load(), captures.load()]);
     await captures.extractPending();
-    if (!captures.extractsOnDevice) return;
     unawaited(speech.whenReady.then((_) => captures.extractPending()));
     unawaited(speech.ensure());
   }

@@ -14,6 +14,7 @@ import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/text_extractor.dart';
 
 import 'fake_capture_api.dart';
+import 'fake_extraction.dart';
 
 class FakeMediaStorage implements MediaStorage {
   final files = <String, File>{};
@@ -132,7 +133,7 @@ FakeCaptures fakeCaptures({
     db,
     media,
     owner: owner ?? () => 'ana@example.com',
-    extractor: extractor,
+    extractor: extractor ?? FakeTextExtractor(),
   );
   return (store: store, db: db, api: api, media: media);
 }

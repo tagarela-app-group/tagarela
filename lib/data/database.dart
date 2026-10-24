@@ -45,7 +45,27 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'tagarela'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (m, from, to) async {
+      if (from < 2) await forgetServerExtraction();
+    },
+  );
+
+  Future<void> forgetServerExtraction() async {
+    await customStatement(
+      "UPDATE captures SET status = 'processing', error = NULL, "
+      "pending = 'extract,create' "
+      'WHERE discarded_at IS NULL '
+      "AND (status = 'waitingFile' OR pending LIKE '%file%')",
+    );
+    await customStatement(
+      "UPDATE captures SET status = 'processing', pending = '' "
+      "WHERE status = 'waitingFile' OR pending LIKE '%file%'",
+    );
+  }
 
   Future<List<Capture>> capturesOf(String owner) async {
     final query = select(captureRows)

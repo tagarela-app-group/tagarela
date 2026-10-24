@@ -25,7 +25,6 @@ class ProfilePage extends StatelessWidget {
       builder: (context, _) {
         final user = scope.auth.user;
         final groups = scope.vocabulary.data;
-        final onDevice = scope.captures.extractsOnDevice;
         return SheetPage(
           header: user == null
               ? const PageHeader(title: 'Perfil')
@@ -46,7 +45,7 @@ class ProfilePage extends StatelessWidget {
               terms: groups?.termCount ?? 0,
               mastered: groups?.masteredCount ?? 0,
             ),
-            if (onDevice) const OfflineSection(),
+            const OfflineSection(),
             if (user != null)
               ProfileSection(
                 title: 'Conta',
@@ -57,15 +56,14 @@ class ProfilePage extends StatelessWidget {
                     title: 'E-mail',
                     text: user.email,
                   ),
-                  if (onDevice)
-                    const ProfileRow(
-                      icon: AppIcons.lock,
-                      accent: AppAccent.mint,
-                      title: 'Privacidade',
-                      text:
-                          'Foto e áudio ficam só neste celular. '
-                          'A API guarda só o texto.',
-                    ),
+                  const ProfileRow(
+                    icon: AppIcons.lock,
+                    accent: AppAccent.mint,
+                    title: 'Privacidade',
+                    text:
+                        'Foto e áudio ficam só neste celular. '
+                        'A API guarda só o texto.',
+                  ),
                 ],
               ),
             Padding(

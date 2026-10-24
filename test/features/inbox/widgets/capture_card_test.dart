@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -99,6 +100,7 @@ void main() {
     tester,
   ) async {
     final speech = fakeSpeechModel();
+    speech.storage.hold = Completer();
     await pumpCard(
       tester,
       audio(
@@ -109,8 +111,8 @@ void main() {
 
     expect(find.text('Esperando o modelo de áudio baixar…'), findsOneWidget);
 
-    await speech.store.ensure();
-    await tester.pump();
+    speech.storage.hold!.complete();
+    await tester.pumpAndSettle();
 
     expect(find.text('Transcrevendo o áudio…'), findsOneWidget);
   });
@@ -208,17 +210,6 @@ void main() {
     await pumpCard(tester, photo(CaptureStatus.processing));
 
     expect(find.text('Lendo o texto da foto…'), findsOneWidget);
-  });
-
-  testWidgets('não enviada pede pra puxar a lista', (tester) async {
-    await pumpCard(tester, photo(CaptureStatus.waitingFile));
-
-    expect(find.text('Não enviada'), findsOneWidget);
-    expect(
-      find.text('Puxe a lista pra enviar quando tiver internet.'),
-      findsOneWidget,
-    );
-    expect(find.byType(AppButton), findsNothing);
   });
 
   testWidgets('analisada: apagada, termos sem botões', (tester) async {
