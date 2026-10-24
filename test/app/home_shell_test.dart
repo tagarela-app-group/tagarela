@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/home_shell.dart';
 import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/stores/home_store.dart';
+import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/home/home_page.dart';
@@ -125,6 +127,23 @@ void main() {
     expect(find.text('Sua sessão expirou. Entre de novo.'), findsNothing);
   });
 
+  testWidgets('Início vazia: "Fazer a primeira captura" abre o menu +', (
+    tester,
+  ) async {
+    await tester.pumpPage(
+      const HomeShell(),
+      home: HomeStore(),
+      vocabulary: VocabularyStore(),
+    );
+    expect(find.text('O que você ouviu hoje?'), findsNothing);
+
+    await tester.tap(find.text('Fazer a primeira captura'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('O que você ouviu hoje?'), findsOneWidget);
+    expect(_inMenu(AppIcons.camera), findsOneWidget);
+  });
+
   testWidgets('"Ver tudo" da Início abre Vocabulário', (tester) async {
     await tester.pumpPage(const HomeShell());
 
@@ -135,7 +154,7 @@ void main() {
   });
 
   Future<void> openFromMenu(WidgetTester tester, IconData icon) async {
-    await tester.tap(_inMenu(AppIcons.add));
+    await tester.tap(find.bySemanticsLabel('Adicionar termo'));
     await tester.pumpAndSettle();
     expect(find.text('O que você ouviu hoje?'), findsOneWidget);
     await tester.tap(_inMenu(icon));

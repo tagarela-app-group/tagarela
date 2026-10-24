@@ -31,6 +31,7 @@ class VocabularyPage extends StatelessWidget {
             ),
           ),
           gap: AppSpacing.s4,
+          centerLast: groups == null || groups.isEmpty,
           children: switch (groups) {
             null => [
               AsyncStatus(error: vocabulary.error, onRetry: vocabulary.load),

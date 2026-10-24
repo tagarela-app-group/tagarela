@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/components/app_bubble.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
-import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
@@ -48,10 +47,10 @@ class ArcMenu extends StatefulWidget {
   static const _arcOverhang = 15.0;
 
   @override
-  State<ArcMenu> createState() => _ArcMenuState();
+  State<ArcMenu> createState() => ArcMenuState();
 }
 
-class _ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
+class ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
   late final _controller = AnimationController(
     vsync: this,
     duration: AppMotion.slow,
@@ -60,6 +59,8 @@ class _ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
   bool get _isOpen =>
       _controller.status == AnimationStatus.forward ||
       _controller.status == AnimationStatus.completed;
+
+  void open() => _controller.forward();
 
   void _toggle() => _isOpen ? _controller.reverse() : _controller.forward();
 
@@ -252,16 +253,37 @@ class _ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
               dimension: ArcMenu._fabSize,
               child: Transform.rotate(
                 angle: t * math.pi / 4,
-                child: Icon(
-                  AppIcons.add,
-                  size: 32,
-                  color: Color.lerp(c.onPrimary, c.ink, t),
-                ),
+                child: _Plus(color: Color.lerp(c.onPrimary, c.ink, t)!),
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _Plus extends StatelessWidget {
+  const _Plus({required this.color});
+
+  final Color color;
+
+  static const _length = 20.0;
+  static const _stroke = 2.8;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget bar(double width, double height) => Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(_stroke / 2),
+      ),
+    );
+    return Stack(
+      alignment: Alignment.center,
+      children: [bar(_length, _stroke), bar(_stroke, _length)],
     );
   }
 }

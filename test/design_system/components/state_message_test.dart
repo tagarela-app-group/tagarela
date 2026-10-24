@@ -20,6 +20,28 @@ void main() {
     expect(find.byType(AppButton), findsNothing);
   });
 
+  testWidgets('glyph no lugar do ícone e ícone na ação', (tester) async {
+    await tester.pumpComponent(
+      StateMessage(
+        glyph: const SpeechBubbleIcon(),
+        title: 'Comece',
+        message: 'Capture.',
+        actionLabel: 'Capturar',
+        actionIcon: AppIcons.add,
+        onAction: () {},
+      ),
+    );
+
+    expect(find.byType(SpeechBubbleIcon), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AppButton),
+        matching: find.byIcon(AppIcons.add),
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('ação chama onAction', (tester) async {
     var taps = 0;
     await tester.pumpComponent(

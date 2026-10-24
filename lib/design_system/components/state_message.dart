@@ -10,19 +10,23 @@ import 'package:tagarela/design_system/tokens/app_typography.dart';
 class StateMessage extends StatelessWidget {
   const StateMessage({
     super.key,
-    required this.icon,
+    this.icon,
+    this.glyph,
     required this.title,
     required this.message,
     this.accent = AppAccent.violet,
     this.actionLabel,
+    this.actionIcon,
     this.onAction,
-  });
+  }) : assert(icon != null || glyph != null);
 
-  final IconData icon;
+  final IconData? icon;
+  final Widget? glyph;
   final String title;
   final String message;
   final AppAccent accent;
   final String? actionLabel;
+  final IconData? actionIcon;
   final VoidCallback? onAction;
 
   @override
@@ -32,7 +36,7 @@ class StateMessage extends StatelessWidget {
       child: Column(
         spacing: AppSpacing.s3,
         children: [
-          IconTile(icon: icon, accent: accent, size: 64),
+          IconTile(icon: icon, glyph: glyph, accent: accent, size: 64),
           Text(title, textAlign: TextAlign.center, style: AppText.titleMd),
           Text(
             message,
@@ -43,6 +47,7 @@ class StateMessage extends StatelessWidget {
             AppButton(
               label: actionLabel!,
               onPressed: onAction,
+              leading: actionIcon == null ? null : Icon(actionIcon),
               variant: AppButtonVariant.tonal,
             ),
         ],

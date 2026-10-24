@@ -19,6 +19,26 @@ void main() {
     expect(background(tester), AppColors.light.accent(AppAccent.violet).soft);
   });
 
+  testWidgets('glyph no lugar do ícone, com tamanho e cor do acento', (
+    tester,
+  ) async {
+    await tester.pumpComponent(
+      const IconTile(
+        glyph: SpeechBubbleIcon(),
+        accent: AppAccent.violet,
+        size: 64,
+      ),
+    );
+
+    final bubble = find.byType(SpeechBubbleIcon);
+    expect(bubble, findsOneWidget);
+    expect(tester.getSize(bubble), const Size.square(32));
+    expect(
+      IconTheme.of(tester.element(bubble)).color,
+      AppColors.light.accent(AppAccent.violet).fg,
+    );
+  });
+
   testWidgets('sem acento fica neutro', (tester) async {
     await tester.pumpComponent(const IconTile(icon: AppIcons.text));
 

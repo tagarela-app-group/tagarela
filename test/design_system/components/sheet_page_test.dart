@@ -36,6 +36,42 @@ void main() {
     expect(find.text('Header'), findsOneWidget);
   });
 
+  testWidgets('centerLast: último item no meio do espaço que sobra', (
+    tester,
+  ) async {
+    await tester.pumpPage(
+      const SheetPage(
+        header: Text('Header'),
+        centerLast: true,
+        children: [Text('Topo'), Text('Vazio')],
+      ),
+    );
+
+    final body = tester.getRect(find.byType(CustomScrollView));
+    final top = tester.getRect(find.text('Topo'));
+    final empty = tester.getRect(find.text('Vazio'));
+    expect(top.top, lessThan(body.top + 50));
+    expect(empty.center.dx, closeTo(body.center.dx, 1));
+    expect(empty.top, greaterThan(body.top + body.height / 3));
+  });
+
+  testWidgets('centerLast com onRefresh: puxar ainda atualiza', (tester) async {
+    var refreshed = 0;
+    await tester.pumpComponent(
+      SheetPage(
+        header: const Text('Header'),
+        centerLast: true,
+        onRefresh: () async => refreshed++,
+        children: const [Text('Vazio')],
+      ),
+    );
+
+    await tester.fling(find.text('Vazio'), const Offset(0, 400), 1000);
+    await tester.pumpAndSettle();
+
+    expect(refreshed, 1);
+  });
+
   testWidgets('onRefresh: puxar a lista chama a função', (tester) async {
     var refreshed = 0;
     await tester.pumpComponent(
