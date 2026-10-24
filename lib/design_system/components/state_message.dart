@@ -34,6 +34,7 @@ class StateMessage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.s10),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         spacing: AppSpacing.s3,
         children: [
           IconTile(icon: icon, glyph: glyph, accent: accent, size: 64),
