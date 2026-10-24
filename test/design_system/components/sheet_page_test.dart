@@ -55,6 +55,29 @@ void main() {
     expect(empty.top, greaterThan(body.top + body.height / 3));
   });
 
+  testWidgets('centerLast com StateMessage: mensagem no meio, não no topo', (
+    tester,
+  ) async {
+    await tester.pumpPage(
+      const SheetPage(
+        header: Text('Header'),
+        centerLast: true,
+        children: [
+          StateMessage(
+            icon: AppIcons.inbox,
+            title: 'Vazio',
+            message: 'Nada por aqui.',
+          ),
+        ],
+      ),
+    );
+
+    final body = tester.getRect(find.byType(CustomScrollView));
+    final message = tester.getRect(find.byType(StateMessage));
+    expect(message.height, lessThan(body.height / 2));
+    expect(message.center.dy, closeTo(body.center.dy, 1));
+  });
+
   testWidgets('centerLast com onRefresh: puxar ainda atualiza', (tester) async {
     var refreshed = 0;
     await tester.pumpComponent(
