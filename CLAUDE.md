@@ -12,7 +12,7 @@ Ler só o doc do assunto do pedido. Não ler todos por padrão.
 | `docs/ARCHITECTURE.md` | Técnico: stack, pastas, dados, convenções de código. |
 | `docs/DESIGN.md` | Design system: tokens, componentes, regras visuais. |
 
-Mockup (fonte visual): https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR. Canvas Design: telas claro/escuro (`Main.dc.html` tem todas) + board `DesignSystem.dc.html`. Ler e publicar via Artifact tool.
+Mockup (fonte visual): https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR. Canvas Design em abas por assunto: telas claro/escuro (`Main.dc.html` tem todas) + board `DesignSystem.dc.html` em abas. Organização: `docs/DESIGN.md` (Mockup). Ler e publicar via Artifact tool.
 
 ## Regras
 
