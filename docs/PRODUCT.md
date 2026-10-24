@@ -31,9 +31,9 @@ Brasileiro, inglês básico/intermediário, celular na mão, pouco tempo.
 | Início | Saudação pelo primeiro nome conforme a hora (bom dia, boa tarde, boa noite) com a foto do Google ou as iniciais (primeiro e último nome), palavra do dia, resumo do vocabulário (total, aprendendo, dominado), revisão de hoje. Sem sequência de dias. |
 | Vocabulário | Grade de grupos (% dominado). Sem termos: "Nenhum termo ainda". Busca e filtros: a definir. |
 | Grupo | Termos do grupo: tipo, tradução, status, nível. Filtro todos/aprendendo/dominado. |
-| Inbox | Abas Todas, Prontas, Pendentes, Analisadas. Seções: precisa de atenção (erro: descartar ou processar agora), prontas (descartar ou escolher termos; com termos: editar ou confirmar análise), processando, esperando envio, analisadas (apagadas, no fim). Foto em miniatura; áudio com player. Puxar a lista sincroniza. Vazio: "Inbox zerado". |
+| Inbox | Abas Todas, Prontas, Pendentes, Analisadas. Seções: precisa de atenção (erro: descartar ou processar agora; sem modelo de áudio = "Falta o modelo de áudio", aponta pro Perfil; sem texto = "Não achei texto na foto" / "Não ouvi fala em inglês"), prontas (descartar ou escolher termos; com termos: editar ou confirmar análise), processando, esperando envio, analisadas (apagadas, no fim). Foto em miniatura; áudio com player. Puxar a lista sincroniza. Vazio: "Inbox zerado". |
 | Escolher termos | Abre pelo card pronto (Escolher termos ou Editar). Toque numa palavra marca só ela; arrastar marca a expressão; palavra dentro de expressão vale. Termo aparece como escrito, sem a pontuação da ponta. Lista "Termos escolhidos" com X. "Editar texto" corrige no próprio card; termos fora do trecho mudado continuam. "Confirmar análise · N termos" (sem termo: "Escolha pelo menos um termo"). Voltar descarta o que foi marcado; lixeira descarta a captura. |
-| Perfil | Dados do usuário, sair. |
+| Perfil | Dados do usuário, card Transcrição offline (modelo de áudio: baixar 45 MB com progresso, pronto, remover, erro com tentar de novo), sair. |
 
 Botão + central (todas as abas): menu em arco com Câmera, Áudio, Texto. Cada um abre um painel de baixo:
 
@@ -43,7 +43,9 @@ Botão + central (todas as abas): menu em arco com Câmera, Áudio, Texto. Cada 
 | Foto | Tirar foto ou escolher da galeria → prévia com "Trocar foto" e "Salvar no Inbox". Foto fica só no celular. |
 | Áudio | Abre gravando (até 1 min, toca pra parar) → ouvir, "Regravar" ou "Salvar no Inbox". Áudio fica só no celular. |
 
-Fechar descarta sem perguntar. Sem permissão de microfone ou câmera: aviso com "Abrir configurações". Salvou: aviso "Salvo no Inbox" com "Ver" (abre o Inbox). Texto do aviso: enviou o texto = "Pronto pra escolher os termos."; enviou foto/áudio = "Já está processando."; sem internet = "Puxe a lista no Inbox quando tiver internet.".
+Fechar descarta sem perguntar. Sem permissão de microfone ou câmera: aviso com "Abrir configurações". Salvou: aviso "Salvo no Inbox" com "Ver" (abre o Inbox). Texto do aviso: enviou o texto = "Pronto pra escolher os termos."; foto/áudio = "Já está processando."; texto sem internet = "Puxe a lista no Inbox quando tiver internet.".
+
+Texto da foto e do áudio sai no próprio celular, sem internet (foto: ML Kit no Android, Apple Vision no iOS; áudio em inglês: Moonshine, modelo baixado no Perfil). Só o texto vai pra API; foto e áudio nunca sobem.
 
 ## Princípios
 

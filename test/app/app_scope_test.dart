@@ -6,9 +6,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/store.dart';
+import 'package:tagarela/data/stores/speech_model_store.dart';
 
 import '../helpers/fake_auth.dart';
 import '../helpers/fake_capture_store.dart';
+import '../helpers/fake_extraction.dart';
 import '../helpers/pump_app.dart';
 
 void main() {
@@ -29,6 +31,7 @@ void main() {
       captures: captures.store,
       playback: FakeAudioPlayback(),
       device: FakeCaptureDevice(),
+      speech: fakeSpeechModel().store,
       child: const SizedBox(),
     );
 
@@ -58,6 +61,36 @@ void main() {
 
     expect(captures.media.files, isEmpty);
     expect(scope.captures.data!.single.mediaPath, isNull);
+  });
+
+  test('loadAll lê o modelo e retoma a extração pendente', () async {
+    final captures = fakeCaptures(extractor: FakeTextExtractor());
+    const path = 'captures/photo/c1.jpg';
+    captures.media.files[path] = File(path);
+    await captures.db.saveCapture(
+      'ana@example.com',
+      sampleCapture(
+        'c1',
+        source: CaptureSource.photo,
+        status: CaptureStatus.processing,
+        text: '',
+        mediaPath: path,
+        pending: const {CaptureSync.extract, CaptureSync.create},
+      ),
+    );
+    final scope = testScope(
+      captures: captures.store,
+      speech: fakeSpeechModel(ready: true).store,
+      child: const SizedBox(),
+    );
+
+    await scope.loadAll();
+    await captures.store.extractions;
+
+    expect(scope.speech.state, SpeechModelState.ready);
+    expect(scope.captures.data!.single.status, CaptureStatus.ready);
+    expect(scope.captures.data!.single.text, 'Mind the gap.');
+    expect(captures.api.server, contains('c1'));
   });
 
   testWidgets('of acha o escopo na árvore', (tester) async {

@@ -11,6 +11,7 @@ import 'package:tagarela/data/media_storage.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/services/capture_service.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
+import 'package:tagarela/data/text_extractor.dart';
 
 import 'fake_capture_api.dart';
 
@@ -118,7 +119,10 @@ typedef FakeCaptures = ({
   FakeMediaStorage media,
 });
 
-FakeCaptures fakeCaptures({String? Function()? owner}) {
+FakeCaptures fakeCaptures({
+  String? Function()? owner,
+  TextExtractor? extractor,
+}) {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   final api = FakeCaptureApi();
   final db = AppDatabase(NativeDatabase.memory());
@@ -128,6 +132,7 @@ FakeCaptures fakeCaptures({String? Function()? owner}) {
     db,
     media,
     owner: owner ?? () => 'ana@example.com',
+    extractor: extractor,
   );
   return (store: store, db: db, api: api, media: media);
 }
@@ -140,6 +145,7 @@ Capture sampleCapture(
   List<CaptureTerm> terms = const [],
   DateTime? capturedAt,
   String? mediaPath,
+  String? error,
   Set<CaptureSync> pending = const {},
 }) => Capture(
   id: id,
@@ -149,6 +155,7 @@ Capture sampleCapture(
   originalText: text,
   terms: terms,
   capturedAt: capturedAt ?? DateTime(2026, 10, 23, 9),
+  error: error,
   mediaPath: mediaPath,
   pending: pending,
 );

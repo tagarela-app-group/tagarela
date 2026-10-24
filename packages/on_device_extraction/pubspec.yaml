@@ -1,0 +1,23 @@
+name: on_device_extraction
+description: "Texto da foto (ML Kit no Android, Apple Vision no iOS) e do áudio em inglês (Moonshine) no próprio aparelho."
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.12.2
+  flutter: '>=3.44.0'
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.tagarela.on_device_extraction
+        pluginClass: OnDeviceExtractionPlugin
+      ios:
+        pluginClass: OnDeviceExtractionPlugin

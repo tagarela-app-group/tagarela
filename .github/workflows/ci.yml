@@ -35,7 +35,7 @@ jobs:
         run: flutter pub get --enforce-lockfile
 
       - name: Formato
-        run: dart format --output=none --set-exit-if-changed lib test
+        run: dart format --output=none --set-exit-if-changed lib test packages
 
       - name: Análise
         run: flutter analyze

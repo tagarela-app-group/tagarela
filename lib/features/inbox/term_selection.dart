@@ -29,7 +29,7 @@ class TermSelection {
       ),
   ]);
 
-  static const maxTextLength = 2000;
+  static const maxTextLength = Capture.maxTextLength;
   static const maxTerms = 50;
   static const maxTermLength = 100;
 

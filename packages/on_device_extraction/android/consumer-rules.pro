@@ -1,0 +1,12 @@
+-keep class ai.moonshine.voice.JNI { *; }
+-keep class ai.moonshine.voice.Transcript { *; }
+-keep class ai.moonshine.voice.TranscriptLine { *; }
+-keep class ai.moonshine.voice.TranscriberOption { *; }
+-keep class ai.moonshine.voice.SpeakerSpan { *; }
+-keep class ai.moonshine.voice.WordTiming { *; }
+-keep class ai.moonshine.voice.SpeechClip { *; }
+-keep class ai.moonshine.voice.TtsChunk { *; }
+-keep class ai.moonshine.voice.TtsSynthesisResult { *; }
+-dontwarn com.google.android.material.**
+-dontwarn okhttp3.**
+-dontwarn androidx.work.**

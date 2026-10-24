@@ -5,6 +5,7 @@ import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
+import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 
 class AppScope extends InheritedWidget {
@@ -14,6 +15,7 @@ class AppScope extends InheritedWidget {
     required this.captures,
     required this.playback,
     required this.device,
+    required this.speech,
     HomeStore? home,
     VocabularyStore? vocabulary,
     required super.child,
@@ -24,6 +26,7 @@ class AppScope extends InheritedWidget {
   final CaptureStore captures;
   final AudioPlayback playback;
   final CaptureDevice device;
+  final SpeechModelStore speech;
   final HomeStore home;
   final VocabularyStore vocabulary;
 
@@ -32,7 +35,13 @@ class AppScope extends InheritedWidget {
 
   Future<void> loadAll() async {
     await captures.cleanMedia();
-    await Future.wait([home.load(), vocabulary.load(), captures.load()]);
+    await Future.wait([
+      home.load(),
+      vocabulary.load(),
+      captures.load(),
+      speech.load(),
+    ]);
+    await captures.extractPending();
   }
 
   @override
