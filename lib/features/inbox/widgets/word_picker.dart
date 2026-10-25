@@ -70,7 +70,7 @@ class _WordPickerState extends State<WordPicker> {
     ];
     bool covers(Span span, Word word) =>
         span.start < word.end && word.start < span.end;
-    bool on(int i) => spans.any((s) => covers(s, _words[i]));
+    int count(int i) => spans.where((s) => covers(s, _words[i])).length;
     bool linked(int a, int b) =>
         spans.any((s) => covers(s, _words[a]) && covers(s, _words[b]));
 
@@ -88,7 +88,7 @@ class _WordPickerState extends State<WordPicker> {
             _WordChip(
               key: _keys[i],
               word: _words[i],
-              selected: on(i),
+              terms: count(i),
               joinLeft: i > 0 && linked(i - 1, i),
               joinRight: i < _words.length - 1 && linked(i, i + 1),
               onTap: () => widget.onPick(i, i),
@@ -103,14 +103,14 @@ class _WordChip extends StatelessWidget {
   const _WordChip({
     super.key,
     required this.word,
-    required this.selected,
+    required this.terms,
     required this.joinLeft,
     required this.joinRight,
     required this.onTap,
   });
 
   final Word word;
-  final bool selected;
+  final int terms;
   final bool joinLeft;
   final bool joinRight;
   final VoidCallback onTap;
@@ -118,8 +118,9 @@ class _WordChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final selected = terms > 0;
     const round = Radius.circular(AppRadius.sm);
-    final chip = Container(
+    final box = Container(
       padding: const EdgeInsets.all(AppSpacing.s2),
       decoration: BoxDecoration(
         color: selected ? c.primarySoft : Colors.transparent,
@@ -136,6 +137,19 @@ class _WordChip extends StatelessWidget {
         ),
       ),
     );
+    final chip = terms < 2
+        ? box
+        : Stack(
+            clipBehavior: Clip.none,
+            children: [
+              box,
+              Positioned(
+                top: -6,
+                right: -4,
+                child: AppBadge(label: '$terms', tone: AppBadgeTone.primary),
+              ),
+            ],
+          );
     if (!word.selectable) return ExcludeSemantics(child: chip);
     return Semantics(
       button: true,

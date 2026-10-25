@@ -96,6 +96,7 @@ void main() {
 
     expect(chips(tester), ['mind the gap', 'mind']);
     expect(confirmButton(tester).label, 'Confirmar análise · 2 termos');
+    expect(find.widgetWithText(AppBadge, '2'), findsOneWidget);
   });
 
   testWidgets('editar o texto mantém o termo que não mudou', (tester) async {

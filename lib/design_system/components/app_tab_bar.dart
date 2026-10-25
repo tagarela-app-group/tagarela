@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:tagarela/design_system/components/app_badge.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
@@ -101,7 +102,10 @@ class _Tab extends StatelessWidget {
                     Positioned(
                       top: -3,
                       right: 8,
-                      child: _Badge(count: item.badge),
+                      child: AppBadge(
+                        label: '${item.badge}',
+                        tone: AppBadgeTone.alert,
+                      ),
                     ),
                 ],
               ),
@@ -115,32 +119,6 @@ class _Tab extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
-  const _Badge({required this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return Container(
-      height: 18,
-      constraints: const BoxConstraints(minWidth: 18),
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: c.alert,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(color: c.surface, width: 2),
-      ),
-      child: Text(
-        '$count',
-        style: AppText.tag.copyWith(letterSpacing: 0, color: c.onAlert),
       ),
     );
   }
