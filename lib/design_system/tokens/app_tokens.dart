@@ -41,5 +41,6 @@ abstract final class AppMotion {
   static const base = Duration(milliseconds: 200);
   static const slow = Duration(milliseconds: 320);
   static const standard = Cubic(0.2, 0.8, 0.2, 1);
+  static const smooth = Curves.easeInOutCubic;
   static const spring = Curves.easeOutBack;
 }

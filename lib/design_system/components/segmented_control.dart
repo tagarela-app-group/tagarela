@@ -19,52 +19,75 @@ class SegmentedControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final duration = MediaQuery.disableAnimationsOf(context)
+        ? Duration.zero
+        : AppMotion.slow;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.s1),
       decoration: BoxDecoration(
         color: c.surfaceAlt,
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
-      child: Row(
-        spacing: AppSpacing.s1,
-        children: [
-          for (final (i, label) in options.indexed)
-            Expanded(
-              child: Semantics(
-                selected: i == selected,
-                button: true,
-                child: AnimatedContainer(
-                  duration: AppMotion.base,
-                  curve: AppMotion.standard,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final gaps = AppSpacing.s1 * (options.length - 1);
+          final width = (constraints.maxWidth - gaps) / options.length;
+          return Stack(
+            children: [
+              AnimatedPositionedDirectional(
+                duration: duration,
+                curve: AppMotion.smooth,
+                start: selected * (width + AppSpacing.s1),
+                top: 0,
+                bottom: 0,
+                width: width,
+                child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: i == selected ? c.surface : Colors.transparent,
+                    color: c.surface,
                     borderRadius: BorderRadius.circular(AppRadius.sm),
-                    boxShadow: i == selected ? c.cardShadow : null,
+                    boxShadow: c.cardShadow,
                   ),
-                  child: InkWell(
-                    onTap: () => onChanged(i),
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                    child: SizedBox(
-                      height: 40,
-                      child: Center(
-                        child: Text(
-                          label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppText.bodyMd.copyWith(
-                            fontWeight: i == selected
-                                ? FontWeight.w700
-                                : FontWeight.w600,
-                            color: i == selected ? c.ink : c.inkSoft,
+                ),
+              ),
+              Row(
+                spacing: AppSpacing.s1,
+                children: [
+                  for (final (i, label) in options.indexed)
+                    Expanded(
+                      child: Semantics(
+                        selected: i == selected,
+                        button: true,
+                        child: InkWell(
+                          onTap: () => onChanged(i),
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
+                          child: SizedBox(
+                            height: 40,
+                            child: Center(
+                              child: AnimatedDefaultTextStyle(
+                                duration: duration,
+                                curve: AppMotion.smooth,
+                                style: AppText.bodyMd.copyWith(
+                                  fontWeight: i == selected
+                                      ? FontWeight.w700
+                                      : FontWeight.w600,
+                                  color: i == selected ? c.ink : c.inkSoft,
+                                ),
+                                child: Text(
+                                  label,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
+                ],
               ),
-            ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
