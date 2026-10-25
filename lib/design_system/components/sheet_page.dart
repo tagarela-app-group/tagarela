@@ -95,35 +95,28 @@ class SheetPage extends StatelessWidget {
     final physics = onRefresh == null
         ? null
         : const AlwaysScrollableScrollPhysics();
-    if (!centerLast || children.isEmpty) {
-      return ListView.separated(
-        physics: physics,
-        padding: padding,
-        itemCount: children.length,
-        separatorBuilder: (_, _) => SizedBox(height: gap),
-        itemBuilder: (_, i) => children[i],
-      );
-    }
-    final above = children.sublist(0, children.length - 1);
+    final center = centerLast && children.isNotEmpty;
+    final above = center ? children.sublist(0, children.length - 1) : children;
     return CustomScrollView(
       physics: physics,
       slivers: [
         if (above.isNotEmpty)
           SliverPadding(
-            padding: padding.copyWith(bottom: gap),
+            padding: center ? padding.copyWith(bottom: gap) : padding,
             sliver: SliverList.separated(
               itemCount: above.length,
               separatorBuilder: (_, _) => SizedBox(height: gap),
               itemBuilder: (_, i) => above[i],
             ),
           ),
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Padding(
-            padding: above.isEmpty ? padding : padding.copyWith(top: 0),
-            child: Center(child: children.last),
+        if (center)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Padding(
+              padding: above.isEmpty ? padding : padding.copyWith(top: 0),
+              child: Center(child: children.last),
+            ),
           ),
-        ),
       ],
     );
   }

@@ -136,8 +136,25 @@ void main() {
 
     expect(tester.getTopLeft(find.text('Rodapé')), before);
     expect(
-      tester.getBottomLeft(find.byType(ListView)).dy,
+      tester.getBottomLeft(find.byType(CustomScrollView)).dy,
       lessThanOrEqualTo(before.dy),
     );
+  });
+
+  testWidgets('trocar centerLast não recria os itens de cima', (tester) async {
+    Widget page({required bool centerLast}) => SheetPage(
+      header: const Text('Header'),
+      centerLast: centerLast,
+      children: const [Text('Topo'), Text('Último')],
+    );
+
+    await tester.pumpPage(page(centerLast: false));
+    final before = tester.element(find.text('Topo'));
+
+    await tester.pumpPage(page(centerLast: true));
+    expect(tester.element(find.text('Topo')), same(before));
+
+    await tester.pumpPage(page(centerLast: false));
+    expect(tester.element(find.text('Topo')), same(before));
   });
 }
