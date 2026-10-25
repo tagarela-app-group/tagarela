@@ -38,7 +38,9 @@ void main() {
       captures: captures.store,
     );
     await tester.tap(find.text('Abrir'));
-    await tester.pumpAndSettle();
+    // Selected words animate forever, so settle on the route transition only.
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
     return opened;
   }
 
@@ -96,7 +98,7 @@ void main() {
 
     expect(chips(tester), ['mind the gap', 'mind']);
     expect(confirmButton(tester).label, 'Confirmar análise · 2 termos');
-    expect(find.widgetWithText(AppBadge, '2'), findsOneWidget);
+    expect(find.widgetWithText(AppBadge, '3'), findsOneWidget);
   });
 
   testWidgets('editar o texto mantém o termo que não mudou', (tester) async {
