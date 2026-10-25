@@ -1731,6 +1731,138 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{icon, select, layers{Geral} talk{Conversa} work{Trabalho} travel{Viagem} food{Comida} tv{Séries} music{Música} study{Estudos} heart{Favoritos} game{Jogos} shopping{Compras} sport{Esporte} health{Saúde} home{Casa} nature{Natureza} paw{Animais} tech{Tecnologia} money{Dinheiro} car{Transporte} family{Família} book{Livros} art{Arte} party{Festa} weather{Clima} phone{Celular} mail{E-mail} code{Programação} science{Ciência} news{Notícias} movie{Cinema} camera{Fotografia} place{Lugares} city{Cidade} globe{Mundo} calendar{Datas} clock{Rotina} star{Importante} idea{Ideias} smile{Sentimentos} shirt{Roupas} restaurant{Restaurante} drink{Bebidas} mountain{Aventura} gift{Presentes} flag{Países} podcast{Podcasts} goal{Metas} writing{Escrita} other{}}'**
   String groupIcon(String icon);
+
+  /// No description provided for @courseLanguage.
+  ///
+  /// In pt, this message translates to:
+  /// **'{language, select, en{Inglês} es{Espanhol} pt{Português} other{}}'**
+  String courseLanguage(String language);
+
+  /// No description provided for @courseName.
+  ///
+  /// In pt, this message translates to:
+  /// **'{learning, select, en{Inglês} es{Espanhol} pt{Português} other{}} por meio do {base, select, en{Inglês} es{Espanhol} pt{Português} other{}}'**
+  String courseName(String learning, String base);
+
+  /// No description provided for @courseVia.
+  ///
+  /// In pt, this message translates to:
+  /// **'por meio do {base, select, en{Inglês} es{Espanhol} pt{Português} other{}} · {count, plural, =0{nenhum termo} =1{1 termo} other{{count} termos}}'**
+  String courseVia(String base, int count);
+
+  /// No description provided for @courseNoAudio.
+  ///
+  /// In pt, this message translates to:
+  /// **'Áudio ainda não disponível'**
+  String get courseNoAudio;
+
+  /// No description provided for @courseOptionNoAudio.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} · sem áudio por enquanto'**
+  String courseOptionNoAudio(String name);
+
+  /// No description provided for @coursePickTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'O que você quer aprender?'**
+  String get coursePickTitle;
+
+  /// No description provided for @coursePickSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dá pra adicionar outro idioma depois.'**
+  String get coursePickSubtitle;
+
+  /// No description provided for @courseLearnSection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quero aprender'**
+  String get courseLearnSection;
+
+  /// No description provided for @courseBaseSection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por meio de'**
+  String get courseBaseSection;
+
+  /// No description provided for @courseBaseHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Traduções e explicações vêm nesse idioma.'**
+  String get courseBaseHint;
+
+  /// No description provided for @coursePickLearning.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha o idioma que quer aprender'**
+  String get coursePickLearning;
+
+  /// No description provided for @coursePickBase.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha por meio de qual idioma'**
+  String get coursePickBase;
+
+  /// No description provided for @courseStart.
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar a aprender {language, select, en{inglês} es{espanhol} pt{português} other{}}'**
+  String courseStart(String language);
+
+  /// No description provided for @courseStartFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não deu pra começar agora. Confira sua conexão.'**
+  String get courseStartFailed;
+
+  /// No description provided for @courseSwitchFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não deu pra trocar de curso. Confira sua conexão.'**
+  String get courseSwitchFailed;
+
+  /// No description provided for @coursesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seus cursos'**
+  String get coursesTitle;
+
+  /// No description provided for @coursesSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cada um tem suas capturas e termos'**
+  String get coursesSubtitle;
+
+  /// No description provided for @courseAdd.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aprender outro idioma'**
+  String get courseAdd;
+
+  /// No description provided for @courseBadge.
+  ///
+  /// In pt, this message translates to:
+  /// **'Curso: {name}. Trocar'**
+  String courseBadge(String name);
+
+  /// No description provided for @profileStudy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estudo'**
+  String get profileStudy;
+
+  /// No description provided for @courseChange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocar ou adicionar curso'**
+  String get courseChange;
+
+  /// No description provided for @progressIn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Progresso em {language, select, en{inglês} es{espanhol} pt{português} other{}}'**
+  String progressIn(String language);
 }
 
 class _AppLocalizationsDelegate

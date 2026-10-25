@@ -59,6 +59,7 @@ class FakeCaptureApi implements ApiClient {
         final text = body['text']! as String;
         return server[body['id']! as String] = _touch({
           'id': body['id'],
+          'course': body['course'] ?? 'curso-en',
           'source': body['source'],
           'status': 'ready',
           'text': text,

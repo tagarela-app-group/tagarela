@@ -9,6 +9,53 @@ enum TermKind { word, expression }
 
 enum TermStatus { learning, mastered }
 
+enum CourseLanguage {
+  en('English'),
+  es('Español'),
+  pt('Português');
+
+  const CourseLanguage(this.nativeName);
+
+  final String nativeName;
+
+  String get code => name.toUpperCase();
+
+  bool get hasAudio => this == en;
+}
+
+class Course {
+  const Course({
+    required this.id,
+    required this.learning,
+    required this.base,
+    this.active = false,
+    this.terms = 0,
+  });
+
+  Course.fromJson(Json json)
+    : this(
+        id: json['id']! as String,
+        learning: CourseLanguage.values.byName(json['learning']! as String),
+        base: CourseLanguage.values.byName(json['base']! as String),
+        active: json['active']! as bool,
+        terms: json['terms']! as int,
+      );
+
+  final String id;
+  final CourseLanguage learning;
+  final CourseLanguage base;
+  final bool active;
+  final int terms;
+
+  Course copyWith({bool? active}) => Course(
+    id: id,
+    learning: learning,
+    base: base,
+    active: active ?? this.active,
+    terms: terms,
+  );
+}
+
 class User {
   const User({
     required this.name,
@@ -309,6 +356,7 @@ class Capture {
     required this.source,
     required this.status,
     required this.capturedAt,
+    this.course,
     this.text = '',
     this.originalText = '',
     this.terms = const [],
@@ -324,6 +372,7 @@ class Capture {
   Capture.fromJson(Json json)
     : this(
         id: json['id']! as String,
+        course: json['course'] as String?,
         source: CaptureSource.values.byName(json['source']! as String),
         status: CaptureStatus.fromApi(json['status']! as String),
         text: json['text']! as String,
@@ -343,6 +392,7 @@ class Capture {
   static const maxTextLength = 2000;
 
   final String id;
+  final String? course;
   final CaptureSource source;
   final CaptureStatus status;
   final String text;
@@ -383,6 +433,7 @@ class Capture {
     final confirming = pending.contains(CaptureSync.confirm);
     return Capture(
       id: id,
+      course: server.course ?? course,
       source: source,
       status: confirming ? status : server.status,
       text: editing ? text : server.text,
@@ -414,6 +465,7 @@ class Capture {
     Set<CaptureSync>? pending,
   }) => Capture(
     id: id,
+    course: course,
     source: source,
     status: status ?? this.status,
     text: text ?? this.text,

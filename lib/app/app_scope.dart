@@ -6,6 +6,7 @@ import 'package:tagarela/data/audio_playback.dart';
 import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
+import 'package:tagarela/data/stores/course_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
@@ -15,6 +16,7 @@ class AppScope extends InheritedWidget {
   AppScope({
     super.key,
     required this.auth,
+    required this.courses,
     required this.captures,
     required this.playback,
     required this.device,
@@ -26,6 +28,7 @@ class AppScope extends InheritedWidget {
   }) : home = home ?? HomeStore();
 
   final AuthStore auth;
+  final CourseStore courses;
   final CaptureStore captures;
   final AudioPlayback playback;
   final CaptureDevice device;
@@ -39,10 +42,24 @@ class AppScope extends InheritedWidget {
 
   Future<void> loadAll() async {
     await captures.cleanMedia();
-    await Future.wait([home.load(), vocabulary.load(), captures.load()]);
+    await courses.load();
+    if (courses.data case []) return;
+    await _loadStores();
     await captures.extractPending();
     unawaited(speech.whenReady.then((_) => captures.extractPending()));
-    unawaited(speech.ensure());
+    _ensureSpeech();
+  }
+
+  Future<void> loadStudy() async {
+    await _loadStores();
+    _ensureSpeech();
+  }
+
+  Future<void> _loadStores() =>
+      Future.wait([home.load(), vocabulary.load(), captures.load()]);
+
+  void _ensureSpeech() {
+    if (courses.active?.learning.hasAudio ?? true) unawaited(speech.ensure());
   }
 
   @override

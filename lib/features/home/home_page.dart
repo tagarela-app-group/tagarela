@@ -4,6 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/store.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/course/widgets/course_sheet.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
@@ -26,9 +27,13 @@ class HomePage extends StatelessWidget {
     final stores = <Store>[scope.home, scope.vocabulary];
 
     return ListenableBuilder(
-      listenable: Listenable.merge([...stores, scope.auth]),
+      listenable: Listenable.merge([...stores, scope.auth, scope.courses]),
       builder: (context, _) {
-        final header = _HomeHeader(user: scope.auth.user, now: DateTime.now());
+        final header = _HomeHeader(
+          user: scope.auth.user,
+          course: scope.courses.active,
+          now: DateTime.now(),
+        );
         if (!stores.isReady) {
           return SheetPage(
             header: header,
@@ -85,9 +90,14 @@ String greeting(AppLocalizations l10n, DateTime now, String name) {
 }
 
 class _HomeHeader extends StatelessWidget {
-  const _HomeHeader({required this.user, required this.now});
+  const _HomeHeader({
+    required this.user,
+    required this.course,
+    required this.now,
+  });
 
   final User? user;
+  final Course? course;
   final DateTime now;
 
   @override
@@ -112,6 +122,26 @@ class _HomeHeader extends StatelessWidget {
             ],
           ),
         ),
+        if (course case final course?)
+          HeaderPill(
+            onTap: () => CourseSheet.show(context),
+            semanticLabel: context.l10n.courseBadge(
+              context.l10n.courseName(course.learning.name, course.base.name),
+            ),
+            padding: const EdgeInsets.only(left: 6, right: 10),
+            child: Row(
+              spacing: AppSpacing.s1,
+              children: [
+                AppBubble(
+                  size: 32,
+                  color: AppPalette.white,
+                  foreground: c.header,
+                  child: Text(course.learning.code),
+                ),
+                const Icon(AppIcons.expand),
+              ],
+            ),
+          ),
       ],
     );
   }

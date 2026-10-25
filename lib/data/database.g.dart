@@ -27,6 +27,15 @@ class $CaptureRowsTable extends CaptureRows
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _courseMeta = const VerificationMeta('course');
+  @override
+  late final GeneratedColumn<String> course = GeneratedColumn<String>(
+    'course',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<CaptureSource, String> source =
       GeneratedColumn<String>(
@@ -164,6 +173,7 @@ class $CaptureRowsTable extends CaptureRows
   List<GeneratedColumn> get $columns => [
     id,
     owner,
+    course,
     source,
     status,
     content,
@@ -202,6 +212,12 @@ class $CaptureRowsTable extends CaptureRows
       );
     } else if (isInserting) {
       context.missing(_ownerMeta);
+    }
+    if (data.containsKey('course')) {
+      context.handle(
+        _courseMeta,
+        course.isAcceptableOrUnknown(data['course']!, _courseMeta),
+      );
     }
     if (data.containsKey('content')) {
       context.handle(
@@ -289,6 +305,10 @@ class $CaptureRowsTable extends CaptureRows
         DriftSqlType.string,
         data['${effectivePrefix}owner'],
       )!,
+      course: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}course'],
+      ),
       source: $CaptureRowsTable.$convertersource.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -370,6 +390,7 @@ class $CaptureRowsTable extends CaptureRows
 class CaptureRow extends DataClass implements Insertable<CaptureRow> {
   final String id;
   final String owner;
+  final String? course;
   final CaptureSource source;
   final CaptureStatus status;
   final String content;
@@ -386,6 +407,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
   const CaptureRow({
     required this.id,
     required this.owner,
+    this.course,
     required this.source,
     required this.status,
     required this.content,
@@ -405,6 +427,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['owner'] = Variable<String>(owner);
+    if (!nullToAbsent || course != null) {
+      map['course'] = Variable<String>(course);
+    }
     {
       map['source'] = Variable<String>(
         $CaptureRowsTable.$convertersource.toSql(source),
@@ -453,6 +478,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     return CaptureRowsCompanion(
       id: Value(id),
       owner: Value(owner),
+      course: course == null && nullToAbsent
+          ? const Value.absent()
+          : Value(course),
       source: Value(source),
       status: Value(status),
       content: Value(content),
@@ -489,6 +517,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     return CaptureRow(
       id: serializer.fromJson<String>(json['id']),
       owner: serializer.fromJson<String>(json['owner']),
+      course: serializer.fromJson<String?>(json['course']),
       source: $CaptureRowsTable.$convertersource.fromJson(
         serializer.fromJson<String>(json['source']),
       ),
@@ -514,6 +543,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'owner': serializer.toJson<String>(owner),
+      'course': serializer.toJson<String?>(course),
       'source': serializer.toJson<String>(
         $CaptureRowsTable.$convertersource.toJson(source),
       ),
@@ -537,6 +567,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
   CaptureRow copyWith({
     String? id,
     String? owner,
+    Value<String?> course = const Value.absent(),
     CaptureSource? source,
     CaptureStatus? status,
     String? content,
@@ -553,6 +584,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
   }) => CaptureRow(
     id: id ?? this.id,
     owner: owner ?? this.owner,
+    course: course.present ? course.value : this.course,
     source: source ?? this.source,
     status: status ?? this.status,
     content: content ?? this.content,
@@ -571,6 +603,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     return CaptureRow(
       id: data.id.present ? data.id.value : this.id,
       owner: data.owner.present ? data.owner.value : this.owner,
+      course: data.course.present ? data.course.value : this.course,
       source: data.source.present ? data.source.value : this.source,
       status: data.status.present ? data.status.value : this.status,
       content: data.content.present ? data.content.value : this.content,
@@ -602,6 +635,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     return (StringBuffer('CaptureRow(')
           ..write('id: $id, ')
           ..write('owner: $owner, ')
+          ..write('course: $course, ')
           ..write('source: $source, ')
           ..write('status: $status, ')
           ..write('content: $content, ')
@@ -623,6 +657,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
   int get hashCode => Object.hash(
     id,
     owner,
+    course,
     source,
     status,
     content,
@@ -643,6 +678,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
       (other is CaptureRow &&
           other.id == this.id &&
           other.owner == this.owner &&
+          other.course == this.course &&
           other.source == this.source &&
           other.status == this.status &&
           other.content == this.content &&
@@ -661,6 +697,7 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
 class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
   final Value<String> id;
   final Value<String> owner;
+  final Value<String?> course;
   final Value<CaptureSource> source;
   final Value<CaptureStatus> status;
   final Value<String> content;
@@ -678,6 +715,7 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
   const CaptureRowsCompanion({
     this.id = const Value.absent(),
     this.owner = const Value.absent(),
+    this.course = const Value.absent(),
     this.source = const Value.absent(),
     this.status = const Value.absent(),
     this.content = const Value.absent(),
@@ -696,6 +734,7 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
   CaptureRowsCompanion.insert({
     required String id,
     required String owner,
+    this.course = const Value.absent(),
     required CaptureSource source,
     required CaptureStatus status,
     required String content,
@@ -722,6 +761,7 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
   static Insertable<CaptureRow> custom({
     Expression<String>? id,
     Expression<String>? owner,
+    Expression<String>? course,
     Expression<String>? source,
     Expression<String>? status,
     Expression<String>? content,
@@ -740,6 +780,7 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (owner != null) 'owner': owner,
+      if (course != null) 'course': course,
       if (source != null) 'source': source,
       if (status != null) 'status': status,
       if (content != null) 'content': content,
@@ -760,6 +801,7 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
   CaptureRowsCompanion copyWith({
     Value<String>? id,
     Value<String>? owner,
+    Value<String?>? course,
     Value<CaptureSource>? source,
     Value<CaptureStatus>? status,
     Value<String>? content,
@@ -778,6 +820,7 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     return CaptureRowsCompanion(
       id: id ?? this.id,
       owner: owner ?? this.owner,
+      course: course ?? this.course,
       source: source ?? this.source,
       status: status ?? this.status,
       content: content ?? this.content,
@@ -803,6 +846,9 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     }
     if (owner.present) {
       map['owner'] = Variable<String>(owner.value);
+    }
+    if (course.present) {
+      map['course'] = Variable<String>(course.value);
     }
     if (source.present) {
       map['source'] = Variable<String>(
@@ -862,6 +908,7 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     return (StringBuffer('CaptureRowsCompanion(')
           ..write('id: $id, ')
           ..write('owner: $owner, ')
+          ..write('course: $course, ')
           ..write('source: $source, ')
           ..write('status: $status, ')
           ..write('content: $content, ')
@@ -1124,6 +1171,7 @@ typedef $$CaptureRowsTableCreateCompanionBuilder =
     CaptureRowsCompanion Function({
       required String id,
       required String owner,
+      Value<String?> course,
       required CaptureSource source,
       required CaptureStatus status,
       required String content,
@@ -1143,6 +1191,7 @@ typedef $$CaptureRowsTableUpdateCompanionBuilder =
     CaptureRowsCompanion Function({
       Value<String> id,
       Value<String> owner,
+      Value<String?> course,
       Value<CaptureSource> source,
       Value<CaptureStatus> status,
       Value<String> content,
@@ -1175,6 +1224,11 @@ class $$CaptureRowsTableFilterComposer
 
   ColumnFilters<String> get owner => $composableBuilder(
     column: $table.owner,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get course => $composableBuilder(
+    column: $table.course,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1267,6 +1321,11 @@ class $$CaptureRowsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get course => $composableBuilder(
+    column: $table.course,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get source => $composableBuilder(
     column: $table.source,
     builder: (column) => ColumnOrderings(column),
@@ -1347,6 +1406,9 @@ class $$CaptureRowsTableAnnotationComposer
 
   GeneratedColumn<String> get owner =>
       $composableBuilder(column: $table.owner, builder: (column) => column);
+
+  GeneratedColumn<String> get course =>
+      $composableBuilder(column: $table.course, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<CaptureSource, String> get source =>
       $composableBuilder(column: $table.source, builder: (column) => column);
@@ -1431,6 +1493,7 @@ class $$CaptureRowsTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> owner = const Value.absent(),
+                Value<String?> course = const Value.absent(),
                 Value<CaptureSource> source = const Value.absent(),
                 Value<CaptureStatus> status = const Value.absent(),
                 Value<String> content = const Value.absent(),
@@ -1448,6 +1511,7 @@ class $$CaptureRowsTableTableManager
               }) => CaptureRowsCompanion(
                 id: id,
                 owner: owner,
+                course: course,
                 source: source,
                 status: status,
                 content: content,
@@ -1467,6 +1531,7 @@ class $$CaptureRowsTableTableManager
               ({
                 required String id,
                 required String owner,
+                Value<String?> course = const Value.absent(),
                 required CaptureSource source,
                 required CaptureStatus status,
                 required String content,
@@ -1484,6 +1549,7 @@ class $$CaptureRowsTableTableManager
               }) => CaptureRowsCompanion.insert(
                 id: id,
                 owner: owner,
+                course: course,
                 source: source,
                 status: status,
                 content: content,

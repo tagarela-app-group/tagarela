@@ -19,6 +19,7 @@ void main() {
   late AppDatabase db;
   late Directory root;
   late String? owner;
+  late String? course;
   late CaptureStore store;
   late FakeTextExtractor extractor;
   late int confirmed;
@@ -31,6 +32,7 @@ void main() {
     db = AppDatabase(NativeDatabase.memory());
     root = await Directory.systemTemp.createTemp('captures_test');
     owner = 'ana@example.com';
+    course = null;
     extractor = FakeTextExtractor();
     confirmed = 0;
     store = CaptureStore(
@@ -38,6 +40,7 @@ void main() {
       db,
       MediaStorage(() async => root),
       owner: () => owner,
+      course: () => course,
       extractor: extractor,
       onConfirmed: () async => confirmed++,
     );
@@ -468,6 +471,70 @@ void main() {
       expect((await db.capture(old.id))?.mediaPath, isNull);
       expect(File('${root.path}/${recent.mediaPath}').existsSync(), isTrue);
       expect(File('${root.path}/${open.mediaPath}').existsSync(), isTrue);
+    });
+  });
+
+  group('curso', () {
+    test('captura nasce no curso ativo e sobe com ele', () async {
+      course = 'curso-es';
+
+      final capture = await store.createText(text);
+
+      expect(capture.course, 'curso-es');
+      expect(
+        (api.bodies['POST ${FakeCaptureApi.path}']! as Map)['course'],
+        'curso-es',
+      );
+      expect((await db.capture(capture.id))!.course, 'curso-es');
+    });
+
+    test('lista só o curso ativo; sem curso aparece em todos', () async {
+      for (final (id, from) in [
+        ('en', 'curso-en'),
+        ('es', 'curso-es'),
+        ('solta', null),
+      ]) {
+        await db.saveCapture(
+          'ana@example.com',
+          Capture(
+            id: id,
+            course: from,
+            source: CaptureSource.text,
+            status: CaptureStatus.ready,
+            capturedAt: DateTime(2026, 10, 23),
+          ),
+        );
+      }
+
+      course = 'curso-es';
+      await store.load();
+      final spanish = store.data!.map((c) => c.id).toSet();
+      course = null;
+      await store.load();
+      final unknown = store.data!.map((c) => c.id).toSet();
+
+      expect(spanish, {'es', 'solta'});
+      expect(unknown, {'en', 'es', 'solta'});
+    });
+
+    test('sync traz o curso da API pra captura antiga', () async {
+      final capture = await store.createText(text);
+      await db.saveCapture(
+        'ana@example.com',
+        Capture(
+          id: capture.id,
+          source: capture.source,
+          status: capture.status,
+          capturedAt: capture.capturedAt,
+          text: capture.text,
+          originalText: capture.originalText,
+        ),
+      );
+      await db.pullEverything();
+
+      await store.sync();
+
+      expect((await db.capture(capture.id))!.course, 'curso-en');
     });
   });
 }

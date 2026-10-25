@@ -122,6 +122,7 @@ typedef FakeCaptures = ({
 
 FakeCaptures fakeCaptures({
   String? Function()? owner,
+  String? Function()? course,
   TextExtractor? extractor,
   Future<void> Function()? onConfirmed,
 }) {
@@ -134,6 +135,7 @@ FakeCaptures fakeCaptures({
     db,
     media,
     owner: owner ?? () => 'ana@example.com',
+    course: course,
     extractor: extractor ?? FakeTextExtractor(),
     onConfirmed: onConfirmed,
   );

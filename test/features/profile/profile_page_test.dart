@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/profile/user_avatar.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/profile/widgets/progress_card.dart';
@@ -17,6 +18,8 @@ import '../../helpers/fake_extraction.dart';
 import '../../helpers/fake_preferences.dart';
 import '../../helpers/fixtures.dart';
 import '../../helpers/pump_app.dart';
+import '../../helpers/fake_course_api.dart';
+import 'package:tagarela/features/course/widgets/course_sheet.dart';
 
 void main() {
   testWidgets('topo centralizado: avatar grande com anel, nome e e-mail', (
@@ -27,7 +30,12 @@ void main() {
     expect(find.text('Ana Souza'), findsOneWidget);
     expect(find.text('ana@example.com'), findsNWidgets(2));
     expect(find.text('AS'), findsOneWidget);
-    final bubble = tester.widget<AppBubble>(find.byType(AppBubble));
+    final bubble = tester.widget<AppBubble>(
+      find.descendant(
+        of: find.byType(UserAvatar),
+        matching: find.byType(AppBubble),
+      ),
+    );
     expect(bubble.image, isNotNull);
     expect(bubble.size, 84);
     expect(bubble.ring, isNotNull);
@@ -300,5 +308,31 @@ void main() {
     expect(navigator.canPop(), isFalse);
     expect(storage.token, isNull);
     expect(api.routes, contains('DELETE /auth/session'));
+  });
+
+  testWidgets('estudo mostra o curso ativo e abre os cursos', (tester) async {
+    await tester.pumpPage(const ProfilePage(), auth: await signedInAuthStore());
+
+    expect(find.text('ESTUDO'), findsOneWidget);
+    expect(find.text('Inglês por meio do Português'), findsOneWidget);
+    expect(find.text('PROGRESSO EM INGLÊS'), findsOneWidget);
+
+    await tester.tap(find.text('Trocar ou adicionar curso'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CourseSheet), findsOneWidget);
+  });
+
+  testWidgets('progresso segue o curso ativo', (tester) async {
+    await tester.pumpPage(
+      const ProfilePage(),
+      auth: await signedInAuthStore(),
+      courses: fakeCourses([
+        {...spanishCourseJson, 'active': true},
+      ]).store,
+    );
+
+    expect(find.text('Espanhol por meio do Inglês'), findsOneWidget);
+    expect(find.text('PROGRESSO EM ESPANHOL'), findsOneWidget);
   });
 }

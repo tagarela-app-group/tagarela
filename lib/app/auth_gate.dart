@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
-import 'package:tagarela/app/home_shell.dart';
+import 'package:tagarela/app/course_gate.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 
@@ -29,7 +29,7 @@ class _AuthGateState extends State<AuthGate> {
       future: _restored,
       builder: (context, snapshot) => switch (snapshot.data) {
         null => const _Splash(),
-        true => const HomeShell(),
+        true => const CourseGate(),
         false => const LoginPage(),
       },
     );

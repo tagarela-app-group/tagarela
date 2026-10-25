@@ -1206,4 +1206,129 @@ class AppLocalizationsPt extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String courseLanguage(String language) {
+    String _temp0 = intl.Intl.selectLogic(language, {
+      'en': 'Inglês',
+      'es': 'Espanhol',
+      'pt': 'Português',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String courseName(String learning, String base) {
+    String _temp0 = intl.Intl.selectLogic(learning, {
+      'en': 'Inglês',
+      'es': 'Espanhol',
+      'pt': 'Português',
+      'other': '',
+    });
+    String _temp1 = intl.Intl.selectLogic(base, {
+      'en': 'Inglês',
+      'es': 'Espanhol',
+      'pt': 'Português',
+      'other': '',
+    });
+    return '$_temp0 por meio do $_temp1';
+  }
+
+  @override
+  String courseVia(String base, int count) {
+    String _temp0 = intl.Intl.selectLogic(base, {
+      'en': 'Inglês',
+      'es': 'Espanhol',
+      'pt': 'Português',
+      'other': '',
+    });
+    String _temp1 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count termos',
+      one: '1 termo',
+      zero: 'nenhum termo',
+    );
+    return 'por meio do $_temp0 · $_temp1';
+  }
+
+  @override
+  String get courseNoAudio => 'Áudio ainda não disponível';
+
+  @override
+  String courseOptionNoAudio(String name) {
+    return '$name · sem áudio por enquanto';
+  }
+
+  @override
+  String get coursePickTitle => 'O que você quer aprender?';
+
+  @override
+  String get coursePickSubtitle => 'Dá pra adicionar outro idioma depois.';
+
+  @override
+  String get courseLearnSection => 'Quero aprender';
+
+  @override
+  String get courseBaseSection => 'Por meio de';
+
+  @override
+  String get courseBaseHint => 'Traduções e explicações vêm nesse idioma.';
+
+  @override
+  String get coursePickLearning => 'Escolha o idioma que quer aprender';
+
+  @override
+  String get coursePickBase => 'Escolha por meio de qual idioma';
+
+  @override
+  String courseStart(String language) {
+    String _temp0 = intl.Intl.selectLogic(language, {
+      'en': 'inglês',
+      'es': 'espanhol',
+      'pt': 'português',
+      'other': '',
+    });
+    return 'Começar a aprender $_temp0';
+  }
+
+  @override
+  String get courseStartFailed =>
+      'Não deu pra começar agora. Confira sua conexão.';
+
+  @override
+  String get courseSwitchFailed =>
+      'Não deu pra trocar de curso. Confira sua conexão.';
+
+  @override
+  String get coursesTitle => 'Seus cursos';
+
+  @override
+  String get coursesSubtitle => 'Cada um tem suas capturas e termos';
+
+  @override
+  String get courseAdd => 'Aprender outro idioma';
+
+  @override
+  String courseBadge(String name) {
+    return 'Curso: $name. Trocar';
+  }
+
+  @override
+  String get profileStudy => 'Estudo';
+
+  @override
+  String get courseChange => 'Trocar ou adicionar curso';
+
+  @override
+  String progressIn(String language) {
+    String _temp0 = intl.Intl.selectLogic(language, {
+      'en': 'inglês',
+      'es': 'espanhol',
+      'pt': 'português',
+      'other': '',
+    });
+    return 'Progresso em $_temp0';
+  }
 }
