@@ -8,7 +8,7 @@ class ApiClient {
 
   static const defaultBaseUrl = String.fromEnvironment(
     'API_URL',
-    defaultValue: 'http://10.0.2.2:8000',
+    defaultValue: 'http://localhost:8000',
   );
 
   static const _timeout = Duration(seconds: 10);
