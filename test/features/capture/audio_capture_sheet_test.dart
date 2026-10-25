@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models.dart';
@@ -70,6 +71,16 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('ouvir e salvar cabe em tela estreita', (tester) async {
+    await open(tester);
+    tester.view.physicalSize = const Size(360, 800);
+    await tester.pump();
+
+    await stop(tester);
+
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('para sozinho em 1 minuto', (tester) async {

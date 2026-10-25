@@ -58,6 +58,25 @@ void main() {
     expect(taps, 0);
   });
 
+  testWidgets('rótulo longo em espaço estreito corta em vez de estourar', (
+    tester,
+  ) async {
+    await tester.pumpComponent(
+      Center(
+        child: SizedBox(
+          width: 156,
+          child: AppButton(
+            label: 'Salvar no Inbox',
+            onPressed: () {},
+            loading: true,
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('loading sem onPressed mantém a cor da variante', (tester) async {
     await tester.pumpComponent(
       const AppButton(label: 'Entrar', onPressed: null, loading: true),

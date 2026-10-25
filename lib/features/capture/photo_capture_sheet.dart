@@ -133,22 +133,19 @@ class _PhotoCaptureSheetState extends State<PhotoCaptureSheet> {
                     ),
                   ),
                 ),
-                Row(
-                  spacing: AppSpacing.s2,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: AppSpacing.s3,
                   children: [
-                    Expanded(
-                      child: AppButton(
-                        label: 'Trocar foto',
-                        variant: AppButtonVariant.outline,
-                        onPressed: _saving ? null : _change,
-                      ),
+                    AppButton(
+                      label: 'Salvar no Inbox',
+                      loading: _saving,
+                      onPressed: _save,
                     ),
-                    Expanded(
-                      child: AppButton(
-                        label: 'Salvar no Inbox',
-                        loading: _saving,
-                        onPressed: _save,
-                      ),
+                    AppButton(
+                      label: 'Trocar foto',
+                      variant: AppButtonVariant.outline,
+                      onPressed: _saving ? null : _change,
                     ),
                   ],
                 ),
