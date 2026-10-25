@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
-import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 
@@ -210,18 +209,5 @@ void main() {
     await pumpCard(tester, photo(CaptureStatus.processing));
 
     expect(find.text('Lendo o texto da foto…'), findsOneWidget);
-  });
-
-  testWidgets('analisada: apagada, termos sem botões', (tester) async {
-    await pumpCard(
-      tester,
-      sampleCapture('t1', status: CaptureStatus.analyzed, terms: terms),
-    );
-
-    expect(find.text('Analisada'), findsOneWidget);
-    expect(tester.widget<AppCard>(find.byType(AppCard)).muted, isTrue);
-    expect(find.text('mind the gap'), findsOneWidget);
-    expect(find.textContaining('termos escolhidos'), findsNothing);
-    expect(find.byType(AppButton), findsNothing);
   });
 }

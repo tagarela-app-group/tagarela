@@ -211,13 +211,17 @@ class Vocabulary {
 
   TermGroup? group(String id) => groups.where((g) => g.id == id).firstOrNull;
 
-  bool hasGroupNamed(String name) {
+  bool hasGroupNamed(String name, {String? except}) {
     final key = groupNameKey(name);
-    return groups.any((g) => groupNameKey(g.name) == key);
+    return groups.any((g) => g.id != except && groupNameKey(g.name) == key);
   }
 
-  Vocabulary withGroup(TermGroup group) =>
-      Vocabulary(groups: [group, ...groups], ungrouped: ungrouped);
+  Vocabulary withGroup(TermGroup group) => Vocabulary(
+    groups: groups.any((g) => g.id == group.id)
+        ? [for (final g in groups) g.id == group.id ? group : g]
+        : [group, ...groups],
+    ungrouped: ungrouped,
+  );
 
   static String groupNameKey(String name) =>
       name.trim().split(RegExp(r'\s+')).join(' ').toLowerCase();
@@ -280,8 +284,7 @@ enum CaptureSync { extract, create, update, confirm, discard }
 enum CaptureSection {
   attention('Precisa de atenção'),
   ready('Prontas'),
-  processing('Processando'),
-  done('Analisadas');
+  processing('Processando');
 
   const CaptureSection(this.label);
 
@@ -373,11 +376,11 @@ class Capture {
   final String? mediaPath;
   final Set<CaptureSync> pending;
 
-  CaptureSection get section => switch (status) {
+  CaptureSection? get section => switch (status) {
     CaptureStatus.failed => CaptureSection.attention,
     CaptureStatus.ready => CaptureSection.ready,
     CaptureStatus.processing => CaptureSection.processing,
-    CaptureStatus.analyzed => CaptureSection.done,
+    CaptureStatus.analyzed => null,
   };
 
   bool get needsAction =>

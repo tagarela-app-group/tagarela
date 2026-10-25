@@ -6,7 +6,11 @@ import 'package:tagarela/design_system/design_system.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
-  Future<void> show(WidgetTester tester, {bool aboveTabBar = false}) async {
+  Future<void> show(
+    WidgetTester tester, {
+    bool aboveTabBar = false,
+    String? actionLabel = 'Abrir',
+  }) async {
     await tester.pumpComponent(
       Builder(
         builder: (context) => TextButton(
@@ -14,7 +18,7 @@ void main() {
             context,
             title: 'Grupo criado',
             message: 'Música está no topo da lista.',
-            actionLabel: 'Abrir',
+            actionLabel: actionLabel,
             onAction: () {},
             aboveTabBar: aboveTabBar,
           ),
@@ -33,6 +37,13 @@ void main() {
     expect(find.text('Música está no topo da lista.'), findsOneWidget);
     expect(find.text('Abrir'), findsOneWidget);
     expect(find.byIcon(AppIcons.check), findsOneWidget);
+  });
+
+  testWidgets('sem ação: só título e texto', (tester) async {
+    await show(tester, actionLabel: null);
+
+    expect(find.text('Grupo criado'), findsOneWidget);
+    expect(find.byType(SnackBarAction), findsNothing);
   });
 
   testWidgets('acima da tab bar e do botão + quando pedido', (tester) async {

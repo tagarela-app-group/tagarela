@@ -9,8 +9,7 @@ import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 enum InboxTab {
   all('Todas', CaptureSection.values),
   ready('Prontas', [CaptureSection.ready]),
-  pending('Pendentes', [CaptureSection.attention, CaptureSection.processing]),
-  done('Analisadas', [CaptureSection.done]);
+  pending('Pendentes', [CaptureSection.attention, CaptureSection.processing]);
 
   const InboxTab(this.label, this.sections);
 
@@ -48,7 +47,7 @@ class _InboxPageState extends State<InboxPage> {
     return ListenableBuilder(
       listenable: captures,
       builder: (context, _) {
-        final items = captures.data;
+        final items = captures.data?.where((c) => c.section != null).toList();
         return SheetPage(
           header: PageHeader(
             title: 'Inbox',

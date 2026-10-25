@@ -10,6 +10,7 @@ class TermTile extends StatelessWidget {
     this.selecting = false,
     this.selected = false,
     this.onTap,
+    this.onLongPress,
   });
 
   final Term term;
@@ -17,6 +18,7 @@ class TermTile extends StatelessWidget {
   final bool selecting;
   final bool selected;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class TermTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         selected: selected,
         onTap: onTap,
+        onLongPress: onLongPress,
         child: Row(
           spacing: AppSpacing.s3,
           children: [

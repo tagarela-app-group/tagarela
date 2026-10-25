@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/vocabulary/widgets/new_group_sheet.dart';
+import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
 
 import '../../../helpers/fake_vocabulary_api.dart';
 import '../../../helpers/open_sheet.dart';
@@ -13,7 +13,17 @@ void main() {
     final vocabulary = fakeVocabulary();
     await vocabulary.store.load();
     final results = await tester.openSheetOf<TermGroup>(
-      const NewGroupSheet(),
+      const GroupSheet(),
+      vocabulary: vocabulary.store,
+    );
+    return (results, vocabulary);
+  }
+
+  Future<(List<TermGroup?>, FakeVocabulary)> edit(WidgetTester tester) async {
+    final vocabulary = fakeVocabulary();
+    await vocabulary.store.load();
+    final results = await tester.openSheetOf<TermGroup>(
+      GroupSheet(group: vocabulary.store.data!.group('1')),
       vocabulary: vocabulary.store,
     );
     return (results, vocabulary);
@@ -68,7 +78,7 @@ void main() {
       'accent': 'pink',
     });
     expect(results.single!.name, 'Música');
-    expect(find.byType(NewGroupSheet), findsNothing);
+    expect(find.byType(GroupSheet), findsNothing);
   });
 
   testWidgets('sem rede: erro no campo e o painel fica aberto', (tester) async {
@@ -81,7 +91,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Sem conexão. Tente de novo.'), findsOneWidget);
-    expect(find.byType(NewGroupSheet), findsOneWidget);
+    expect(find.byType(GroupSheet), findsOneWidget);
     expect(results, isEmpty);
 
     await tester.enterText(textField('Nome'), 'Músicas');
@@ -105,6 +115,46 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Você já tem um grupo com esse nome.'), findsOneWidget);
-    expect(find.byType(NewGroupSheet), findsOneWidget);
+    expect(find.byType(GroupSheet), findsOneWidget);
+  });
+
+  testWidgets('editar: abre preenchido e aceita o próprio nome', (
+    tester,
+  ) async {
+    await edit(tester);
+
+    expect(find.text('Editar grupo'), findsOneWidget);
+    expect(find.text('Viagem'), findsOneWidget);
+
+    await tester.enterText(textField('Nome'), 'VIAGEM');
+    await tester.pump();
+
+    expect(find.text('Você já tem um grupo com esse nome.'), findsNothing);
+    expect(button(tester, 'Salvar').onPressed, isNotNull);
+  });
+
+  testWidgets('editar: nome de outro grupo trava', (tester) async {
+    await edit(tester);
+
+    await tester.enterText(textField('Nome'), 'trabalho');
+    await tester.pump();
+
+    expect(find.text('Você já tem um grupo com esse nome.'), findsOneWidget);
+    expect(button(tester, 'Salvar').onPressed, isNull);
+  });
+
+  testWidgets('editar: salva e fecha com o grupo atualizado', (tester) async {
+    final (results, (:store, :api)) = await edit(tester);
+
+    await tester.tap(find.bySemanticsLabel('Rosa'));
+    await tester.pump();
+    await tester.tap(find.text('Salvar'));
+    await tester.pumpAndSettle();
+
+    final body = api.bodies['PATCH /api/v1/groups/1']! as Map;
+    expect((body['name'], body['accent']), ('Viagem', 'pink'));
+    expect(results.single!.accent, AppAccent.pink);
+    expect(store.data!.groups.first.accent, AppAccent.pink);
+    expect(find.byType(GroupSheet), findsNothing);
   });
 }

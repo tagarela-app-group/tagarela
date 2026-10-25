@@ -22,6 +22,16 @@ void main() {
     expect(taps, 1);
   });
 
+  testWidgets('com onLongPress chama ao segurar', (tester) async {
+    var presses = 0;
+    await tester.pumpComponent(
+      AppCard(onLongPress: () => presses++, child: const Text('Card')),
+    );
+
+    await tester.longPress(find.text('Card'));
+    expect(presses, 1);
+  });
+
   testWidgets('cor própria remove a sombra', (tester) async {
     await tester.pumpComponent(
       const AppCard(color: AppPalette.mango, child: Text('Card')),

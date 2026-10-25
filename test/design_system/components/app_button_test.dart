@@ -103,6 +103,23 @@ void main() {
       expect(style.backgroundColor!.resolve({}), colors.contrast);
       expect(style.foregroundColor!.resolve({}), colors.onContrast);
     });
+
+    testWidgets('danger usa alert/onAlert (${theme.brightness.name})', (
+      tester,
+    ) async {
+      await tester.pumpComponent(
+        AppButton(
+          label: 'Apagar grupo',
+          onPressed: () {},
+          variant: AppButtonVariant.danger,
+        ),
+        theme: theme,
+      );
+
+      final style = tester.widget<TextButton>(find.byType(TextButton)).style!;
+      expect(style.backgroundColor!.resolve({}), colors.alert);
+      expect(style.foregroundColor!.resolve({}), colors.onAlert);
+    });
   }
 
   testWidgets('expand ocupa a largura toda', (tester) async {

@@ -132,6 +132,34 @@ void main() {
     expect(page.groupId, scope.vocabulary.data!.groups.first.id);
   });
 
+  testWidgets('apagar o grupo volta pra lista e avisa com "Ver"', (
+    tester,
+  ) async {
+    final scope = await tester.pumpPage(const VocabularyPage());
+    final group = scope.vocabulary.data!.groups.first;
+    await tester.tap(find.text(group.name));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Mais opções'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Apagar grupo'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Apagar grupo'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(GroupPage), findsNothing);
+    expect(find.text('Grupo apagado'), findsOneWidget);
+    expect(
+      find.text('Os ${group.terms.length} termos foram pra Sem grupo.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Ver'));
+    await tester.pumpAndSettle();
+
+    expect(tester.widget<GroupPage>(find.byType(GroupPage)).groupId, isNull);
+  });
+
   testWidgets('puxar a lista recarrega', (tester) async {
     final vocabulary = fakeVocabulary();
     await tester.pumpPage(const VocabularyPage(), vocabulary: vocabulary.store);

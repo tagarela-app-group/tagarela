@@ -5,23 +5,28 @@ import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
-class NewGroupSheet extends StatefulWidget {
-  const NewGroupSheet({super.key});
+class GroupSheet extends StatefulWidget {
+  const GroupSheet({this.group, super.key});
+
+  final TermGroup? group;
 
   static const maxName = 30;
 
   @override
-  State<NewGroupSheet> createState() => _NewGroupSheetState();
+  State<GroupSheet> createState() => _GroupSheetState();
 }
 
-class _NewGroupSheetState extends State<NewGroupSheet> {
+class _GroupSheetState extends State<GroupSheet> {
   static final _icons = [
     for (final i in GroupIcon.values) (icon: i.icon, label: i.label),
   ];
 
-  final _name = TextEditingController();
-  var _icon = GroupIcon.layers;
-  var _accent = AppAccent.violet;
+  late final _name = TextEditingController(text: widget.group?.name);
+  late var _icon = GroupIcon.values.firstWhere(
+    (i) => i.icon == widget.group?.icon,
+    orElse: () => GroupIcon.layers,
+  );
+  late var _accent = widget.group?.accent ?? AppAccent.violet;
   var _busy = false;
   String? _error;
 
@@ -31,18 +36,30 @@ class _NewGroupSheetState extends State<NewGroupSheet> {
     super.dispose();
   }
 
-  Future<void> _create(String name) async {
+  Future<void> _save(String name) async {
     setState(() => _busy = true);
+    final vocabulary = AppScope.of(context).vocabulary;
+    final editing = widget.group;
+    final verb = editing == null ? 'criar' : 'salvar';
     try {
-      final group = await AppScope.of(
-        context,
-      ).vocabulary.createGroup(name: name, icon: _icon, accent: _accent);
+      final group = editing == null
+          ? await vocabulary.createGroup(
+              name: name,
+              icon: _icon,
+              accent: _accent,
+            )
+          : await vocabulary.updateGroup(
+              editing.id,
+              name: name,
+              icon: _icon,
+              accent: _accent,
+            );
       if (mounted) Navigator.pop(context, group);
     } on ApiException catch (e) {
       _fail(
         e.rejected
-            ? e.fieldError('name') ?? 'Não deu pra criar o grupo.'
-            : 'Não deu pra criar o grupo agora. Tente de novo.',
+            ? e.fieldError('name') ?? 'Não deu pra $verb o grupo.'
+            : 'Não deu pra $verb o grupo agora. Tente de novo.',
       );
     } on Exception {
       _fail('Sem conexão. Tente de novo.');
@@ -61,13 +78,16 @@ class _NewGroupSheetState extends State<NewGroupSheet> {
   Widget build(BuildContext context) {
     final vocabulary = AppScope.of(context).vocabulary.data;
     final name = _name.text.trim();
-    final taken = vocabulary?.hasGroupNamed(name) ?? false;
+    final editing = widget.group;
+    final taken = vocabulary?.hasGroupNamed(name, except: editing?.id) ?? false;
 
     return AppSheet(
       icon: _icon.icon,
       accent: _accent,
-      title: 'Novo grupo',
-      subtitle: 'Junte termos do mesmo assunto',
+      title: editing == null ? 'Novo grupo' : 'Editar grupo',
+      subtitle: editing == null
+          ? 'Junte termos do mesmo assunto'
+          : 'Mude o nome, o ícone ou a cor',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s4,
@@ -76,8 +96,8 @@ class _NewGroupSheetState extends State<NewGroupSheet> {
             label: 'Nome',
             hint: 'Ex.: Música, Faculdade',
             controller: _name,
-            maxLength: NewGroupSheet.maxName,
-            autofocus: true,
+            maxLength: GroupSheet.maxName,
+            autofocus: editing == null,
             textInputAction: TextInputAction.done,
             errorText: taken ? 'Você já tem um grupo com esse nome.' : _error,
             onChanged: (_) => setState(() => _error = null),
@@ -93,10 +113,14 @@ class _NewGroupSheetState extends State<NewGroupSheet> {
             onChanged: (accent) => setState(() => _accent = accent),
           ),
           AppButton(
-            label: name.isEmpty ? 'Dê um nome ao grupo' : 'Criar grupo',
+            label: switch ((name.isEmpty, editing)) {
+              (true, _) => 'Dê um nome ao grupo',
+              (false, null) => 'Criar grupo',
+              _ => 'Salvar',
+            },
             expand: true,
             loading: _busy,
-            onPressed: name.isEmpty || taken ? null : () => _create(name),
+            onPressed: name.isEmpty || taken ? null : () => _save(name),
           ),
         ],
       ),

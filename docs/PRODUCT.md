@@ -19,9 +19,9 @@ Captura na hora (foto, áudio, texto) → escolhe os termos → confirma → ter
 
 - Conta: login (e-mail, Google, Apple só no iOS), cadastro com código no e-mail, esqueci a senha.
 - Início: saudação, palavra do dia, resumo do vocabulário, revisão de hoje.
-- Vocabulário: Sem grupo no topo, grade de grupos, Novo grupo. Grupo: termos com filtro, mover termos com Desfazer.
-- Inbox: capturas por estado (atenção, prontas, processando, analisadas). Escolher termos: toque = palavra, arrasto = expressão.
-- Perfil: progresso, status do offline, conta, sair.
+- Vocabulário: Sem grupo no topo, grade de grupos, Novo grupo. Grupo: termos com filtro. Segurar um termo liga a seleção: mover ou apagar, os 2 com Desfazer. ⋮: editar ou apagar grupo (termos voltam pra Sem grupo).
+- Inbox: capturas por estado (atenção, prontas, processando). Confirmou a análise: sai do Inbox. Escolher termos: toque = palavra, arrasto = expressão.
+- Perfil: progresso (termos, aprendendo, dominados), status do offline, conta, sair.
 - Botão + central: Câmera, Áudio (até 1 min), Texto (até 500). Salvou: aviso "Salvo no Inbox".
 
 Texto e estados de cada tela: no mockup e no código.
@@ -34,6 +34,5 @@ Texto e estados de cada tela: no mockup e no código.
 
 ## Estado atual
 
-- Pronto: conta, captura (offline first), Inbox, escolher termos, vocabulário com grupos e mover.
+- Pronto: conta, captura (offline first), Inbox, escolher termos, vocabulário com grupos (criar, editar, apagar), mover e apagar termo.
 - Vazio até a API ter: tradução e ficha do termo (IA), nível e revisão (SRS), palavra do dia.
-- A definir: editar e apagar grupo.

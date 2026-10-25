@@ -25,7 +25,7 @@ class ApiClient {
   Future<Object?> patch(String path, Map<String, Object?> body) =>
       _send('PATCH', path, body);
 
-  Future<void> delete(String path) => _send('DELETE', path);
+  Future<Object?> delete(String path) => _send('DELETE', path);
 
   Future<ApiResponse> send(
     String method,

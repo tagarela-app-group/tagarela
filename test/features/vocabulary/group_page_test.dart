@@ -5,7 +5,7 @@ import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/vocabulary/group_page.dart';
 import 'package:tagarela/features/vocabulary/widgets/move_sheet.dart';
-import 'package:tagarela/features/vocabulary/widgets/new_group_sheet.dart';
+import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
 import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 
 import '../../helpers/fake_vocabulary_api.dart';
@@ -72,9 +72,13 @@ Future<FakeVocabulary> _open(
 }
 
 Future<void> _startSelection(WidgetTester tester) async {
+  await _menu(tester, 'Selecionar termos');
+}
+
+Future<void> _menu(WidgetTester tester, String option) async {
   await tester.tap(find.byTooltip('Mais opções'));
   await tester.pumpAndSettle();
-  await tester.tap(find.text('Mover termos'));
+  await tester.tap(find.text(option));
   await tester.pumpAndSettle();
 }
 
@@ -113,7 +117,7 @@ void main() {
     expect(find.byType(GroupPage), findsNothing);
   });
 
-  testWidgets('grupo sem termos: estado vazio, sem filtro nem menu', (
+  testWidgets('grupo sem termos: estado vazio, sem filtro, menu sem seleção', (
     tester,
   ) async {
     await _open(tester, const GroupPage(groupId: 'musica'));
@@ -121,10 +125,16 @@ void main() {
     expect(find.text('Nenhum termo ainda'), findsOneWidget);
     expect(find.text('Nenhum termo aqui ainda'), findsOneWidget);
     expect(find.byType(SegmentedControl), findsNothing);
-    expect(find.byTooltip('Mais opções'), findsNothing);
+
+    await tester.tap(find.byTooltip('Mais opções'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Editar grupo'), findsOneWidget);
+    expect(find.text('Apagar grupo'), findsOneWidget);
+    expect(find.text('Selecionar termos'), findsNothing);
   });
 
-  testWidgets('Sem grupo: dica, sem filtro, "Mover termos" no topo', (
+  testWidgets('Sem grupo: dica, sem filtro, "Selecionar" no topo', (
     tester,
   ) async {
     await _open(tester, const GroupPage.ungrouped());
@@ -135,7 +145,7 @@ void main() {
     expect(find.byType(SegmentedControl), findsNothing);
     expect(_shownTerms(tester), ['mind the gap', 'stand clear']);
 
-    await tester.tap(find.text('Mover termos'));
+    await tester.tap(find.text('Selecionar'));
     await tester.pump();
 
     expect(find.text('Toque nos termos pra escolher'), findsOneWidget);
@@ -149,7 +159,7 @@ void main() {
     );
 
     expect(find.text('Tudo organizado'), findsOneWidget);
-    expect(find.text('Mover termos'), findsNothing);
+    expect(find.text('Selecionar'), findsNothing);
   });
 
   testWidgets('seleção: marca, conta e libera o botão de mover', (
@@ -244,7 +254,7 @@ void main() {
 
   testWidgets('mover pra grupo novo: cria e já move', (tester) async {
     final (:store, :api) = await _open(tester, const GroupPage.ungrouped());
-    await tester.tap(find.text('Mover termos'));
+    await tester.tap(find.text('Selecionar'));
     await tester.pump();
     await tester.tap(find.text('mind the gap'));
     await tester.pump();
@@ -253,7 +263,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Novo grupo'));
     await tester.pumpAndSettle();
-    expect(find.byType(NewGroupSheet), findsOneWidget);
+    expect(find.byType(GroupSheet), findsOneWidget);
 
     await tester.enterText(textField('Nome'), 'Metrô');
     await tester.pump();
@@ -293,7 +303,7 @@ void main() {
     expect(find.text('Você ainda não tem grupos'), findsOneWidget);
     await tester.tap(find.text('Criar grupo'));
     await tester.pumpAndSettle();
-    expect(find.byType(NewGroupSheet), findsOneWidget);
+    expect(find.byType(GroupSheet), findsOneWidget);
   });
 
   testWidgets('sem rede: avisa e mantém a seleção', (tester) async {
@@ -322,5 +332,132 @@ void main() {
     );
     expect(find.text('1 selecionado'), findsOneWidget);
     expect(api.termsOf('viagem'), hasLength(3));
+  });
+
+  testWidgets('segurar um termo liga a seleção com ele marcado', (
+    tester,
+  ) async {
+    await _open(tester, const GroupPage(groupId: 'viagem'));
+
+    await tester.longPress(find.text('carry-on'));
+    await tester.pump();
+
+    expect(find.text('1 selecionado'), findsOneWidget);
+    expect(find.byType(AppCheckbox), findsNWidgets(3));
+    expect(find.text('Mover 1 termo'), findsOneWidget);
+  });
+
+  testWidgets('apaga termos e desfaz', (tester) async {
+    final (store: _, :api) = await _open(
+      tester,
+      const GroupPage(groupId: 'viagem'),
+    );
+    await tester.longPress(find.text('carry-on'));
+    await tester.pump();
+    await tester.tap(find.text('jet lag'));
+    await tester.pump();
+
+    await tester.tap(find.text('Apagar'));
+    await tester.pumpAndSettle();
+
+    expect(api.termsOf('viagem'), ['layover']);
+    expect(_shownTerms(tester), ['layover']);
+    expect(find.byType(AppCheckbox), findsNothing);
+    expect(find.text('2 termos apagados'), findsOneWidget);
+    expect(find.text('Saíram do vocabulário.'), findsOneWidget);
+
+    await tester.tap(find.text('Desfazer'));
+    await tester.pumpAndSettle();
+
+    expect(api.calls.last, 'POST /api/v1/terms/restore');
+    expect(_shownTerms(tester), hasLength(3));
+  });
+
+  testWidgets('apagar sem rede: avisa e mantém a seleção', (tester) async {
+    final (store: _, :api) = await _open(
+      tester,
+      const GroupPage(groupId: 'viagem'),
+    );
+    await tester.longPress(find.text('carry-on'));
+    await tester.pump();
+    api.offline = true;
+
+    await tester.tap(find.text('Apagar'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Não deu pra apagar agora. Confira a internet e tente de novo.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('1 selecionado'), findsOneWidget);
+    expect(api.termsOf('viagem'), hasLength(3));
+  });
+
+  testWidgets('editar grupo: painel preenchido, salva e o header muda', (
+    tester,
+  ) async {
+    final (store: _, :api) = await _open(
+      tester,
+      const GroupPage(groupId: 'viagem'),
+    );
+
+    await _menu(tester, 'Editar grupo');
+
+    expect(find.byType(GroupSheet), findsOneWidget);
+    expect(find.text('Editar grupo'), findsOneWidget);
+    await tester.enterText(textField('Nome'), 'Viagens');
+    await tester.pump();
+    await tester.tap(find.text('Salvar'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(GroupSheet), findsNothing);
+    expect(api.bodies['PATCH /api/v1/groups/viagem'], {
+      'name': 'Viagens',
+      'icon': 'travel',
+      'accent': 'sky',
+    });
+    expect(find.text('Viagens'), findsOneWidget);
+  });
+
+  testWidgets('apagar grupo: confirma, fecha a tela e os termos vão pra '
+      'Sem grupo', (tester) async {
+    final (store: _, :api) = await _open(
+      tester,
+      const GroupPage(groupId: 'viagem'),
+    );
+
+    await _menu(tester, 'Apagar grupo');
+
+    expect(find.text('Apagar Viagem?'), findsOneWidget);
+    expect(find.text('Os 3 termos voltam pra Sem grupo.'), findsOneWidget);
+    await tester.tap(find.text('Apagar grupo'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(GroupPage), findsNothing);
+    expect(api.groups.map((g) => g['id']), isNot(contains('viagem')));
+    expect(api.termsOf(null), containsAll(['carry-on', 'jet lag', 'layover']));
+  });
+
+  testWidgets('apagar grupo sem rede: avisa no painel e fica', (tester) async {
+    final (store: _, :api) = await _open(
+      tester,
+      const GroupPage(groupId: 'viagem'),
+    );
+    await _menu(tester, 'Apagar grupo');
+    api.offline = true;
+
+    await tester.tap(find.text('Apagar grupo'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Não deu pra apagar agora. Confira a internet e tente de novo.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Apagar Viagem?'), findsOneWidget);
+    expect(api.groups.map((g) => g['id']), contains('viagem'));
   });
 }

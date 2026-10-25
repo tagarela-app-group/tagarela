@@ -349,7 +349,7 @@ void main() {
           (CaptureSection.processing, false),
           (CaptureSection.attention, true),
           (CaptureSection.ready, true),
-          (CaptureSection.done, false),
+          (null, false),
         ],
       );
     });

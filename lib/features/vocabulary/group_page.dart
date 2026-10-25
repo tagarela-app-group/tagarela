@@ -5,7 +5,7 @@ import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/vocabulary/count_label.dart';
 import 'package:tagarela/features/vocabulary/widgets/move_sheet.dart';
-import 'package:tagarela/features/vocabulary/widgets/new_group_sheet.dart';
+import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
 import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 
 class GroupPage extends StatefulWidget {
@@ -24,7 +24,9 @@ class _GroupPageState extends State<GroupPage> {
 
   int _filter = 0;
   Set<String>? _selected;
+  TermGroup? _group;
   bool _moving = false;
+  bool _deleting = false;
 
   void _select(Set<String>? selected) => setState(() => _selected = selected);
 
@@ -35,22 +37,40 @@ class _GroupPageState extends State<GroupPage> {
   );
 
   Future<void> _openMenu(TermGroup group) async {
-    final move = await AppSheet.show<bool>(
+    final action = await AppSheet.show<_MenuAction>(
       context,
       (_) => _GroupMenu(group: group),
     );
-    if (move == true && mounted) _select({});
+    if (!mounted) return;
+    switch (action) {
+      case _MenuAction.edit:
+        await AppSheet.show<TermGroup>(
+          context,
+          (_) => GroupSheet(group: group),
+        );
+      case _MenuAction.select:
+        _select({});
+      case _MenuAction.delete:
+        final deleted = await AppSheet.show<bool>(
+          context,
+          (_) => _DeleteGroupSheet(group: group),
+        );
+        if (deleted == true && mounted) Navigator.of(context).pop(group);
+      case null:
+    }
   }
+
+  List<String> _selectedIn(List<Term> terms) => [
+    for (final t in terms)
+      if (_selected!.contains(t.id)) t.id,
+  ];
 
   Future<void> _pickTarget(
     Vocabulary data,
     TermGroup? from,
     List<Term> terms,
   ) async {
-    final ids = [
-      for (final t in terms)
-        if (_selected!.contains(t.id)) t.id,
-    ];
+    final ids = _selectedIn(terms);
     final target = await AppSheet.show<MoveTarget>(
       context,
       (_) => MoveSheet(
@@ -65,7 +85,7 @@ class _GroupPageState extends State<GroupPage> {
     if (target == null || !mounted) return;
     final to =
         target.group ??
-        await AppSheet.show<TermGroup>(context, (_) => const NewGroupSheet());
+        await AppSheet.show<TermGroup>(context, (_) => const GroupSheet());
     if (to == null || !mounted) return;
     await _move(ids, from: from, to: to);
   }
@@ -106,6 +126,39 @@ class _GroupPageState extends State<GroupPage> {
     );
   }
 
+  Future<void> _delete(List<Term> terms) async {
+    final ids = _selectedIn(terms);
+    final vocabulary = AppScope.of(context).vocabulary;
+    setState(() => _deleting = true);
+    try {
+      await vocabulary.deleteTerms(ids);
+    } on Exception {
+      if (!mounted) return;
+      setState(() => _deleting = false);
+      _warn('Não deu pra apagar agora. Confira a internet e tente de novo.');
+      return;
+    }
+    if (!mounted) return;
+    setState(() {
+      _deleting = false;
+      _selected = null;
+    });
+    final one = ids.length == 1;
+    AppToast.show(
+      context,
+      title: one ? '1 termo apagado' : '${ids.length} termos apagados',
+      message: one ? 'Saiu do vocabulário.' : 'Saíram do vocabulário.',
+      actionLabel: 'Desfazer',
+      onAction: () async {
+        try {
+          await vocabulary.restoreTerms(ids);
+        } on Exception {
+          if (mounted) _warn('Não deu pra desfazer agora.');
+        }
+      },
+    );
+  }
+
   void _warn(String message) => ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
     ..showSnackBar(SnackBar(content: Text(message)));
@@ -119,7 +172,8 @@ class _GroupPageState extends State<GroupPage> {
       builder: (context, _) {
         final data = vocabulary.data ?? const Vocabulary();
         final id = widget.groupId;
-        final group = id == null ? null : data.group(id);
+        if (id != null) _group = data.group(id) ?? _group;
+        final group = _group;
         final terms = id == null ? data.ungrouped : group?.terms ?? const [];
         final filtered = group != null && terms.isNotEmpty;
         final visible = filtered ? group.termsWith(_filters[_filter]) : terms;
@@ -151,15 +205,15 @@ class _GroupPageState extends State<GroupPage> {
                       variant: AppIconButtonVariant.onHeader,
                     ),
               trailing: switch ((selected, group)) {
-                _ when terms.isEmpty => null,
                 (null, final group?) => AppIconButton(
                   icon: AppIcons.more,
                   tooltip: 'Mais opções',
                   onPressed: () => _openMenu(group),
                   variant: AppIconButtonVariant.onHeader,
                 ),
+                _ when terms.isEmpty => null,
                 (null, null) => AppButton(
-                  label: 'Mover termos',
+                  label: 'Selecionar',
                   variant: AppButtonVariant.onHeader,
                   size: AppButtonSize.small,
                   onPressed: () => _select({}),
@@ -177,18 +231,35 @@ class _GroupPageState extends State<GroupPage> {
             centerLast: terms.isEmpty,
             footer: selected == null
                 ? null
-                : AppButton(
-                    label: switch (selected.length) {
-                      0 => 'Selecione os termos',
-                      1 => 'Mover 1 termo',
-                      final n => 'Mover $n termos',
-                    },
-                    size: AppButtonSize.large,
-                    expand: true,
-                    loading: _moving,
-                    onPressed: selected.isEmpty
-                        ? null
-                        : () => _pickTarget(data, group, terms),
+                : Row(
+                    spacing: AppSpacing.s3,
+                    children: [
+                      AppButton(
+                        label: 'Apagar',
+                        leading: const Icon(AppIcons.delete, size: 20),
+                        variant: AppButtonVariant.outline,
+                        size: AppButtonSize.large,
+                        loading: _deleting,
+                        onPressed: selected.isEmpty || _moving
+                            ? null
+                            : () => _delete(terms),
+                      ),
+                      Expanded(
+                        child: AppButton(
+                          label: switch (selected.length) {
+                            0 => 'Selecione os termos',
+                            1 => 'Mover 1 termo',
+                            final n => 'Mover $n termos',
+                          },
+                          size: AppButtonSize.large,
+                          expand: true,
+                          loading: _moving,
+                          onPressed: selected.isEmpty || _deleting
+                              ? null
+                              : () => _pickTarget(data, group, terms),
+                        ),
+                      ),
+                    ],
                   ),
             children: [
               if (terms.isEmpty)
@@ -232,6 +303,9 @@ class _GroupPageState extends State<GroupPage> {
                     selecting: selected != null,
                     selected: selected?.contains(term.id) ?? false,
                     onTap: selected == null ? null : () => _toggle(term.id),
+                    onLongPress: selected == null
+                        ? () => _select({term.id})
+                        : null,
                   ),
               ],
             ],
@@ -315,6 +389,8 @@ class _GroupHeader extends StatelessWidget {
   }
 }
 
+enum _MenuAction { edit, select, delete }
+
 class _GroupMenu extends StatelessWidget {
   const _GroupMenu({required this.group});
 
@@ -327,12 +403,105 @@ class _GroupMenu extends StatelessWidget {
       accent: group.accent,
       title: group.name,
       subtitle: termsLabel(group.terms.length),
-      child: OptionRow(
-        icon: AppIcons.move,
-        accent: AppAccent.violet,
-        title: 'Mover termos',
-        subtitle: 'Escolha termos e mande pra outro grupo',
-        onTap: () => Navigator.pop(context, true),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: AppSpacing.s3,
+        children: [
+          OptionRow(
+            icon: AppIcons.edit,
+            accent: AppAccent.violet,
+            title: 'Editar grupo',
+            subtitle: 'Nome, ícone e cor',
+            onTap: () => Navigator.pop(context, _MenuAction.edit),
+          ),
+          if (group.terms.isNotEmpty)
+            OptionRow(
+              icon: AppIcons.move,
+              accent: AppAccent.violet,
+              title: 'Selecionar termos',
+              subtitle: 'Mova ou apague termos',
+              onTap: () => Navigator.pop(context, _MenuAction.select),
+            ),
+          OptionRow(
+            icon: AppIcons.delete,
+            accent: AppAccent.coral,
+            title: 'Apagar grupo',
+            subtitle: 'Os termos voltam pra Sem grupo',
+            onTap: () => Navigator.pop(context, _MenuAction.delete),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DeleteGroupSheet extends StatefulWidget {
+  const _DeleteGroupSheet({required this.group});
+
+  final TermGroup group;
+
+  @override
+  State<_DeleteGroupSheet> createState() => _DeleteGroupSheetState();
+}
+
+class _DeleteGroupSheetState extends State<_DeleteGroupSheet> {
+  var _busy = false;
+  String? _error;
+
+  Future<void> _delete() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      await AppScope.of(context).vocabulary.deleteGroup(widget.group.id);
+      if (mounted) Navigator.pop(context, true);
+    } on Exception {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _error =
+            'Não deu pra apagar agora. Confira a internet e tente de novo.';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final group = widget.group;
+
+    return AppSheet(
+      icon: AppIcons.delete,
+      accent: AppAccent.coral,
+      title: 'Apagar ${group.name}?',
+      subtitle: switch (group.terms.length) {
+        0 => 'O grupo está vazio.',
+        1 => 'O termo volta pra Sem grupo.',
+        final n => 'Os $n termos voltam pra Sem grupo.',
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: AppSpacing.s3,
+        children: [
+          if (_error case final error?)
+            Text(
+              error,
+              style: AppText.bodyMd.copyWith(color: context.colors.alert),
+            ),
+          AppButton(
+            label: 'Apagar grupo',
+            variant: AppButtonVariant.danger,
+            expand: true,
+            loading: _busy,
+            onPressed: _delete,
+          ),
+          AppButton(
+            label: 'Cancelar',
+            variant: AppButtonVariant.text,
+            expand: true,
+            onPressed: _busy ? null : () => Navigator.pop(context),
+          ),
+        ],
       ),
     );
   }

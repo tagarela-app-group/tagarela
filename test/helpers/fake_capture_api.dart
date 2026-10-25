@@ -76,7 +76,7 @@ class FakeCaptureApi implements ApiClient {
       _handle('PATCH', path, body, () => _touch(_capture(path)..addAll(body)));
 
   @override
-  Future<void> delete(String path) => _handle(
+  Future<Object?> delete(String path) => _handle(
     'DELETE',
     path,
     null,

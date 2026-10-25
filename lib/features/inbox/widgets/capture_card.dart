@@ -49,9 +49,7 @@ class _CaptureCardState extends State<CaptureCard> {
   @override
   Widget build(BuildContext context) {
     final capture = widget.capture;
-    final muted = capture.status == CaptureStatus.analyzed;
     return AppCard(
-      muted: muted,
       child: FutureBuilder(
         future: _media,
         builder: (context, snapshot) => Column(
@@ -131,10 +129,7 @@ class _CaptureCardState extends State<CaptureCard> {
               : const _Transcribing(),
         ),
       ],
-      CaptureStatus.analyzed => [
-        Text(capture.text, style: AppText.bodyLg),
-        if (capture.terms.isNotEmpty) _Terms(terms: capture.terms, muted: true),
-      ],
+      CaptureStatus.analyzed => const [],
     };
   }
 }
@@ -192,12 +187,10 @@ class _Header extends StatelessWidget {
       CaptureStatus.processing => ('Processando', StatusTone.learning),
       CaptureStatus.analyzed => ('Analisada', StatusTone.neutral),
     };
-    final muted = capture.status == CaptureStatus.analyzed;
-
     return Row(
       spacing: AppSpacing.s2,
       children: [
-        IconTile(icon: icon, accent: muted ? null : accent, size: 28),
+        IconTile(icon: icon, accent: accent, size: 28),
         Expanded(
           child: Text(
             '${capture.source.label} · ${timeAgo(capture.capturedAt, now)}',
@@ -339,10 +332,9 @@ class _MissingMedia extends StatelessWidget {
 }
 
 class _Terms extends StatelessWidget {
-  const _Terms({required this.terms, this.muted = false});
+  const _Terms({required this.terms});
 
   final List<CaptureTerm> terms;
-  final bool muted;
 
   @override
   Widget build(BuildContext context) {
@@ -350,11 +342,8 @@ class _Terms extends StatelessWidget {
     final chips = Wrap(
       spacing: 6,
       runSpacing: 6,
-      children: [
-        for (final term in terms) TermChip(label: term.text, muted: muted),
-      ],
+      children: [for (final term in terms) TermChip(label: term.text)],
     );
-    if (muted) return chips;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: AppSpacing.s2,
