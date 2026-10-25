@@ -7,6 +7,7 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class AppSheet extends StatelessWidget {
   const AppSheet({
@@ -88,7 +89,7 @@ class AppSheet extends StatelessWidget {
               ),
               AppIconButton(
                 icon: AppIcons.close,
-                tooltip: 'Fechar',
+                tooltip: context.l10n.close,
                 variant: AppIconButtonVariant.soft,
                 onPressed: () => Navigator.maybePop(context),
               ),

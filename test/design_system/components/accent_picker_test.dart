@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
 
+import '../../helpers/l10n.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
@@ -12,8 +13,8 @@ void main() {
     );
 
     expect(find.text('Cor'), findsOneWidget);
-    for (final name in AccentPicker.names.values) {
-      expect(find.bySemanticsLabel(name), findsOneWidget);
+    for (final accent in AppAccent.values) {
+      expect(find.bySemanticsLabel(pt.accentName(accent.name)), findsOneWidget);
     }
     expect(find.byIcon(AppIcons.check), findsOneWidget);
 
@@ -29,8 +30,8 @@ void main() {
     final rows = AppAccent.values.length ~/ AccentPicker.columns;
     expect(rows, 2);
     final tops = {
-      for (final name in AccentPicker.names.values)
-        tester.getTopLeft(find.bySemanticsLabel(name)).dy,
+      for (final accent in AppAccent.values)
+        tester.getTopLeft(find.bySemanticsLabel(pt.accentName(accent.name))).dy,
     };
     expect(tops, hasLength(rows));
     expect(

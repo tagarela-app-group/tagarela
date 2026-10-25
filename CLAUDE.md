@@ -1,6 +1,6 @@
 # CLAUDE.md — Tagarela (app)
 
-App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. Público BR, básico/intermediário, pouco tempo. API em `../api`.
+App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. Público BR primeiro, básico/intermediário, pouco tempo; interface em pt-BR, en e es. API em `../api`.
 
 ## Produto
 
@@ -8,6 +8,7 @@ App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. P
 - A pessoa decide; a IA sugere, nunca organiza por ela.
 - Tom de amigo ("você"), captura em um gesto, funciona offline, cor só com significado.
 - Recurso sem dado da API ainda: card some, não inventa.
+- Idioma da interface é do aparelho: escolha no Perfil, salva só nele; sem escolha segue o celular; idioma que o app não tem cai em inglês. Não confundir com país de origem (fica na conta). Mensagens da API e tradução dos termos seguem pt-BR por enquanto.
 
 ## Regras
 
@@ -38,8 +39,9 @@ App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. P
 
 - Visual: header violeta + body arredondado, balão de fala como assinatura, tema do sistema. Cores têm papel fixo (ação, palavra do dia, aprendendo, dominado, erro); ver tokens.
 - Toda tela é `SheetPage`. Um primário por tela. Import único `design_system.dart`.
-- Código: `package:tagarela/...`, aspas simples, um widget público por arquivo, texto da UI pt-BR no widget.
-- Testes: só `flutter_test` com fakes manuais; helpers em `test/helpers/`.
+- Código: `package:tagarela/...`, aspas simples, um widget público por arquivo.
+- Texto da UI só nos ARB (`lib/l10n/`, modelo `app_pt.arb`), via `context.l10n`; chave nova entra nos três idiomas. Rótulo de enum é `select` no ARB, não campo no model. Plural sempre com `=0` (no pt o CLDR põe 0 em `one`).
+- Testes: só `flutter_test` com fakes manuais; helpers em `test/helpers/`. `pumpPage` abre em pt; função pura recebe `AppLocalizations` (`pt`/`en`/`es` de `test/helpers/l10n.dart`).
 - Toast tem anel animado até sumir: depois de ação que mostra toast, `pumpUntilFound`, não `pumpAndSettle` (só assenta quando o toast já saiu).
 
 ## Mockup
@@ -48,4 +50,4 @@ https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR (via Artifact tool). Registro 
 
 ## Comandos
 
-`dart format lib test packages` · `flutter analyze --no-pub` · `flutter test --no-pub -r failures-only` · drift mudou: `dart run build_runner build`.
+`dart format lib test packages` · `flutter analyze --no-pub` · `flutter test --no-pub -r failures-only` · drift mudou: `dart run build_runner build` · ARB mudou: `flutter gen-l10n`.

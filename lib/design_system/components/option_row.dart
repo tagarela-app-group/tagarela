@@ -20,6 +20,7 @@ class OptionRow extends StatelessWidget {
     this.trailing,
     this.dashed = false,
     this.color,
+    this.selected,
   });
 
   final IconData icon;
@@ -33,6 +34,8 @@ class OptionRow extends StatelessWidget {
   final bool dashed;
   final Color? color;
 
+  final bool? selected;
+
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
@@ -43,7 +46,7 @@ class OptionRow extends StatelessWidget {
             borderRadius: radius,
             side: BorderSide(color: c.line, width: 1.5),
           );
-    return Material(
+    final row = Material(
       color: color ?? Colors.transparent,
       shape: shape,
       child: InkWell(
@@ -77,12 +80,24 @@ class OptionRow extends StatelessWidget {
                   ],
                 ),
               ),
-              trailing ?? Icon(AppIcons.forward, size: 20, color: c.inkSoft),
+              trailing ??
+                  switch (selected) {
+                    null => Icon(AppIcons.forward, size: 20, color: c.inkSoft),
+                    true => Icon(AppIcons.check, size: 22, color: c.primary),
+                    false => const SizedBox.shrink(),
+                  },
             ],
           ),
         ),
       ),
     );
+    return selected == null
+        ? row
+        : Semantics(
+            selected: selected,
+            inMutuallyExclusiveGroup: true,
+            child: row,
+          );
   }
 }
 

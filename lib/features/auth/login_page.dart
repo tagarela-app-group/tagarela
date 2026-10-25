@@ -5,6 +5,7 @@ import 'package:tagarela/features/auth/auth_form.dart';
 import 'package:tagarela/features/auth/forgot_password_page.dart';
 import 'package:tagarela/features/auth/signup_page.dart';
 import 'package:tagarela/features/auth/widgets/social_buttons.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -46,16 +47,16 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Entrar', style: AppText.titleLg),
+            Text(context.l10n.signIn, style: AppText.titleLg),
             Text(
-              'Que bom te ver de novo.',
+              context.l10n.loginWelcome,
               style: AppText.bodyLg.copyWith(color: c.inkSoft),
             ),
           ],
         ),
         AppTextField(
-          label: 'E-mail',
-          hint: 'voce@email.com',
+          label: context.l10n.email,
+          hint: context.l10n.emailHint,
           icon: AppIcons.mail,
           controller: _email,
           errorText: errors['email'],
@@ -66,8 +67,8 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             AppTextField(
-              label: 'Senha',
-              hint: 'Sua senha',
+              label: context.l10n.password,
+              hint: context.l10n.passwordHint,
               icon: AppIcons.lock,
               controller: _password,
               errorText: errors['password'],
@@ -75,7 +76,7 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
               textInputAction: TextInputAction.done,
             ),
             AppButton(
-              label: 'Esqueci minha senha',
+              label: context.l10n.forgotPassword,
               onPressed: () =>
                   push(ForgotPasswordPage(email: _email.text.trim())),
               variant: AppButtonVariant.text,
@@ -84,7 +85,7 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
           ],
         ),
         AppButton(
-          label: 'Entrar',
+          label: context.l10n.signIn,
           onPressed: busy ? null : _login,
           size: AppButtonSize.large,
           expand: true,
@@ -97,7 +98,7 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
               : () => submit(
                   auth.signInWithGoogle,
                   onResult,
-                  failure: 'Não deu pra entrar com o Google. Tente de novo.',
+                  failure: context.l10n.googleFailed,
                   button: AuthAction.google,
                 ),
           onApple: busy
@@ -105,7 +106,7 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
               : () => submit(
                   auth.signInWithApple,
                   onResult,
-                  failure: 'Não deu pra entrar com a Apple. Tente de novo.',
+                  failure: context.l10n.appleFailed,
                   button: AuthAction.apple,
                 ),
         ),
@@ -113,11 +114,11 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Novo por aqui?',
+              context.l10n.newHere,
               style: AppText.bodyMd.copyWith(color: c.inkSoft),
             ),
             AppButton(
-              label: 'Criar conta',
+              label: context.l10n.createAccount,
               onPressed: () => push(const SignupPage()),
               variant: AppButtonVariant.text,
               size: AppButtonSize.small,
@@ -154,7 +155,7 @@ class _LoginHeader extends StatelessWidget {
             SizedBox(
               width: 230,
               child: Text(
-                'Inglês de verdade, tirado das conversas do seu dia.',
+                context.l10n.tagline,
                 style: AppText.bodyLg.copyWith(
                   color: context.colors.onHeaderSoft,
                 ),

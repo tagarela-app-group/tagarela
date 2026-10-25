@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/vocabulary/count_label.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class GroupCard extends StatelessWidget {
   const GroupCard({super.key, required this.group, required this.onTap});
@@ -28,7 +28,9 @@ class GroupCard extends StatelessWidget {
             children: [
               Text(group.name, style: AppText.titleSm),
               Text(
-                total == 0 ? 'Sem termos ainda' : termsLabel(total),
+                total == 0
+                    ? context.l10n.noTermsInGroupYet
+                    : context.l10n.termCount(total),
                 style: AppText.bodyMd.copyWith(color: c.inkSoft),
               ),
             ],
@@ -40,7 +42,7 @@ class GroupCard extends StatelessWidget {
             segments: [Segment(group.masteredCount, c.mastered)],
           ),
           Text(
-            '$percent% dominado',
+            context.l10n.percentMastered(percent),
             style: AppText.pill.copyWith(
               color: c.inkSoft,
               fontWeight: FontWeight.w600,

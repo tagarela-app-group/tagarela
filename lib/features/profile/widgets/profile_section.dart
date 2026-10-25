@@ -52,6 +52,7 @@ class ProfileRow extends StatelessWidget {
     required this.title,
     required this.text,
     this.trailing,
+    this.onTap,
   });
 
   final IconData icon;
@@ -59,10 +60,12 @@ class ProfileRow extends StatelessWidget {
   final String title;
   final String text;
   final Widget? trailing;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    final c = context.colors;
+    final row = Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.s3),
       child: Row(
         spacing: AppSpacing.s3,
@@ -80,16 +83,20 @@ class ProfileRow extends StatelessWidget {
                 Text(
                   text,
                   style: AppText.label.copyWith(
-                    color: context.colors.inkSoft,
+                    color: c.inkSoft,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
           ),
-          ?trailing,
+          ?(trailing ??
+              (onTap == null
+                  ? null
+                  : Icon(AppIcons.forward, size: 20, color: c.inkSoft))),
         ],
       ),
     );
+    return onTap == null ? row : InkWell(onTap: onTap, child: row);
   }
 }

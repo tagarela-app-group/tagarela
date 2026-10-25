@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
-String savedMessage(Capture capture) =>
+String savedMessage(AppLocalizations l10n, Capture capture) =>
     capture.pending.contains(CaptureSync.extract)
-    ? 'Já está processando.'
+    ? l10n.savedProcessing
     : capture.pending.isNotEmpty
-    ? 'Puxe a lista no Inbox quando tiver internet.'
+    ? l10n.savedOffline
     : capture.source == CaptureSource.text
-    ? 'Pronto pra escolher os termos.'
-    : 'Já está processando.';
+    ? l10n.savedReady
+    : l10n.savedProcessing;
 
 void showCaptureSaved(
   BuildContext context,
@@ -18,9 +19,9 @@ void showCaptureSaved(
   required VoidCallback onSee,
 }) => AppToast.show(
   context,
-  title: 'Salvo no Inbox',
-  message: savedMessage(capture),
-  actionLabel: 'Ver',
+  title: context.l10n.savedToInbox,
+  message: savedMessage(context.l10n, capture),
+  actionLabel: context.l10n.see,
   onAction: onSee,
   aboveTabBar: true,
 );

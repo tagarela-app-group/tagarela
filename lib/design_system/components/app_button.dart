@@ -4,6 +4,7 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 enum AppButtonVariant {
   primary,
@@ -100,7 +101,7 @@ class AppButton extends StatelessWidget {
                   child: CircularProgressIndicator(
                     color: fg,
                     strokeWidth: 2.5,
-                    semanticsLabel: 'Carregando',
+                    semanticsLabel: context.l10n.loading,
                   ),
                 )
               : leading),

@@ -32,6 +32,7 @@ abstract final class AppIcons {
   static const offline = Icons.wifi_off_rounded;
   static const mail = Icons.mail_outline_rounded;
   static const lock = Icons.lock_outline_rounded;
+  static const language = Icons.translate_rounded;
   static const apple = Icons.apple;
 
   static const travel = Icons.flight_rounded;

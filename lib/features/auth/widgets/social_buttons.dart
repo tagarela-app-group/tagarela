@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/auth_form.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class SocialButtons extends StatelessWidget {
   const SocialButtons({
@@ -27,14 +28,14 @@ class SocialButtons extends StatelessWidget {
           children: [
             const Expanded(child: Divider()),
             Text(
-              'ou',
+              context.l10n.or,
               style: AppText.bodyMd.copyWith(color: context.colors.inkSoft),
             ),
             const Expanded(child: Divider()),
           ],
         ),
         AppButton(
-          label: 'Continuar com Google',
+          label: context.l10n.continueWithGoogle,
           onPressed: onGoogle,
           leading: Image.asset('assets/images/google.png', width: 20),
           variant: AppButtonVariant.outline,
@@ -44,7 +45,7 @@ class SocialButtons extends StatelessWidget {
         ),
         if (isIos)
           AppButton(
-            label: 'Continuar com a Apple',
+            label: context.l10n.continueWithApple,
             onPressed: onApple,
             leading: const Icon(AppIcons.apple, size: 20),
             variant: AppButtonVariant.contrast,

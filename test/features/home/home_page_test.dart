@@ -13,12 +13,13 @@ import 'package:tagarela/data/stores/home_store.dart';
 import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/failing_stores.dart';
 import '../../helpers/fake_auth.dart';
+import '../../helpers/l10n.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
   group('greeting', () {
     test('muda com a hora do dia', () {
-      String at(int hour) => greeting(DateTime(2026, 10, 23, hour), 'Ana');
+      String at(int hour) => greeting(pt, DateTime(2026, 10, 23, hour), 'Ana');
 
       expect(at(5), 'Bom dia, Ana');
       expect(at(11), 'Bom dia, Ana');
@@ -29,7 +30,12 @@ void main() {
     });
 
     test('sem nome fica só a saudação', () {
-      expect(greeting(DateTime(2026, 10, 23, 9), ''), 'Bom dia!');
+      expect(greeting(pt, DateTime(2026, 10, 23, 9), ''), 'Bom dia!');
+      expect(greeting(es, DateTime(2026, 10, 23, 20), ''), '¡Buenas noches!');
+      expect(
+        greeting(en, DateTime(2026, 10, 23, 14), 'Ana'),
+        'Good afternoon, Ana',
+      );
     });
   });
 

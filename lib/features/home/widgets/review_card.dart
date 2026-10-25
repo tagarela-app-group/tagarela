@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class ReviewCard extends StatelessWidget {
   const ReviewCard({super.key, required this.count, required this.onStart});
@@ -24,18 +25,18 @@ class ReviewCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Revisão de hoje',
+                  context.l10n.reviewToday,
                   style: AppText.bodyLg.copyWith(fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  '$count termos esperando',
+                  context.l10n.termsWaiting(count),
                   style: AppText.bodyMd.copyWith(color: context.colors.inkSoft),
                 ),
               ],
             ),
           ),
           AppButton(
-            label: 'Começar',
+            label: context.l10n.start,
             onPressed: onStart,
             size: AppButtonSize.small,
           ),

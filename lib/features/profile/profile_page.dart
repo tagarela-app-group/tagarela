@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
+import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/user_avatar.dart';
+import 'package:tagarela/features/profile/widgets/language_sheet.dart';
 import 'package:tagarela/features/profile/widgets/offline_section.dart';
 import 'package:tagarela/features/profile/widgets/profile_section.dart';
 import 'package:tagarela/features/profile/widgets/progress_card.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -16,13 +19,18 @@ class ProfilePage extends StatelessWidget {
     final scope = AppScope.of(context);
 
     return ListenableBuilder(
-      listenable: Listenable.merge([scope.auth, scope.vocabulary]),
+      listenable: Listenable.merge([
+        scope.auth,
+        scope.vocabulary,
+        scope.language,
+      ]),
       builder: (context, _) {
         final user = scope.auth.user;
         final vocabulary = scope.vocabulary.data;
+        final l10n = context.l10n;
         return SheetPage(
           header: user == null
-              ? const PageHeader(title: 'Perfil')
+              ? PageHeader(title: l10n.tabProfile)
               : PageHeader(
                   title: user.displayName,
                   subtitle: user.email,
@@ -43,28 +51,48 @@ class ProfilePage extends StatelessWidget {
             const OfflineSection(),
             if (user != null)
               ProfileSection(
-                title: 'Conta',
+                title: l10n.account,
                 rows: [
                   ProfileRow(
                     icon: AppIcons.mail,
                     accent: AppAccent.violet,
-                    title: 'E-mail',
+                    title: l10n.email,
                     text: user.email,
                   ),
-                  const ProfileRow(
+                  ProfileRow(
                     icon: AppIcons.lock,
                     accent: AppAccent.mint,
-                    title: 'Privacidade',
-                    text:
-                        'Foto e áudio ficam só neste celular. '
-                        'A API guarda só o texto.',
+                    title: l10n.privacy,
+                    text: l10n.privacyText,
                   ),
                 ],
               ),
+            ProfileSection(
+              title: l10n.preferences,
+              rows: [
+                ProfileRow(
+                  icon: AppIcons.language,
+                  accent: AppAccent.sky,
+                  title: l10n.language,
+                  text: switch (scope.language.choice) {
+                    final choice? => choice.label,
+                    null => l10n.languageAutoValue(
+                      AppLanguage.resolve([
+                        Localizations.localeOf(context),
+                      ]).label,
+                    ),
+                  },
+                  onTap: () => AppSheet.show<void>(
+                    context,
+                    (_) => const LanguageSheet(),
+                  ),
+                ),
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.s1),
               child: AppButton(
-                label: 'Sair',
+                label: l10n.signOut,
                 onPressed: () => _logout(context),
                 variant: AppButtonVariant.outline,
                 expand: true,

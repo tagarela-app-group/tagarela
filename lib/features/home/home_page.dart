@@ -8,6 +8,7 @@ import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
 import 'package:tagarela/features/profile/user_avatar.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -46,11 +47,9 @@ class HomePage extends StatelessWidget {
             children: [
               StateMessage(
                 glyph: const SpeechBubbleIcon(),
-                title: 'Seu inglês começa aqui',
-                message:
-                    'Capture o que você ouviu ou leu hoje, por foto, áudio ou '
-                    'texto. Os termos que você confirmar aparecem aqui.',
-                actionLabel: 'Fazer a primeira captura',
+                title: context.l10n.homeEmptyTitle,
+                message: context.l10n.homeEmptyMessage,
+                actionLabel: context.l10n.homeFirstCapture,
                 actionIcon: AppIcons.add,
                 onAction: onCapture,
               ),
@@ -76,13 +75,13 @@ class HomePage extends StatelessWidget {
   }
 }
 
-String greeting(DateTime now, String name) {
+String greeting(AppLocalizations l10n, DateTime now, String name) {
   final period = switch (now.hour) {
-    >= 5 && < 12 => 'Bom dia',
-    >= 12 && < 18 => 'Boa tarde',
-    _ => 'Boa noite',
+    >= 5 && < 12 => 'morning',
+    >= 12 && < 18 => 'afternoon',
+    _ => 'evening',
   };
-  return name.isEmpty ? '$period!' : '$period, $name';
+  return name.isEmpty ? l10n.greeting(period) : l10n.greetingName(period, name);
 }
 
 class _HomeHeader extends StatelessWidget {
@@ -103,11 +102,11 @@ class _HomeHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                greeting(now, user?.firstName ?? ''),
+                greeting(context.l10n, now, user?.firstName ?? ''),
                 style: AppText.bodyMd.copyWith(color: c.onHeaderSoft),
               ),
               Text(
-                'Vamos tagarelar?',
+                context.l10n.homeTagline,
                 style: AppText.titleMd.copyWith(color: AppPalette.white),
               ),
             ],

@@ -10,6 +10,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/capture/widgets/permission_notice.dart';
 import 'package:tagarela/features/capture/widgets/privacy_note.dart';
 import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 enum _Phase { starting, recording, done, denied }
 
@@ -146,17 +147,16 @@ class _AudioCaptureSheetState extends State<AudioCaptureSheet> {
     return AppSheet(
       icon: AppIcons.audio,
       accent: AppAccent.coral,
-      title: recording ? 'Gravando…' : 'Gravar áudio',
+      title: recording ? context.l10n.recording : context.l10n.recordAudio,
       subtitle: _phase == _Phase.done
-          ? 'Ouça antes de salvar'
-          : 'Grave a frase do jeito que ouviu',
+          ? context.l10n.listenBeforeSaving
+          : context.l10n.recordHint,
       child: switch (_phase) {
-        _Phase.denied => const PermissionNotice(
+        _Phase.denied => PermissionNotice(
           icon: AppIcons.audio,
           accent: AppAccent.coral,
-          title: 'Sem acesso ao microfone',
-          message:
-              'Libere o microfone nas configurações do celular pra gravar.',
+          title: context.l10n.micDeniedTitle,
+          message: context.l10n.micDeniedMessage,
         ),
         _Phase.done => _done(_file!),
         _ => _recording(context),
@@ -185,7 +185,7 @@ class _AudioCaptureSheetState extends State<AudioCaptureSheet> {
               ),
             ),
             Text(
-              'de ${clockLabel(max)}',
+              context.l10n.ofDuration(clockLabel(max)),
               style: AppText.bodyMd.copyWith(color: c.inkSoft),
             ),
           ],
@@ -216,7 +216,7 @@ class _AudioCaptureSheetState extends State<AudioCaptureSheet> {
           segments: [Segment(elapsed.inMilliseconds, accent.fg)],
           total: max.inMilliseconds,
           height: 6,
-          semanticLabel: 'Tempo de gravação',
+          semanticLabel: context.l10n.recordingTime,
         ),
         Padding(
           padding: const EdgeInsets.only(top: AppSpacing.s2),
@@ -227,7 +227,7 @@ class _AudioCaptureSheetState extends State<AudioCaptureSheet> {
             ),
             child: IconButton(
               onPressed: _phase == _Phase.recording ? _stop : null,
-              tooltip: 'Parar gravação',
+              tooltip: context.l10n.stopRecording,
               icon: const Icon(AppIcons.stop),
               iconSize: 26,
               style: IconButton.styleFrom(
@@ -242,7 +242,7 @@ class _AudioCaptureSheetState extends State<AudioCaptureSheet> {
           ),
         ),
         Text(
-          'Toque para parar',
+          context.l10n.tapToStop,
           style: AppText.bodyMd.copyWith(fontWeight: FontWeight.w700),
         ),
       ],
@@ -254,20 +254,18 @@ class _AudioCaptureSheetState extends State<AudioCaptureSheet> {
     spacing: AppSpacing.s4,
     children: [
       AudioClip(file: file),
-      const PrivacyNote(
-        'O áudio fica só no seu celular. A gente guarda apenas a transcrição.',
-      ),
+      PrivacyNote(context.l10n.audioPrivacy),
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s3,
         children: [
           AppButton(
-            label: 'Salvar no Inbox',
+            label: context.l10n.saveToInbox,
             loading: _saving,
             onPressed: _save,
           ),
           AppButton(
-            label: 'Regravar',
+            label: context.l10n.reRecord,
             variant: AppButtonVariant.outline,
             onPressed: _saving ? null : _reRecord,
           ),

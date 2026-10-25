@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class ProgressCard extends StatelessWidget {
   const ProgressCard({
@@ -21,9 +22,13 @@ class ProgressCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _Stat(terms, 'Termos', c.primary)),
-          Expanded(child: _Stat(learning, 'Aprendendo', c.learning)),
-          Expanded(child: _Stat(mastered, 'Dominados', c.mastered)),
+          Expanded(child: _Stat(terms, context.l10n.statTerms, c.primary)),
+          Expanded(
+            child: _Stat(learning, context.l10n.statLearning, c.learning),
+          ),
+          Expanded(
+            child: _Stat(mastered, context.l10n.statMastered, c.mastered),
+          ),
         ],
       ),
     );

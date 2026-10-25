@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/home_shell.dart';
+import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/auth/auth_form.dart';
 import 'package:tagarela/features/auth/forgot_password_page.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/auth/signup_page.dart';
 import 'package:tagarela/features/auth/verify_email_page.dart';
 
 import '../../helpers/fake_auth.dart';
+import '../../helpers/l10n.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
@@ -112,13 +113,31 @@ void main() {
     );
   });
 
+  testWidgets('falha do login vira aviso no idioma do app', (tester) async {
+    api.responses['POST /auth/login'] = const ApiResponse(429, null);
+    await tester.pumpPage(
+      const LoginPage(),
+      auth: fakeAuthStore(api: api, social: social),
+      load: false,
+      locale: const Locale('en'),
+    );
+
+    await tester.enterText(textField('Email'), 'ana@example.com');
+    await tester.enterText(textField('Password'), 's3nha-forte');
+    await tester.tap(find.widgetWithText(AppButton, 'Sign in'));
+    await tester.pumpAndSettle();
+
+    expect(find.text(en.authFailure('tooManyAttempts')), findsOneWidget);
+    expect(find.byType(LoginPage), findsOneWidget);
+  });
+
   testWidgets('sem conexão avisa e fica no login', (tester) async {
     api.error = const SocketException('offline');
     await pumpLogin(tester);
 
     await login(tester);
 
-    expect(find.text(AuthForm.offline), findsOneWidget);
+    expect(find.text(pt.authOffline), findsOneWidget);
     expect(find.byType(LoginPage), findsOneWidget);
   });
 

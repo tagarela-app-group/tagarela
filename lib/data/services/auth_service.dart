@@ -29,17 +29,18 @@ class AuthPending extends AuthResult {
   final String sessionToken;
 }
 
-class AuthException implements Exception {
-  const AuthException(this.errors);
+enum AuthFailure { unavailable, tooManyAttempts, expired, unknown }
 
-  AuthException.message(String message) : this({null: message});
+class AuthException implements Exception {
+  const AuthException(this.errors) : failure = null;
+
+  const AuthException.failure(AuthFailure this.failure) : errors = const {};
 
   final Map<String?, String> errors;
-
-  String? get message => errors[null];
+  final AuthFailure? failure;
 
   @override
-  String toString() => 'AuthException: $errors';
+  String toString() => 'AuthException: ${failure ?? errors}';
 }
 
 class AuthService {
@@ -124,7 +125,7 @@ class AuthService {
         .map((p) => p['client_id'])
         .firstOrNull;
     if (clientId is String && clientId.isNotEmpty) return clientId;
-    throw AuthException.message('Esse login não está disponível agora.');
+    throw const AuthException.failure(AuthFailure.unavailable);
   }
 
   Future<AuthTokens> refresh(String refreshToken) async {
@@ -215,16 +216,14 @@ class AuthService {
     final status = response.statusCode;
     if (status >= 500) return ApiException(status, 'auth');
     if (status == 429) {
-      return AuthException.message(
-        'Muitas tentativas. Espere um pouco e tente de novo.',
-      );
+      return const AuthException.failure(AuthFailure.tooManyAttempts);
     }
     if (status == 409 || status == 410) {
-      return AuthException.message('Essa etapa expirou. Comece de novo.');
+      return const AuthException.failure(AuthFailure.expired);
     }
     final errors = ((response.body as Json?)?['errors'] as List?)?.cast<Json>();
     if (errors == null || errors.isEmpty) {
-      return AuthException.message('Não deu certo. Tente de novo.');
+      return const AuthException.failure(AuthFailure.unknown);
     }
     return AuthException({
       for (final error in errors.reversed)

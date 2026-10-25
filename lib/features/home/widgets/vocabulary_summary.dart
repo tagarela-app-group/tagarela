@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class VocabularySummary extends StatelessWidget {
   const VocabularySummary({
@@ -24,8 +26,8 @@ class VocabularySummary extends StatelessWidget {
       spacing: AppSpacing.s2,
       children: [
         SectionHeader(
-          title: 'Seu vocabulário',
-          actionLabel: 'Ver tudo',
+          title: context.l10n.yourVocabulary,
+          actionLabel: context.l10n.seeAll,
           onAction: onSeeAll,
         ),
         AppCard(
@@ -42,7 +44,7 @@ class VocabularySummary extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Total de termos',
+                          context.l10n.totalTerms,
                           style: AppText.label.copyWith(
                             color: c.inkSoft,
                             fontWeight: FontWeight.w600,
@@ -53,14 +55,17 @@ class VocabularySummary extends StatelessWidget {
                     ),
                   ),
                   StatusPill(
-                    label: '+$weekGain esta semana',
+                    label: context.l10n.thisWeek(weekGain),
                     tone: StatusTone.mastered,
                   ),
                 ],
               ),
               SegmentBar(
                 height: 10,
-                semanticLabel: '$learning aprendendo, $mastered dominados',
+                semanticLabel: context.l10n.learningMastered(
+                  learning,
+                  mastered,
+                ),
                 segments: [
                   Segment(learning, c.learning),
                   Segment(mastered, c.mastered),
@@ -71,7 +76,7 @@ class VocabularySummary extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _StatTile(
-                      label: 'Aprendendo',
+                      label: context.l10n.termStatus(TermStatus.learning.name),
                       value: learning,
                       dot: c.learning,
                       bg: c.learningSoft,
@@ -80,7 +85,7 @@ class VocabularySummary extends StatelessWidget {
                   ),
                   Expanded(
                     child: _StatTile(
-                      label: 'Dominado',
+                      label: context.l10n.termStatus(TermStatus.mastered.name),
                       value: mastered,
                       dot: c.mastered,
                       bg: c.masteredSoft,

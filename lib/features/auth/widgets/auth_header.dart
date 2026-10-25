@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class AuthHeader extends StatelessWidget {
   const AuthHeader({super.key, required this.title, required this.subtitle});
@@ -16,7 +17,7 @@ class AuthHeader extends StatelessWidget {
       children: [
         AppIconButton(
           icon: AppIcons.back,
-          tooltip: 'Voltar',
+          tooltip: context.l10n.back,
           onPressed: () => Navigator.of(context).pop(),
           variant: AppIconButtonVariant.onHeader,
         ),

@@ -8,6 +8,7 @@ import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/capture/widgets/permission_notice.dart';
 import 'package:tagarela/features/capture/widgets/privacy_note.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class PhotoCaptureSheet extends StatefulWidget {
   const PhotoCaptureSheet({super.key});
@@ -71,17 +72,16 @@ class _PhotoCaptureSheetState extends State<PhotoCaptureSheet> {
     return AppSheet(
       icon: AppIcons.camera,
       accent: AppAccent.mango,
-      title: 'Foto',
+      title: context.l10n.photo,
       subtitle: photo == null
-          ? 'Uma placa, um cardápio, uma legenda'
-          : 'Confira antes de salvar',
+          ? context.l10n.photoHint
+          : context.l10n.checkBeforeSaving,
       child: _denied
-          ? const PermissionNotice(
+          ? PermissionNotice(
               icon: AppIcons.camera,
               accent: AppAccent.mango,
-              title: 'Sem acesso à câmera',
-              message:
-                  'Libere a câmera nas configurações do celular pra tirar foto.',
+              title: context.l10n.cameraDeniedTitle,
+              message: context.l10n.cameraDeniedMessage,
             )
           : photo == null
           ? Column(
@@ -95,22 +95,20 @@ class _PhotoCaptureSheetState extends State<PhotoCaptureSheet> {
                     OptionRow(
                       icon: AppIcons.camera,
                       accent: AppAccent.mango,
-                      title: 'Tirar foto',
-                      subtitle: 'Abre a câmera do celular',
+                      title: context.l10n.takePhoto,
+                      subtitle: context.l10n.takePhotoHint,
                       onTap: () => _pick(PhotoOrigin.camera),
                     ),
                     OptionRow(
                       icon: AppIcons.gallery,
                       accent: AppAccent.sky,
-                      title: 'Escolher da galeria',
-                      subtitle: 'Usa uma foto que você já tem',
+                      title: context.l10n.pickFromGallery,
+                      subtitle: context.l10n.pickFromGalleryHint,
                       onTap: () => _pick(PhotoOrigin.gallery),
                     ),
                   ],
                 ),
-                const PrivacyNote(
-                  'A foto fica só no seu celular. A gente guarda apenas o texto lido dela.',
-                ),
+                PrivacyNote(context.l10n.photoPrivacy),
               ],
             )
           : Column(
@@ -118,7 +116,7 @@ class _PhotoCaptureSheetState extends State<PhotoCaptureSheet> {
               spacing: AppSpacing.s4,
               children: [
                 Semantics(
-                  label: 'Foto escolhida',
+                  label: context.l10n.chosenPhoto,
                   image: true,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -138,12 +136,12 @@ class _PhotoCaptureSheetState extends State<PhotoCaptureSheet> {
                   spacing: AppSpacing.s3,
                   children: [
                     AppButton(
-                      label: 'Salvar no Inbox',
+                      label: context.l10n.saveToInbox,
                       loading: _saving,
                       onPressed: _save,
                     ),
                     AppButton(
-                      label: 'Trocar foto',
+                      label: context.l10n.changePhoto,
                       variant: AppButtonVariant.outline,
                       onPressed: _saving ? null : _change,
                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class WordOfDayCard extends StatelessWidget {
   const WordOfDayCard({super.key, required this.word});
@@ -35,8 +36,11 @@ class WordOfDayCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Expanded(
-                      child: Text('PALAVRA DO DIA', style: AppText.overline),
+                    Expanded(
+                      child: Text(
+                        context.l10n.wordOfDay.toUpperCase(),
+                        style: AppText.overline,
+                      ),
                     ),
                     Text(
                       word.dateLabel,
@@ -64,7 +68,7 @@ class WordOfDayCard extends StatelessWidget {
                     ),
                     AppIconButton(
                       icon: AppIcons.listen,
-                      tooltip: 'Ouvir pronúncia',
+                      tooltip: context.l10n.listenPronunciation,
                       onPressed: () {},
                       variant: AppIconButtonVariant.ink,
                       size: 48,
@@ -90,7 +94,7 @@ class WordOfDayCard extends StatelessWidget {
                   ),
                 ),
                 AppButton(
-                  label: 'Adicionar ao vocabulário',
+                  label: context.l10n.addToVocabulary,
                   onPressed: () {},
                   leading: const Icon(AppIcons.add, size: 20),
                   variant: AppButtonVariant.ink,

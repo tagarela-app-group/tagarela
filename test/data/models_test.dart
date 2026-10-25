@@ -83,10 +83,9 @@ void main() {
   });
 
   group('GroupIcon', () {
-    test('48 ícones, cada um com rótulo e ícone próprios', () {
+    test('48 ícones, cada um com ícone próprio', () {
       expect(GroupIcon.values, hasLength(48));
       expect(GroupIcon.values.map((i) => i.icon).toSet(), hasLength(48));
-      expect(GroupIcon.values.every((i) => i.label.isNotEmpty), isTrue);
     });
 
     test('nome do enum = id da API', () {
@@ -225,16 +224,6 @@ void main() {
       expect(User.fromJson(api.toJson()).picture, api.picture);
       expect(apple.toJson().containsKey('picture'), isFalse);
     });
-  });
-
-  test('rótulos dos enums em pt-BR', () {
-    expect(TermKind.word.label, 'Palavra');
-    expect(TermKind.expression.label, 'Expressão');
-    expect(TermStatus.learning.label, 'Aprendendo');
-    expect(TermStatus.mastered.label, 'Dominado');
-    expect(CaptureSource.photo.label, 'Foto');
-    expect(CaptureSource.audio.label, 'Áudio');
-    expect(CaptureSource.text.label, 'Texto');
   });
 
   group('Capture', () {

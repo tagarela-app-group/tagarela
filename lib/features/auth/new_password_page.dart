@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/auth_form.dart';
 import 'package:tagarela/features/auth/widgets/auth_header.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class NewPasswordPage extends StatefulWidget {
   const NewPasswordPage({
@@ -33,26 +34,28 @@ class _NewPasswordPageState extends State<NewPasswordPage> with AuthForm {
   @override
   Widget build(BuildContext context) {
     return SheetPage(
-      header: const AuthHeader(title: 'Nova senha', subtitle: 'Última etapa.'),
+      header: AuthHeader(
+        title: context.l10n.newPasswordTitle,
+        subtitle: context.l10n.newPasswordSubtitle,
+      ),
       gap: AppSpacing.s4,
       children: [
         Text(
-          'Crie uma senha nova pra sua conta. Depois de salvar, você já '
-          'entra no app.',
+          context.l10n.newPasswordBody,
           style: AppText.bodyLg.copyWith(color: context.colors.inkSoft),
         ),
         AppTextField(
-          label: 'Nova senha',
-          hint: 'Sua senha nova',
+          label: context.l10n.newPasswordTitle,
+          hint: context.l10n.newPasswordHint,
           icon: AppIcons.lock,
           controller: _password,
-          helperText: 'Mínimo de 8 caracteres. Evite só números.',
+          helperText: context.l10n.newPasswordHelper,
           errorText: errors['password'],
           obscure: true,
           textInputAction: TextInputAction.done,
         ),
         AppButton(
-          label: 'Salvar e entrar',
+          label: context.l10n.saveAndSignIn,
           onPressed: busy
               ? null
               : () => submit(

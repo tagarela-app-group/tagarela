@@ -4,24 +4,29 @@ import 'package:tagarela/data/models.dart';
 import 'package:tagarela/features/capture/capture_saved.dart';
 
 import '../../helpers/fake_capture_store.dart';
+import '../../helpers/l10n.dart';
 
 void main() {
   test('aviso muda conforme o envio', () {
-    expect(savedMessage(sampleCapture('t')), 'Pronto pra escolher os termos.');
     expect(
-      savedMessage(sampleCapture('f', source: CaptureSource.photo)),
+      savedMessage(pt, sampleCapture('t')),
+      'Pronto pra escolher os termos.',
+    );
+    expect(
+      savedMessage(pt, sampleCapture('f', source: CaptureSource.photo)),
       'Já está processando.',
     );
     expect(
-      savedMessage(sampleCapture('a', source: CaptureSource.audio)),
+      savedMessage(pt, sampleCapture('a', source: CaptureSource.audio)),
       'Já está processando.',
     );
     expect(
-      savedMessage(sampleCapture('f', pending: const {CaptureSync.create})),
+      savedMessage(pt, sampleCapture('f', pending: const {CaptureSync.create})),
       'Puxe a lista no Inbox quando tiver internet.',
     );
     expect(
       savedMessage(
+        pt,
         sampleCapture(
           'a',
           source: CaptureSource.audio,
