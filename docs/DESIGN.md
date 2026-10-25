@@ -1,118 +1,56 @@
 # DESIGN — Tagarela
 
-Código em `lib/design_system/`. Import único: `package:tagarela/design_system/design_system.dart`.
+Código em `lib/design_system/`. Import único: `design_system.dart`. Valor exato: no código.
 
 ## Direção
 
-Header violeta + body com topo arredondado (32). Assinatura: balão de fala (`AppRadius.bubble`: 3 cantos redondos, inferior esquerdo quase reto). Moderno, leve, cor só com significado.
+Header violeta + body com topo arredondado. Assinatura: balão de fala (`AppRadius.bubble`). Leve, cor só com significado. Tema segue o sistema. Escuro: sem preto puro, sem sombra (elevação por tom + contorno).
 
 ## Cores
 
-Ler via `context.colors` (`AppColors`, ThemeExtension). Cor fixa de marca: `AppPalette`.
+Ler via `context.colors`. Cor fixa de marca: `AppPalette`.
 
 | Cor | Significado |
 | --- | --- |
-| Violeta `primary` | Ação, header, botão +, foco, aba ativa |
-| Manga `AppPalette.mango` | Palavra do dia, logo, avatar. Igual nos 2 temas |
+| Violeta `primary` | Ação, header, botão +, foco |
+| Manga `AppPalette.mango` | Palavra do dia, logo, avatar |
 | Âmbar `learning` | Aprendendo |
 | Menta `mastered` | Dominado, sucesso |
-| Coral / `alert` | Badge, erro, áudio |
-| `contrast` / `onContrast` | Botão Apple: preto no claro, branco no escuro (regra da Apple) |
-| Tinta `ink` / `inkSoft` | Texto principal / secundário |
+| Coral `alert` | Erro, badge |
+| `contrast` | Botão Apple |
+| `ink` / `inkSoft` | Texto principal / secundário |
 
-- Superfícies: `bg` (body) → `surface` (card, tab bar, campo) → `surfaceAlt` (trilho, segmentado, sugestão). Borda: `line`.
-- Tons suaves: `xxxSoft` (fundo) + `xxxText` (texto) para pílulas.
-- `accent(AppAccent)`: tinta de ícone de grupo/origem (violet, coral, mint, mango, sky, pink).
-- Manga, menta, âmbar, coral: texto tinta, nunca branco. Texto ≥ 4,5:1.
+- Superfície: `bg` → `surface` → `surfaceAlt`. Borda: `line`. Pílula: `xxxSoft` + `xxxText`. Grupo: `accent(AppAccent)`.
+- Manga, menta, âmbar, coral: texto tinta, nunca branco. Contraste ≥ 4,5:1.
 
-Escuro: header `#241D5C`, fundo `#0F0E17` (sem preto puro), primary clareia (`#8B7BFF`) com texto tinta, suaves = cor a 16–18%, sem sombra (elevação por tom + contorno 1 px). Tema segue o sistema.
+## Tipo, espaço, forma
 
-## Tipografia (`AppText`)
-
-- `AppFonts.display` Bricolage Grotesque (600–800): títulos, números, termos em inglês.
-- `AppFonts.body` DM Sans (400–700): resto. Padrão do tema.
-
-| Token | Tamanho/altura · peso | Uso |
-| --- | --- | --- |
-| `display` | 38/42 · 800 | Palavra do dia |
-| `statLg` / `stat` | 44 / 30 · 800 | Números de resumo |
-| `titleLg` | 28/34 · 700 | Título de tela |
-| `titleMd` | 20/26 · 700 | Título de seção, termo capturado |
-| `term` | 18/24 · 700 | Termo em lista |
-| `titleSm` | 17/22 · 700 | Nome de grupo |
-| `bodyLg` / `bodyMd` | 16/24 · 14/20 · 400 | Texto |
-| `button` | 15/20 · 700 | Botão (16 no grande) |
-| `label` | 13/18 · 700 | Rótulo de campo |
-| `pill` | 12/16 · 700 | Status |
-| `overline` / `tag` | 12 · 10 · 700 | Caixa alta |
-| `caption` | 11/14 · 600 | Tab bar |
-
-Estilos sem cor: herdam `ink`. Mudar cor com `copyWith(color:)`.
-
-## Espaço, raio, movimento (`app_tokens.dart`)
-
-- `AppSpacing.sN` = N × 4 (s1 4 … s14 56). Margem de tela `screen` = 20.
-- `AppRadius`: xs 6 (tag) · sm 10 · md 16 (botão, campo) · lg 22 (card) · xl 28 (palavra do dia) · sheet 32 · pill · `bubble(r)`.
-- `AppMotion`: fast 120 · base 200 · slow 320 ms. Curva `standard`; `spring` (easeOutBack) no arco. Troca de aba: a nova entra por cima da antiga (que fica opaca embaixo) com fade + subida leve (`slow`, `standard`). Estado das abas mantido.
-- `AppBlur.scrim` 2: desfoque atrás do scrim.
-- Sombra: `cardShadow`, `buttonShadow` (só primário grande), `fabShadow`. Vêm de `AppColors`.
-- Toque mínimo 44.
-
-## Ícones (`AppIcons`)
-
-Material outlined/rounded, centralizado em `app_icons.dart`. Trocar pacote = mexer só lá. 22 em tab bar/header, 16–20 em linhas. Logo Apple: `AppIcons.apple`. Logo Google: imagem `assets/images/google.png` (colorido).
-
-Grupo: 48 ícones (`AppIcons.travel`, `music`, `paw`...), um por tema; catálogo com rótulo em `GroupIcon` (`models.dart`). `AppIcons.ungrouped` (pasta aberta) = Sem grupo. `AppIcons.move` = mover termos.
-
-Balão de fala redondo: Material não tem. Usar `SpeechBubbleIcon` (desenhado, mesma API do `Icon`).
+- `AppText`: Bricolage Grotesque (título, número, termo em inglês) + DM Sans (resto). Estilo sem cor herda `ink`. Cor via `copyWith`.
+- `AppSpacing.sN` = N × 4. Margem de tela 20. `AppRadius`, `AppMotion`, sombras de `AppColors`. Toque mínimo 44.
+- Ícone: só `AppIcons`. Balão de fala: `SpeechBubbleIcon`.
 
 ## Componentes
 
-| Componente | Uso |
-| --- | --- |
-| `SheetPage` | Toda tela: header + body arredondado rolável. `onRefresh` = puxar pra atualizar. `footer` = barra fixa embaixo (fundo `bg`, linha `line` em cima), fora da rolagem. `centerLast` = último filho centralizado no espaço que sobra (estado de tela) |
-| `PageHeader` | Título/subtítulo (+ leading/trailing) no header. `centered`: leading em cima e textos no meio, sem trailing (Perfil) |
-| `SectionHeader` | Título de seção + ação texto |
-| `AppButton` | Variantes primary (ação principal, uma por tela), tonal, outline, ink (sobre manga), contrast (botão Apple), text, onHeader (pílula `headerChip` + branco, no header: "Mover termos", "Selecionar todos"). Tamanhos large 56, medium 48, small 44. `expand`, `leading`. `loading`: spinner 18 na cor do texto no lugar do `leading`, rótulo e cor da variante ficam, toque ignorado. Enquanto um botão carrega, os outros da tela ficam desabilitados |
-| `AppIconButton` | Botão redondo de ícone. Variantes onHeader, ink, primary, soft (`surfaceAlt` + `ink`: fechar painel), ghost. `tooltip` obrigatório |
-| `AppCard` | Superfície com sombra. `onTap` opcional. `color` próprio = sem sombra. `muted` = sem fundo nem sombra, borda `line` (item encerrado, ex.: captura analisada). `selected` = borda `primary` 2, sem sombra (item marcado na seleção) |
-| `AppTextField` | Rótulo acima, ícone, halo no foco, `helperText` (some com erro), erro, `obscure` com olho. `lines` > 1 = várias linhas (rola dentro). `maxLength` = limite + contador `n/max` à direita do rodapé. `autofocus` |
-| `AppCodeField` | Código numérico em caixas (padrão 6, 56 de altura, raio md). Caixa da vez com halo, erro em `alert`. Campo real escondido (`oneTimeCode`, só dígito). `onCompleted` ao completar |
-| `AppChip` | Filtro. Selecionado = tinta cheia |
-| `StatusPill` | Status: learning, mastered, primary, neutral, alert (coral: erro) |
-| `AppTag` | Etiqueta caixa alta com contorno (PALAVRA, EXPRESSÃO) |
-| `IconTile` | Ícone em quadrado tingido por `AppAccent`. Sem acento = neutro (`surfaceAlt` + `inkSoft`). `glyph` = desenho no lugar do ícone (recebe tamanho e cor via `IconTheme`) |
-| `AppBubble` | Forma balão: logo, avatar, itens do arco. `image`: foto recortada no balão, por cima do conteúdo (as iniciais aparecem enquanto carrega ou se falhar). `ring`: anel de 4 na cor dada (avatar do Perfil usa `headerChip`) |
-| `SpeechBubbleIcon` | Balão de fala redondo cheio, desenhado. Fundo da palavra do dia |
-| `SegmentBar` | Barra proporcional; com `total` vira progresso |
-| `LevelDots` | Nível SRS em 5 traços |
-| `SegmentedControl` | Abas em pílula, escolha única |
-| `AppTabBar` | Tab bar com badge e espaço central (`centerGap`). Badge: `alert`, 18, anel 2 da cor da tab bar, no canto da pílula |
-| `StateMessage` | Ícone (ou `glyph`, ex.: `SpeechBubbleIcon`) + título + texto + ação tonal opcional (`actionIcon` = ícone na ação). Lista vazia, erro, permissão negada. Estado de tela: sempre centralizado (`SheetPage.centerLast`) |
-| `AsyncStatus` | Body sem dado: spinner, ou erro (`StateMessage`) com "Tentar de novo". Centralizado (`SheetPage.centerLast`) |
-| `ArcMenu` | Botão + (64, raio `lg`, anel de 6 da cor da tab bar) que abre opções em arco (150°, 90°, 30°, raio 118) sobre scrim com blur. Arco tracejado decorativo liga as opções. + desenhado: 20 de lado, traço 2,8, ponta redonda (o `add` do Material é fino demais). Abrir de fora: `GlobalKey<ArcMenuState>` + `open()` |
-| `AppSheet` | Painel que sobe de baixo: puxador, `IconTile` (opcional) + título + subtítulo, Fechar (`soft`), conteúdo (rola se não couber, ex.: teclado aberto). Raio `sheet` no topo, sobre `scrim`. Abre com `AppSheet.show(context, builder)`; sobe com o teclado |
-| `TermChip` | Pílula do termo escolhido: `primarySoft` + `primaryText`. Sem `onRemove`: 30 de altura, texto `label` (card do Inbox). Com `onRemove`: 40, texto `button` + X "Remover <termo>". `muted` = `surfaceAlt` + `inkSoft` (analisada) |
-| `OptionRow` | Linha de escolha: `IconTile` 48 + título + subtítulo (opcional) + seta (ou `trailing`). Borda `line` 1.5, raio `lg`. `dashed` = borda tracejada `primary` (criar ou organizar: "+ Novo grupo", card Sem grupo). `color` = fundo (padrão transparente). Ex.: Tirar foto, Escolher da galeria, grupo no Mover |
-| `IconPicker` | Grade de ícones 6 colunas, 12 por página. Rótulo + "‹ Voltar" (da 2ª página) + "1/4" + "Avançar ›" (some na última, sem mexer o layout). Célula 48, raio `md`: escolhida = fundo `soft` + borda e ícone `fg` do acento; resto `surfaceAlt` + `inkSoft`. Abre na página do escolhido |
-| `AccentPicker` | As 6 cores de `AppAccent` em bolinhas de 36 (toque 48). Escolhida: anel `surface` 3 + anel da cor 5 + check |
-| `AppCheckbox` | Caixa 24, raio 8, borda `line` 2. Marcada: `primary` cheio + check `onPrimary` |
-| `AppToast` | Aviso rápido: círculo `mastered` com check + título + texto + ação. Some sozinho (4 s), mesmo com ação. `aboveTabBar` = acima da tab bar e do botão + (abas) |
+Antes de criar, procurar em `components/`.
+
+- Tela: `SheetPage`, `PageHeader`, `SectionHeader`, `StateMessage`, `AsyncStatus`.
+- Ação: `AppButton`, `AppIconButton` (`tooltip` obrigatório), `ArcMenu` (botão +).
+- Conteúdo: `AppCard`, `OptionRow`, `IconTile`, `AppBubble`, `TermChip`, `StatusPill`, `AppTag`, `LevelDots`, `SegmentBar`.
+- Entrada: `AppTextField`, `AppCodeField`, `AppChip`, `SegmentedControl`, `AppCheckbox`, `IconPicker`, `AccentPicker`.
+- Camada: `AppSheet`, `AppToast`, `AppTabBar`.
 
 ## Regras
 
 - Um botão primário por tela.
-- Status sempre `StatusPill`; aprendendo = âmbar, dominado = menta.
-- Ícone só com cor; ativo muda cor, não forma.
-- Valor visual novo: virar token aqui antes de usar.
-- Aviso rápido: `AppToast` sobre o `SnackBar` do tema (fundo `ink`, texto `bg`, ação manga no claro e violeta no escuro), flutuante. Erro simples: `SnackBar` só com texto.
+- Status sempre `StatusPill`: aprendendo âmbar, dominado menta.
+- Valor visual novo: vira token antes de usar.
+- Aviso com ação: `AppToast`. Erro simples: `SnackBar` só com texto.
 
 ## Mockup
 
-Canvas em abas por assunto: Conta, Início, Captura, Inbox, Vocabulário, Perfil, Design system, Propostas.
+Abas por assunto: Conta, Início, Captura, Inbox, Vocabulário, Perfil, Design system, Propostas.
 
-- Cada aba: linha de cima no tema claro, de baixo no escuro. Mesma coluna = mesma tela. Estados em ordem do fluxo, da esquerda pra direita. Notas à direita da última coluna. E-mails ficam numa linha embaixo, na aba Conta.
-- Tela nova: na aba do assunto, no fim da linha (ou junto do estado vizinho), com a escura embaixo.
-- Ideia ainda não aprovada: aba Propostas, com nota laranja dizendo o que muda. Aprovou e entrou no app: vai pra aba do assunto, no lugar da antiga, e sai de Propostas.
-- Nenhuma tela some: estado que ainda existe no app continua na aba dele.
-- Board do design system: uma parte por aba (Princípios, Cores, Tipografia, Forma, Ícones, Movimento, Componentes, Tema escuro), cada uma começa com "O que é" e "Quando usar". Componentes: uma família por aba. Componente novo entra na família dele (ou numa nova).
+- Linha de cima: tema claro. Linha de baixo: escuro. Mesma coluna = mesma tela. Estados na ordem do fluxo.
+- Ideia não aprovada: aba Propostas, com nota laranja. Entrou no app: vai pra aba do assunto.
+- Nenhuma tela some enquanto existir no app.
+- Board do design system: uma parte por aba. Componentes por família.
