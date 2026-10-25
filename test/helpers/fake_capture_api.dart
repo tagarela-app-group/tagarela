@@ -23,28 +23,29 @@ class FakeCaptureApi implements ApiClient {
   AccessToken? get accessToken => null;
 
   @override
-  Future<Object?> get(String path) => _handle('GET', path, null, () {
-    final query = Uri.parse(path).queryParameters;
-    final since = switch (query['updated_since']) {
-      final String s => DateTime.parse(s),
-      _ => null,
-    };
-    final matching = [
-      for (final c in server.values)
-        if (since == null
-            ? c['discarded_at'] == null
-            : !DateTime.parse(c['updated_at']! as String).isBefore(since))
-          c,
-    ];
-    final offset = int.parse(query['cursor'] ?? '0');
-    final end = offset + pageSize;
-    return {
-      'next': end < matching.length
-          ? 'http://api.test${FakeCaptureApi.path}?cursor=$end'
-          : null,
-      'results': matching.sublist(offset, end.clamp(0, matching.length)),
-    };
-  });
+  Future<Object?> get(String path, {Duration? timeout}) =>
+      _handle('GET', path, null, () {
+        final query = Uri.parse(path).queryParameters;
+        final since = switch (query['updated_since']) {
+          final String s => DateTime.parse(s),
+          _ => null,
+        };
+        final matching = [
+          for (final c in server.values)
+            if (since == null
+                ? c['discarded_at'] == null
+                : !DateTime.parse(c['updated_at']! as String).isBefore(since))
+              c,
+        ];
+        final offset = int.parse(query['cursor'] ?? '0');
+        final end = offset + pageSize;
+        return {
+          'next': end < matching.length
+              ? 'http://api.test${FakeCaptureApi.path}?cursor=$end'
+              : null,
+          'results': matching.sublist(offset, end.clamp(0, matching.length)),
+        };
+      });
 
   @override
   Future<Object?> post(String path, Map<String, Object?> body) =>
@@ -90,6 +91,7 @@ class FakeCaptureApi implements ApiClient {
     String path, {
     Object? body,
     Map<String, String> headers = const {},
+    Duration? timeout,
   }) => throw UnimplementedError();
 
   Future<Object?> _handle(

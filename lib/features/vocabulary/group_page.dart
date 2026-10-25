@@ -5,6 +5,7 @@ import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/vocabulary/widgets/move_sheet.dart';
 import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
+import 'package:tagarela/features/term/term_page.dart';
 import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -294,7 +295,9 @@ class _GroupPageState extends State<GroupPage> {
                     term: term,
                     selecting: selected != null,
                     selected: selected?.contains(term.id) ?? false,
-                    onTap: selected == null ? null : () => _toggle(term.id),
+                    onTap: selected == null
+                        ? () => TermPage.open(context, term)
+                        : () => _toggle(term.id),
                     onLongPress: selected == null
                         ? () => _select({term.id})
                         : null,

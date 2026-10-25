@@ -113,6 +113,7 @@ class FakeAuthApi implements ApiClient {
     String path, {
     Object? body,
     Map<String, String> headers = const {},
+    Duration? timeout,
   }) async {
     final route = '$method ${path.replaceFirst(prefix, '')}';
     requests.add((route: route, body: body, headers: headers));
@@ -125,7 +126,8 @@ class FakeAuthApi implements ApiClient {
   }
 
   @override
-  Future<Object?> get(String path) => throw UnimplementedError();
+  Future<Object?> get(String path, {Duration? timeout}) =>
+      throw UnimplementedError();
 
   @override
   Future<Object?> post(String path, Map<String, Object?> body) =>

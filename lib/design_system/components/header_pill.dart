@@ -31,14 +31,16 @@ class HeaderPill extends StatelessWidget {
           data: const IconThemeData(color: AppPalette.white, size: 16),
           child: DefaultTextStyle.merge(
             style: AppText.pill.copyWith(color: AppPalette.white),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [child]),
+            child: Align(widthFactor: 1, child: child),
           ),
         ),
       ),
     );
     return Semantics(
+      container: true,
       button: onTap != null,
       label: semanticLabel,
+      onTap: semanticLabel == null ? null : onTap,
       excludeSemantics: semanticLabel != null,
       child: Material(
         color: context.colors.headerChip,

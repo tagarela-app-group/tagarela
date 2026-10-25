@@ -10,15 +10,17 @@ class LevelDots extends StatelessWidget {
     required this.level,
     required this.color,
     this.max = 5,
+    this.track,
   });
 
   final int level;
   final Color color;
   final int max;
+  final Color? track;
 
   @override
   Widget build(BuildContext context) {
-    final track = context.colors.surfaceAlt;
+    final track = this.track ?? context.colors.surfaceAlt;
     return Semantics(
       label: context.l10n.levelOf(level, max),
       child: Row(

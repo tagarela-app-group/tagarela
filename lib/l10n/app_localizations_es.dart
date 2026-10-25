@@ -1338,4 +1338,114 @@ class AppLocalizationsEs extends AppLocalizations {
     });
     return 'Progreso en $_temp0';
   }
+
+  @override
+  String get termCardLoading => 'Armando la ficha…';
+
+  @override
+  String get meaning => 'Significado';
+
+  @override
+  String get coverAgain => 'Cubrir de nuevo';
+
+  @override
+  String get revealNow => 'Revelar ahora';
+
+  @override
+  String get guessTitle => '¿Qué será?';
+
+  @override
+  String get guessHint =>
+      'Intenta entenderlo por el contexto antes de revelar.';
+
+  @override
+  String cardSide(String language) {
+    String _temp0 = intl.Intl.selectLogic(language, {
+      'en': 'inglés',
+      'es': 'español',
+      'pt': 'portugués',
+      'other': '',
+    });
+    return 'En $_temp0';
+  }
+
+  @override
+  String seeIn(String language) {
+    String _temp0 = intl.Intl.selectLogic(language, {
+      'en': 'inglés',
+      'es': 'español',
+      'pt': 'portugués',
+      'other': '',
+    });
+    return 'Ver en $_temp0';
+  }
+
+  @override
+  String get inYourContext => 'En tu contexto';
+
+  @override
+  String get explanation => 'Explicación';
+
+  @override
+  String get pitfallLabel => 'Cuidado:';
+
+  @override
+  String termTab(String tab) {
+    String _temp0 = intl.Intl.selectLogic(tab, {
+      'context': 'Contexto',
+      'words': 'Palabras',
+      'usage': 'Uso',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get whereYouSaw => 'Dónde lo viste';
+
+  @override
+  String get alsoMarked => 'También marcado';
+
+  @override
+  String get examples => 'Ejemplos';
+
+  @override
+  String get collocations => 'Combina con';
+
+  @override
+  String get synonyms => 'Sinónimos';
+
+  @override
+  String get antonyms => 'Antónimos';
+
+  @override
+  String get formality => 'Formalidad';
+
+  @override
+  String formalityLevel(String level) {
+    String _temp0 = intl.Intl.selectLogic(level, {
+      'slang': 'Jerga',
+      'informal': 'Informal',
+      'neutral': 'Neutro',
+      'formal': 'Formal',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String formalityMeter(String level, int step) {
+    return 'Formalidad: $level, $step de 4';
+  }
+
+  @override
+  String get whereItFits => 'Dónde encaja';
+
+  @override
+  String preferInstead(String word) {
+    return 'Mejor $word';
+  }
+
+  @override
+  String get listenSlow => 'Despacio';
 }

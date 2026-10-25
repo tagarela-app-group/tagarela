@@ -304,3 +304,33 @@ const List<Json> _groups = [
     ],
   },
 ];
+
+const Json sampleCardJson = {
+  'phonetic': '/maɪnd ðə ɡæp/',
+  'learning': {
+    'definition': 'be careful of the space',
+    'in_context': 'A warning on the train platform.',
+    'explanation': 'Used on the London Underground.',
+  },
+  'base': {
+    'translation': 'cuidado com o vão',
+    'in_context': 'Aviso na plataforma do trem.',
+    'explanation': 'Frase famosa do metrô de Londres.',
+    'pitfall': 'Não é "mente o buraco".',
+  },
+  'examples': [
+    {
+      'text': 'Please mind the gap when leaving the train.',
+      'translation': 'Cuidado com o vão ao sair do trem.',
+    },
+  ],
+  'collocations': ['mind the step'],
+  'synonyms': ['watch out'],
+  'antonyms': <String>[],
+  'formality': 'neutral',
+  'formality_note': 'Serve em qualquer lugar.',
+  'fits': [
+    {'context': 'Aviso público', 'fits': true, 'alternative': null},
+    {'context': 'Conversa com amigos', 'fits': false, 'alternative': 'careful'},
+  ],
+};

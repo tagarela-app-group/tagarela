@@ -7,7 +7,9 @@ import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 import '../../../helpers/pump_app.dart';
 
 void main() {
-  testWidgets('termo aprendendo', (tester) async {
+  testWidgets('termo aprendendo, sem a tradução que a ficha esconde', (
+    tester,
+  ) async {
     await tester.pumpComponent(
       const TermTile(
         term: Term('t1', 'jet lag', 'cansaço', TermKind.expression, 1),
@@ -15,7 +17,7 @@ void main() {
     );
 
     expect(find.text('jet lag'), findsOneWidget);
-    expect(find.text('cansaço'), findsOneWidget);
+    expect(find.text('cansaço'), findsNothing);
     expect(find.text('EXPRESSÃO'), findsOneWidget);
     expect(find.text('Aprendendo'), findsOneWidget);
     expect(

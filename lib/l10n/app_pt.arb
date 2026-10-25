@@ -767,5 +767,74 @@
         "type": "String"
       }
     }
-  }
+  },
+  "termCardLoading": "Montando a ficha…",
+  "meaning": "Significado",
+  "coverAgain": "Cobrir de novo",
+  "revealNow": "Revelar agora",
+  "guessTitle": "O que será que é?",
+  "guessHint": "Tente entender pelo contexto antes de revelar.",
+  "cardSide": "Em {language, select, en{inglês} es{espanhol} pt{português} other{}}",
+  "@cardSide": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "seeIn": "Ver em {language, select, en{inglês} es{espanhol} pt{português} other{}}",
+  "@seeIn": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "inYourContext": "No seu contexto",
+  "explanation": "Explicação",
+  "pitfallLabel": "Cuidado:",
+  "termTab": "{tab, select, context{Contexto} words{Palavras} usage{Uso} other{}}",
+  "@termTab": {
+    "placeholders": {
+      "tab": {
+        "type": "String"
+      }
+    }
+  },
+  "whereYouSaw": "Onde você viu",
+  "alsoMarked": "Também marcado",
+  "examples": "Exemplos",
+  "collocations": "Combina com",
+  "synonyms": "Sinônimos",
+  "antonyms": "Antônimos",
+  "formality": "Formalidade",
+  "formalityLevel": "{level, select, slang{Gíria} informal{Informal} neutral{Neutro} formal{Formal} other{}}",
+  "@formalityLevel": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "formalityMeter": "Formalidade: {level}, {step} de 4",
+  "@formalityMeter": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "step": {
+        "type": "int"
+      }
+    }
+  },
+  "whereItFits": "Onde cabe",
+  "preferInstead": "Prefira {word}",
+  "@preferInstead": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "listenSlow": "Devagar"
 }

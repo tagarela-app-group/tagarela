@@ -11,6 +11,7 @@ import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
+import 'package:tagarela/data/voice.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -20,6 +21,7 @@ import 'fake_course_api.dart';
 import 'fake_extraction.dart';
 import 'fake_preferences.dart';
 import 'fake_vocabulary_api.dart';
+import 'fake_voice.dart';
 import 'fixtures.dart';
 
 AppScope testScope({
@@ -33,6 +35,7 @@ AppScope testScope({
   HomeStore? home,
   VocabularyStore? vocabulary,
   LanguageStore? language,
+  Voice? voice,
 }) => AppScope(
   auth: auth ?? fakeAuthStore(),
   courses: courses ?? fakeCourses().store,
@@ -43,6 +46,7 @@ AppScope testScope({
   home: home ?? HomeStore(sampleHome),
   vocabulary: vocabulary ?? fakeVocabulary().store,
   language: language ?? fakeLanguage(),
+  voice: voice ?? FakeVoice(),
   child: child,
 );
 
@@ -76,6 +80,7 @@ extension PumpApp on WidgetTester {
     HomeStore? home,
     VocabularyStore? vocabulary,
     LanguageStore? language,
+    Voice? voice,
     bool load = true,
     ThemeData? theme,
     Locale locale = const Locale('pt'),
@@ -91,6 +96,7 @@ extension PumpApp on WidgetTester {
       home: home,
       vocabulary: vocabulary,
       language: language,
+      voice: voice,
       child: testApp(page, theme: theme, locale: locale),
     );
     if (load) await scope.loadAll();

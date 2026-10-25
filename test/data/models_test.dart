@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
+import '../helpers/fixtures.dart';
+
 Term _term(int level) =>
     Term('t$level', 'word', 'palavra', TermKind.word, level);
 
@@ -380,6 +382,84 @@ void main() {
       );
       expect(CourseLanguage.pt.code, 'PT');
       expect(CourseLanguage.es.nativeName, 'Español');
+    });
+  });
+
+  group('TermDetail', () {
+    test('fromJson lê termo, grupo, ficha e capturas', () {
+      final detail = TermDetail.fromJson({
+        'id': 't1',
+        'text': 'mind the gap',
+        'translation': 'cuidado com o vão',
+        'kind': 'expression',
+        'level': 2,
+        'group': {
+          'id': 'g1',
+          'name': 'Viagem',
+          'icon': 'travel',
+          'accent': 'sky',
+        },
+        'revealed': true,
+        'card': sampleCardJson,
+        'captures': [
+          {
+            'id': 'c1',
+            'source': 'audio',
+            'text': 'Mind the gap!',
+            'captured_at': '2026-10-23T10:00:00Z',
+            'terms': [
+              {'text': 'Mind the gap', 'start': 0, 'end': 12, 'term': 't1'},
+            ],
+          },
+        ],
+      });
+
+      expect(detail.term.text, 'mind the gap');
+      expect(detail.group!.name, 'Viagem');
+      expect(detail.group!.icon, AppIcons.travel);
+      expect(detail.revealed, isTrue);
+      final card = detail.card;
+      expect(card.phonetic, '/maɪnd ðə ɡæp/');
+      expect(card.learning.headline, 'be careful of the space');
+      expect(card.base.headline, 'cuidado com o vão');
+      expect(card.base.pitfall, 'Não é "mente o buraco".');
+      expect(card.learning.pitfall, isNull);
+      expect(
+        card.examples.single.translation,
+        'Cuidado com o vão ao sair do trem.',
+      );
+      expect(card.formality, Formality.neutral);
+      expect(card.fits.last.instead, 'careful');
+      expect(card.hasWords, isTrue);
+      expect(card.hasUsage, isTrue);
+      final seen = detail.captures.single;
+      expect(seen.source, CaptureSource.audio);
+      expect(seen.spans.single.termId, 't1');
+    });
+
+    test('sem grupo, sem palavras e sem uso', () {
+      final detail = TermDetail.fromJson({
+        'id': 't1',
+        'text': 'gap',
+        'translation': '',
+        'kind': 'word',
+        'level': 0,
+        'group': null,
+        'revealed': false,
+        'card': {
+          ...sampleCardJson,
+          'collocations': <Object?>[],
+          'synonyms': <Object?>[],
+          'antonyms': <Object?>[],
+          'formality': null,
+          'fits': <Object?>[],
+        },
+        'captures': <Object?>[],
+      });
+
+      expect(detail.group, isNull);
+      expect(detail.card.hasWords, isFalse);
+      expect(detail.card.hasUsage, isFalse);
     });
   });
 }

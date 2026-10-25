@@ -24,6 +24,11 @@ abstract final class AppIcons {
   static const review = Icons.autorenew_rounded;
   static const showPassword = Icons.visibility_outlined;
   static const hidePassword = Icons.visibility_off_outlined;
+  static const reveal = Icons.visibility_outlined;
+  static const cover = Icons.visibility_off_outlined;
+  static const warning = Icons.warning_amber_rounded;
+  static const fits = Icons.check_circle_outline_rounded;
+  static const doesNotFit = Icons.cancel_outlined;
 
   static const camera = Icons.photo_camera_outlined;
   static const gallery = Icons.image_outlined;

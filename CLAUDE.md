@@ -9,7 +9,8 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 - A pessoa decide; a IA sugere, nunca organiza por ela.
 - Tom de amigo ("você"), captura em um gesto, funciona offline, cor só com significado.
 - Recurso sem dado da API ainda: card some, não inventa.
-- Idioma da interface é do aparelho: escolha no Perfil, salva só nele; sem escolha segue o celular; idioma que o app não tem cai em inglês. Não confundir com país de origem. Mensagens da API e tradução dos termos seguem pt-BR por enquanto.
+- Idioma da interface é do aparelho: escolha no Perfil, salva só nele; sem escolha segue o celular; idioma que o app não tem cai em inglês. Não confundir com país de origem. Mensagens da API seguem pt-BR por enquanto.
+- Ficha do termo: a IA gera no primeiro toque e a API salva; vem nos idiomas do curso. Significado nasce embaçado e o que foi revelado fica salvo. A lista de termos não mostra tradução, pra não entregar o vidro.
 - País de origem: opcional, fica na conta, vira bandeira no canto inferior direito de todo avatar (o esquerdo é a cauda do balão). Nomes em `lib/l10n/countries.dart`, gerados do CLDR, mesma lista da API.
 
 ## Regras
@@ -44,6 +45,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 - Código: `package:tagarela/...`, aspas simples, um widget público por arquivo.
 - Texto da UI só nos ARB (`lib/l10n/`, modelo `app_pt.arb`), via `context.l10n`; chave nova entra nos três idiomas. Rótulo de enum é `select` no ARB, não campo no model. Plural sempre com `=0` (no pt o CLDR põe 0 em `one`).
 - Testes: só `flutter_test` com fakes manuais; helpers em `test/helpers/`. `pumpPage` abre em pt; função pura recebe `AppLocalizations` (`pt`/`en`/`es` de `test/helpers/l10n.dart`).
+- Animação de enfeite roda uma vez, nunca em loop: loop trava o `pumpAndSettle`.
 - Toast tem anel animado até sumir: depois de ação que mostra toast, `pumpUntilFound`, não `pumpAndSettle` (só assenta quando o toast já saiu).
 
 ## Mockup
