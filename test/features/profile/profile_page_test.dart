@@ -31,22 +31,15 @@ void main() {
     expect(tester.widget<PageHeader>(find.byType(PageHeader)).centered, isTrue);
   });
 
-  testWidgets('progresso: capturas, termos e dominados', (tester) async {
-    final captures = fakeCaptures();
-    await captures.db.saveCapture('ana@example.com', sampleCapture('c1'));
-    await captures.db.saveCapture('ana@example.com', sampleCapture('c2'));
-    await tester.pumpPage(
-      const ProfilePage(),
-      auth: await signedInAuthStore(),
-      captures: captures.store,
-    );
+  testWidgets('progresso: termos, aprendendo e dominados', (tester) async {
+    await tester.pumpPage(const ProfilePage(), auth: await signedInAuthStore());
 
     final card = tester.widget<ProgressCard>(find.byType(ProgressCard));
-    expect(card.captures, 2);
     expect(card.terms, sampleVocabulary.termCount);
+    expect(card.learning, sampleVocabulary.learningCount);
     expect(card.mastered, sampleVocabulary.masteredCount);
-    expect(find.text('Capturas'), findsOneWidget);
     expect(find.text('Termos'), findsOneWidget);
+    expect(find.text('Aprendendo'), findsOneWidget);
     expect(find.text('Dominados'), findsOneWidget);
   });
 
@@ -58,7 +51,7 @@ void main() {
     );
 
     final card = tester.widget<ProgressCard>(find.byType(ProgressCard));
-    expect((card.captures, card.terms, card.mastered), (0, 0, 0));
+    expect((card.terms, card.learning, card.mastered), (0, 0, 0));
   });
 
   testWidgets('sem usuário mostra só o título, o progresso e o "Sair"', (

@@ -51,7 +51,8 @@ test/             espelha lib/. Fakes e helpers em test/helpers/
 
 - Só online, sem banco local. Ler, criar grupo e mover chamam a API na hora.
 - Termo nasce na API ao confirmar a captura. `CaptureStore(onConfirmed:)` recarrega o vocabulário.
-- Desfazer mover = mover de volta pro grupo de origem.
+- Desfazer mover = mover de volta pro grupo de origem. Desfazer apagar = `restoreTerms` (API guarda só o último apagado).
+- Apagar grupo: `GroupPage` fecha devolvendo o grupo no `pop`, e o `VocabularyPage` avisa.
 - Ícone do grupo: enum `GroupIcon`. Nome = id na API. Ordem do enum = ordem no painel.
 
 ### Captura (offline first)
@@ -61,6 +62,7 @@ test/             espelha lib/. Fakes e helpers em test/helpers/
 - Pendências: `extract` (só local), `create`, `update`, `confirm`, `discard`. Ação grava local, marca pendência e tenta enviar. Sem rede: fica pendente, sem erro.
 - Sync só por ação da pessoa (decisão do produto). Sem timer, sem segundo plano. `sync()` envia em ordem e puxa `updated_since`. Cursor = maior `updated_at` do pull, não do envio.
 - Merge: servidor manda, menos o que está pendente no celular.
+- Analisada sai do Inbox (`section` nulo), mas fica no banco local e na API.
 - Mídia apagada 30 dias depois de analisada ou descartada.
 - Extração: fila no `CaptureStore`, uma por vez. Áudio sem modelo espera o download e volta pra fila.
 - Posição do termo: API conta code points, Dart conta UTF-16. `TermSelection` converte na entrada e na saída.

@@ -13,8 +13,8 @@ abstract final class AppToast {
     BuildContext context, {
     required String title,
     required String message,
-    required String actionLabel,
-    required VoidCallback onAction,
+    String? actionLabel,
+    VoidCallback? onAction,
     bool aboveTabBar = false,
   }) {
     final c = context.colors;
@@ -62,7 +62,12 @@ abstract final class AppToast {
               ),
             ],
           ),
-          action: SnackBarAction(label: actionLabel, onPressed: onAction),
+          action: actionLabel == null
+              ? null
+              : SnackBarAction(
+                  label: actionLabel,
+                  onPressed: onAction ?? () {},
+                ),
         ),
       );
   }

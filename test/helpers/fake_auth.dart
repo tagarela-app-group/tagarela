@@ -130,7 +130,7 @@ class FakeAuthApi implements ApiClient {
       throw UnimplementedError();
 
   @override
-  Future<void> delete(String path) => throw UnimplementedError();
+  Future<Object?> delete(String path) => throw UnimplementedError();
 }
 
 class FakeTokenStorage implements TokenStorage {

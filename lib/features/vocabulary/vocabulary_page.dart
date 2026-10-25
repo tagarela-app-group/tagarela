@@ -6,20 +6,36 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/vocabulary/count_label.dart';
 import 'package:tagarela/features/vocabulary/group_page.dart';
 import 'package:tagarela/features/vocabulary/widgets/group_card.dart';
-import 'package:tagarela/features/vocabulary/widgets/new_group_sheet.dart';
+import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
 
 class VocabularyPage extends StatelessWidget {
   const VocabularyPage({super.key});
 
-  static void _open(BuildContext context, GroupPage page) {
+  static Future<void> _open(BuildContext context, GroupPage page) async {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+    final deleted = await Navigator.of(
+      context,
+    ).push<TermGroup>(MaterialPageRoute(builder: (_) => page));
+    if (deleted == null || !context.mounted) return;
+    final count = deleted.terms.length;
+    AppToast.show(
+      context,
+      title: 'Grupo apagado',
+      message: switch (count) {
+        0 => '${deleted.name} saiu da lista.',
+        1 => 'O termo foi pra Sem grupo.',
+        _ => 'Os $count termos foram pra Sem grupo.',
+      },
+      actionLabel: count == 0 ? null : 'Ver',
+      onAction: () => _open(context, const GroupPage.ungrouped()),
+      aboveTabBar: true,
+    );
   }
 
   static Future<void> _newGroup(BuildContext context) async {
     final group = await AppSheet.show<TermGroup>(
       context,
-      (_) => const NewGroupSheet(),
+      (_) => const GroupSheet(),
     );
     if (group == null || !context.mounted) return;
     AppToast.show(

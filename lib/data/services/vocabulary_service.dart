@@ -23,6 +23,23 @@ class VocabularyService {
         as Json,
   );
 
+  Future<TermGroup> updateGroup(
+    String id, {
+    required String name,
+    required GroupIcon icon,
+    required AppAccent accent,
+  }) async => TermGroup.fromJson(
+    await _api.patch('/api/v1/groups/$id', {
+          'name': name,
+          'icon': icon.name,
+          'accent': accent.name,
+        })
+        as Json,
+  );
+
+  Future<Vocabulary> deleteGroup(String id) async =>
+      Vocabulary.fromJson(await _api.delete('/api/v1/groups/$id') as Json);
+
   Future<Vocabulary> move(List<String> termIds, String? groupId) async =>
       Vocabulary.fromJson(
         await _api.post('/api/v1/terms/move', {
@@ -30,5 +47,15 @@ class VocabularyService {
               'group': groupId,
             })
             as Json,
+      );
+
+  Future<Vocabulary> deleteTerms(List<String> termIds) async =>
+      Vocabulary.fromJson(
+        await _api.post('/api/v1/terms/delete', {'terms': termIds}) as Json,
+      );
+
+  Future<Vocabulary> restoreTerms(List<String> termIds) async =>
+      Vocabulary.fromJson(
+        await _api.post('/api/v1/terms/restore', {'terms': termIds}) as Json,
       );
 }

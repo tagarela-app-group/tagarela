@@ -16,11 +16,7 @@ class ProfilePage extends StatelessWidget {
     final scope = AppScope.of(context);
 
     return ListenableBuilder(
-      listenable: Listenable.merge([
-        scope.auth,
-        scope.captures,
-        scope.vocabulary,
-      ]),
+      listenable: Listenable.merge([scope.auth, scope.vocabulary]),
       builder: (context, _) {
         final user = scope.auth.user;
         final vocabulary = scope.vocabulary.data;
@@ -40,8 +36,8 @@ class ProfilePage extends StatelessWidget {
           gap: AppSpacing.s3,
           children: [
             ProgressCard(
-              captures: scope.captures.data?.length ?? 0,
               terms: vocabulary?.termCount ?? 0,
+              learning: vocabulary?.learningCount ?? 0,
               mastered: vocabulary?.masteredCount ?? 0,
             ),
             const OfflineSection(),

@@ -57,7 +57,7 @@ void main() {
     expect(find.text('0 capturas'), findsOneWidget);
   });
 
-  testWidgets('Todas: seções na ordem, analisadas no fim', (tester) async {
+  testWidgets('Todas: seções na ordem, sem as analisadas', (tester) async {
     await seedAll();
     await pumpInbox(tester);
 
@@ -65,9 +65,10 @@ void main() {
       'PRECISA DE ATENÇÃO · 1',
       'PRONTAS · 2',
       'PROCESSANDO · 1',
-      'ANALISADAS · 1',
     ]);
-    expect(find.text('5 capturas · 1 esperando envio'), findsOneWidget);
+    expect(find.text('4 capturas · 1 esperando envio'), findsOneWidget);
+    expect(find.text('Já analisada'), findsNothing);
+    expect(find.text('Analisadas'), findsNothing);
   });
 
   testWidgets('abas filtram as seções', (tester) async {
@@ -84,17 +85,13 @@ void main() {
       'PRECISA DE ATENÇÃO · 1',
       'PROCESSANDO · 1',
     ]);
-
-    await tester.tap(find.text('Analisadas').first);
-    await tester.pump();
-    expect(sectionLabels(tester), ['ANALISADAS · 1']);
   });
 
   testWidgets('aba vazia avisa', (tester) async {
     await seed([sampleCapture('pronta')]);
     await pumpInbox(tester);
 
-    await tester.tap(find.text('Analisadas'));
+    await tester.tap(find.text('Pendentes'));
     await tester.pump();
 
     expect(find.text('Nada por aqui'), findsOneWidget);
@@ -112,7 +109,7 @@ void main() {
     expect(find.text('Inbox zerado'), findsOneWidget);
   });
 
-  testWidgets('Confirmar análise leva pra Analisadas', (tester) async {
+  testWidgets('Confirmar análise tira o card do Inbox', (tester) async {
     await seed([
       sampleCapture(
         'pronta',
@@ -124,7 +121,8 @@ void main() {
     await tester.tap(find.text('Confirmar análise'));
     await tester.pumpAndSettle();
 
-    expect(sectionLabels(tester), ['ANALISADAS · 1']);
+    expect(find.byType(CaptureCard), findsNothing);
+    expect(find.text('Inbox zerado'), findsOneWidget);
   });
 
   testWidgets('Escolher termos abre a tela da captura', (tester) async {

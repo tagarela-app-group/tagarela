@@ -20,6 +20,7 @@ class FakeVocabularyApi implements ApiClient {
   final calls = <String>[];
   final bodies = <String, Object?>{};
   final rejections = <String, int>{};
+  final _deleted = <({Json term, String? groupId})>[];
 
   bool offline = false;
   var _ids = 0;
@@ -38,18 +39,31 @@ class FakeVocabularyApi implements ApiClient {
   Future<Object?> post(String path, Map<String, Object?> body) =>
       _handle('POST', path, body, () {
         if (path == '/api/v1/groups') return _createGroup(body);
-        _move([
-          for (final id in body['terms']! as List) id as String,
-        ], body['group'] as String?);
+        final ids = [for (final id in body['terms']! as List) id as String];
+        switch (path) {
+          case '/api/v1/terms/delete':
+            _deleted
+              ..clear()
+              ..addAll(_take(ids));
+          case '/api/v1/terms/restore':
+            _restore(ids);
+          default:
+            _move(ids, body['group'] as String?);
+        }
         return _vocabulary();
       });
 
   @override
   Future<Object?> patch(String path, Map<String, Object?> body) =>
-      throw UnimplementedError();
+      _handle('PATCH', path, body, () => _updateGroup(_groupOf(path), body));
 
   @override
-  Future<void> delete(String path) => throw UnimplementedError();
+  Future<Object?> delete(String path) => _handle('DELETE', path, null, () {
+    final group = _groupOf(path);
+    groups.remove(group);
+    ungrouped.insertAll(0, (group['terms']! as List).cast<Json>());
+    return _vocabulary();
+  });
 
   @override
   Future<ApiResponse> send(
@@ -82,13 +96,7 @@ class FakeVocabularyApi implements ApiClient {
 
   Json _createGroup(Map<String, Object?> body) {
     final name = body['name']! as String;
-    if (groups.any(
-      (g) => (g['name']! as String).toLowerCase() == name.toLowerCase(),
-    )) {
-      throw ApiException(400, 'POST /api/v1/groups', {
-        'name': ['Você já tem um grupo com esse nome.'],
-      });
-    }
+    _checkName(name, 'POST /api/v1/groups');
     final group = <String, Object?>{
       'id': 'novo-${++_ids}',
       'name': name,
@@ -100,13 +108,60 @@ class FakeVocabularyApi implements ApiClient {
     return group;
   }
 
-  void _move(List<String> ids, String? groupId) {
-    final moved = <Json>[];
-    for (final list in [ungrouped, for (final g in groups) _terms(g['id'])]) {
-      moved.addAll(list.where((t) => ids.contains(t['id'])));
+  Json _updateGroup(Json group, Map<String, Object?> body) {
+    if (body['name'] case final String name) {
+      _checkName(name, 'PATCH /api/v1/groups/${group['id']}', except: group);
+    }
+    group.addAll(body);
+    return group;
+  }
+
+  void _checkName(String name, String route, {Json? except}) {
+    if (groups.any(
+      (g) =>
+          g != except &&
+          (g['name']! as String).toLowerCase() == name.toLowerCase(),
+    )) {
+      throw ApiException(400, route, {
+        'name': ['Você já tem um grupo com esse nome.'],
+      });
+    }
+  }
+
+  Json _groupOf(String path) =>
+      groups.firstWhere((g) => path.endsWith('/${g['id']}'));
+
+  List<({Json term, String? groupId})> _take(List<String> ids) {
+    final taken = <({Json term, String? groupId})>[];
+    for (final (groupId, list) in [
+      (null, ungrouped),
+      for (final g in groups) (g['id'] as String?, _terms(g['id'])),
+    ]) {
+      taken.addAll([
+        for (final t in list)
+          if (ids.contains(t['id'])) (term: t, groupId: groupId),
+      ]);
       list.removeWhere((t) => ids.contains(t['id']));
     }
-    (groupId == null ? ungrouped : _terms(groupId)).insertAll(0, moved);
+    return taken;
+  }
+
+  void _move(List<String> ids, String? groupId) =>
+      (groupId == null ? ungrouped : _terms(groupId)).insertAll(0, [
+        for (final t in _take(ids)) t.term,
+      ]);
+
+  void _restore(List<String> ids) {
+    if (!ids.every((id) => _deleted.any((d) => d.term['id'] == id))) {
+      throw ApiException(400, 'POST /api/v1/terms/restore', {
+        'terms': ['Não dá mais pra desfazer.'],
+      });
+    }
+    for (final d in _deleted.where((d) => ids.contains(d.term['id']))) {
+      final inGroup = groups.any((g) => g['id'] == d.groupId);
+      (inGroup ? _terms(d.groupId) : ungrouped).insert(0, d.term);
+    }
+    _deleted.removeWhere((d) => ids.contains(d.term['id']));
   }
 
   List<Json> _terms(Object? groupId) =>

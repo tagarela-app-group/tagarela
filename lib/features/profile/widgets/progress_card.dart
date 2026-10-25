@@ -5,13 +5,13 @@ import 'package:tagarela/design_system/design_system.dart';
 class ProgressCard extends StatelessWidget {
   const ProgressCard({
     super.key,
-    required this.captures,
     required this.terms,
+    required this.learning,
     required this.mastered,
   });
 
-  final int captures;
   final int terms;
+  final int learning;
   final int mastered;
 
   @override
@@ -21,8 +21,8 @@ class ProgressCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _Stat(captures, 'Capturas', c.primary)),
-          Expanded(child: _Stat(terms, 'Termos', c.learning)),
+          Expanded(child: _Stat(terms, 'Termos', c.primary)),
+          Expanded(child: _Stat(learning, 'Aprendendo', c.learning)),
           Expanded(child: _Stat(mastered, 'Dominados', c.mastered)),
         ],
       ),
