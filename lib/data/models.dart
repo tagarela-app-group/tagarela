@@ -10,20 +10,32 @@ enum TermKind { word, expression }
 enum TermStatus { learning, mastered }
 
 class User {
-  const User({required this.name, required this.email, this.picture});
+  const User({
+    required this.name,
+    required this.email,
+    this.picture,
+    this.country,
+  });
 
   User.fromJson(Json json)
     : this(
         name: json['name'] as String? ?? '',
         email: json['email'] as String? ?? '',
         picture: json['picture'] as String?,
+        country: json['country'] as String?,
       );
 
   final String name;
   final String email;
   final String? picture;
+  final String? country;
 
-  Json toJson() => {'name': name, 'email': email, 'picture': ?picture};
+  Json toJson() => {
+    'name': name,
+    'email': email,
+    'picture': ?picture,
+    'country': ?country,
+  };
 
   String get displayName => name.trim().isEmpty ? email : name.trim();
 

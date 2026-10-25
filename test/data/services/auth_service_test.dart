@@ -110,6 +110,34 @@ void main() {
     );
   });
 
+  test('updateAccount manda Bearer e o país, e devolve o usuário', () async {
+    final user = await service.updateAccount('access-9', country: 'BR');
+
+    expect(user.country, 'BR');
+    final request = api.last('PATCH /api/v1/account');
+    expect(request.body, {'country': 'BR'});
+    expect(request.headers['Authorization'], 'Bearer access-9');
+  });
+
+  test('updateAccount recusado vira ApiException', () async {
+    api.responses['PATCH /api/v1/account'] = const ApiResponse(400, {
+      'country': ['Escolha um país da lista.'],
+    });
+
+    await expectLater(
+      service.updateAccount('access-9', country: 'ZZ'),
+      throwsA(
+        isA<ApiException>()
+            .having((e) => e.statusCode, 'statusCode', 400)
+            .having(
+              (e) => e.fieldError('country'),
+              'country',
+              'Escolha um país da lista.',
+            ),
+      ),
+    );
+  });
+
   test('client_id do provider vem do /config da API', () async {
     expect(await service.providerClientId('google'), 'web-client-id');
   });

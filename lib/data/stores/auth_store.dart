@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 
+import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/social_sign_in.dart';
@@ -81,6 +84,22 @@ class AuthStore extends ChangeNotifier {
   }
 
   Future<AuthResult?> signInWithApple() => _signInWith(_social.apple);
+
+  Future<void> updateCountry(String? country) async {
+    if (!isSignedIn) return;
+    Future<User> update({bool renew = false}) async => _service.updateAccount(
+      (await accessToken(renew: renew))!,
+      country: country ?? '',
+    );
+    User user;
+    try {
+      user = await update();
+    } on ApiException catch (e) {
+      if (e.statusCode != HttpStatus.unauthorized) rethrow;
+      user = await update(renew: true);
+    }
+    await _saveUser(user);
+  }
 
   Future<void> logout() async {
     final refreshToken = _refreshToken;

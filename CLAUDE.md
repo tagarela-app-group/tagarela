@@ -8,7 +8,8 @@ App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. P
 - A pessoa decide; a IA sugere, nunca organiza por ela.
 - Tom de amigo ("você"), captura em um gesto, funciona offline, cor só com significado.
 - Recurso sem dado da API ainda: card some, não inventa.
-- Idioma da interface é do aparelho: escolha no Perfil, salva só nele; sem escolha segue o celular; idioma que o app não tem cai em inglês. Não confundir com país de origem (fica na conta). Mensagens da API e tradução dos termos seguem pt-BR por enquanto.
+- Idioma da interface é do aparelho: escolha no Perfil, salva só nele; sem escolha segue o celular; idioma que o app não tem cai em inglês. Não confundir com país de origem. Mensagens da API e tradução dos termos seguem pt-BR por enquanto.
+- País de origem: opcional, fica na conta, vira bandeira no canto inferior direito de todo avatar (o esquerdo é a cauda do balão). Nomes em `lib/l10n/countries.dart`, gerados do CLDR, mesma lista da API.
 
 ## Regras
 

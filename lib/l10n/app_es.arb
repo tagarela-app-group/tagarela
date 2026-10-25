@@ -262,6 +262,14 @@
   "moveSheetSubtitle": "{terms} de {from}",
   "noGroupsTitle": "Todavía no tienes grupos",
   "noGroupsMessage": "Crea un grupo para guardar estos términos.",
+  "countryOfOrigin": "País de origen",
+  "countryNotSet": "Elige uno para mostrar su bandera en tu avatar",
+  "countrySheetSubtitle": "Aparece como bandera en tu avatar",
+  "searchCountry": "Buscar país",
+  "countryNone": "Prefiero no decirlo",
+  "countrySaveFailed": "No se pudo guardar el país. Revisa tu internet e inténtalo de nuevo.",
+  "noCountryFound": "Ningún país con ese nombre",
+  "countryFlag": "Bandera: {country}",
   "termKind": "{kind, select, word{Palabra} expression{Expresión} other{}}",
   "groupIcon": "{icon, select, layers{General} talk{Conversación} work{Trabajo} travel{Viajes} food{Comida} tv{Series} music{Música} study{Estudios} heart{Favoritos} game{Juegos} shopping{Compras} sport{Deporte} health{Salud} home{Casa} nature{Naturaleza} paw{Animales} tech{Tecnología} money{Dinero} car{Transporte} family{Familia} book{Libros} art{Arte} party{Fiesta} weather{Clima} phone{Celular} mail{Correo} code{Programación} science{Ciencia} news{Noticias} movie{Cine} camera{Fotografía} place{Lugares} city{Ciudad} globe{Mundo} calendar{Fechas} clock{Rutina} star{Importante} idea{Ideas} smile{Sentimientos} shirt{Ropa} restaurant{Restaurante} drink{Bebidas} mountain{Aventura} gift{Regalos} flag{Países} podcast{Podcasts} goal{Metas} writing{Escritura} other{}}"
 }

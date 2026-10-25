@@ -1672,6 +1672,54 @@ abstract class AppLocalizations {
   /// **'Crie um grupo pra guardar esses termos.'**
   String get noGroupsMessage;
 
+  /// No description provided for @countryOfOrigin.
+  ///
+  /// In pt, this message translates to:
+  /// **'País de origem'**
+  String get countryOfOrigin;
+
+  /// No description provided for @countryNotSet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha pra mostrar a bandeira no seu avatar'**
+  String get countryNotSet;
+
+  /// No description provided for @countrySheetSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aparece como bandeira no seu avatar'**
+  String get countrySheetSubtitle;
+
+  /// No description provided for @searchCountry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar país'**
+  String get searchCountry;
+
+  /// No description provided for @countryNone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prefiro não dizer'**
+  String get countryNone;
+
+  /// No description provided for @countrySaveFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não deu pra salvar o país. Confira a internet e tente de novo.'**
+  String get countrySaveFailed;
+
+  /// No description provided for @noCountryFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum país com esse nome'**
+  String get noCountryFound;
+
+  /// No description provided for @countryFlag.
+  ///
+  /// In pt, this message translates to:
+  /// **'Bandeira: {country}'**
+  String countryFlag(String country);
+
   /// No description provided for @termKind.
   ///
   /// In pt, this message translates to:

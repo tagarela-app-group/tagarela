@@ -90,4 +90,17 @@ void main() {
       isSemantics(isSelected: false, isInMutuallyExclusiveGroup: true),
     );
   });
+
+  testWidgets('leading próprio no lugar do ícone', (tester) async {
+    await tester.pumpComponent(
+      OptionRow(
+        leading: const SizedBox.square(key: Key('flag'), dimension: 40),
+        title: 'Brasil',
+        onTap: () {},
+      ),
+    );
+
+    expect(find.byKey(const Key('flag')), findsOneWidget);
+    expect(find.byType(IconTile), findsNothing);
+  });
 }

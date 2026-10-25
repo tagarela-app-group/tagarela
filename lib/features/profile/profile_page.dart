@@ -5,10 +5,12 @@ import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/user_avatar.dart';
+import 'package:tagarela/features/profile/widgets/country_sheet.dart';
 import 'package:tagarela/features/profile/widgets/language_sheet.dart';
 import 'package:tagarela/features/profile/widgets/offline_section.dart';
 import 'package:tagarela/features/profile/widgets/profile_section.dart';
 import 'package:tagarela/features/profile/widgets/progress_card.dart';
+import 'package:tagarela/l10n/countries.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -58,6 +60,19 @@ class ProfilePage extends StatelessWidget {
                     accent: AppAccent.violet,
                     title: l10n.email,
                     text: user.email,
+                  ),
+                  ProfileRow(
+                    icon: AppIcons.flag,
+                    accent: AppAccent.mango,
+                    title: l10n.countryOfOrigin,
+                    text: switch (user.country) {
+                      final country? => l10n.countryName(country) ?? country,
+                      null => l10n.countryNotSet,
+                    },
+                    onTap: () => AppSheet.show<void>(
+                      context,
+                      (_) => const CountrySheet(),
+                    ),
                   ),
                   ProfileRow(
                     icon: AppIcons.lock,

@@ -23,6 +23,66 @@ void main() {
     store = fakeAuthStore(api: api, storage: storage, social: social);
   });
 
+  group('updateCountry', () {
+    test('salva o país e guarda o usuário novo', () async {
+      await store.login('ana@example.com', 'x');
+      var notified = 0;
+      store.addListener(() => notified++);
+
+      await store.updateCountry('BR');
+
+      expect(store.user?.country, 'BR');
+      expect(storage.user?.country, 'BR');
+      expect(api.last('PATCH /api/v1/account').body, {'country': 'BR'});
+      expect(notified, 1);
+    });
+
+    test('sem país manda vazio pra limpar', () async {
+      await store.login('ana@example.com', 'x');
+      api.responses['PATCH /api/v1/account'] = const ApiResponse(
+        200,
+        FakeAuthApi.user,
+      );
+
+      await store.updateCountry(null);
+
+      expect(api.last('PATCH /api/v1/account').body, {'country': ''});
+      expect(store.user?.country, isNull);
+    });
+
+    test('token vencido: renova e tenta de novo', () async {
+      await store.login('ana@example.com', 'x');
+      api.queued['PATCH /api/v1/account'] = [const ApiResponse(401, null)];
+
+      await store.updateCountry('PT');
+
+      expect(store.user?.country, 'BR');
+      expect(
+        api.requests
+            .where((r) => r.route == 'PATCH /api/v1/account')
+            .map((r) => r.headers['Authorization']),
+        ['Bearer access-1', 'Bearer access-2'],
+      );
+    });
+
+    test('falha mantém o usuário e repassa o erro', () async {
+      await store.login('ana@example.com', 'x');
+      api.responses['PATCH /api/v1/account'] = const ApiResponse(500, null);
+
+      await expectLater(
+        store.updateCountry('BR'),
+        throwsA(isA<ApiException>()),
+      );
+      expect(store.user?.country, isNull);
+    });
+
+    test('deslogado não chama a API', () async {
+      await store.updateCountry('BR');
+
+      expect(api.requests, isEmpty);
+    });
+  });
+
   group('restore', () {
     test('sem token salvo: deslogado, sem chamar a API', () async {
       expect(await store.restore(), isFalse);

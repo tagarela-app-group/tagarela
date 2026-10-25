@@ -16,6 +16,7 @@ export 'package:tagarela/design_system/components/app_text_field.dart';
 export 'package:tagarela/design_system/components/app_toast.dart';
 export 'package:tagarela/design_system/components/arc_menu.dart';
 export 'package:tagarela/design_system/components/async_status.dart';
+export 'package:tagarela/design_system/components/flag_badge.dart';
 export 'package:tagarela/design_system/components/icon_picker.dart';
 export 'package:tagarela/design_system/components/icon_tile.dart';
 export 'package:tagarela/design_system/components/level_dots.dart';

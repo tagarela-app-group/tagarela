@@ -262,6 +262,14 @@
   "moveSheetSubtitle": "{terms} from {from}",
   "noGroupsTitle": "You don't have groups yet",
   "noGroupsMessage": "Create a group to keep these terms.",
+  "countryOfOrigin": "Country of origin",
+  "countryNotSet": "Pick one to show its flag on your avatar",
+  "countrySheetSubtitle": "Shows as a flag on your avatar",
+  "searchCountry": "Search country",
+  "countryNone": "Prefer not to say",
+  "countrySaveFailed": "Couldn't save the country. Check your internet and try again.",
+  "noCountryFound": "No country with that name",
+  "countryFlag": "Flag: {country}",
   "termKind": "{kind, select, word{Word} expression{Expression} other{}}",
   "groupIcon": "{icon, select, layers{General} talk{Conversation} work{Work} travel{Travel} food{Food} tv{TV shows} music{Music} study{Studies} heart{Favorites} game{Games} shopping{Shopping} sport{Sports} health{Health} home{Home} nature{Nature} paw{Animals} tech{Technology} money{Money} car{Transportation} family{Family} book{Books} art{Art} party{Party} weather{Weather} phone{Phone} mail{Email} code{Programming} science{Science} news{News} movie{Movies} camera{Photography} place{Places} city{City} globe{World} calendar{Dates} clock{Routine} star{Important} idea{Ideas} smile{Feelings} shirt{Clothes} restaurant{Restaurant} drink{Drinks} mountain{Adventure} gift{Gifts} flag{Countries} podcast{Podcasts} goal{Goals} writing{Writing} other{}}"
 }

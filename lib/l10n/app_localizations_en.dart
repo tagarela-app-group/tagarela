@@ -1114,6 +1114,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noGroupsMessage => 'Create a group to keep these terms.';
 
   @override
+  String get countryOfOrigin => 'Country of origin';
+
+  @override
+  String get countryNotSet => 'Pick one to show its flag on your avatar';
+
+  @override
+  String get countrySheetSubtitle => 'Shows as a flag on your avatar';
+
+  @override
+  String get searchCountry => 'Search country';
+
+  @override
+  String get countryNone => 'Prefer not to say';
+
+  @override
+  String get countrySaveFailed =>
+      'Couldn\'t save the country. Check your internet and try again.';
+
+  @override
+  String get noCountryFound => 'No country with that name';
+
+  @override
+  String countryFlag(String country) {
+    return 'Flag: $country';
+  }
+
+  @override
   String termKind(String kind) {
     String _temp0 = intl.Intl.selectLogic(kind, {
       'word': 'Word',

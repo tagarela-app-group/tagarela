@@ -70,4 +70,25 @@ void main() {
     expect(find.text('AS'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('badge no canto inferior direito, sem mudar o tamanho', (
+    tester,
+  ) async {
+    await tester.pumpComponent(
+      const Center(
+        child: AppBubble(
+          size: 80,
+          badge: SizedBox.square(key: Key('badge'), dimension: 24),
+          child: Text('AS'),
+        ),
+      ),
+    );
+
+    final bubble = tester.getRect(find.byType(AppBubble));
+    final badge = tester.getRect(find.byKey(const Key('badge')));
+    expect(bubble.size, const Size(80, 80));
+    expect(badge.right, greaterThan(bubble.right));
+    expect(badge.bottom, greaterThan(bubble.bottom));
+    expect(badge.center.dx, greaterThan(bubble.center.dx));
+  });
 }
