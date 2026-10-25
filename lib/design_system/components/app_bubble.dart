@@ -13,6 +13,7 @@ class AppBubble extends StatelessWidget {
     this.foreground = AppPalette.ink,
     this.image,
     this.ring,
+    this.badge,
   });
 
   static const ringWidth = 4.0;
@@ -23,6 +24,7 @@ class AppBubble extends StatelessWidget {
   final Color foreground;
   final ImageProvider? image;
   final Color? ring;
+  final Widget? badge;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class AppBubble extends StatelessWidget {
       ),
     );
 
-    return Container(
+    final bubble = Container(
       width: size,
       height: size,
       alignment: Alignment.center,
@@ -67,6 +69,15 @@ class AppBubble extends StatelessWidget {
           ],
         ),
       },
+    );
+    if (badge == null) return bubble;
+    final inset = -(ring == null ? size * 0.06 : ringWidth);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        bubble,
+        Positioned(right: inset, bottom: inset, child: badge!),
+      ],
     );
   }
 }

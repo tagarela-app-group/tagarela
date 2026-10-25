@@ -660,6 +660,21 @@
   },
   "noGroupsTitle": "Você ainda não tem grupos",
   "noGroupsMessage": "Crie um grupo pra guardar esses termos.",
+  "countryOfOrigin": "País de origem",
+  "countryNotSet": "Escolha pra mostrar a bandeira no seu avatar",
+  "countrySheetSubtitle": "Aparece como bandeira no seu avatar",
+  "searchCountry": "Buscar país",
+  "countryNone": "Prefiro não dizer",
+  "countrySaveFailed": "Não deu pra salvar o país. Confira a internet e tente de novo.",
+  "noCountryFound": "Nenhum país com esse nome",
+  "countryFlag": "Bandeira: {country}",
+  "@countryFlag": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
   "termKind": "{kind, select, word{Palavra} expression{Expressão} other{}}",
   "@termKind": {
     "placeholders": {

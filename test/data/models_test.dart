@@ -213,6 +213,7 @@ void main() {
         'email': 'bia@gmail.com',
         'name': 'Bia Lima',
         'picture': 'https://example.com/bia.png',
+        'country': 'BR',
       });
       final apple = User.fromJson({'id': 2, 'email': 'x@privaterelay.com'});
 
@@ -222,7 +223,10 @@ void main() {
       );
       expect((apple.name, apple.picture), ('', null));
       expect(User.fromJson(api.toJson()).picture, api.picture);
+      expect(User.fromJson(api.toJson()).country, 'BR');
+      expect(apple.country, isNull);
       expect(apple.toJson().containsKey('picture'), isFalse);
+      expect(apple.toJson().containsKey('country'), isFalse);
     });
   });
 

@@ -12,8 +12,9 @@ import 'package:tagarela/design_system/tokens/app_typography.dart';
 class OptionRow extends StatelessWidget {
   const OptionRow({
     super.key,
-    required this.icon,
-    required this.accent,
+    this.icon,
+    this.accent,
+    this.leading,
     required this.title,
     this.subtitle,
     required this.onTap,
@@ -23,8 +24,9 @@ class OptionRow extends StatelessWidget {
     this.selected,
   });
 
-  final IconData icon;
-  final AppAccent accent;
+  final IconData? icon;
+  final AppAccent? accent;
+  final Widget? leading;
   final String title;
   final String? subtitle;
   final VoidCallback? onTap;
@@ -57,7 +59,12 @@ class OptionRow extends StatelessWidget {
           child: Row(
             spacing: AppSpacing.s3,
             children: [
-              IconTile(icon: icon, accent: accent, size: 48),
+              leading ??
+                  IconTile(
+                    icon: icon,
+                    accent: accent ?? AppAccent.violet,
+                    size: 48,
+                  ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

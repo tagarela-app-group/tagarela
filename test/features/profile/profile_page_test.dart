@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
@@ -65,6 +66,124 @@ void main() {
     expect(find.byType(ProgressCard), findsOneWidget);
     expect(find.text('CONTA'), findsNothing);
     expect(find.text('Sair'), findsOneWidget);
+  });
+
+  group('País de origem', () {
+    testWidgets('sem país convida a escolher e o avatar fica sem bandeira', (
+      tester,
+    ) async {
+      await tester.pumpPage(
+        const ProfilePage(),
+        auth: await signedInAuthStore(),
+      );
+
+      expect(find.text('País de origem'), findsOneWidget);
+      expect(
+        find.text('Escolha pra mostrar a bandeira no seu avatar'),
+        findsOneWidget,
+      );
+      expect(find.byType(FlagBadge), findsNothing);
+    });
+
+    testWidgets('busca, salva, fecha e põe a bandeira no avatar', (
+      tester,
+    ) async {
+      final api = FakeAuthApi();
+      api.responses['PATCH /api/v1/account'] = const ApiResponse(200, {
+        ...FakeAuthApi.user,
+        'country': 'DE',
+      });
+      await tester.pumpPage(
+        const ProfilePage(),
+        auth: await signedInAuthStore(api: api),
+      );
+
+      await tester.tap(find.text('País de origem'));
+      await tester.pumpAndSettle();
+      expect(find.text('Prefiro não dizer'), findsOneWidget);
+
+      await tester.enterText(textField('Buscar país'), 'ALEM');
+      await tester.pumpAndSettle();
+      expect(find.text('Alemanha'), findsOneWidget);
+      expect(find.text('Brasil'), findsNothing);
+      expect(find.text('Prefiro não dizer'), findsNothing);
+
+      await tester.tap(find.text('Alemanha'));
+      await tester.pumpAndSettle();
+
+      expect(api.last('PATCH /api/v1/account').body, {'country': 'DE'});
+      expect(find.byType(AppSheet), findsNothing);
+      expect(find.text('Alemanha'), findsOneWidget);
+      expect(find.bySemanticsLabel('Bandeira: Alemanha'), findsOneWidget);
+    });
+
+    testWidgets('busca sem resultado avisa', (tester) async {
+      await tester.pumpPage(
+        const ProfilePage(),
+        auth: await signedInAuthStore(),
+      );
+
+      await tester.tap(find.text('País de origem'));
+      await tester.pumpAndSettle();
+      await tester.enterText(textField('Buscar país'), 'Atlântida');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nenhum país com esse nome'), findsOneWidget);
+    });
+
+    testWidgets('falha ao salvar avisa e deixa o sheet aberto', (tester) async {
+      final api = FakeAuthApi();
+      final auth = await signedInAuthStore(api: api);
+      api.responses['PATCH /api/v1/account'] = const ApiResponse(500, null);
+      await tester.pumpPage(const ProfilePage(), auth: auth);
+
+      await tester.tap(find.text('País de origem'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Afeganistão'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(
+          'Não deu pra salvar o país. Confira a internet e tente de novo.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(AppSheet), findsOneWidget);
+      expect(auth.user?.country, isNull);
+    });
+
+    testWidgets('"Prefiro não dizer" limpa o país', (tester) async {
+      final api = FakeAuthApi();
+      final auth = await signedInAuthStore(api: api);
+      await auth.updateCountry('BR');
+      api.responses['PATCH /api/v1/account'] = const ApiResponse(
+        200,
+        FakeAuthApi.user,
+      );
+      await tester.pumpPage(const ProfilePage(), auth: auth);
+      expect(find.text('Brasil'), findsOneWidget);
+      expect(find.byType(FlagBadge), findsOneWidget);
+
+      await tester.tap(find.text('País de origem'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSemantics(find.text('Prefiro não dizer')),
+        isSemantics(isSelected: false, isInMutuallyExclusiveGroup: true),
+      );
+      await tester.enterText(textField('Buscar país'), 'bras');
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSemantics(find.text('Brasil').last),
+        isSemantics(isSelected: true, isInMutuallyExclusiveGroup: true),
+      );
+      await tester.enterText(textField('Buscar país'), '');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Prefiro não dizer'));
+      await tester.pumpAndSettle();
+
+      expect(api.last('PATCH /api/v1/account').body, {'country': ''});
+      expect(find.byType(FlagBadge), findsNothing);
+    });
   });
 
   group('Idioma', () {

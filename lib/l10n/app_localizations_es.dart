@@ -1121,6 +1121,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noGroupsMessage => 'Crea un grupo para guardar estos términos.';
 
   @override
+  String get countryOfOrigin => 'País de origen';
+
+  @override
+  String get countryNotSet => 'Elige uno para mostrar su bandera en tu avatar';
+
+  @override
+  String get countrySheetSubtitle => 'Aparece como bandera en tu avatar';
+
+  @override
+  String get searchCountry => 'Buscar país';
+
+  @override
+  String get countryNone => 'Prefiero no decirlo';
+
+  @override
+  String get countrySaveFailed =>
+      'No se pudo guardar el país. Revisa tu internet e inténtalo de nuevo.';
+
+  @override
+  String get noCountryFound => 'Ningún país con ese nombre';
+
+  @override
+  String countryFlag(String country) {
+    return 'Bandera: $country';
+  }
+
+  @override
   String termKind(String kind) {
     String _temp0 = intl.Intl.selectLogic(kind, {
       'word': 'Palabra',

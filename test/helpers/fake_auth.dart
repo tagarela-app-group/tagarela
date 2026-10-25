@@ -38,7 +38,10 @@ class FakeAuthApi implements ApiClient {
     }),
     'DELETE /auth/session': const ApiResponse(401, {'status': 401}),
     'GET /config': config({'google': 'web-client-id'}),
+    'PATCH /api/v1/account': const ApiResponse(200, {...user, 'country': 'BR'}),
   };
+
+  final queued = <String, List<ApiResponse>>{};
 
   Exception? error;
   Completer<void>? hold;
@@ -115,6 +118,9 @@ class FakeAuthApi implements ApiClient {
     requests.add((route: route, body: body, headers: headers));
     if (hold case final hold?) await hold.future;
     if (error case final error?) throw error;
+    if (queued[route] case final next? when next.isNotEmpty) {
+      return next.removeAt(0);
+    }
     return responses[route] ?? (throw StateError('sem resposta pra $route'));
   }
 
