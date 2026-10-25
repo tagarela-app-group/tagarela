@@ -20,4 +20,22 @@ void main() {
     await tester.tap(find.bySemanticsLabel('Rosa'));
     expect(picked, [AppAccent.pink]);
   });
+
+  testWidgets('cores em linhas de seis', (tester) async {
+    await tester.pumpComponent(
+      AccentPicker(selected: AppAccent.violet, onChanged: (_) {}),
+    );
+
+    final rows = AppAccent.values.length ~/ AccentPicker.columns;
+    expect(rows, 2);
+    final tops = {
+      for (final name in AccentPicker.names.values)
+        tester.getTopLeft(find.bySemanticsLabel(name)).dy,
+    };
+    expect(tops, hasLength(rows));
+    expect(
+      tester.getTopLeft(find.bySemanticsLabel('Uva')).dy,
+      greaterThan(tester.getTopLeft(find.bySemanticsLabel('Violeta')).dy),
+    );
+  });
 }

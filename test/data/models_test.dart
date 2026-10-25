@@ -73,7 +73,7 @@ void main() {
         'id': '1',
         'name': 'X',
         'icon': 'rocket',
-        'accent': 'gold',
+        'accent': 'black',
         'terms': <Object?>[],
       });
 

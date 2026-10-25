@@ -74,6 +74,14 @@ extension PumpApp on WidgetTester {
 
   Future<void> pumpComponent(Widget child, {ThemeData? theme}) =>
       pumpPage(Scaffold(body: child), theme: theme, load: false);
+
+  Future<void> pumpUntilFound(Finder finder) async {
+    for (var i = 0; i < 20 && finder.evaluate().isEmpty; i++) {
+      await pump(const Duration(milliseconds: 100));
+    }
+    await pump(const Duration(seconds: 1));
+    await pump();
+  }
 }
 
 Finder textField(String label) => find.descendant(

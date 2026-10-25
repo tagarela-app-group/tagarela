@@ -190,7 +190,7 @@ void main() {
     await tester.enterText(find.byType(TextField), 'mind the gap');
     await tester.pump();
     await tester.tap(find.text('Salvar no Inbox'));
-    await tester.pumpAndSettle();
+    await tester.pumpUntilFound(find.text('Salvo no Inbox'));
 
     expect(find.text('Salvo no Inbox'), findsOneWidget);
     expect(find.text('Pronto pra escolher os termos.'), findsOneWidget);

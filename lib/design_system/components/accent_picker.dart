@@ -21,7 +21,15 @@ class AccentPicker extends StatelessWidget {
     AppAccent.mango: 'Manga',
     AppAccent.sky: 'Céu',
     AppAccent.pink: 'Rosa',
+    AppAccent.grape: 'Uva',
+    AppAccent.cocoa: 'Cacau',
+    AppAccent.lime: 'Lima',
+    AppAccent.gold: 'Ouro',
+    AppAccent.teal: 'Turquesa',
+    AppAccent.slate: 'Ardósia',
   };
+
+  static const columns = 6;
 
   final AppAccent selected;
   final ValueChanged<AppAccent> onChanged;
@@ -34,19 +42,20 @@ class AccentPicker extends StatelessWidget {
       spacing: AppSpacing.s2,
       children: [
         Text(label, style: AppText.label),
-        Row(
-          spacing: AppSpacing.s2,
-          children: [
-            for (final accent in AppAccent.values)
-              Expanded(
-                child: _Swatch(
-                  accent: accent,
-                  selected: accent == selected,
-                  onTap: () => onChanged(accent),
+        for (var row = 0; row < AppAccent.values.length; row += columns)
+          Row(
+            spacing: AppSpacing.s2,
+            children: [
+              for (final accent in AppAccent.values.skip(row).take(columns))
+                Expanded(
+                  child: _Swatch(
+                    accent: accent,
+                    selected: accent == selected,
+                    onTap: () => onChanged(accent),
+                  ),
                 ),
-              ),
-          ],
-        ),
+            ],
+          ),
       ],
     );
   }

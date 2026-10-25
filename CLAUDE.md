@@ -40,6 +40,7 @@ App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. P
 - Toda tela é `SheetPage`. Um primário por tela. Import único `design_system.dart`.
 - Código: `package:tagarela/...`, aspas simples, um widget público por arquivo, texto da UI pt-BR no widget.
 - Testes: só `flutter_test` com fakes manuais; helpers em `test/helpers/`.
+- Toast tem anel animado até sumir: depois de ação que mostra toast, `pumpUntilFound`, não `pumpAndSettle` (só assenta quando o toast já saiu).
 
 ## Mockup
 

@@ -16,13 +16,13 @@ abstract final class AppToast {
     String? actionLabel,
     VoidCallback? onAction,
     bool aboveTabBar = false,
+    Duration duration = AppMotion.toast,
   }) {
-    final c = context.colors;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          persist: false,
+          persist: true,
           margin: EdgeInsets.fromLTRB(
             AppSpacing.s4,
             0,
@@ -33,19 +33,7 @@ abstract final class AppToast {
           content: Row(
             spacing: AppSpacing.s3,
             children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: c.mastered,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  AppIcons.check,
-                  size: 18,
-                  color: AppPalette.white,
-                ),
-              ),
+              _Countdown(duration: duration),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,5 +58,77 @@ abstract final class AppToast {
                 ),
         ),
       );
+  }
+}
+
+class _Countdown extends StatefulWidget {
+  const _Countdown({required this.duration});
+
+  final Duration duration;
+
+  @override
+  State<_Countdown> createState() => _CountdownState();
+}
+
+class _CountdownState extends State<_Countdown>
+    with SingleTickerProviderStateMixin {
+  late final _controller = AnimationController(
+    vsync: this,
+    duration: widget.duration,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.forward().then((_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).hideCurrentSnackBar(reason: SnackBarClosedReason.timeout);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return SizedBox.square(
+      dimension: 40,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned.fill(
+            child: ExcludeSemantics(
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, _) => CircularProgressIndicator(
+                  value: 1 - _controller.value,
+                  strokeWidth: 2,
+                  color: c.mastered,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: c.mastered,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              AppIcons.check,
+              size: 18,
+              color: AppPalette.white,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
