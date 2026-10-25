@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
 import '../../helpers/fake_vocabulary_api.dart';
@@ -97,5 +98,28 @@ void main() {
     await expectLater(store.move(['u1'], '1'), throwsException);
 
     expect(store.data, same(before));
+  });
+
+  test('ficha do termo vem da API com prazo longo', () async {
+    final (:store, :api) = fakeVocabulary();
+
+    final detail = await store.term('u1');
+
+    expect(api.calls, ['GET /api/v1/terms/u1']);
+    expect(detail.term.text, 'mind the gap');
+    expect(detail.card.base.headline, 'cuidado com o vão');
+    expect(
+      VocabularyService.cardTimeout,
+      greaterThan(const Duration(seconds: 30)),
+    );
+  });
+
+  test('revelar manda o estado e devolve a ficha', () async {
+    final (:store, :api) = fakeVocabulary();
+
+    final detail = await store.reveal('u1', revealed: true);
+
+    expect(api.bodies['PATCH /api/v1/terms/u1'], {'revealed': true});
+    expect(detail.revealed, isTrue);
   });
 }

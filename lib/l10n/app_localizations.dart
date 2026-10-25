@@ -1863,6 +1863,150 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Progresso em {language, select, en{inglês} es{espanhol} pt{português} other{}}'**
   String progressIn(String language);
+
+  /// No description provided for @termCardLoading.
+  ///
+  /// In pt, this message translates to:
+  /// **'Montando a ficha…'**
+  String get termCardLoading;
+
+  /// No description provided for @meaning.
+  ///
+  /// In pt, this message translates to:
+  /// **'Significado'**
+  String get meaning;
+
+  /// No description provided for @coverAgain.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cobrir de novo'**
+  String get coverAgain;
+
+  /// No description provided for @revealNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Revelar agora'**
+  String get revealNow;
+
+  /// No description provided for @guessTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'O que será que é?'**
+  String get guessTitle;
+
+  /// No description provided for @guessHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tente entender pelo contexto antes de revelar.'**
+  String get guessHint;
+
+  /// No description provided for @cardSide.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em {language, select, en{inglês} es{espanhol} pt{português} other{}}'**
+  String cardSide(String language);
+
+  /// No description provided for @seeIn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver em {language, select, en{inglês} es{espanhol} pt{português} other{}}'**
+  String seeIn(String language);
+
+  /// No description provided for @inYourContext.
+  ///
+  /// In pt, this message translates to:
+  /// **'No seu contexto'**
+  String get inYourContext;
+
+  /// No description provided for @explanation.
+  ///
+  /// In pt, this message translates to:
+  /// **'Explicação'**
+  String get explanation;
+
+  /// No description provided for @pitfallLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cuidado:'**
+  String get pitfallLabel;
+
+  /// No description provided for @termTab.
+  ///
+  /// In pt, this message translates to:
+  /// **'{tab, select, context{Contexto} words{Palavras} usage{Uso} other{}}'**
+  String termTab(String tab);
+
+  /// No description provided for @whereYouSaw.
+  ///
+  /// In pt, this message translates to:
+  /// **'Onde você viu'**
+  String get whereYouSaw;
+
+  /// No description provided for @alsoMarked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Também marcado'**
+  String get alsoMarked;
+
+  /// No description provided for @examples.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exemplos'**
+  String get examples;
+
+  /// No description provided for @collocations.
+  ///
+  /// In pt, this message translates to:
+  /// **'Combina com'**
+  String get collocations;
+
+  /// No description provided for @synonyms.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sinônimos'**
+  String get synonyms;
+
+  /// No description provided for @antonyms.
+  ///
+  /// In pt, this message translates to:
+  /// **'Antônimos'**
+  String get antonyms;
+
+  /// No description provided for @formality.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formalidade'**
+  String get formality;
+
+  /// No description provided for @formalityLevel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{level, select, slang{Gíria} informal{Informal} neutral{Neutro} formal{Formal} other{}}'**
+  String formalityLevel(String level);
+
+  /// No description provided for @formalityMeter.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formalidade: {level}, {step} de 4'**
+  String formalityMeter(String level, int step);
+
+  /// No description provided for @whereItFits.
+  ///
+  /// In pt, this message translates to:
+  /// **'Onde cabe'**
+  String get whereItFits;
+
+  /// No description provided for @preferInstead.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prefira {word}'**
+  String preferInstead(String word);
+
+  /// No description provided for @listenSlow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Devagar'**
+  String get listenSlow;
 }
 
 class _AppLocalizationsDelegate

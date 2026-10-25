@@ -22,6 +22,7 @@ import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/data/text_extractor.dart';
 import 'package:tagarela/data/token_storage.dart';
+import 'package:tagarela/data/voice.dart';
 
 void main() {
   final models = ModelStorage();
@@ -48,6 +49,7 @@ void main() {
       ),
       vocabulary: vocabulary,
       language: LanguageStore(Preferences()),
+      voice: Voice(),
       playback: AudioPlayback(),
       device: CaptureDevice(),
       speech: SpeechModelStore(models),

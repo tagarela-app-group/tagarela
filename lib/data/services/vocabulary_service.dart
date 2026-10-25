@@ -5,7 +5,18 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 class VocabularyService {
   const VocabularyService(this._api);
 
+  static const cardTimeout = Duration(seconds: 45);
+
   final ApiClient _api;
+
+  Future<TermDetail> term(String id) async => TermDetail.fromJson(
+    await _api.get('/api/v1/terms/$id', timeout: cardTimeout) as Json,
+  );
+
+  Future<TermDetail> reveal(String id, {required bool revealed}) async =>
+      TermDetail.fromJson(
+        await _api.patch('/api/v1/terms/$id', {'revealed': revealed}) as Json,
+      );
 
   Future<Vocabulary> fetch() async =>
       Vocabulary.fromJson(await _api.get('/api/v1/vocabulary') as Json);

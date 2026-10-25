@@ -16,6 +16,7 @@ import '../helpers/fake_capture_store.dart';
 import '../helpers/fake_course_api.dart';
 import '../helpers/fake_extraction.dart';
 import '../helpers/fake_preferences.dart';
+import '../helpers/fake_voice.dart';
 import '../helpers/pump_app.dart';
 
 void main() {
@@ -40,6 +41,7 @@ void main() {
       speech: fakeSpeechModel().store,
       vocabulary: emptyVocabulary(),
       language: fakeLanguage(),
+      voice: FakeVoice(),
       child: const SizedBox(),
     );
 

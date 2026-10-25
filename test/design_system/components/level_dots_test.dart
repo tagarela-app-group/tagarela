@@ -39,4 +39,13 @@ void main() {
 
     expect(find.bySemanticsLabel('Nível 2 de 5'), findsOneWidget);
   });
+
+  testWidgets('trilho customizado nos traços vazios', (tester) async {
+    const track = Color(0xFF0000FF);
+    await tester.pumpComponent(
+      const LevelDots(level: 1, color: _fill, track: track),
+    );
+
+    expect(_dotColors(tester), [_fill, track, track, track, track]);
+  });
 }

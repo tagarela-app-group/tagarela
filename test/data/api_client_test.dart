@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -55,6 +56,9 @@ void main() {
           );
         case '/empty':
           break;
+        case '/slow':
+          await Future<void>.delayed(const Duration(milliseconds: 300));
+          response.write(jsonEncode({'ok': true}));
         case '/secure'
             when request.headers.value('Authorization') != 'Bearer novo':
           response.statusCode = 401;
@@ -70,6 +74,16 @@ void main() {
   test('GET decodifica JSON em UTF-8', () async {
     expect(await api.get('/user'), {'ok': true, 'nome': 'ação'});
     expect(received, ['GET /user']);
+  });
+
+  test('GET aceita prazo próprio pra resposta lenta', () async {
+    await expectLater(
+      api.get('/slow', timeout: const Duration(milliseconds: 50)),
+      throwsA(isA<TimeoutException>()),
+    );
+    expect(await api.get('/slow', timeout: const Duration(seconds: 5)), {
+      'ok': true,
+    });
   });
 
   test('POST envia corpo JSON', () async {

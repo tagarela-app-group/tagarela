@@ -11,6 +11,11 @@ class VocabularyStore extends Store<Vocabulary> {
   @override
   Future<Vocabulary> fetch() => _service.fetch();
 
+  Future<TermDetail> term(String id) => _service.term(id);
+
+  Future<TermDetail> reveal(String id, {required bool revealed}) =>
+      _service.reveal(id, revealed: revealed);
+
   Future<TermGroup> createGroup({
     required String name,
     required GroupIcon icon,

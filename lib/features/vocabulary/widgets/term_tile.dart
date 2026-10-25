@@ -38,28 +38,17 @@ class TermTile extends StatelessWidget {
           children: [
             if (selecting) AppCheckbox(checked: selected),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 3,
+              child: Row(
+                spacing: AppSpacing.s2,
                 children: [
-                  Row(
-                    spacing: AppSpacing.s2,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          term.text,
-                          style: AppText.term,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      AppTag(label: context.l10n.termKind(term.kind.name)),
-                    ],
-                  ),
-                  if (term.translation.isNotEmpty)
-                    Text(
-                      term.translation,
-                      style: AppText.bodyMd.copyWith(color: c.inkSoft),
+                  Flexible(
+                    child: Text(
+                      term.text,
+                      style: AppText.term,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                  ),
+                  AppTag(label: context.l10n.termKind(term.kind.name)),
                 ],
               ),
             ),

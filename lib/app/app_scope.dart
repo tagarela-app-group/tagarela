@@ -11,6 +11,7 @@ import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
+import 'package:tagarela/data/voice.dart';
 
 class AppScope extends InheritedWidget {
   AppScope({
@@ -23,6 +24,7 @@ class AppScope extends InheritedWidget {
     required this.speech,
     required this.vocabulary,
     required this.language,
+    required this.voice,
     HomeStore? home,
     required super.child,
   }) : home = home ?? HomeStore();
@@ -36,6 +38,7 @@ class AppScope extends InheritedWidget {
   final HomeStore home;
   final VocabularyStore vocabulary;
   final LanguageStore language;
+  final Voice voice;
 
   static AppScope of(BuildContext context) =>
       context.getInheritedWidgetOfExactType<AppScope>()!;

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -20,6 +21,10 @@ class FakeVocabularyApi implements ApiClient {
   final calls = <String>[];
   final bodies = <String, Object?>{};
   final rejections = <String, int>{};
+  final cards = <String, Json>{};
+  final seen = <String, List<Json>>{};
+  final revealed = <String>{};
+  Completer<void>? holdCard;
   final _deleted = <({Json term, String? groupId})>[];
 
   bool offline = false;
@@ -32,8 +37,13 @@ class FakeVocabularyApi implements ApiClient {
   AccessToken? get accessToken => null;
 
   @override
-  Future<Object?> get(String path) =>
-      _handle('GET', path, null, () => _vocabulary());
+  Future<Object?> get(String path, {Duration? timeout}) async {
+    if (path.startsWith(_termPath)) {
+      await holdCard?.future;
+      return _handle('GET', path, null, () => _detail(path));
+    }
+    return _handle('GET', path, null, () => _vocabulary());
+  }
 
   @override
   Future<Object?> post(String path, Map<String, Object?> body) =>
@@ -55,7 +65,14 @@ class FakeVocabularyApi implements ApiClient {
 
   @override
   Future<Object?> patch(String path, Map<String, Object?> body) =>
-      _handle('PATCH', path, body, () => _updateGroup(_groupOf(path), body));
+      _handle('PATCH', path, body, () {
+        if (!path.startsWith(_termPath)) {
+          return _updateGroup(_groupOf(path), body);
+        }
+        final id = path.substring(_termPath.length);
+        body['revealed']! as bool ? revealed.add(id) : revealed.remove(id);
+        return _detail(path);
+      });
 
   @override
   Future<Object?> delete(String path) => _handle('DELETE', path, null, () {
@@ -71,6 +88,7 @@ class FakeVocabularyApi implements ApiClient {
     String path, {
     Object? body,
     Map<String, String> headers = const {},
+    Duration? timeout,
   }) => throw UnimplementedError();
 
   List<String> termsOf(String? groupId) => [
@@ -169,6 +187,33 @@ class FakeVocabularyApi implements ApiClient {
           .cast<Json>();
 
   Json _vocabulary() => {'groups': groups, 'ungrouped': ungrouped};
+
+  static const _termPath = '/api/v1/terms/';
+
+  Json _detail(String path) {
+    final id = path.substring(_termPath.length);
+    final group = groups
+        .where((g) => _terms(g['id']).any((t) => t['id'] == id))
+        .firstOrNull;
+    final term = [
+      ...ungrouped,
+      for (final g in groups) ..._terms(g['id']),
+    ].firstWhere((t) => t['id'] == id);
+    return {
+      ...term,
+      'group': group == null
+          ? null
+          : {
+              'id': group['id'],
+              'name': group['name'],
+              'icon': group['icon'],
+              'accent': group['accent'],
+            },
+      'revealed': revealed.contains(id),
+      'card': cards[id] ?? sampleCardJson,
+      'captures': seen[id] ?? const <Json>[],
+    };
+  }
 
   static Object? _copy(Object? json) => jsonDecode(jsonEncode(json));
 }

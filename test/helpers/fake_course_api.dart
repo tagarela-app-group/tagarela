@@ -42,7 +42,8 @@ class FakeCourseApi implements ApiClient {
   AccessToken? get accessToken => null;
 
   @override
-  Future<Object?> get(String path) => _handle('GET', path, null, () => courses);
+  Future<Object?> get(String path, {Duration? timeout}) =>
+      _handle('GET', path, null, () => courses);
 
   @override
   Future<Object?> post(String path, Map<String, Object?> body) =>
@@ -79,6 +80,7 @@ class FakeCourseApi implements ApiClient {
     String path, {
     Object? body,
     Map<String, String> headers = const {},
+    Duration? timeout,
   }) => throw UnimplementedError();
 
   Json _activate(Json course) {

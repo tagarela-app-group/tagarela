@@ -17,13 +17,14 @@ class ApiClient {
   final AccessToken? accessToken;
   final _http = HttpClient()..connectionTimeout = _timeout;
 
-  Future<Object?> get(String path) => _send('GET', path);
+  Future<Object?> get(String path, {Duration? timeout}) =>
+      _send('GET', path, timeout: timeout);
 
   Future<Object?> post(String path, Map<String, Object?> body) =>
-      _send('POST', path, body);
+      _send('POST', path, body: body);
 
   Future<Object?> patch(String path, Map<String, Object?> body) =>
-      _send('PATCH', path, body);
+      _send('PATCH', path, body: body);
 
   Future<Object?> delete(String path) => _send('DELETE', path);
 
@@ -32,18 +33,27 @@ class ApiClient {
     String path, {
     Object? body,
     Map<String, String> headers = const {},
+    Duration? timeout,
   }) {
     final bytes = body == null ? null : utf8.encode(jsonEncode(body));
     return _authorized(
       (auth) => _request(method, path, ContentType.json, bytes, {
         ...headers,
         ...auth,
-      }),
+      }, timeout ?? _timeout),
     );
   }
 
-  Future<Object?> _send(String method, String path, [Object? body]) async =>
-      _checked(await send(method, path, body: body), method, path);
+  Future<Object?> _send(
+    String method,
+    String path, {
+    Object? body,
+    Duration? timeout,
+  }) async => _checked(
+    await send(method, path, body: body, timeout: timeout),
+    method,
+    path,
+  );
 
   Future<ApiResponse> _authorized(
     Future<ApiResponse> Function(Map<String, String> auth) request,
@@ -66,6 +76,7 @@ class ApiClient {
     ContentType contentType,
     List<int>? bytes,
     Map<String, String> headers,
+    Duration timeout,
   ) async {
     final request = await _http.openUrl(method, Uri.parse('$baseUrl$path'));
     request.headers.contentType = contentType;
@@ -75,7 +86,7 @@ class ApiClient {
       request.add(bytes);
     }
 
-    final response = await request.close().timeout(_timeout);
+    final response = await request.close().timeout(timeout);
     final text = await response.transform(utf8.decoder).join();
     return ApiResponse(response.statusCode, _decode(text, response.statusCode));
   }
