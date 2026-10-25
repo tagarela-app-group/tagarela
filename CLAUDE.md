@@ -18,16 +18,16 @@ Mockup (fonte visual): https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR. Canvas
 
 1. Início de chat novo: ativar skill `caveman` (nível `full`).
 2. Cada coisa no seu lugar. Conteúdo novo vai no doc do assunto. Doc não repete outro doc.
-3. Docs: só o necessário. Objetivo, estilo caveman, sem perder informação.
+3. Docs enxutos: mapa, não manual. Só o essencial pra entender: decisão, regra, porquê, armadilha. O que o código já mostra (valor exato, assinatura, texto de tela, lista de testes) fica fora. Frase curta, estilo caveman. Teto: ARCHITECTURE 8 KB, PRODUCT 3 KB, DESIGN 4 KB. Vai passar: enxugar antes de somar. Vale pra este arquivo também.
 4. UI: reutilizar componente de `lib/design_system/` antes de criar algo.
 5. Nada no design system serve: criar o componente lá, sem perguntar.
 6. Cor, fonte, espaço, raio, ícone: sempre token (`docs/DESIGN.md`). Nunca valor solto.
-7. Mudou estrutura, componente ou tela: atualizar o doc do assunto junto.
+7. Mudou estrutura, regra ou decisão: atualizar o doc do assunto junto.
 8. Seguir sempre boas práticas de código, estrutura e arquitetura.
 9. Pedido quebra regra ou boa prática: avisar usuário antes de fazer. Dizer qual regra e propor alternativa.
 10. Código novo ou alterado (model, service, lógica, feature): teste junto. Regras em `docs/ARCHITECTURE.md` (Testes).
 11. Task finalizada: branch própria + commit + push + PR pra `develop`, na hora, sem perguntar. Fluxo em `docs/ARCHITECTURE.md` (Git e CI). Commit e PR sem `Co-Authored-By` nem outra assinatura de IA.
 12. Merge: PR pra `develop` com esteira verde = eu faço. PR `develop` → `main` (prod) = só o usuário aprova. Nunca commitar direto na `develop` nem na `main`.
-13. Mudança no app que afete o visual: atualizar o mockup junto, sempre. Mockup = registro fiel do app.
+13. Mudança visual: atualizar mockup e board em lote, no fim de um conjunto aprovado ou quando o usuário pedir. Nunca a cada ajuste. Mockup = registro fiel do app.
 14. Sem comentário no código. Vale pra config também (workflow, pubspec, analysis_options). Nome claro explica o quê. Porquê vai no doc do assunto ou no PR.
 15. Antes de alterar qualquer coisa (código, doc, config, mockup): apresentar proposta ao usuário (o que muda, onde, opções com prós e contras, recomendação) e esperar aprovação. Só implementar o aprovado.
