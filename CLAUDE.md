@@ -18,11 +18,11 @@ App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. P
 3. Código novo/alterado: com teste. Bug: teste que reproduz.
 4. Sem comentário em código/config. Porquê vai aqui ou no PR.
 5. Mudou regra ou decisão: atualizar aqui. Guia, não inventário: só o que o código não mostra.
-6. Git, sem perguntar: branch da `develop` (`feat/ fix/ docs/ ci/ chore/`) → commit → push → PR pra `develop`. Conventional Commits pt-BR, enxuto, sem assinatura de IA. Esteira verde: `gh pr merge <n> --repo tagarela-app-group/tagarela --squash --delete-branch` (isolado, sem `cd`/`&&`), depois `git switch develop && git pull`.
+6. Fim de task: skill `entregar` (checagem, PR, esteira, merge, mockup, volta pra `develop`), sem perguntar.
 7. Nunca commitar direto em `develop`/`main`. `develop` → `main` só o usuário.
 8. Teste em aparelho é do usuário. Print só se pedir, ~400 px.
 9. Dependência nova: checar manutenção e contar ao usuário; nativa ou mal mantida: perguntar. Versões com 2+ semanas.
-10. Fim de task/troca de assunto: sugerir `/compact manter: ...` ou `/clear`.
+10. Troca de assunto: sugerir `/compact manter: ...` ou `/clear`.
 
 ## Arquitetura
 
@@ -43,7 +43,7 @@ App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. P
 
 ## Mockup
 
-https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR (via Artifact tool). Registro fiel do app; ideia não aprovada vai na aba Propostas. Atualizar em lote ao fim de conjunto aprovado.
+https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR (via Artifact tool). Registro fiel do app; ideia não aprovada vai na aba Propostas. Atualizar em todo PR que muda UI (skill `entregar`).
 
 ## Comandos
 
