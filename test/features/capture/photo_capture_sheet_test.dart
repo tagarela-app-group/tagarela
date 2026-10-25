@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/capture_device.dart';
@@ -53,6 +54,17 @@ void main() {
 
     expect(device.discarded, ['cache/foto.jpg']);
     expect(find.byType(OptionRow), findsNWidgets(2));
+  });
+
+  testWidgets('prévia cabe em tela estreita', (tester) async {
+    await open(tester);
+    tester.view.physicalSize = const Size(360, 800);
+    await tester.pump();
+
+    await tester.tap(find.text('Escolher da galeria'));
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('desistir na câmera continua nas opções', (tester) async {

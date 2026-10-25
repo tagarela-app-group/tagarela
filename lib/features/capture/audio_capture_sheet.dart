@@ -257,22 +257,19 @@ class _AudioCaptureSheetState extends State<AudioCaptureSheet> {
       const PrivacyNote(
         'O áudio fica só no seu celular. A gente guarda apenas a transcrição.',
       ),
-      Row(
-        spacing: AppSpacing.s2,
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: AppSpacing.s3,
         children: [
-          Expanded(
-            child: AppButton(
-              label: 'Regravar',
-              variant: AppButtonVariant.outline,
-              onPressed: _saving ? null : _reRecord,
-            ),
+          AppButton(
+            label: 'Salvar no Inbox',
+            loading: _saving,
+            onPressed: _save,
           ),
-          Expanded(
-            child: AppButton(
-              label: 'Salvar no Inbox',
-              loading: _saving,
-              onPressed: _save,
-            ),
+          AppButton(
+            label: 'Regravar',
+            variant: AppButtonVariant.outline,
+            onPressed: _saving ? null : _reRecord,
           ),
         ],
       ),
