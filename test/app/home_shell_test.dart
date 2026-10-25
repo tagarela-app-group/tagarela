@@ -15,6 +15,7 @@ import '../helpers/fake_vocabulary_api.dart';
 import '../helpers/fake_auth.dart';
 import '../helpers/fake_capture_store.dart';
 import '../helpers/pump_app.dart';
+import '../helpers/fake_course_api.dart';
 
 int _currentTab(WidgetTester tester) => const [
   HomePage,
@@ -200,5 +201,21 @@ void main() {
 
     expect(_currentTab(tester), 2);
     expect(find.text('mind the gap'), findsOneWidget);
+  });
+
+  testWidgets('curso sem áudio esconde a gravação no +', (tester) async {
+    await tester.pumpPage(
+      const HomeShell(),
+      courses: fakeCourses([
+        {...spanishCourseJson, 'active': true},
+      ]).store,
+    );
+
+    await tester.tap(find.bySemanticsLabel('Adicionar termo'));
+    await tester.pumpAndSettle();
+
+    expect(_inMenu(AppIcons.camera), findsOneWidget);
+    expect(_inMenu(AppIcons.text), findsOneWidget);
+    expect(_inMenu(AppIcons.audio), findsNothing);
   });
 }

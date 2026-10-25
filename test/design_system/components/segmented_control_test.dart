@@ -86,4 +86,51 @@ void main() {
       closeTo(tester.getCenter(find.text('C')).dx, 0.5),
     );
   });
+
+  testWidgets('opção bloqueada não responde e fica riscada', (tester) async {
+    int? changed;
+    await tester.pumpComponent(
+      SegmentedControl(
+        options: const ['A', 'B'],
+        selected: 0,
+        disabled: const {1},
+        onChanged: (i) => changed = i,
+      ),
+    );
+
+    await tester.tap(find.text('B'));
+
+    expect(changed, isNull);
+    expect(
+      tester.widget<Text>(find.text('B')).style?.decoration ??
+          DefaultTextStyle.of(tester.element(find.text('B'))).style.decoration,
+      TextDecoration.lineThrough,
+    );
+    expect(
+      tester.getSemantics(find.text('B')),
+      isSemantics(isButton: true, hasEnabledState: true, isEnabled: false),
+    );
+  });
+
+  testWidgets('sem seleção esconde o indicador', (tester) async {
+    await tester.pumpComponent(
+      SegmentedControl(
+        options: const ['A', 'B'],
+        selected: null,
+        onChanged: (_) {},
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      tester
+          .widget<AnimatedOpacity>(find.byType(AnimatedOpacity).first)
+          .opacity,
+      0,
+    );
+    expect(
+      tester.getSemantics(find.text('A')),
+      isSemantics(isButton: true, isSelected: false),
+    );
+  });
 }

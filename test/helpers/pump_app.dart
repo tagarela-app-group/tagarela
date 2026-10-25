@@ -6,6 +6,7 @@ import 'package:tagarela/data/audio_playback.dart';
 import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
+import 'package:tagarela/data/stores/course_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
@@ -15,6 +16,7 @@ import 'package:tagarela/l10n/l10n.dart';
 
 import 'fake_auth.dart';
 import 'fake_capture_store.dart';
+import 'fake_course_api.dart';
 import 'fake_extraction.dart';
 import 'fake_preferences.dart';
 import 'fake_vocabulary_api.dart';
@@ -23,6 +25,7 @@ import 'fixtures.dart';
 AppScope testScope({
   required Widget child,
   AuthStore? auth,
+  CourseStore? courses,
   CaptureStore? captures,
   AudioPlayback? playback,
   CaptureDevice? device,
@@ -32,6 +35,7 @@ AppScope testScope({
   LanguageStore? language,
 }) => AppScope(
   auth: auth ?? fakeAuthStore(),
+  courses: courses ?? fakeCourses().store,
   captures: captures ?? fakeCaptures().store,
   playback: playback ?? FakeAudioPlayback(),
   device: device ?? FakeCaptureDevice(),
@@ -64,6 +68,7 @@ extension PumpApp on WidgetTester {
   Future<AppScope> pumpPage(
     Widget page, {
     AuthStore? auth,
+    CourseStore? courses,
     CaptureStore? captures,
     AudioPlayback? playback,
     CaptureDevice? device,
@@ -78,6 +83,7 @@ extension PumpApp on WidgetTester {
     useTallScreen();
     final scope = testScope(
       auth: auth,
+      courses: courses,
       captures: captures,
       playback: playback,
       device: device,

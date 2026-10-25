@@ -7,6 +7,7 @@ abstract final class AppIcons {
   static const profile = Icons.person_outline_rounded;
   static const back = Icons.chevron_left_rounded;
   static const forward = Icons.chevron_right_rounded;
+  static const expand = Icons.expand_more_rounded;
   static const close = Icons.close_rounded;
   static const edit = Icons.edit_outlined;
   static const delete = Icons.delete_outline_rounded;

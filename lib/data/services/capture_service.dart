@@ -11,6 +11,7 @@ class CaptureService {
   Future<Capture> create(Capture capture) async => Capture.fromJson(
     await _api.post(_path, {
           'id': capture.id,
+          'course': ?capture.course,
           'source': capture.source.name,
           'captured_at': capture.capturedAt.toUtc().toIso8601String(),
           'text': capture.text,

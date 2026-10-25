@@ -56,4 +56,12 @@ void main() {
     expect(captures['pronta']!.status, CaptureStatus.ready);
     expect(captures['pronta']!.pending, {CaptureSync.update});
   });
+
+  test('pullEverything esquece o cursor pra trazer o curso de tudo', () async {
+    await db.saveCursor('ana', DateTime.utc(2026, 10, 23));
+
+    await db.pullEverything();
+
+    expect(await db.cursor('ana'), isNull);
+  });
 }

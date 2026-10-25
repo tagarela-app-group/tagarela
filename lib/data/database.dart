@@ -13,6 +13,7 @@ class CaptureRows extends Table {
 
   TextColumn get id => text()();
   TextColumn get owner => text()();
+  TextColumn get course => text().nullable()();
   TextColumn get source => textEnum<CaptureSource>()();
   TextColumn get status => textEnum<CaptureStatus>()();
   TextColumn get content => text()();
@@ -45,14 +46,20 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'tagarela'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (m, from, to) async {
       if (from < 2) await forgetServerExtraction();
+      if (from < 3) {
+        await m.addColumn(captureRows, captureRows.course);
+        await pullEverything();
+      }
     },
   );
+
+  Future<void> pullEverything() => delete(captureCursors).go();
 
   Future<void> forgetServerExtraction() async {
     await customStatement(
@@ -90,6 +97,7 @@ class AppDatabase extends _$AppDatabase {
         CaptureRowsCompanion.insert(
           id: capture.id,
           owner: owner,
+          course: Value(capture.course),
           source: capture.source,
           status: capture.status,
           content: capture.text,
@@ -126,6 +134,7 @@ class AppDatabase extends _$AppDatabase {
 
   static Capture _toCapture(CaptureRow row) => Capture(
     id: row.id,
+    course: row.course,
     source: row.source,
     status: row.status,
     text: row.content,

@@ -17,13 +17,17 @@ class CaptureStore extends Store<List<Capture>> {
     this._media, {
     required this._owner,
     required this._extractor,
+    String? Function()? course,
     this._onConfirmed,
-  });
+  }) : _course = course ?? _noCourse;
+
+  static String? _noCourse() => null;
 
   final CaptureService _service;
   final AppDatabase _db;
   final MediaStorage _media;
   final String? Function() _owner;
+  final String? Function() _course;
   final TextExtractor _extractor;
   final Future<void> Function()? _onConfirmed;
 
@@ -36,9 +40,12 @@ class CaptureStore extends Store<List<Capture>> {
   Future<List<Capture>> fetch() async {
     final owner = _owner();
     if (owner == null) return const [];
+    final course = _course();
     return [
       for (final c in await _db.capturesOf(owner))
-        if (c.discardedAt == null) c,
+        if (c.discardedAt == null &&
+            (course == null || c.course == null || c.course == course))
+          c,
     ];
   }
 
@@ -50,6 +57,7 @@ class CaptureStore extends Store<List<Capture>> {
   Future<Capture> createText(String text) => _create(
     Capture(
       id: _newId(),
+      course: _course(),
       source: CaptureSource.text,
       status: CaptureStatus.ready,
       text: text,
@@ -64,6 +72,7 @@ class CaptureStore extends Store<List<Capture>> {
     final capture = await _create(
       Capture(
         id: id,
+        course: _course(),
         source: source,
         status: CaptureStatus.processing,
         capturedAt: DateTime.now(),

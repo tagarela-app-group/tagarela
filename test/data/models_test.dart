@@ -355,4 +355,31 @@ void main() {
       expect(CaptureStatus.analyzed.apiName, 'analyzed');
     });
   });
+
+  group('Course', () {
+    test('fromJson lê os idiomas, o ativo e os termos', () {
+      final course = Course.fromJson(const {
+        'id': 'c1',
+        'learning': 'es',
+        'base': 'en',
+        'active': true,
+        'terms': 12,
+      });
+
+      expect(course.learning, CourseLanguage.es);
+      expect(course.base, CourseLanguage.en);
+      expect(course.active, isTrue);
+      expect(course.terms, 12);
+      expect(course.copyWith(active: false).active, isFalse);
+    });
+
+    test('só inglês tem áudio; sigla em maiúscula', () {
+      expect(
+        [for (final l in CourseLanguage.values) l.hasAudio],
+        [true, false, false],
+      );
+      expect(CourseLanguage.pt.code, 'PT');
+      expect(CourseLanguage.es.nativeName, 'Español');
+    });
+  });
 }

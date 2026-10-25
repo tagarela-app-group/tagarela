@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
 class ProfileSection extends StatelessWidget {
-  const ProfileSection({super.key, required this.title, required this.rows});
+  const ProfileSection({
+    super.key,
+    required this.title,
+    this.rows = const [],
+    this.child,
+  });
 
   final String title;
   final List<ProfileRow> rows;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -25,20 +31,21 @@ class ProfileSection extends StatelessWidget {
             ),
           ),
         ),
-        AppCard(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.s4,
-            vertical: AppSpacing.s1,
-          ),
-          child: Column(
-            children: [
-              for (final (i, row) in rows.indexed) ...[
-                if (i > 0) Divider(height: 1, thickness: 1, color: c.line),
-                row,
-              ],
-            ],
-          ),
-        ),
+        child ??
+            AppCard(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s4,
+                vertical: AppSpacing.s1,
+              ),
+              child: Column(
+                children: [
+                  for (final (i, row) in rows.indexed) ...[
+                    if (i > 0) Divider(height: 1, thickness: 1, color: c.line),
+                    row,
+                  ],
+                ],
+              ),
+            ),
       ],
     );
   }
@@ -47,16 +54,18 @@ class ProfileSection extends StatelessWidget {
 class ProfileRow extends StatelessWidget {
   const ProfileRow({
     super.key,
-    required this.icon,
-    required this.accent,
+    this.icon,
+    this.accent = AppAccent.violet,
+    this.leading,
     required this.title,
     required this.text,
     this.trailing,
     this.onTap,
   });
 
-  final IconData icon;
+  final IconData? icon;
   final AppAccent accent;
+  final Widget? leading;
   final String title;
   final String text;
   final Widget? trailing;
@@ -70,7 +79,7 @@ class ProfileRow extends StatelessWidget {
       child: Row(
         spacing: AppSpacing.s3,
         children: [
-          IconTile(icon: icon, accent: accent, size: 40),
+          leading ?? IconTile(icon: icon, accent: accent, size: 40),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

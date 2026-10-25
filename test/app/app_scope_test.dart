@@ -13,6 +13,7 @@ import 'package:tagarela/data/text_extractor.dart';
 import '../helpers/fake_vocabulary_api.dart';
 import '../helpers/fake_auth.dart';
 import '../helpers/fake_capture_store.dart';
+import '../helpers/fake_course_api.dart';
 import '../helpers/fake_extraction.dart';
 import '../helpers/fake_preferences.dart';
 import '../helpers/pump_app.dart';
@@ -32,6 +33,7 @@ void main() {
     final captures = fakeCaptures();
     final scope = AppScope(
       auth: fakeAuthStore(),
+      courses: fakeCourses().store,
       captures: captures.store,
       playback: FakeAudioPlayback(),
       device: FakeCaptureDevice(),
@@ -170,5 +172,46 @@ void main() {
 
     expect(found, same(scope));
     expect(scope.updateShouldNotify(scope), isFalse);
+  });
+
+  test('conta sem curso: loadAll para antes do estudo', () async {
+    final vocabulary = fakeVocabulary();
+    final scope = testScope(
+      courses: fakeCourses(const []).store,
+      vocabulary: vocabulary.store,
+      child: const SizedBox(),
+    );
+
+    await scope.loadAll();
+
+    expect(scope.courses.data, isEmpty);
+    expect(vocabulary.api.calls, isEmpty);
+    expect(scope.vocabulary.data, isNull);
+  });
+
+  test('curso sem áudio não baixa o modelo de fala', () async {
+    final speech = fakeSpeechModel();
+    final scope = testScope(
+      courses: fakeCourses([
+        {...spanishCourseJson, 'active': true},
+      ]).store,
+      speech: speech.store,
+      child: const SizedBox(),
+    );
+
+    await scope.loadAll();
+    await pumpEventQueue();
+
+    expect(speech.storage.downloads, 0);
+  });
+
+  test('curso em inglês baixa o modelo de fala', () async {
+    final speech = fakeSpeechModel();
+    final scope = testScope(speech: speech.store, child: const SizedBox());
+
+    await scope.loadAll();
+    await pumpEventQueue();
+
+    expect(speech.storage.downloads, 1);
   });
 }

@@ -1,10 +1,11 @@
 # CLAUDE.md — Tagarela (app)
 
-App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. Público BR primeiro, básico/intermediário, pouco tempo; interface em pt-BR, en e es. API em `../api`.
+App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ouve no dia. Público BR primeiro, básico/intermediário, pouco tempo; interface em pt-BR, en e es. API em `../api`.
 
 ## Produto
 
 - Fluxo: captura (foto, áudio, texto) → escolhe termos → confirma → vocabulário → pessoa agrupa → revisão espaçada até dominar.
+- Curso: "aprende X por meio de Y", fica na conta (API), um ativo. Capturas, termos e grupos são do curso; trocar recarrega o estudo. Conta sem curso escolhe no primeiro acesso. Idioma de curso é balão com sigla, nunca bandeira. Áudio só em inglês (Moonshine): outros cursos escondem a gravação e não baixam o modelo.
 - A pessoa decide; a IA sugere, nunca organiza por ela.
 - Tom de amigo ("você"), captura em um gesto, funciona offline, cor só com significado.
 - Recurso sem dado da API ainda: card some, não inventa.
@@ -32,7 +33,7 @@ App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. P
 - Fluxo: tela → store → service → `ApiClient` (único ponto de rede). Estado com `ChangeNotifier`, sem pacotes de estado, rota ou HTTP.
 - Dependências injetadas por `AppScope` (teste troca).
 - Lib externa isolada no seu arquivo em `data/`; resto do app não importa.
-- Captura é offline first: banco local é a verdade, API é sync disparado pela pessoa.
+- Captura é offline first: banco local é a verdade, API é sync disparado pela pessoa. Guarda o curso em que nasceu; o Inbox mostra só o curso ativo (curso desconhecido: todas).
 - Vocabulário é online: nasce na API ao confirmar.
 - Extração (OCR, transcrição) roda no aparelho, em plugin próprio (`packages/`), fora da thread principal.
 

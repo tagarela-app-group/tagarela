@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/profile/user_avatar.dart';
 import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
@@ -15,6 +16,8 @@ import '../../helpers/failing_stores.dart';
 import '../../helpers/fake_auth.dart';
 import '../../helpers/l10n.dart';
 import '../../helpers/pump_app.dart';
+import '../../helpers/fake_course_api.dart';
+import 'package:tagarela/features/course/widgets/course_sheet.dart';
 
 void main() {
   group('greeting', () {
@@ -52,7 +55,12 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('AS'), findsOneWidget);
-    final bubble = tester.widget<AppBubble>(find.byType(AppBubble));
+    final bubble = tester.widget<AppBubble>(
+      find.descendant(
+        of: find.byType(UserAvatar),
+        matching: find.byType(AppBubble),
+      ),
+    );
     expect((bubble.image as NetworkImage?)?.url, 'https://example.com/ana.png');
     expect(find.byIcon(Icons.local_fire_department_rounded), findsNothing);
   });
@@ -161,5 +169,31 @@ void main() {
 
     expect(find.byType(WordOfDayCard), findsOneWidget);
     expect(find.byType(StateMessage), findsNothing);
+  });
+
+  testWidgets('selo do curso mostra a sigla e abre os cursos', (tester) async {
+    await tester.pumpPage(HomePage(onSeeVocabulary: () {}, onCapture: () {}));
+
+    final badge = find.bySemanticsLabel(
+      'Curso: Inglês por meio do Português. Trocar',
+    );
+    expect(badge, findsOneWidget);
+    expect(find.text('EN'), findsOneWidget);
+
+    await tester.tap(badge);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CourseSheet), findsOneWidget);
+  });
+
+  testWidgets('sem curso carregado: sem selo', (tester) async {
+    final courses = fakeCourses()..api.offline = true;
+
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+      courses: courses.store,
+    );
+
+    expect(find.byType(HeaderPill), findsNothing);
   });
 }

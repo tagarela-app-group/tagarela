@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
+import 'package:tagarela/app/course_gate.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
@@ -21,7 +22,7 @@ class HomeShell extends StatefulWidget {
   static void open(BuildContext context) {
     AppScope.of(context).loadAll();
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const HomeShell()),
+      MaterialPageRoute(builder: (_) => const CourseGate()),
       (_) => false,
     );
   }
@@ -81,6 +82,7 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final captures = AppScope.of(context).captures;
+    final courses = AppScope.of(context).courses;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -139,39 +141,44 @@ class _HomeShellState extends State<HomeShell> {
             ],
           ),
           Positioned.fill(
-            child: ArcMenu(
-              key: _menu,
-              anchorBottom: AppTabBar.height + media.padding.bottom,
-              title: context.l10n.captureMenuTitle,
-              subtitle: context.l10n.captureMenuSubtitle,
-              items: [
-                for (final (icon, label, color, source) in [
-                  (
-                    AppIcons.camera,
-                    context.l10n.captureCamera,
-                    AppPalette.mango,
-                    CaptureSource.photo,
-                  ),
-                  (
-                    AppIcons.audio,
-                    context.l10n.captureAudio,
-                    AppPalette.coral,
-                    CaptureSource.audio,
-                  ),
-                  (
-                    AppIcons.text,
-                    context.l10n.captureText,
-                    AppPalette.mint,
-                    CaptureSource.text,
-                  ),
-                ])
-                  ArcMenuItem(
-                    icon: icon,
-                    label: label,
-                    color: color,
-                    onTap: () => _capture(source),
-                  ),
-              ],
+            child: ListenableBuilder(
+              listenable: courses,
+              builder: (context, _) => ArcMenu(
+                key: _menu,
+                anchorBottom: AppTabBar.height + media.padding.bottom,
+                title: context.l10n.captureMenuTitle,
+                subtitle: context.l10n.captureMenuSubtitle,
+                items: [
+                  for (final (icon, label, color, source) in [
+                    (
+                      AppIcons.camera,
+                      context.l10n.captureCamera,
+                      AppPalette.mango,
+                      CaptureSource.photo,
+                    ),
+                    (
+                      AppIcons.audio,
+                      context.l10n.captureAudio,
+                      AppPalette.coral,
+                      CaptureSource.audio,
+                    ),
+                    (
+                      AppIcons.text,
+                      context.l10n.captureText,
+                      AppPalette.mint,
+                      CaptureSource.text,
+                    ),
+                  ])
+                    if (source != CaptureSource.audio ||
+                        (courses.active?.learning.hasAudio ?? true))
+                      ArcMenuItem(
+                        icon: icon,
+                        label: label,
+                        color: color,
+                        onTap: () => _capture(source),
+                      ),
+                ],
+              ),
             ),
           ),
         ],

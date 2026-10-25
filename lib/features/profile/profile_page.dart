@@ -4,6 +4,8 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
+import 'package:tagarela/features/course/widgets/course_bubble.dart';
+import 'package:tagarela/features/course/widgets/course_sheet.dart';
 import 'package:tagarela/features/profile/user_avatar.dart';
 import 'package:tagarela/features/profile/widgets/country_sheet.dart';
 import 'package:tagarela/features/profile/widgets/language_sheet.dart';
@@ -23,12 +25,19 @@ class ProfilePage extends StatelessWidget {
     return ListenableBuilder(
       listenable: Listenable.merge([
         scope.auth,
+        scope.courses,
         scope.vocabulary,
         scope.language,
       ]),
       builder: (context, _) {
         final user = scope.auth.user;
+        final course = scope.courses.active;
         final vocabulary = scope.vocabulary.data;
+        final progress = ProgressCard(
+          terms: vocabulary?.termCount ?? 0,
+          learning: vocabulary?.learningCount ?? 0,
+          mastered: vocabulary?.masteredCount ?? 0,
+        );
         final l10n = context.l10n;
         return SheetPage(
           header: user == null
@@ -45,11 +54,28 @@ class ProfilePage extends StatelessWidget {
                 ),
           gap: AppSpacing.s3,
           children: [
-            ProgressCard(
-              terms: vocabulary?.termCount ?? 0,
-              learning: vocabulary?.learningCount ?? 0,
-              mastered: vocabulary?.masteredCount ?? 0,
-            ),
+            if (course == null)
+              progress
+            else ...[
+              ProfileSection(
+                title: l10n.profileStudy,
+                rows: [
+                  ProfileRow(
+                    leading: CourseBubble(language: course.learning, size: 40),
+                    title: l10n.courseName(
+                      course.learning.name,
+                      course.base.name,
+                    ),
+                    text: l10n.courseChange,
+                    onTap: () => CourseSheet.show(context),
+                  ),
+                ],
+              ),
+              ProfileSection(
+                title: l10n.progressIn(course.learning.name),
+                child: progress,
+              ),
+            ],
             const OfflineSection(),
             if (user != null)
               ProfileSection(
