@@ -14,6 +14,7 @@ App Flutter (Android/iOS): inglês a partir do que a pessoa vê e ouve no dia. P
 0. Início de sessão: ativar skill `caveman` nível `full`.
 1. Antes de alterar algo (código, doc, config, mockup): propor (o quê, onde, opções, recomendação) e esperar ok. Pedido fere regra/boa prática: avisar e propor alternativa.
 2. UI: reusar o design system; nada serve, criar lá. Valor visual sempre token.
+   - Antes de criar UI: procurar peça parecida em todo `lib/`, inclusive widget privado (`_X`) e de feature. Achou: extrair pro design system. Nome pelo que é, não por onde é usado. API genérica: conteúdo + papel de cor, sem regra de uso embutida.
 3. Código novo/alterado: com teste. Bug: teste que reproduz.
 4. Sem comentário em código/config. Porquê vai aqui ou no PR.
 5. Mudou regra ou decisão: atualizar aqui. Guia, não inventário: só o que o código não mostra.

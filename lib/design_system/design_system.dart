@@ -1,6 +1,7 @@
 library;
 
 export 'package:tagarela/design_system/components/accent_picker.dart';
+export 'package:tagarela/design_system/components/app_badge.dart';
 export 'package:tagarela/design_system/components/app_bubble.dart';
 export 'package:tagarela/design_system/components/app_button.dart';
 export 'package:tagarela/design_system/components/app_card.dart';
