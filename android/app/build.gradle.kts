@@ -1,3 +1,7 @@
+import java.io.ByteArrayOutputStream
+import javax.inject.Inject
+import org.gradle.process.ExecOperations
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -42,4 +46,46 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+abstract class AdbReverse : DefaultTask() {
+    @get:Internal
+    abstract val adb: RegularFileProperty
+
+    @get:Input
+    abstract val port: Property<Int>
+
+    @get:Inject
+    abstract val exec: ExecOperations
+
+    @TaskAction
+    fun reverse() {
+        val adb = adb.get().asFile
+        if (!adb.exists()) return
+        val devices = ByteArrayOutputStream()
+        exec.exec {
+            commandLine(adb.absolutePath, "devices")
+            standardOutput = devices
+            isIgnoreExitValue = true
+        }
+        val tcp = "tcp:${port.get()}"
+        devices.toString().lineSequence()
+            .map { it.trim().split(Regex("\\s+")) }
+            .filter { it.size == 2 && it[1] == "device" }
+            .forEach { (serial) ->
+                exec.exec {
+                    commandLine(adb.absolutePath, "-s", serial, "reverse", tcp, tcp)
+                    isIgnoreExitValue = true
+                }
+            }
+    }
+}
+
+val adbReverse = tasks.register<AdbReverse>("adbReverse") {
+    adb.set(androidComponents.sdkComponents.adb)
+    port.set(8000)
+}
+
+tasks.matching { it.name == "preDebugBuild" }.configureEach {
+    dependsOn(adbReverse)
 }
