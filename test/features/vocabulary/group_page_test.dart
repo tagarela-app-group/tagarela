@@ -237,7 +237,7 @@ void main() {
     );
 
     await tester.tap(find.descendant(of: sheet, matching: find.text('Música')));
-    await tester.pumpAndSettle();
+    await tester.pumpUntilFound(find.text('2 termos movidos'));
 
     expect(api.termsOf('musica'), unorderedEquals(['carry-on', 'jet lag']));
     expect(_shownTerms(tester), ['layover']);
@@ -268,7 +268,7 @@ void main() {
     await tester.enterText(textField('Nome'), 'Metrô');
     await tester.pump();
     await tester.tap(find.text('Criar grupo'));
-    await tester.pumpAndSettle();
+    await tester.pumpUntilFound(find.text('1 termo movido'));
 
     final metro = store.data!.groups.first;
     expect(metro.name, 'Metrô');
@@ -358,7 +358,7 @@ void main() {
     await tester.pump();
 
     await tester.tap(find.text('Apagar'));
-    await tester.pumpAndSettle();
+    await tester.pumpUntilFound(find.text('2 termos apagados'));
 
     expect(api.termsOf('viagem'), ['layover']);
     expect(_shownTerms(tester), ['layover']);

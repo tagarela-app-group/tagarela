@@ -115,7 +115,7 @@ void main() {
     await tester.enterText(textField('Nome'), 'Música');
     await tester.pump();
     await tester.tap(find.text('Criar grupo'));
-    await tester.pumpAndSettle();
+    await tester.pumpUntilFound(find.text('Grupo criado'));
 
     expect(scope.vocabulary.data!.groups.first.name, 'Música');
     expect(
@@ -145,7 +145,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Apagar grupo'));
-    await tester.pumpAndSettle();
+    await tester.pumpUntilFound(find.text('Grupo apagado'));
 
     expect(find.byType(GroupPage), findsNothing);
     expect(find.text('Grupo apagado'), findsOneWidget);

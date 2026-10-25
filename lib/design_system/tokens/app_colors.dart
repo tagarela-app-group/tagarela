@@ -11,7 +11,20 @@ abstract final class AppPalette {
   static const black = Color(0xFF000000);
 }
 
-enum AppAccent { violet, coral, mint, mango, sky, pink }
+enum AppAccent {
+  violet,
+  coral,
+  mint,
+  mango,
+  sky,
+  pink,
+  grape,
+  cocoa,
+  lime,
+  gold,
+  teal,
+  slate,
+}
 
 class AccentColors {
   const AccentColors(this.soft, this.fg);
@@ -136,6 +149,12 @@ class AppColors extends ThemeExtension<AppColors> {
       AppAccent.mango: AccentColors(Color(0xFFFFF0D4), Color(0xFFA35F00)),
       AppAccent.sky: AccentColors(Color(0xFFDDEFFF), Color(0xFF1F6FD1)),
       AppAccent.pink: AccentColors(Color(0xFFFCE3F4), Color(0xFFB8338F)),
+      AppAccent.grape: AccentColors(Color(0xFFF1E3FC), Color(0xFF7E3BC9)),
+      AppAccent.cocoa: AccentColors(Color(0xFFF5E9E0), Color(0xFF8A5235)),
+      AppAccent.lime: AccentColors(Color(0xFFE9F5D3), Color(0xFF4A730A)),
+      AppAccent.gold: AccentColors(Color(0xFFFBF3CC), Color(0xFF856500)),
+      AppAccent.teal: AccentColors(Color(0xFFD5F3F4), Color(0xFF0B7480)),
+      AppAccent.slate: AccentColors(Color(0xFFE3E8EF), Color(0xFF4A5A70)),
     },
   );
 
@@ -182,6 +201,12 @@ class AppColors extends ThemeExtension<AppColors> {
       AppAccent.mango: AccentColors(Color(0x29FFB23F), Color(0xFFFFC266)),
       AppAccent.sky: AccentColors(Color(0x293BA4FF), Color(0xFF7CC0FF)),
       AppAccent.pink: AccentColors(Color(0x29F062C0), Color(0xFFF590D6)),
+      AppAccent.grape: AccentColors(Color(0x29B26BF0), Color(0xFFCDA4F7)),
+      AppAccent.cocoa: AccentColors(Color(0x29C08A66), Color(0xFFDDB89E)),
+      AppAccent.lime: AccentColors(Color(0x298BC34A), Color(0xFFB5DD70)),
+      AppAccent.gold: AccentColors(Color(0x29E6C229), Color(0xFFF0D66B)),
+      AppAccent.teal: AccentColors(Color(0x2922B8C8), Color(0xFF5FD3DE)),
+      AppAccent.slate: AccentColors(Color(0x29A3B1C6), Color(0xFFB8C4D6)),
     },
   );
 

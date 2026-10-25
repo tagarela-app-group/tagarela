@@ -10,6 +10,7 @@ void main() {
     WidgetTester tester, {
     bool aboveTabBar = false,
     String? actionLabel = 'Abrir',
+    Duration duration = AppMotion.toast,
   }) async {
     await tester.pumpComponent(
       Builder(
@@ -21,6 +22,7 @@ void main() {
             actionLabel: actionLabel,
             onAction: () {},
             aboveTabBar: aboveTabBar,
+            duration: duration,
           ),
           child: const Text('mostrar'),
         ),
@@ -56,11 +58,33 @@ void main() {
     );
   });
 
-  testWidgets('some sozinho mesmo com ação', (tester) async {
-    await show(tester);
-    await tester.pumpAndSettle();
+  double ring(WidgetTester tester) => tester
+      .widget<CircularProgressIndicator>(find.byType(CircularProgressIndicator))
+      .value!;
 
-    await tester.pump(const Duration(seconds: 5));
+  testWidgets('anel esvazia e o toast sai no fim, mesmo com ação', (
+    tester,
+  ) async {
+    await show(tester);
+
+    expect(ring(tester), 1);
+
+    await tester.pump(AppMotion.toast ~/ 2);
+    expect(ring(tester), closeTo(0.5, 0.01));
+    expect(find.text('Grupo criado'), findsOneWidget);
+
+    await tester.pump(AppMotion.toast ~/ 2 - const Duration(milliseconds: 1));
+    expect(find.text('Grupo criado'), findsOneWidget);
+
+    await tester.pump(const Duration(milliseconds: 1));
+    await tester.pumpAndSettle();
+    expect(find.text('Grupo criado'), findsNothing);
+  });
+
+  testWidgets('tempo na tela configurável', (tester) async {
+    await show(tester, duration: const Duration(seconds: 2));
+
+    await tester.pump(const Duration(seconds: 2));
     await tester.pumpAndSettle();
 
     expect(find.text('Grupo criado'), findsNothing);
