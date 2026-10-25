@@ -7,6 +7,7 @@ import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/text_extractor.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 typedef CardAction = (String label, VoidCallback? onPressed);
 
@@ -93,10 +94,10 @@ class _CaptureCardState extends State<CaptureCard> {
 
     return switch (capture.status) {
       CaptureStatus.failed => [
-        withMedia(_failure(capture)),
+        withMedia(_failure(context.l10n, capture)),
         _Actions(
-          secondary: ('Descartar', widget.onDiscard),
-          primary: ('Processar agora', widget.onProcess),
+          secondary: (context.l10n.discard, widget.onDiscard),
+          primary: (context.l10n.processNow, widget.onProcess),
         ),
       ],
       CaptureStatus.ready => [
@@ -108,23 +109,25 @@ class _CaptureCardState extends State<CaptureCard> {
         if (capture.terms.isNotEmpty) _Terms(terms: capture.terms),
         if (capture.terms.isEmpty)
           _Actions(
-            secondary: ('Descartar', widget.onDiscard),
+            secondary: (context.l10n.discard, widget.onDiscard),
             primary: widget.onPick == null
                 ? null
-                : ('Escolher termos', widget.onPick),
+                : (context.l10n.pickTerms, widget.onPick),
           )
         else
           _Actions(
-            secondary: widget.onPick == null ? null : ('Editar', widget.onPick),
-            primary: ('Confirmar análise', widget.onConfirm),
+            secondary: widget.onPick == null
+                ? null
+                : (context.l10n.edit, widget.onPick),
+            primary: (context.l10n.confirmAnalysis, widget.onConfirm),
           ),
       ],
       CaptureStatus.processing => [
         withMedia(
           capture.source.isPhoto
-              ? const _StatusLine(
+              ? _StatusLine(
                   icon: AppIcons.review,
-                  text: 'Lendo o texto da foto…',
+                  text: context.l10n.readingPhoto,
                 )
               : const _Transcribing(),
         ),
@@ -134,38 +137,32 @@ class _CaptureCardState extends State<CaptureCard> {
   }
 }
 
-_Message _failure(Capture capture) => switch (capture.error) {
+_Message _failure(
+  AppLocalizations l10n,
+  Capture capture,
+) => switch (capture.error) {
   final e when e == ExtractionError.noText.code => _Message(
-    title: capture.source.isPhoto
-        ? 'Não achei texto na foto'
-        : 'Não ouvi fala em inglês',
-    text: capture.source.isPhoto
-        ? 'Tente outra foto ou descarte esta.'
-        : 'Grave de novo ou descarte este áudio.',
+    title: capture.source.isPhoto ? l10n.noTextInPhoto : l10n.noSpeech,
+    text: capture.source.isPhoto ? l10n.noTextInPhotoHint : l10n.noSpeechHint,
   ),
-  _ => const _Message(
-    title: 'Não deu pra processar agora',
-    text: 'Toque em Processar agora pra tentar de novo.',
-  ),
+  _ => _Message(title: l10n.processFailedTitle, text: l10n.processFailedHint),
 };
 
 extension on CaptureSource {
   bool get isPhoto => this == CaptureSource.photo;
 }
 
-String timeAgo(DateTime at, DateTime now) {
+String timeAgo(AppLocalizations l10n, DateTime at, DateTime now) {
   final local = at.toLocal();
   final diff = now.difference(local);
-  if (diff.inMinutes < 1) return 'agora';
-  if (diff.inHours < 1) return 'há ${diff.inMinutes} min';
+  if (diff.inMinutes < 1) return l10n.timeNow;
+  if (diff.inHours < 1) return l10n.minutesAgo(diff.inMinutes);
   final day = DateTime(local.year, local.month, local.day);
   if (day == DateTime(now.year, now.month, now.day)) {
-    return 'há ${diff.inHours} h';
+    return l10n.hoursAgo(diff.inHours);
   }
-  if (day == DateTime(now.year, now.month, now.day - 1)) return 'ontem';
-  final dd = local.day.toString().padLeft(2, '0');
-  final mm = local.month.toString().padLeft(2, '0');
-  return '$dd/$mm';
+  if (day == DateTime(now.year, now.month, now.day - 1)) return l10n.yesterday;
+  return l10n.shortDate(local);
 }
 
 class _Header extends StatelessWidget {
@@ -181,23 +178,25 @@ class _Header extends StatelessWidget {
       CaptureSource.audio => (AppIcons.audio, AppAccent.coral),
       CaptureSource.text => (AppIcons.text, AppAccent.violet),
     };
-    final (status, tone) = switch (capture.status) {
-      CaptureStatus.failed => ('Erro', StatusTone.alert),
-      CaptureStatus.ready => ('Pronta', StatusTone.primary),
-      CaptureStatus.processing => ('Processando', StatusTone.learning),
-      CaptureStatus.analyzed => ('Analisada', StatusTone.neutral),
+    final tone = switch (capture.status) {
+      CaptureStatus.failed => StatusTone.alert,
+      CaptureStatus.ready => StatusTone.primary,
+      CaptureStatus.processing => StatusTone.learning,
+      CaptureStatus.analyzed => StatusTone.neutral,
     };
+    final l10n = context.l10n;
     return Row(
       spacing: AppSpacing.s2,
       children: [
         IconTile(icon: icon, accent: accent, size: 28),
         Expanded(
           child: Text(
-            '${capture.source.label} · ${timeAgo(capture.capturedAt, now)}',
+            '${l10n.captureSource(capture.source.name)} · '
+            '${timeAgo(l10n, capture.capturedAt, now)}',
             style: AppText.label.copyWith(color: context.colors.inkSoft),
           ),
         ),
-        StatusPill(label: status, tone: tone),
+        StatusPill(label: l10n.captureStatus(capture.status.name), tone: tone),
       ],
     );
   }
@@ -222,7 +221,7 @@ class _Thumbnail extends StatelessWidget {
     );
     final file = this.file;
     return Semantics(
-      label: 'Foto da captura',
+      label: context.l10n.capturePhoto,
       image: true,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -249,11 +248,7 @@ class _Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = switch (capture.source) {
-      CaptureSource.text => 'Seu texto',
-      CaptureSource.photo => 'Texto da foto',
-      CaptureSource.audio => 'Transcrição',
-    };
+    final label = context.l10n.captureContent(capture.source.name);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 2,
@@ -320,8 +315,8 @@ class _MissingMedia extends StatelessWidget {
           Expanded(
             child: Text(
               source.isPhoto
-                  ? 'A foto não está mais neste celular. O texto continua salvo.'
-                  : 'O áudio não está mais neste celular. A transcrição continua salva.',
+                  ? context.l10n.missingPhoto
+                  : context.l10n.missingAudio,
               style: AppText.label.copyWith(color: c.inkSoft),
             ),
           ),
@@ -349,9 +344,7 @@ class _Terms extends StatelessWidget {
       spacing: AppSpacing.s2,
       children: [
         Text(
-          terms.length == 1
-              ? '1 termo escolhido'
-              : '${terms.length} termos escolhidos',
+          context.l10n.termsChosen(terms.length),
           style: AppText.pill.copyWith(color: c.inkSoft),
         ),
         chips,
@@ -427,8 +420,8 @@ class _Transcribing extends StatelessWidget {
       builder: (context, _) => _StatusLine(
         icon: AppIcons.review,
         text: !speech.ready
-            ? 'Esperando o modelo de áudio baixar…'
-            : 'Transcrevendo o áudio…',
+            ? context.l10n.waitingModel
+            : context.l10n.transcribing,
       ),
     );
   }

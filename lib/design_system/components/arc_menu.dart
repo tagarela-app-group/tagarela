@@ -8,6 +8,7 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class ArcMenuItem {
   const ArcMenuItem({
@@ -229,7 +230,7 @@ class ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
     final open = t > 0.5;
     return Semantics(
       button: true,
-      label: open ? 'Fechar menu' : 'Adicionar termo',
+      label: open ? context.l10n.closeMenu : context.l10n.addTerm,
       excludeSemantics: true,
       child: DecoratedBox(
         decoration: BoxDecoration(

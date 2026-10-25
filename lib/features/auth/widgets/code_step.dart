@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/auth_form.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class CodeStep extends StatefulWidget {
   const CodeStep({
@@ -85,7 +86,7 @@ class _CodeStepState extends State<CodeStep> {
       children: [
         Text.rich(
           TextSpan(
-            text: 'Enviamos um código de ${CodeStep.length} dígitos para ',
+            text: '${context.l10n.codeSent(CodeStep.length)} ',
             children: [
               TextSpan(
                 text: widget.email,
@@ -103,7 +104,7 @@ class _CodeStepState extends State<CodeStep> {
           onCompleted: (_) => _confirm(),
         ),
         AppButton(
-          label: 'Confirmar',
+          label: context.l10n.confirm,
           onPressed: complete && !widget.busy ? _confirm : null,
           size: AppButtonSize.large,
           expand: true,
@@ -114,24 +115,25 @@ class _CodeStepState extends State<CodeStep> {
           children: [
             if (_seconds > 0)
               Text(
-                'Não chegou? Reenviar em '
-                '${_seconds ~/ 60}:${'${_seconds % 60}'.padLeft(2, '0')}',
+                context.l10n.resendIn(
+                  '${_seconds ~/ 60}:${'${_seconds % 60}'.padLeft(2, '0')}',
+                ),
                 style: soft,
               )
             else
               AppButton(
-                label: 'Reenviar código',
+                label: context.l10n.resendCode,
                 onPressed: widget.busy ? null : _resend,
                 variant: AppButtonVariant.text,
                 size: AppButtonSize.small,
                 loading: widget.loading == AuthAction.resend,
               ),
-            Text('Confira também a caixa de spam.', style: soft),
+            Text(context.l10n.checkSpam, style: soft),
           ],
         ),
         Center(
           child: AppButton(
-            label: 'Trocar e-mail',
+            label: context.l10n.changeEmail,
             onPressed: widget.onChangeEmail,
             variant: AppButtonVariant.text,
             size: AppButtonSize.small,

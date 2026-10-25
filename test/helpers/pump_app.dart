@@ -7,13 +7,16 @@ import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
+import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 import 'fake_auth.dart';
 import 'fake_capture_store.dart';
 import 'fake_extraction.dart';
+import 'fake_preferences.dart';
 import 'fake_vocabulary_api.dart';
 import 'fixtures.dart';
 
@@ -26,6 +29,7 @@ AppScope testScope({
   SpeechModelStore? speech,
   HomeStore? home,
   VocabularyStore? vocabulary,
+  LanguageStore? language,
 }) => AppScope(
   auth: auth ?? fakeAuthStore(),
   captures: captures ?? fakeCaptures().store,
@@ -34,7 +38,20 @@ AppScope testScope({
   speech: speech ?? fakeSpeechModel().store,
   home: home ?? HomeStore(sampleHome),
   vocabulary: vocabulary ?? fakeVocabulary().store,
+  language: language ?? fakeLanguage(),
   child: child,
+);
+
+MaterialApp testApp(
+  Widget home, {
+  ThemeData? theme,
+  Locale locale = const Locale('pt'),
+}) => MaterialApp(
+  theme: theme ?? AppTheme.light,
+  locale: locale,
+  supportedLocales: AppLocalizations.supportedLocales,
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  home: home,
 );
 
 extension PumpApp on WidgetTester {
@@ -53,8 +70,10 @@ extension PumpApp on WidgetTester {
     SpeechModelStore? speech,
     HomeStore? home,
     VocabularyStore? vocabulary,
+    LanguageStore? language,
     bool load = true,
     ThemeData? theme,
+    Locale locale = const Locale('pt'),
   }) async {
     useTallScreen();
     final scope = testScope(
@@ -65,15 +84,24 @@ extension PumpApp on WidgetTester {
       speech: speech,
       home: home,
       vocabulary: vocabulary,
-      child: MaterialApp(theme: theme ?? AppTheme.light, home: page),
+      language: language,
+      child: testApp(page, theme: theme, locale: locale),
     );
     if (load) await scope.loadAll();
     await pumpWidget(scope);
     return scope;
   }
 
-  Future<void> pumpComponent(Widget child, {ThemeData? theme}) =>
-      pumpPage(Scaffold(body: child), theme: theme, load: false);
+  Future<void> pumpComponent(
+    Widget child, {
+    ThemeData? theme,
+    Locale locale = const Locale('pt'),
+  }) => pumpPage(
+    Scaffold(body: child),
+    theme: theme,
+    locale: locale,
+    load: false,
+  );
 
   Future<void> pumpUntilFound(Finder finder) async {
     for (var i = 0; i < 20 && finder.evaluate().isEmpty; i++) {

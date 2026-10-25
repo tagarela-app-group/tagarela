@@ -4,6 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/api_client.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class GroupSheet extends StatefulWidget {
   const GroupSheet({this.group, super.key});
@@ -17,10 +18,6 @@ class GroupSheet extends StatefulWidget {
 }
 
 class _GroupSheetState extends State<GroupSheet> {
-  static final _icons = [
-    for (final i in GroupIcon.values) (icon: i.icon, label: i.label),
-  ];
-
   late final _name = TextEditingController(text: widget.group?.name);
   late var _icon = GroupIcon.values.firstWhere(
     (i) => i.icon == widget.group?.icon,
@@ -39,8 +36,9 @@ class _GroupSheetState extends State<GroupSheet> {
   Future<void> _save(String name) async {
     setState(() => _busy = true);
     final vocabulary = AppScope.of(context).vocabulary;
+    final l10n = context.l10n;
     final editing = widget.group;
-    final verb = editing == null ? 'criar' : 'salvar';
+    final action = editing == null ? 'create' : 'save';
     try {
       final group = editing == null
           ? await vocabulary.createGroup(
@@ -58,11 +56,11 @@ class _GroupSheetState extends State<GroupSheet> {
     } on ApiException catch (e) {
       _fail(
         e.rejected
-            ? e.fieldError('name') ?? 'Não deu pra $verb o grupo.'
-            : 'Não deu pra $verb o grupo agora. Tente de novo.',
+            ? e.fieldError('name') ?? l10n.groupSaveRejected(action)
+            : l10n.groupSaveFailed(action),
       );
     } on Exception {
-      _fail('Sem conexão. Tente de novo.');
+      _fail(l10n.offlineRetry);
     }
   }
 
@@ -84,26 +82,29 @@ class _GroupSheetState extends State<GroupSheet> {
     return AppSheet(
       icon: _icon.icon,
       accent: _accent,
-      title: editing == null ? 'Novo grupo' : 'Editar grupo',
+      title: editing == null ? context.l10n.newGroup : context.l10n.editGroup,
       subtitle: editing == null
-          ? 'Junte termos do mesmo assunto'
-          : 'Mude o nome, o ícone ou a cor',
+          ? context.l10n.groupSheetNewHint
+          : context.l10n.groupSheetEditHint,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s4,
         children: [
           AppTextField(
-            label: 'Nome',
-            hint: 'Ex.: Música, Faculdade',
+            label: context.l10n.name,
+            hint: context.l10n.groupNameHint,
             controller: _name,
             maxLength: GroupSheet.maxName,
             autofocus: editing == null,
             textInputAction: TextInputAction.done,
-            errorText: taken ? 'Você já tem um grupo com esse nome.' : _error,
+            errorText: taken ? context.l10n.groupNameTaken : _error,
             onChanged: (_) => setState(() => _error = null),
           ),
           IconPicker(
-            icons: _icons,
+            icons: [
+              for (final i in GroupIcon.values)
+                (icon: i.icon, label: context.l10n.groupIcon(i.name)),
+            ],
             selected: _icon.index,
             accent: _accent,
             onChanged: (i) => setState(() => _icon = GroupIcon.values[i]),
@@ -114,9 +115,9 @@ class _GroupSheetState extends State<GroupSheet> {
           ),
           AppButton(
             label: switch ((name.isEmpty, editing)) {
-              (true, _) => 'Dê um nome ao grupo',
-              (false, null) => 'Criar grupo',
-              _ => 'Salvar',
+              (true, _) => context.l10n.nameTheGroup,
+              (false, null) => context.l10n.createGroup,
+              _ => context.l10n.save,
             },
             expand: true,
             loading: _busy,

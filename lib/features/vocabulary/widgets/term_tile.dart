@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class TermTile extends StatelessWidget {
   const TermTile({
@@ -51,7 +52,7 @@ class TermTile extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      AppTag(label: term.kind.label),
+                      AppTag(label: context.l10n.termKind(term.kind.name)),
                     ],
                   ),
                   if (term.translation.isNotEmpty)
@@ -67,7 +68,7 @@ class TermTile extends StatelessWidget {
               spacing: AppSpacing.s2,
               children: [
                 StatusPill(
-                  label: term.status.label,
+                  label: context.l10n.termStatus(term.status.name),
                   tone: mastered ? StatusTone.mastered : StatusTone.learning,
                 ),
                 LevelDots(

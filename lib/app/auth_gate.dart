@@ -17,6 +17,7 @@ class _AuthGateState extends State<AuthGate> {
 
   Future<bool> _restore() async {
     final scope = AppScope.of(context);
+    await scope.language.load();
     final signedIn = await scope.auth.restore();
     if (signedIn) scope.loadAll();
     return signedIn;

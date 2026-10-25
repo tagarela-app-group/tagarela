@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/app/auth_gate.dart';
 import 'package:tagarela/app/home_shell.dart';
-import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 
 import '../helpers/fake_auth.dart';
@@ -22,7 +20,7 @@ void main() {
     tester.useTallScreen();
     final scope = testScope(
       auth: fakeAuthStore(api: api, storage: storage),
-      child: MaterialApp(theme: AppTheme.light, home: const AuthGate()),
+      child: testApp(const AuthGate()),
     );
     await tester.pumpWidget(scope);
     await tester.pumpAndSettle();

@@ -6,6 +6,7 @@ import 'package:tagarela/features/auth/auth_form.dart';
 import 'package:tagarela/features/auth/new_password_page.dart';
 import 'package:tagarela/features/auth/widgets/auth_header.dart';
 import 'package:tagarela/features/auth/widgets/code_step.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class ResetCodePage extends StatefulWidget {
   const ResetCodePage({
@@ -50,9 +51,9 @@ class _ResetCodePageState extends State<ResetCodePage> with AuthForm {
   @override
   Widget build(BuildContext context) {
     return SheetPage(
-      header: const AuthHeader(
-        title: 'Digite o código',
-        subtitle: 'Pra criar sua senha nova.',
+      header: AuthHeader(
+        title: context.l10n.resetCodeTitle,
+        subtitle: context.l10n.resetCodeSubtitle,
       ),
       children: [
         CodeStep(

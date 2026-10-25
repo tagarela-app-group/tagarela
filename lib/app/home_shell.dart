@@ -13,6 +13,7 @@ import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/inbox/inbox_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -72,7 +73,7 @@ class _HomeShellState extends State<HomeShell> {
       (_) => false,
     );
     messenger.showSnackBar(
-      const SnackBar(content: Text('Sua sessão expirou. Entre de novo.')),
+      SnackBar(content: Text(context.l10n.sessionExpired)),
     );
   }
 
@@ -113,19 +114,25 @@ class _HomeShellState extends State<HomeShell> {
                   onTap: _goTo,
                   centerGap: 72,
                   items: [
-                    const AppTabItem(icon: AppIcons.home, label: 'Início'),
-                    const AppTabItem(
+                    AppTabItem(
+                      icon: AppIcons.home,
+                      label: context.l10n.tabHome,
+                    ),
+                    AppTabItem(
                       icon: AppIcons.vocabulary,
-                      label: 'Vocabulário',
+                      label: context.l10n.tabVocabulary,
                     ),
                     AppTabItem(
                       icon: AppIcons.inbox,
-                      label: 'Inbox',
+                      label: context.l10n.tabInbox,
                       badge:
                           captures.data?.where((c) => c.needsAction).length ??
                           0,
                     ),
-                    const AppTabItem(icon: AppIcons.profile, label: 'Perfil'),
+                    AppTabItem(
+                      icon: AppIcons.profile,
+                      label: context.l10n.tabProfile,
+                    ),
                   ],
                 ),
               ),
@@ -135,23 +142,28 @@ class _HomeShellState extends State<HomeShell> {
             child: ArcMenu(
               key: _menu,
               anchorBottom: AppTabBar.height + media.padding.bottom,
-              title: 'O que você ouviu hoje?',
-              subtitle: 'Fotografe, grave ou digite. A análise vai pro Inbox.',
+              title: context.l10n.captureMenuTitle,
+              subtitle: context.l10n.captureMenuSubtitle,
               items: [
-                for (final (icon, label, color, source) in const [
+                for (final (icon, label, color, source) in [
                   (
                     AppIcons.camera,
-                    'Câmera',
+                    context.l10n.captureCamera,
                     AppPalette.mango,
                     CaptureSource.photo,
                   ),
                   (
                     AppIcons.audio,
-                    'Áudio',
+                    context.l10n.captureAudio,
                     AppPalette.coral,
                     CaptureSource.audio,
                   ),
-                  (AppIcons.text, 'Texto', AppPalette.mint, CaptureSource.text),
+                  (
+                    AppIcons.text,
+                    context.l10n.captureText,
+                    AppPalette.mint,
+                    CaptureSource.text,
+                  ),
                 ])
                   ArcMenuItem(
                     icon: icon,

@@ -4,6 +4,7 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class TermChip extends StatelessWidget {
   const TermChip({
@@ -48,7 +49,7 @@ class TermChip extends StatelessWidget {
           if (remove != null)
             IconButton(
               onPressed: remove,
-              tooltip: 'Remover $label',
+              tooltip: context.l10n.removeItem(label),
               icon: const Icon(AppIcons.close),
               iconSize: 16,
               color: fg,

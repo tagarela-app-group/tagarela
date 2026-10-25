@@ -5,35 +5,21 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class AccentPicker extends StatelessWidget {
   const AccentPicker({
     super.key,
     required this.selected,
     required this.onChanged,
-    this.label = 'Cor',
+    this.label,
   });
-
-  static const names = {
-    AppAccent.violet: 'Violeta',
-    AppAccent.coral: 'Coral',
-    AppAccent.mint: 'Menta',
-    AppAccent.mango: 'Manga',
-    AppAccent.sky: 'Céu',
-    AppAccent.pink: 'Rosa',
-    AppAccent.grape: 'Uva',
-    AppAccent.cocoa: 'Cacau',
-    AppAccent.lime: 'Lima',
-    AppAccent.gold: 'Ouro',
-    AppAccent.teal: 'Turquesa',
-    AppAccent.slate: 'Ardósia',
-  };
 
   static const columns = 6;
 
   final AppAccent selected;
   final ValueChanged<AppAccent> onChanged;
-  final String label;
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +27,7 @@ class AccentPicker extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppSpacing.s2,
       children: [
-        Text(label, style: AppText.label),
+        Text(label ?? context.l10n.color, style: AppText.label),
         for (var row = 0; row < AppAccent.values.length; row += columns)
           Row(
             spacing: AppSpacing.s2,
@@ -77,7 +63,7 @@ class _Swatch extends StatelessWidget {
     final c = context.colors;
     final color = c.accent(accent).fg;
     return Semantics(
-      label: AccentPicker.names[accent],
+      label: context.l10n.accentName(accent.name),
       button: true,
       inMutuallyExclusiveGroup: true,
       checked: selected,

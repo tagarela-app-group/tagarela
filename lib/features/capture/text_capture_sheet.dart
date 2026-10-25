@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class TextCaptureSheet extends StatefulWidget {
   const TextCaptureSheet({super.key});
@@ -34,15 +35,15 @@ class _TextCaptureSheetState extends State<TextCaptureSheet> {
   Widget build(BuildContext context) => AppSheet(
     icon: AppIcons.text,
     accent: AppAccent.violet,
-    title: 'Digitar texto',
-    subtitle: 'O que você ouviu ou leu hoje',
+    title: context.l10n.typeText,
+    subtitle: context.l10n.typeTextHint,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppSpacing.s4,
       children: [
         AppTextField(
-          label: 'Palavra, expressão ou frase',
-          helperText: 'Frase ou trecho. Os termos você escolhe no Inbox.',
+          label: context.l10n.textCaptureLabel,
+          helperText: context.l10n.textCaptureHelper,
           controller: _text,
           lines: 4,
           maxLength: TextCaptureSheet.maxLength,
@@ -51,7 +52,7 @@ class _TextCaptureSheetState extends State<TextCaptureSheet> {
         ListenableBuilder(
           listenable: _text,
           builder: (context, _) => AppButton(
-            label: 'Salvar no Inbox',
+            label: context.l10n.saveToInbox,
             expand: true,
             loading: _saving,
             onPressed: _text.text.trim().isEmpty ? null : _save,

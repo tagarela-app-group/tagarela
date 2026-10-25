@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
@@ -11,6 +12,7 @@ import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 
 import '../../../helpers/fake_capture_store.dart';
 import '../../../helpers/fake_extraction.dart';
+import '../../../helpers/l10n.dart';
 import '../../../helpers/pump_app.dart';
 
 void main() {
@@ -66,15 +68,32 @@ void main() {
   );
 
   group('timeAgo', () {
+    setUpAll(initializeDateFormatting);
+
     test('minutos, horas, ontem e data', () {
-      expect(timeAgo(now.subtract(const Duration(seconds: 30)), now), 'agora');
       expect(
-        timeAgo(now.subtract(const Duration(minutes: 5)), now),
+        timeAgo(pt, now.subtract(const Duration(seconds: 30)), now),
+        'agora',
+      );
+      expect(
+        timeAgo(pt, now.subtract(const Duration(minutes: 5)), now),
         'há 5 min',
       );
-      expect(timeAgo(now.subtract(const Duration(hours: 2)), now), 'há 2 h');
-      expect(timeAgo(DateTime(2026, 10, 22, 23), now), 'ontem');
-      expect(timeAgo(DateTime(2026, 10, 3, 8), now), '03/10');
+      expect(
+        timeAgo(pt, now.subtract(const Duration(hours: 2)), now),
+        'há 2 h',
+      );
+      expect(timeAgo(pt, DateTime(2026, 10, 22, 23), now), 'ontem');
+      expect(timeAgo(pt, DateTime(2026, 10, 3, 8), now), '03/10');
+    });
+
+    test('data no formato do idioma', () {
+      expect(timeAgo(en, DateTime(2026, 10, 3, 8), now), '10/3');
+      expect(timeAgo(es, DateTime(2026, 10, 3, 8), now), '3/10');
+      expect(
+        timeAgo(en, now.subtract(const Duration(minutes: 5)), now),
+        '5 min ago',
+      );
     });
   });
 

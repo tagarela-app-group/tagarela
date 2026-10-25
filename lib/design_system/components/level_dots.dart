@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class LevelDots extends StatelessWidget {
   const LevelDots({
@@ -19,7 +20,7 @@ class LevelDots extends StatelessWidget {
   Widget build(BuildContext context) {
     final track = context.colors.surfaceAlt;
     return Semantics(
-      label: 'Nível $level de $max',
+      label: context.l10n.levelOf(level, max),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         spacing: 3,

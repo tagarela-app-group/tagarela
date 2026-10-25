@@ -6,6 +6,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/inbox/term_selection.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 import 'package:tagarela/features/inbox/widgets/word_picker.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class PickTermsPage extends StatefulWidget {
   const PickTermsPage({super.key, required this.capture});
@@ -35,7 +36,9 @@ class _PickTermsPageState extends State<PickTermsPage> {
     if (limit != null) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(_limitMessage(limit))));
+        ..showSnackBar(
+          SnackBar(content: Text(_limitMessage(context.l10n, limit))),
+        );
       return;
     }
     setState(() => _selection = _selection.toggle(span));
@@ -86,22 +89,23 @@ class _PickTermsPageState extends State<PickTermsPage> {
             children: [
               AppIconButton(
                 icon: AppIcons.back,
-                tooltip: 'Voltar',
+                tooltip: context.l10n.back,
                 variant: AppIconButtonVariant.onHeader,
                 onPressed: () => Navigator.maybePop(context),
               ),
               AppIconButton(
                 icon: AppIcons.delete,
-                tooltip: 'Descartar captura',
+                tooltip: context.l10n.discardCapture,
                 variant: AppIconButtonVariant.onHeader,
                 onPressed: _saving || _discarding ? null : _discard,
               ),
             ],
           ),
           PageHeader(
-            title: 'Escolher termos',
+            title: context.l10n.pickTerms,
             subtitle:
-                '${capture.source.label} · ${timeAgo(capture.capturedAt, DateTime.now())}',
+                '${context.l10n.captureSource(capture.source.name)} · '
+                '${timeAgo(context.l10n, capture.capturedAt, DateTime.now())}',
           ),
         ],
       ),
@@ -111,7 +115,7 @@ class _PickTermsPageState extends State<PickTermsPage> {
         spacing: AppSpacing.s2,
         children: [
           Text(
-            'Ao confirmar, a IA monta a ficha de cada termo.',
+            context.l10n.confirmHint,
             textAlign: TextAlign.center,
             style: AppText.label.copyWith(
               fontWeight: FontWeight.w400,
@@ -120,8 +124,8 @@ class _PickTermsPageState extends State<PickTermsPage> {
           ),
           AppButton(
             label: count == 0
-                ? 'Escolha pelo menos um termo'
-                : 'Confirmar análise · $count ${count == 1 ? 'termo' : 'termos'}',
+                ? context.l10n.pickAtLeastOne
+                : context.l10n.confirmAnalysisCount(count),
             size: AppButtonSize.large,
             expand: true,
             loading: _saving,
@@ -131,8 +135,7 @@ class _PickTermsPageState extends State<PickTermsPage> {
       ),
       children: [
         Text(
-          'Arraste o dedo sobre as palavras pra marcar uma expressão. '
-          'Toque numa palavra pra marcar só ela.',
+          context.l10n.pickHelp,
           style: AppText.bodyMd.copyWith(color: c.inkSoft),
         ),
         AppCard(
@@ -147,13 +150,13 @@ class _PickTermsPageState extends State<PickTermsPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: AppSpacing.s1),
                       child: Text(
-                        'Texto',
+                        context.l10n.textSection,
                         style: AppText.pill.copyWith(color: c.inkSoft),
                       ),
                     ),
                   ),
                   AppButton(
-                    label: _editing ? 'Pronto' : 'Editar texto',
+                    label: _editing ? context.l10n.done : context.l10n.editText,
                     leading: Icon(
                       _editing ? AppIcons.check : AppIcons.edit,
                       size: 16,
@@ -169,8 +172,7 @@ class _PickTermsPageState extends State<PickTermsPage> {
               if (_editing)
                 AppTextField(
                   controller: _text,
-                  helperText:
-                      'Corrija o que saiu errado. Os termos marcados continuam quando a palavra não mudar.',
+                  helperText: context.l10n.editTextHelper,
                   lines: 5,
                   maxLength: TermSelection.maxTextLength,
                   autofocus: true,
@@ -185,12 +187,12 @@ class _PickTermsPageState extends State<PickTermsPage> {
           spacing: AppSpacing.s3,
           children: [
             Text(
-              'Termos escolhidos · $count'.toUpperCase(),
+              context.l10n.chosenTermsCount(count).toUpperCase(),
               style: AppText.overline.copyWith(color: c.inkSoft),
             ),
             if (count == 0)
               Text(
-                'Nenhum ainda. Toque numa palavra do texto.',
+                context.l10n.noTermsYetTap,
                 style: AppText.bodyMd.copyWith(color: c.inkSoft),
               )
             else
@@ -212,9 +214,7 @@ class _PickTermsPageState extends State<PickTermsPage> {
   }
 }
 
-String _limitMessage(TermLimit limit) => switch (limit) {
-  TermLimit.tooLong =>
-    'Expressão grande demais. Marque até ${TermSelection.maxTermLength} caracteres.',
-  TermLimit.tooMany =>
-    'Limite de ${TermSelection.maxTerms} termos por captura.',
+String _limitMessage(AppLocalizations l10n, TermLimit limit) => switch (limit) {
+  TermLimit.tooLong => l10n.termTooLong(TermSelection.maxTermLength),
+  TermLimit.tooMany => l10n.tooManyTerms(TermSelection.maxTerms),
 };

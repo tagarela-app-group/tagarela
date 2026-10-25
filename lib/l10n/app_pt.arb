@@ -1,0 +1,679 @@
+{
+  "@@locale": "pt",
+  "sessionExpired": "Sua sessão expirou. Entre de novo.",
+  "tabHome": "Início",
+  "tabVocabulary": "Vocabulário",
+  "tabInbox": "Inbox",
+  "tabProfile": "Perfil",
+  "captureMenuTitle": "O que você ouviu hoje?",
+  "captureMenuSubtitle": "Fotografe, grave ou digite. A análise vai pro Inbox.",
+  "captureCamera": "Câmera",
+  "captureAudio": "Áudio",
+  "captureText": "Texto",
+  "color": "Cor",
+  "accentName": "{accent, select, violet{Violeta} coral{Coral} mint{Menta} mango{Manga} sky{Céu} pink{Rosa} grape{Uva} cocoa{Cacau} lime{Lima} gold{Ouro} teal{Turquesa} slate{Ardósia} other{}}",
+  "@accentName": {
+    "placeholders": {
+      "accent": {
+        "type": "String"
+      }
+    }
+  },
+  "loading": "Carregando",
+  "codeFieldLabel": "Código de {length} dígitos",
+  "@codeFieldLabel": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "showPassword": "Mostrar senha",
+  "hidePassword": "Ocultar senha",
+  "closeMenu": "Fechar menu",
+  "addTerm": "Adicionar termo",
+  "loadFailedTitle": "Não deu pra carregar",
+  "loadFailedMessage": "Confira sua conexão e tente de novo.",
+  "tryAgain": "Tentar de novo",
+  "icon": "Ícone",
+  "back": "Voltar",
+  "next": "Avançar",
+  "iconPage": "Página {page} dos ícones",
+  "@iconPage": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "levelOf": "Nível {level} de {max}",
+  "@levelOf": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "removeItem": "Remover {label}",
+  "@removeItem": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "close": "Fechar",
+  "authOffline": "Sem conexão com o servidor. Tente de novo.",
+  "authFailure": "{failure, select, unavailable{Esse login não está disponível agora.} tooManyAttempts{Muitas tentativas. Espere um pouco e tente de novo.} expired{Essa etapa expirou. Comece de novo.} unknown{Não deu certo. Tente de novo.} other{}}",
+  "@authFailure": {
+    "placeholders": {
+      "failure": {
+        "type": "String"
+      }
+    }
+  },
+  "googleFailed": "Não deu pra entrar com o Google. Tente de novo.",
+  "appleFailed": "Não deu pra entrar com a Apple. Tente de novo.",
+  "signIn": "Entrar",
+  "loginWelcome": "Que bom te ver de novo.",
+  "email": "E-mail",
+  "emailHint": "voce@email.com",
+  "password": "Senha",
+  "passwordHint": "Sua senha",
+  "forgotPassword": "Esqueci minha senha",
+  "newHere": "Novo por aqui?",
+  "createAccount": "Criar conta",
+  "tagline": "Inglês de verdade, tirado das conversas do seu dia.",
+  "forgotTitle": "Esqueceu a senha?",
+  "forgotSubtitle": "Acontece. A gente te ajuda.",
+  "forgotBody": "Digite o e-mail da sua conta. Enviamos um código pra você criar uma senha nova.",
+  "sendCode": "Enviar código",
+  "rememberedPassword": "Lembrou a senha?",
+  "newPasswordTitle": "Nova senha",
+  "newPasswordSubtitle": "Última etapa.",
+  "newPasswordBody": "Crie uma senha nova pra sua conta. Depois de salvar, você já entra no app.",
+  "newPasswordHint": "Sua senha nova",
+  "newPasswordHelper": "Mínimo de 8 caracteres. Evite só números.",
+  "saveAndSignIn": "Salvar e entrar",
+  "resetCodeTitle": "Digite o código",
+  "resetCodeSubtitle": "Pra criar sua senha nova.",
+  "signupSubtitle": "Seu vocabulário salvo em qualquer celular.",
+  "name": "Nome",
+  "nameHint": "Como quer ser chamado",
+  "passwordCreateHint": "Crie uma senha",
+  "passwordHelper": "Mínimo de 8 caracteres.",
+  "haveAccount": "Já tem conta?",
+  "verifyEmailTitle": "Confirme seu e-mail",
+  "verifyEmailSubtitle": "Falta pouco pra começar.",
+  "codeSent": "Enviamos um código de {length} dígitos para",
+  "@codeSent": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "confirm": "Confirmar",
+  "resendIn": "Não chegou? Reenviar em {time}",
+  "@resendIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resendCode": "Reenviar código",
+  "checkSpam": "Confira também a caixa de spam.",
+  "changeEmail": "Trocar e-mail",
+  "or": "ou",
+  "continueWithGoogle": "Continuar com Google",
+  "continueWithApple": "Continuar com a Apple",
+  "recording": "Gravando…",
+  "recordAudio": "Gravar áudio",
+  "listenBeforeSaving": "Ouça antes de salvar",
+  "recordHint": "Grave a frase do jeito que ouviu",
+  "micDeniedTitle": "Sem acesso ao microfone",
+  "micDeniedMessage": "Libere o microfone nas configurações do celular pra gravar.",
+  "ofDuration": "de {max}",
+  "@ofDuration": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "recordingTime": "Tempo de gravação",
+  "stopRecording": "Parar gravação",
+  "tapToStop": "Toque para parar",
+  "audioPrivacy": "O áudio fica só no seu celular. A gente guarda apenas a transcrição.",
+  "saveToInbox": "Salvar no Inbox",
+  "reRecord": "Regravar",
+  "savedProcessing": "Já está processando.",
+  "savedOffline": "Puxe a lista no Inbox quando tiver internet.",
+  "savedReady": "Pronto pra escolher os termos.",
+  "savedToInbox": "Salvo no Inbox",
+  "see": "Ver",
+  "photo": "Foto",
+  "photoHint": "Uma placa, um cardápio, uma legenda",
+  "checkBeforeSaving": "Confira antes de salvar",
+  "cameraDeniedTitle": "Sem acesso à câmera",
+  "cameraDeniedMessage": "Libere a câmera nas configurações do celular pra tirar foto.",
+  "takePhoto": "Tirar foto",
+  "takePhotoHint": "Abre a câmera do celular",
+  "pickFromGallery": "Escolher da galeria",
+  "pickFromGalleryHint": "Usa uma foto que você já tem",
+  "photoPrivacy": "A foto fica só no seu celular. A gente guarda apenas o texto lido dela.",
+  "chosenPhoto": "Foto escolhida",
+  "changePhoto": "Trocar foto",
+  "typeText": "Digitar texto",
+  "typeTextHint": "O que você ouviu ou leu hoje",
+  "textCaptureLabel": "Palavra, expressão ou frase",
+  "textCaptureHelper": "Frase ou trecho. Os termos você escolhe no Inbox.",
+  "openSettings": "Abrir configurações",
+  "homeEmptyTitle": "Seu inglês começa aqui",
+  "homeEmptyMessage": "Capture o que você ouviu ou leu hoje, por foto, áudio ou texto. Os termos que você confirmar aparecem aqui.",
+  "homeFirstCapture": "Fazer a primeira captura",
+  "greeting": "{period, select, morning{Bom dia!} afternoon{Boa tarde!} evening{Boa noite!} other{}}",
+  "@greeting": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "greetingName": "{period, select, morning{Bom dia, {name}} afternoon{Boa tarde, {name}} evening{Boa noite, {name}} other{}}",
+  "@greetingName": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeTagline": "Vamos tagarelar?",
+  "reviewToday": "Revisão de hoje",
+  "termsWaiting": "{count, plural, =0{{count} termos esperando} =1{1 termo esperando} other{{count} termos esperando}}",
+  "@termsWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "start": "Começar",
+  "yourVocabulary": "Seu vocabulário",
+  "seeAll": "Ver tudo",
+  "totalTerms": "Total de termos",
+  "thisWeek": "+{count} esta semana",
+  "@thisWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "learningMastered": "{learning} aprendendo, {mastered} dominados",
+  "@learningMastered": {
+    "placeholders": {
+      "learning": {
+        "type": "int"
+      },
+      "mastered": {
+        "type": "int"
+      }
+    }
+  },
+  "termStatus": "{status, select, learning{Aprendendo} mastered{Dominado} other{}}",
+  "@termStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "wordOfDay": "Palavra do dia",
+  "listenPronunciation": "Ouvir pronúncia",
+  "addToVocabulary": "Adicionar ao vocabulário",
+  "inboxTab": "{tab, select, all{Todas} ready{Prontas} pending{Pendentes} other{}}",
+  "@inboxTab": {
+    "placeholders": {
+      "tab": {
+        "type": "String"
+      }
+    }
+  },
+  "captureSection": "{section, select, attention{Precisa de atenção} ready{Prontas} processing{Processando} other{}}",
+  "@captureSection": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
+  },
+  "noConnectionRetry": "Sem conexão. Tente de novo quando tiver internet.",
+  "inboxEmptyTitle": "Inbox zerado",
+  "inboxEmptyMessage": "Use o + para capturar um termo novo.",
+  "nothingHere": "Nada por aqui",
+  "noCapturesInTab": "Nenhuma captura nessa aba.",
+  "captureCount": "{count, plural, =0{{count} capturas} =1{1 captura} other{{count} capturas}}",
+  "@captureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "waitingUpload": "{count} esperando envio",
+  "@waitingUpload": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discardCapture": "Descartar captura",
+  "pickTerms": "Escolher termos",
+  "captureSource": "{source, select, photo{Foto} audio{Áudio} text{Texto} other{}}",
+  "@captureSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmHint": "Ao confirmar, a IA monta a ficha de cada termo.",
+  "pickAtLeastOne": "Escolha pelo menos um termo",
+  "confirmAnalysisCount": "Confirmar análise · {count, plural, =0{{count} termos} =1{1 termo} other{{count} termos}}",
+  "@confirmAnalysisCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickHelp": "Arraste o dedo sobre as palavras pra marcar uma expressão. Toque numa palavra pra marcar só ela.",
+  "textSection": "Texto",
+  "done": "Pronto",
+  "editText": "Editar texto",
+  "editTextHelper": "Corrija o que saiu errado. Os termos marcados continuam quando a palavra não mudar.",
+  "chosenTermsCount": "Termos escolhidos · {count}",
+  "@chosenTermsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noTermsYetTap": "Nenhum ainda. Toque numa palavra do texto.",
+  "termTooLong": "Expressão grande demais. Marque até {max} caracteres.",
+  "@termTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "tooManyTerms": "Limite de {max} termos por captura.",
+  "@tooManyTerms": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "stop": "Parar",
+  "listenRecording": "Ouvir gravação",
+  "discard": "Descartar",
+  "processNow": "Processar agora",
+  "edit": "Editar",
+  "confirmAnalysis": "Confirmar análise",
+  "readingPhoto": "Lendo o texto da foto…",
+  "noTextInPhoto": "Não achei texto na foto",
+  "noSpeech": "Não ouvi fala em inglês",
+  "noTextInPhotoHint": "Tente outra foto ou descarte esta.",
+  "noSpeechHint": "Grave de novo ou descarte este áudio.",
+  "processFailedTitle": "Não deu pra processar agora",
+  "processFailedHint": "Toque em Processar agora pra tentar de novo.",
+  "timeNow": "agora",
+  "minutesAgo": "há {minutes} min",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "há {hours} h",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "yesterday": "ontem",
+  "captureStatus": "{status, select, failed{Erro} ready{Pronta} processing{Processando} analyzed{Analisada} other{}}",
+  "@captureStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "capturePhoto": "Foto da captura",
+  "captureContent": "{source, select, text{Seu texto} photo{Texto da foto} audio{Transcrição} other{}}",
+  "@captureContent": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "missingPhoto": "A foto não está mais neste celular. O texto continua salvo.",
+  "missingAudio": "O áudio não está mais neste celular. A transcrição continua salva.",
+  "termsChosen": "{count, plural, =0{{count} termos escolhidos} =1{1 termo escolhido} other{{count} termos escolhidos}}",
+  "@termsChosen": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "waitingModel": "Esperando o modelo de áudio baixar…",
+  "transcribing": "Transcrevendo o áudio…",
+  "account": "Conta",
+  "privacy": "Privacidade",
+  "privacyText": "Foto e áudio ficam só neste celular. A API guarda só o texto.",
+  "signOut": "Sair",
+  "preferences": "Preferências",
+  "language": "Idioma",
+  "languageAuto": "Automático",
+  "languageAutoHint": "Segue o idioma do celular",
+  "languageAutoValue": "Automático · {language}",
+  "@languageAutoValue": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "languageSheetSubtitle": "Muda os textos do app",
+  "modelReady": "Transcrito no celular · modelo de {size}",
+  "@modelReady": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "ready": "Pronto",
+  "modelDownloading": "Baixando o modelo: {percent}% de {size}",
+  "@modelDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "Baixando",
+  "modelWaiting": "O modelo de {size} baixa sozinho quando tiver internet",
+  "@modelWaiting": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "waiting": "Esperando",
+  "worksOffline": "Funciona sem internet",
+  "photoText": "Texto de fotos",
+  "photoTextHint": "Lido no celular, sem enviar a foto",
+  "englishAudio": "Áudio em inglês",
+  "statTerms": "Termos",
+  "statLearning": "Aprendendo",
+  "statMastered": "Dominados",
+  "ungrouped": "Sem grupo",
+  "moveFailed": "Não deu pra mover agora. Confira a internet e tente de novo.",
+  "termsMoved": "{count, plural, =0{{count} termos movidos} =1{1 termo movido} other{{count} termos movidos}}",
+  "@termsMoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "termsMovedTo": "{count, plural, =0{Agora estão em {group}.} =1{Agora está em {group}.} other{Agora estão em {group}.}}",
+  "@termsMovedTo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "Desfazer",
+  "undoFailed": "Não deu pra desfazer agora.",
+  "deleteFailed": "Não deu pra apagar agora. Confira a internet e tente de novo.",
+  "termsDeleted": "{count, plural, =0{{count} termos apagados} =1{1 termo apagado} other{{count} termos apagados}}",
+  "@termsDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "termsDeletedMessage": "{count, plural, =0{Saíram do vocabulário.} =1{Saiu do vocabulário.} other{Saíram do vocabulário.}}",
+  "@termsDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cancelSelection": "Cancelar seleção",
+  "moreOptions": "Mais opções",
+  "select": "Selecionar",
+  "selectAll": "Selecionar todos",
+  "delete": "Apagar",
+  "moveTerms": "{count, plural, =0{Selecione os termos} =1{Mover 1 termo} other{Mover {count} termos}}",
+  "@moveTerms": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "allOrganized": "Tudo organizado",
+  "allOrganizedMessage": "Os termos que você confirmar nas capturas chegam aqui.",
+  "groupEmptyTitle": "Nenhum termo aqui ainda",
+  "groupEmptyMessage": "Termos novos chegam em Sem grupo. De lá, mova os que forem daqui.",
+  "ungroupedHelp": "Os termos que você confirma nas capturas chegam aqui. Mova cada um pro grupo dele.",
+  "allCount": "Todos · {count}",
+  "@allCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionMeta": "{count, plural, =0{Toque nos termos pra escolher} =1{1 selecionado} other{{count} selecionados}}",
+  "@selectionMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nothingToOrganize": "Nenhum termo pra organizar",
+  "termsToGroup": "{count, plural, =0{{count} termos pra pôr num grupo} =1{1 termo pra pôr num grupo} other{{count} termos pra pôr num grupo}}",
+  "@termsToGroup": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noTermsYet": "Nenhum termo ainda",
+  "termCountMastered": "{count, plural, =0{{count} termos} =1{1 termo} other{{count} termos}} · {mastered} dominados",
+  "@termCountMastered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "mastered": {
+        "type": "int"
+      }
+    }
+  },
+  "termCount": "{count, plural, =0{{count} termos} =1{1 termo} other{{count} termos}}",
+  "@termCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupCount": "{count, plural, =0{{count} grupos} =1{1 grupo} other{{count} grupos}}",
+  "@groupCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "termsInGroups": "{terms} em {groups}",
+  "@termsInGroups": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "groups": {
+        "type": "String"
+      }
+    }
+  },
+  "editGroup": "Editar grupo",
+  "editGroupHint": "Nome, ícone e cor",
+  "selectTerms": "Selecionar termos",
+  "selectTermsHint": "Mova ou apague termos",
+  "deleteGroup": "Apagar grupo",
+  "deleteGroupHint": "Os termos voltam pra Sem grupo",
+  "deleteGroupTitle": "Apagar {name}?",
+  "@deleteGroupTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteGroupSubtitle": "{count, plural, =0{O grupo está vazio.} =1{O termo volta pra Sem grupo.} other{Os {count} termos voltam pra Sem grupo.}}",
+  "@deleteGroupSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cancel": "Cancelar",
+  "groupDeleted": "Grupo apagado",
+  "groupDeletedMessage": "{count, plural, =0{{name} saiu da lista.} =1{O termo foi pra Sem grupo.} other{Os {count} termos foram pra Sem grupo.}}",
+  "@groupDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groupCreated": "Grupo criado",
+  "groupCreatedMessage": "{name} está no topo da lista.",
+  "@groupCreatedMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "open": "Abrir",
+  "newGroup": "Novo grupo",
+  "vocabularyEmptyMessage": "Capture e confirme a análise pra começar.",
+  "organize": "Organizar",
+  "noGroupsYet": "Nenhum grupo ainda",
+  "noGroupsYetMessage": "Crie um grupo pra organizar seus termos.",
+  "createGroup": "Criar grupo",
+  "yourGroups": "Seus grupos",
+  "noTermsInGroupYet": "Sem termos ainda",
+  "percentMastered": "{percent}% dominado",
+  "@percentMastered": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "groupSaveRejected": "{action, select, create{Não deu pra criar o grupo.} save{Não deu pra salvar o grupo.} other{}}",
+  "@groupSaveRejected": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "groupSaveFailed": "{action, select, create{Não deu pra criar o grupo agora. Tente de novo.} save{Não deu pra salvar o grupo agora. Tente de novo.} other{}}",
+  "@groupSaveFailed": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineRetry": "Sem conexão. Tente de novo.",
+  "groupSheetNewHint": "Junte termos do mesmo assunto",
+  "groupSheetEditHint": "Mude o nome, o ícone ou a cor",
+  "groupNameHint": "Ex.: Música, Faculdade",
+  "groupNameTaken": "Você já tem um grupo com esse nome.",
+  "nameTheGroup": "Dê um nome ao grupo",
+  "save": "Salvar",
+  "moveSheetTitle": "Mover pra qual grupo?",
+  "moveSheetSubtitle": "{terms} de {from}",
+  "@moveSheetSubtitle": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "noGroupsTitle": "Você ainda não tem grupos",
+  "noGroupsMessage": "Crie um grupo pra guardar esses termos.",
+  "termKind": "{kind, select, word{Palavra} expression{Expressão} other{}}",
+  "@termKind": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "groupIcon": "{icon, select, layers{Geral} talk{Conversa} work{Trabalho} travel{Viagem} food{Comida} tv{Séries} music{Música} study{Estudos} heart{Favoritos} game{Jogos} shopping{Compras} sport{Esporte} health{Saúde} home{Casa} nature{Natureza} paw{Animais} tech{Tecnologia} money{Dinheiro} car{Transporte} family{Família} book{Livros} art{Arte} party{Festa} weather{Clima} phone{Celular} mail{E-mail} code{Programação} science{Ciência} news{Notícias} movie{Cinema} camera{Fotografia} place{Lugares} city{Cidade} globe{Mundo} calendar{Datas} clock{Rotina} star{Importante} idea{Ideias} smile{Sentimentos} shirt{Roupas} restaurant{Restaurante} drink{Bebidas} mountain{Aventura} gift{Presentes} flag{Países} podcast{Podcasts} goal{Metas} writing{Escrita} other{}}",
+  "@groupIcon": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  }
+}

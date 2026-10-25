@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class AppCodeField extends StatefulWidget {
   const AppCodeField({
@@ -85,7 +86,7 @@ class _AppCodeFieldState extends State<AppCodeField> {
                 opacity: 0,
                 alwaysIncludeSemantics: true,
                 child: Semantics(
-                  label: 'Código de ${widget.length} dígitos',
+                  label: context.l10n.codeFieldLabel(widget.length),
                   child: TextField(
                     controller: widget.controller,
                     focusNode: _focus,

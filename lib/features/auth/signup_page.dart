@@ -4,6 +4,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/auth_form.dart';
 import 'package:tagarela/features/auth/widgets/auth_header.dart';
 import 'package:tagarela/features/auth/widgets/social_buttons.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -39,23 +40,23 @@ class _SignupPageState extends State<SignupPage> with AuthForm {
   @override
   Widget build(BuildContext context) {
     return SheetPage(
-      header: const AuthHeader(
-        title: 'Criar conta',
-        subtitle: 'Seu vocabulário salvo em qualquer celular.',
+      header: AuthHeader(
+        title: context.l10n.createAccount,
+        subtitle: context.l10n.signupSubtitle,
       ),
       gap: AppSpacing.s4,
       children: [
         AppTextField(
-          label: 'Nome',
-          hint: 'Como quer ser chamado',
+          label: context.l10n.name,
+          hint: context.l10n.nameHint,
           icon: AppIcons.profile,
           controller: _name,
           errorText: errors['name'],
           textInputAction: TextInputAction.next,
         ),
         AppTextField(
-          label: 'E-mail',
-          hint: 'voce@email.com',
+          label: context.l10n.email,
+          hint: context.l10n.emailHint,
           icon: AppIcons.mail,
           controller: _email,
           errorText: errors['email'],
@@ -63,17 +64,17 @@ class _SignupPageState extends State<SignupPage> with AuthForm {
           textInputAction: TextInputAction.next,
         ),
         AppTextField(
-          label: 'Senha',
-          hint: 'Crie uma senha',
+          label: context.l10n.password,
+          hint: context.l10n.passwordCreateHint,
           icon: AppIcons.lock,
           controller: _password,
-          helperText: 'Mínimo de 8 caracteres.',
+          helperText: context.l10n.passwordHelper,
           errorText: errors['password'],
           obscure: true,
           textInputAction: TextInputAction.done,
         ),
         AppButton(
-          label: 'Criar conta',
+          label: context.l10n.createAccount,
           onPressed: busy ? null : _signup,
           size: AppButtonSize.large,
           expand: true,
@@ -86,7 +87,7 @@ class _SignupPageState extends State<SignupPage> with AuthForm {
               : () => submit(
                   auth.signInWithGoogle,
                   onResult,
-                  failure: 'Não deu pra entrar com o Google. Tente de novo.',
+                  failure: context.l10n.googleFailed,
                   button: AuthAction.google,
                 ),
           onApple: busy
@@ -94,7 +95,7 @@ class _SignupPageState extends State<SignupPage> with AuthForm {
               : () => submit(
                   auth.signInWithApple,
                   onResult,
-                  failure: 'Não deu pra entrar com a Apple. Tente de novo.',
+                  failure: context.l10n.appleFailed,
                   button: AuthAction.apple,
                 ),
         ),
@@ -102,11 +103,11 @@ class _SignupPageState extends State<SignupPage> with AuthForm {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Já tem conta?',
+              context.l10n.haveAccount,
               style: AppText.bodyMd.copyWith(color: context.colors.inkSoft),
             ),
             AppButton(
-              label: 'Entrar',
+              label: context.l10n.signIn,
               onPressed: () => Navigator.of(context).pop(),
               variant: AppButtonVariant.text,
               size: AppButtonSize.small,

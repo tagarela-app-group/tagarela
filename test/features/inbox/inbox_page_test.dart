@@ -9,6 +9,7 @@ import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 
 import '../../helpers/fake_capture_api.dart';
 import '../../helpers/fake_capture_store.dart';
+import '../../helpers/l10n.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
@@ -152,9 +153,10 @@ void main() {
   });
 
   test('resumo do topo', () {
-    expect(summary([sampleCapture('a')]), '1 captura');
+    expect(summary(pt, []), '0 capturas');
+    expect(summary(pt, [sampleCapture('a')]), '1 captura');
     expect(
-      summary([
+      summary(pt, [
         sampleCapture('a'),
         sampleCapture('b', pending: const {CaptureSync.update}),
       ]),

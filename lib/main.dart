@@ -8,12 +8,14 @@ import 'package:tagarela/data/capture_device.dart';
 import 'package:tagarela/data/database.dart';
 import 'package:tagarela/data/media_storage.dart';
 import 'package:tagarela/data/model_storage.dart';
+import 'package:tagarela/data/preferences.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/services/capture_service.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/data/social_sign_in.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
+import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/data/text_extractor.dart';
@@ -40,6 +42,7 @@ void main() {
         onConfirmed: vocabulary.load,
       ),
       vocabulary: vocabulary,
+      language: LanguageStore(Preferences()),
       playback: AudioPlayback(),
       device: CaptureDevice(),
       speech: SpeechModelStore(models),

@@ -5,6 +5,7 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class AsyncStatus extends StatelessWidget {
   const AsyncStatus({super.key, required this.error, required this.onRetry});
@@ -18,9 +19,9 @@ class AsyncStatus extends StatelessWidget {
       return StateMessage(
         icon: AppIcons.offline,
         accent: AppAccent.coral,
-        title: 'Não deu pra carregar',
-        message: 'Confira sua conexão e tente de novo.',
-        actionLabel: 'Tentar de novo',
+        title: context.l10n.loadFailedTitle,
+        message: context.l10n.loadFailedMessage,
+        actionLabel: context.l10n.tryAgain,
         onAction: onRetry,
       );
     }
@@ -29,7 +30,7 @@ class AsyncStatus extends StatelessWidget {
       child: Center(
         child: CircularProgressIndicator(
           color: context.colors.primary,
-          semanticsLabel: 'Carregando',
+          semanticsLabel: context.l10n.loading,
         ),
       ),
     );

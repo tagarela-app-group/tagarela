@@ -5,6 +5,7 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 typedef IconChoice = ({IconData icon, String label});
 
@@ -15,7 +16,7 @@ class IconPicker extends StatefulWidget {
     required this.selected,
     required this.accent,
     required this.onChanged,
-    this.label = 'Ícone',
+    this.label,
   });
 
   static const perPage = 12;
@@ -25,7 +26,7 @@ class IconPicker extends StatefulWidget {
   final int selected;
   final AppAccent accent;
   final ValueChanged<int> onChanged;
-  final String label;
+  final String? label;
 
   @override
   State<IconPicker> createState() => _IconPickerState();
@@ -50,15 +51,20 @@ class _IconPickerState extends State<IconPicker> {
         Row(
           spacing: AppSpacing.s2,
           children: [
-            Expanded(child: Text(widget.label, style: AppText.label)),
+            Expanded(
+              child: Text(
+                widget.label ?? context.l10n.icon,
+                style: AppText.label,
+              ),
+            ),
             if (_page > 0)
               _PageButton(
-                label: 'Voltar',
+                label: context.l10n.back,
                 icon: AppIcons.back,
                 onTap: () => setState(() => _page--),
               ),
             Semantics(
-              label: 'Página $pageLabel dos ícones',
+              label: context.l10n.iconPage(pageLabel),
               excludeSemantics: true,
               child: Text(
                 pageLabel,
@@ -74,7 +80,7 @@ class _IconPickerState extends State<IconPicker> {
               maintainAnimation: true,
               maintainState: true,
               child: _PageButton(
-                label: 'Avançar',
+                label: context.l10n.next,
                 icon: AppIcons.forward,
                 trailingIcon: true,
                 onTap: hasNext ? () => setState(() => _page++) : null,

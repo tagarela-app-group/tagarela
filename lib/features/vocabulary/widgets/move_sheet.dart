@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/vocabulary/count_label.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 typedef MoveTarget = ({TermGroup? group});
 
@@ -24,19 +24,22 @@ class MoveSheet extends StatelessWidget {
         Navigator.pop<MoveTarget>(context, (group: group));
 
     return AppSheet(
-      title: 'Mover pra qual grupo?',
-      subtitle: '${termsLabel(count)} de $from',
+      title: context.l10n.moveSheetTitle,
+      subtitle: context.l10n.moveSheetSubtitle(
+        context.l10n.termCount(count),
+        from,
+      ),
       child: groups.isEmpty
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const StateMessage(
+                StateMessage(
                   icon: AppIcons.newGroup,
-                  title: 'Você ainda não tem grupos',
-                  message: 'Crie um grupo pra guardar esses termos.',
+                  title: context.l10n.noGroupsTitle,
+                  message: context.l10n.noGroupsMessage,
                 ),
                 AppButton(
-                  label: 'Criar grupo',
+                  label: context.l10n.createGroup,
                   expand: true,
                   onPressed: () => pick(null),
                 ),
@@ -49,7 +52,7 @@ class MoveSheet extends StatelessWidget {
                 OptionRow(
                   icon: AppIcons.add,
                   accent: AppAccent.violet,
-                  title: 'Novo grupo',
+                  title: context.l10n.newGroup,
                   dashed: true,
                   trailing: const SizedBox.shrink(),
                   onTap: () => pick(null),
@@ -60,8 +63,8 @@ class MoveSheet extends StatelessWidget {
                     accent: group.accent,
                     title: group.name,
                     subtitle: group.terms.isEmpty
-                        ? 'Sem termos ainda'
-                        : termsLabel(group.terms.length),
+                        ? context.l10n.noTermsInGroupYet
+                        : context.l10n.termCount(group.terms.length),
                     onTap: () => pick(group),
                   ),
               ],

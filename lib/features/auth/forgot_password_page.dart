@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/auth_form.dart';
 import 'package:tagarela/features/auth/widgets/auth_header.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key, this.email = ''});
@@ -38,20 +39,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with AuthForm {
     final c = context.colors;
 
     return SheetPage(
-      header: const AuthHeader(
-        title: 'Esqueceu a senha?',
-        subtitle: 'Acontece. A gente te ajuda.',
+      header: AuthHeader(
+        title: context.l10n.forgotTitle,
+        subtitle: context.l10n.forgotSubtitle,
       ),
       gap: AppSpacing.s4,
       children: [
         Text(
-          'Digite o e-mail da sua conta. Enviamos um código pra você criar '
-          'uma senha nova.',
+          context.l10n.forgotBody,
           style: AppText.bodyLg.copyWith(color: c.inkSoft),
         ),
         AppTextField(
-          label: 'E-mail',
-          hint: 'voce@email.com',
+          label: context.l10n.email,
+          hint: context.l10n.emailHint,
           icon: AppIcons.mail,
           controller: _email,
           errorText: errors['email'],
@@ -59,7 +59,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with AuthForm {
           textInputAction: TextInputAction.done,
         ),
         AppButton(
-          label: 'Enviar código',
+          label: context.l10n.sendCode,
           onPressed: busy ? null : _send,
           loading: busy,
           size: AppButtonSize.large,
@@ -69,11 +69,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with AuthForm {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Lembrou a senha?',
+              context.l10n.rememberedPassword,
               style: AppText.bodyMd.copyWith(color: c.inkSoft),
             ),
             AppButton(
-              label: 'Entrar',
+              label: context.l10n.signIn,
               onPressed: () => Navigator.of(context).pop(),
               variant: AppButtonVariant.text,
               size: AppButtonSize.small,

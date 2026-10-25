@@ -6,12 +6,11 @@ import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/features/auth/reset_code_page.dart';
 import 'package:tagarela/features/auth/verify_email_page.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 enum AuthAction { submit, google, apple, resend }
 
 mixin AuthForm<T extends StatefulWidget> on State<T> {
-  static const offline = 'Sem conexão com o servidor. Tente de novo.';
-
   AuthAction? loading;
   Map<String?, String> errors = const {};
 
@@ -24,7 +23,7 @@ mixin AuthForm<T extends StatefulWidget> on State<T> {
   Future<void> submit<R>(
     Future<R> Function() action,
     void Function(R result) onDone, {
-    String failure = offline,
+    String? failure,
     AuthAction button = AuthAction.submit,
   }) async {
     setState(() {
@@ -38,10 +37,14 @@ mixin AuthForm<T extends StatefulWidget> on State<T> {
       if (!mounted) return;
       setState(() => errors = e.errors);
       final general = e.errors.entries.where((e) => !fields.contains(e.key));
-      if (general.isNotEmpty) _show(general.first.value);
+      if (e.failure case final failure?) {
+        _show(context.l10n.authFailure(failure.name));
+      } else if (general.isNotEmpty) {
+        _show(general.first.value);
+      }
     } on Exception catch (e) {
       debugPrint('Falha no login: $e');
-      if (mounted) _show(failure);
+      if (mounted) _show(failure ?? context.l10n.authOffline);
     } finally {
       if (mounted) setState(() => loading = null);
     }

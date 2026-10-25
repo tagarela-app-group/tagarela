@@ -5,15 +5,15 @@ import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/inbox/pick_terms_page.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 enum InboxTab {
-  all('Todas', CaptureSection.values),
-  ready('Prontas', [CaptureSection.ready]),
-  pending('Pendentes', [CaptureSection.attention, CaptureSection.processing]);
+  all(CaptureSection.values),
+  ready([CaptureSection.ready]),
+  pending([CaptureSection.attention, CaptureSection.processing]);
 
-  const InboxTab(this.label, this.sections);
+  const InboxTab(this.sections);
 
-  final String label;
   final List<CaptureSection> sections;
 }
 
@@ -29,14 +29,11 @@ class _InboxPageState extends State<InboxPage> {
 
   Future<void> _run(Future<void> Function() action) async {
     final messenger = ScaffoldMessenger.of(context);
+    final offline = context.l10n.noConnectionRetry;
     try {
       await action();
     } on Exception {
-      messenger.showSnackBar(
-        const SnackBar(
-          content: Text('Sem conexão. Tente de novo quando tiver internet.'),
-        ),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(offline)));
     }
   }
 
@@ -50,8 +47,8 @@ class _InboxPageState extends State<InboxPage> {
         final items = captures.data?.where((c) => c.section != null).toList();
         return SheetPage(
           header: PageHeader(
-            title: 'Inbox',
-            subtitle: items == null ? null : summary(items),
+            title: context.l10n.tabInbox,
+            subtitle: items == null ? null : summary(context.l10n, items),
           ),
           gap: AppSpacing.s3,
           onRefresh: () => _run(captures.sync),
@@ -77,11 +74,11 @@ class _InboxPageState extends State<InboxPage> {
 
   List<Widget> _list(List<Capture> items) {
     if (items.isEmpty) {
-      return const [
+      return [
         StateMessage(
           icon: AppIcons.inbox,
-          title: 'Inbox zerado',
-          message: 'Use o + para capturar um termo novo.',
+          title: context.l10n.inboxEmptyTitle,
+          message: context.l10n.inboxEmptyMessage,
         ),
       ];
     }
@@ -91,18 +88,22 @@ class _InboxPageState extends State<InboxPage> {
 
     return [
       SegmentedControl(
-        options: [for (final tab in InboxTab.values) tab.label],
+        options: [
+          for (final tab in InboxTab.values) context.l10n.inboxTab(tab.name),
+        ],
         selected: _tab.index,
         onChanged: (i) => setState(() => _tab = InboxTab.values[i]),
       ),
       if (sections.isEmpty)
-        const StateMessage(
+        StateMessage(
           icon: AppIcons.inbox,
-          title: 'Nada por aqui',
-          message: 'Nenhuma captura nessa aba.',
+          title: context.l10n.nothingHere,
+          message: context.l10n.noCapturesInTab,
         ),
       for (final (section, group) in sections) ...[
-        _SectionLabel('${section.label} · ${group.length}'),
+        _SectionLabel(
+          '${context.l10n.captureSection(section.name)} · ${group.length}',
+        ),
         for (final capture in group)
           CaptureCard(
             key: ValueKey(capture.id),
@@ -122,10 +123,10 @@ class _InboxPageState extends State<InboxPage> {
   }
 }
 
-String summary(List<Capture> items) {
-  final count = items.length == 1 ? '1 captura' : '${items.length} capturas';
+String summary(AppLocalizations l10n, List<Capture> items) {
+  final count = l10n.captureCount(items.length);
   final waiting = items.where((c) => c.pending.isNotEmpty).length;
-  return waiting == 0 ? count : '$count · $waiting esperando envio';
+  return waiting == 0 ? count : '$count · ${l10n.waitingUpload(waiting)}';
 }
 
 class _SectionLabel extends StatelessWidget {

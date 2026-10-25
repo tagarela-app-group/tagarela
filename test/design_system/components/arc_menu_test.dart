@@ -179,9 +179,8 @@ void main() {
     var taps = 0;
     tester.useTallScreen();
     await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.light,
-        home: Scaffold(
+      testApp(
+        Scaffold(
           body: Stack(
             children: [
               Align(

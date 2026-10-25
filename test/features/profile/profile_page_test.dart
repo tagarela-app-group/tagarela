@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
@@ -12,6 +13,7 @@ import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/fake_auth.dart';
 import '../../helpers/fake_capture_store.dart';
 import '../../helpers/fake_extraction.dart';
+import '../../helpers/fake_preferences.dart';
 import '../../helpers/fixtures.dart';
 import '../../helpers/pump_app.dart';
 
@@ -63,6 +65,44 @@ void main() {
     expect(find.byType(ProgressCard), findsOneWidget);
     expect(find.text('CONTA'), findsNothing);
     expect(find.text('Sair'), findsOneWidget);
+  });
+
+  group('Idioma', () {
+    testWidgets('sem escolha mostra o automático com o idioma em uso', (
+      tester,
+    ) async {
+      await tester.pumpPage(const ProfilePage());
+
+      expect(find.text('PREFERÊNCIAS'), findsOneWidget);
+      expect(find.text('Automático · Português (Brasil)'), findsOneWidget);
+    });
+
+    testWidgets('escolher no sheet salva, fecha e mostra o nome', (
+      tester,
+    ) async {
+      final preferences = FakePreferences();
+      final language = LanguageStore(preferences);
+      await tester.pumpPage(const ProfilePage(), language: language);
+
+      await tester.tap(find.text('Idioma'));
+      await tester.pumpAndSettle();
+      expect(find.byType(AppSheet), findsOneWidget);
+      for (final option in AppLanguage.values) {
+        expect(find.text(option.label), findsOneWidget);
+      }
+      expect(
+        tester.getSemantics(find.text('Automático')),
+        isSemantics(isSelected: true, isInMutuallyExclusiveGroup: true),
+      );
+
+      await tester.tap(find.text('Español'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppSheet), findsNothing);
+      expect(language.choice, AppLanguage.es);
+      expect(preferences.stored, 'es');
+      expect(find.text('Español'), findsOneWidget);
+    });
   });
 
   group('Funciona sem internet', () {

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/vocabulary/count_label.dart';
 import 'package:tagarela/features/vocabulary/group_page.dart';
 import 'package:tagarela/features/vocabulary/widgets/group_card.dart';
 import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class VocabularyPage extends StatelessWidget {
   const VocabularyPage({super.key});
@@ -20,13 +20,9 @@ class VocabularyPage extends StatelessWidget {
     final count = deleted.terms.length;
     AppToast.show(
       context,
-      title: 'Grupo apagado',
-      message: switch (count) {
-        0 => '${deleted.name} saiu da lista.',
-        1 => 'O termo foi pra Sem grupo.',
-        _ => 'Os $count termos foram pra Sem grupo.',
-      },
-      actionLabel: count == 0 ? null : 'Ver',
+      title: context.l10n.groupDeleted,
+      message: context.l10n.groupDeletedMessage(count, deleted.name),
+      actionLabel: count == 0 ? null : context.l10n.see,
       onAction: () => _open(context, const GroupPage.ungrouped()),
       aboveTabBar: true,
     );
@@ -40,9 +36,9 @@ class VocabularyPage extends StatelessWidget {
     if (group == null || !context.mounted) return;
     AppToast.show(
       context,
-      title: 'Grupo criado',
-      message: '${group.name} está no topo da lista.',
-      actionLabel: 'Abrir',
+      title: context.l10n.groupCreated,
+      message: context.l10n.groupCreatedMessage(group.name),
+      actionLabel: context.l10n.open,
       onAction: () => _open(context, GroupPage(groupId: group.id)),
       aboveTabBar: true,
     );
@@ -59,11 +55,11 @@ class VocabularyPage extends StatelessWidget {
         final empty = data == null || data.isEmpty;
         return SheetPage(
           header: PageHeader(
-            title: 'Vocabulário',
-            subtitle: empty ? null : _subtitle(data),
+            title: context.l10n.tabVocabulary,
+            subtitle: empty ? null : _subtitle(context.l10n, data),
             trailing: AppIconButton(
               icon: AppIcons.newGroup,
-              tooltip: 'Novo grupo',
+              tooltip: context.l10n.newGroup,
               onPressed: () => _newGroup(context),
               variant: AppIconButtonVariant.onHeader,
             ),
@@ -75,11 +71,11 @@ class VocabularyPage extends StatelessWidget {
             null => [
               AsyncStatus(error: vocabulary.error, onRetry: vocabulary.load),
             ],
-            Vocabulary(isEmpty: true) => const [
+            Vocabulary(isEmpty: true) => [
               StateMessage(
                 icon: AppIcons.vocabulary,
-                title: 'Nenhum termo ainda',
-                message: 'Capture e confirme a análise pra começar.',
+                title: context.l10n.noTermsYet,
+                message: context.l10n.vocabularyEmptyMessage,
               ),
             ],
             _ => [
@@ -87,13 +83,12 @@ class VocabularyPage extends StatelessWidget {
                 OptionRow(
                   icon: AppIcons.ungrouped,
                   accent: AppAccent.violet,
-                  title: 'Sem grupo',
-                  subtitle:
-                      '${termsLabel(data.ungrouped.length)} pra pôr num grupo',
+                  title: context.l10n.ungrouped,
+                  subtitle: context.l10n.termsToGroup(data.ungrouped.length),
                   dashed: true,
                   color: context.colors.surface,
                   trailing: Text(
-                    'Organizar',
+                    context.l10n.organize,
                     style: AppText.button.copyWith(
                       color: context.colors.primaryText,
                     ),
@@ -103,13 +98,13 @@ class VocabularyPage extends StatelessWidget {
               if (data.groups.isEmpty)
                 StateMessage(
                   icon: AppIcons.newGroup,
-                  title: 'Nenhum grupo ainda',
-                  message: 'Crie um grupo pra organizar seus termos.',
-                  actionLabel: 'Criar grupo',
+                  title: context.l10n.noGroupsYet,
+                  message: context.l10n.noGroupsYetMessage,
+                  actionLabel: context.l10n.createGroup,
                   onAction: () => _newGroup(context),
                 )
               else ...[
-                const SectionHeader(title: 'Seus grupos'),
+                SectionHeader(title: context.l10n.yourGroups),
                 _GroupGrid(
                   groups: data.groups,
                   onOpen: (group) =>
@@ -123,9 +118,13 @@ class VocabularyPage extends StatelessWidget {
     );
   }
 
-  static String _subtitle(Vocabulary data) => data.groups.isEmpty
-      ? termsLabel(data.termCount)
-      : '${termsLabel(data.termCount)} em ${groupsLabel(data.groups.length)}';
+  static String _subtitle(AppLocalizations l10n, Vocabulary data) =>
+      data.groups.isEmpty
+      ? l10n.termCount(data.termCount)
+      : l10n.termsInGroups(
+          l10n.termCount(data.termCount),
+          l10n.groupCount(data.groups.length),
+        );
 }
 
 class _GroupGrid extends StatelessWidget {

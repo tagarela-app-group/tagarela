@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class AudioClip extends StatefulWidget {
   const AudioClip({super.key, required this.file});
@@ -68,7 +69,9 @@ class _AudioClipState extends State<AudioClip> {
             children: [
               AppIconButton(
                 icon: playing ? AppIcons.stop : AppIcons.play,
-                tooltip: playing ? 'Parar' : 'Ouvir gravação',
+                tooltip: playing
+                    ? context.l10n.stop
+                    : context.l10n.listenRecording,
                 onPressed: () => _playback.toggle(widget.file),
                 variant: AppIconButtonVariant.primary,
                 size: 40,

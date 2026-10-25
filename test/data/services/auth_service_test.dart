@@ -121,9 +121,9 @@ void main() {
       service.providerClientId('google'),
       throwsA(
         isA<AuthException>().having(
-          (e) => e.message,
-          'message',
-          'Esse login não está disponível agora.',
+          (e) => e.failure,
+          'failure',
+          AuthFailure.unavailable,
         ),
       ),
     );
@@ -169,19 +169,19 @@ void main() {
     );
   });
 
-  test('429, 409 e 400 sem lista viram mensagem geral', () async {
-    for (final (status, message) in [
-      (429, 'Muitas tentativas. Espere um pouco e tente de novo.'),
-      (409, 'Essa etapa expirou. Comece de novo.'),
-      (410, 'Essa etapa expirou. Comece de novo.'),
-      (400, 'Não deu certo. Tente de novo.'),
+  test('429, 409 e 400 sem lista viram falha geral', () async {
+    for (final (status, failure) in [
+      (429, AuthFailure.tooManyAttempts),
+      (409, AuthFailure.expired),
+      (410, AuthFailure.expired),
+      (400, AuthFailure.unknown),
     ]) {
       api.responses['POST /auth/login'] = ApiResponse(status, null);
 
       await expectLater(
         service.login(email: 'a@b.c', password: 'x'),
         throwsA(
-          isA<AuthException>().having((e) => e.message, 'message', message),
+          isA<AuthException>().having((e) => e.failure, 'failure', failure),
         ),
       );
     }

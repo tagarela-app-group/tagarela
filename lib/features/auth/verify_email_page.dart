@@ -4,6 +4,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/auth_form.dart';
 import 'package:tagarela/features/auth/widgets/auth_header.dart';
 import 'package:tagarela/features/auth/widgets/code_step.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class VerifyEmailPage extends StatefulWidget {
   const VerifyEmailPage({
@@ -34,9 +35,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> with AuthForm {
   @override
   Widget build(BuildContext context) {
     return SheetPage(
-      header: const AuthHeader(
-        title: 'Confirme seu e-mail',
-        subtitle: 'Falta pouco pra começar.',
+      header: AuthHeader(
+        title: context.l10n.verifyEmailTitle,
+        subtitle: context.l10n.verifyEmailSubtitle,
       ),
       children: [
         CodeStep(

@@ -6,6 +6,7 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
+import 'package:tagarela/l10n/l10n.dart';
 
 class AppTextField extends StatefulWidget {
   const AppTextField({
@@ -157,7 +158,9 @@ class _AppTextFieldState extends State<AppTextField> {
               if (widget.obscure)
                 AppIconButton(
                   icon: _hidden ? AppIcons.showPassword : AppIcons.hidePassword,
-                  tooltip: _hidden ? 'Mostrar senha' : 'Ocultar senha',
+                  tooltip: _hidden
+                      ? context.l10n.showPassword
+                      : context.l10n.hidePassword,
                   size: 40,
                   onPressed: () => setState(() => _hidden = !_hidden),
                 ),

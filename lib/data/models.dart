@@ -5,23 +5,9 @@ import 'package:tagarela/design_system/tokens/app_icons.dart';
 
 typedef Json = Map<String, Object?>;
 
-enum TermKind {
-  word('Palavra'),
-  expression('Expressão');
+enum TermKind { word, expression }
 
-  const TermKind(this.label);
-
-  final String label;
-}
-
-enum TermStatus {
-  learning('Aprendendo'),
-  mastered('Dominado');
-
-  const TermStatus(this.label);
-
-  final String label;
-}
+enum TermStatus { learning, mastered }
 
 class User {
   const User({required this.name, required this.email, this.picture});
@@ -88,58 +74,57 @@ class Term {
 }
 
 enum GroupIcon {
-  layers('Geral', AppIcons.layers),
-  talk('Conversa', AppIcons.talk),
-  work('Trabalho', AppIcons.work),
-  travel('Viagem', AppIcons.travel),
-  food('Comida', AppIcons.food),
-  tv('Séries', AppIcons.tv),
-  music('Música', AppIcons.music),
-  study('Estudos', AppIcons.study),
-  heart('Favoritos', AppIcons.heart),
-  game('Jogos', AppIcons.game),
-  shopping('Compras', AppIcons.shopping),
-  sport('Esporte', AppIcons.sport),
-  health('Saúde', AppIcons.health),
-  home('Casa', AppIcons.home),
-  nature('Natureza', AppIcons.nature),
-  paw('Animais', AppIcons.paw),
-  tech('Tecnologia', AppIcons.tech),
-  money('Dinheiro', AppIcons.money),
-  car('Transporte', AppIcons.car),
-  family('Família', AppIcons.family),
-  book('Livros', AppIcons.book),
-  art('Arte', AppIcons.art),
-  party('Festa', AppIcons.party),
-  weather('Clima', AppIcons.weather),
-  phone('Celular', AppIcons.phone),
-  mail('E-mail', AppIcons.mail),
-  code('Programação', AppIcons.code),
-  science('Ciência', AppIcons.science),
-  news('Notícias', AppIcons.news),
-  movie('Cinema', AppIcons.movie),
-  camera('Fotografia', AppIcons.camera),
-  place('Lugares', AppIcons.place),
-  city('Cidade', AppIcons.city),
-  globe('Mundo', AppIcons.globe),
-  calendar('Datas', AppIcons.calendar),
-  clock('Rotina', AppIcons.clock),
-  star('Importante', AppIcons.star),
-  idea('Ideias', AppIcons.idea),
-  smile('Sentimentos', AppIcons.smile),
-  shirt('Roupas', AppIcons.shirt),
-  restaurant('Restaurante', AppIcons.restaurant),
-  drink('Bebidas', AppIcons.drink),
-  mountain('Aventura', AppIcons.mountain),
-  gift('Presentes', AppIcons.gift),
-  flag('Países', AppIcons.flag),
-  podcast('Podcasts', AppIcons.podcast),
-  goal('Metas', AppIcons.goal),
-  writing('Escrita', AppIcons.writing);
+  layers(AppIcons.layers),
+  talk(AppIcons.talk),
+  work(AppIcons.work),
+  travel(AppIcons.travel),
+  food(AppIcons.food),
+  tv(AppIcons.tv),
+  music(AppIcons.music),
+  study(AppIcons.study),
+  heart(AppIcons.heart),
+  game(AppIcons.game),
+  shopping(AppIcons.shopping),
+  sport(AppIcons.sport),
+  health(AppIcons.health),
+  home(AppIcons.home),
+  nature(AppIcons.nature),
+  paw(AppIcons.paw),
+  tech(AppIcons.tech),
+  money(AppIcons.money),
+  car(AppIcons.car),
+  family(AppIcons.family),
+  book(AppIcons.book),
+  art(AppIcons.art),
+  party(AppIcons.party),
+  weather(AppIcons.weather),
+  phone(AppIcons.phone),
+  mail(AppIcons.mail),
+  code(AppIcons.code),
+  science(AppIcons.science),
+  news(AppIcons.news),
+  movie(AppIcons.movie),
+  camera(AppIcons.camera),
+  place(AppIcons.place),
+  city(AppIcons.city),
+  globe(AppIcons.globe),
+  calendar(AppIcons.calendar),
+  clock(AppIcons.clock),
+  star(AppIcons.star),
+  idea(AppIcons.idea),
+  smile(AppIcons.smile),
+  shirt(AppIcons.shirt),
+  restaurant(AppIcons.restaurant),
+  drink(AppIcons.drink),
+  mountain(AppIcons.mountain),
+  gift(AppIcons.gift),
+  flag(AppIcons.flag),
+  podcast(AppIcons.podcast),
+  goal(AppIcons.goal),
+  writing(AppIcons.writing);
 
-  const GroupIcon(this.label, this.icon);
+  const GroupIcon(this.icon);
 
-  final String label;
   final IconData icon;
 }
 
@@ -255,15 +240,7 @@ class WordOfDay {
   final String dateLabel;
 }
 
-enum CaptureSource {
-  photo('Foto'),
-  audio('Áudio'),
-  text('Texto');
-
-  const CaptureSource(this.label);
-
-  final String label;
-}
+enum CaptureSource { photo, audio, text }
 
 enum CaptureStatus {
   processing('processing'),
@@ -281,15 +258,7 @@ enum CaptureStatus {
 
 enum CaptureSync { extract, create, update, confirm, discard }
 
-enum CaptureSection {
-  attention('Precisa de atenção'),
-  ready('Prontas'),
-  processing('Processando');
-
-  const CaptureSection(this.label);
-
-  final String label;
-}
+enum CaptureSection { attention, ready, processing }
 
 class CaptureTerm {
   const CaptureTerm({
