@@ -41,6 +41,7 @@ class ArcMenu extends StatefulWidget {
   static const overhang = 32.0;
 
   static const _fabSize = 64.0;
+  static const _ring = 6.0;
   static const _itemSize = 60.0;
   static const _radius = 118.0;
 
@@ -232,7 +233,15 @@ class ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
       excludeSemantics: true,
       child: DecoratedBox(
         decoration: BoxDecoration(
+          color: open ? null : c.fabRing,
           borderRadius: BorderRadius.circular(AppRadius.lg),
+          border: open
+              ? null
+              : Border.all(
+                  color: c.fabRing,
+                  width: ArcMenu._ring,
+                  strokeAlign: BorderSide.strokeAlignOutside,
+                ),
           boxShadow: open
               ? const [
                   BoxShadow(

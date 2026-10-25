@@ -51,6 +51,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.cardShadow,
     required this.buttonShadow,
     required this.fabShadow,
+    required this.fabRing,
     required this.accents,
   });
 
@@ -82,6 +83,7 @@ class AppColors extends ThemeExtension<AppColors> {
   final List<BoxShadow> cardShadow;
   final List<BoxShadow> buttonShadow;
   final List<BoxShadow> fabShadow;
+  final Color fabRing;
   final Map<AppAccent, AccentColors> accents;
 
   AccentColors accent(AppAccent accent) => accents[accent]!;
@@ -125,8 +127,8 @@ class AppColors extends ThemeExtension<AppColors> {
         offset: Offset(0, 12),
         blurRadius: 24,
       ),
-      BoxShadow(color: AppPalette.white, spreadRadius: 6),
     ],
+    fabRing: AppPalette.white,
     accents: {
       AppAccent.violet: AccentColors(Color(0xFFE8E5FE), Color(0xFF4B37E6)),
       AppAccent.coral: AccentColors(Color(0xFFFFE4E1), Color(0xFFC93030)),
@@ -171,8 +173,8 @@ class AppColors extends ThemeExtension<AppColors> {
         offset: Offset(0, 12),
         blurRadius: 24,
       ),
-      BoxShadow(color: Color(0xFF1A1826), spreadRadius: 6),
     ],
+    fabRing: Color(0xFF1A1826),
     accents: {
       AppAccent.violet: AccentColors(Color(0x2E8B7BFF), Color(0xFFA99DFF)),
       AppAccent.coral: AccentColors(Color(0x29FF5D5D), Color(0xFFFF8A80)),
