@@ -213,6 +213,17 @@ void main() {
     expect(find.text('Prefira careful'), findsOneWidget);
   });
 
+  testWidgets('monta a frase: peças lado a lado', (tester) async {
+    await open(tester);
+    await tester.tap(find.text('Palavras'));
+    await tester.pumpAndSettle();
+
+    final mind = tester.getRect(find.text('mind the'));
+    final step = tester.getRect(find.text('step'));
+    expect(step.center.dy, mind.center.dy);
+    expect(step.left, greaterThan(mind.right));
+  });
+
   testWidgets('bloco sem dado some, e aba única fica sem seletor', (
     tester,
   ) async {
