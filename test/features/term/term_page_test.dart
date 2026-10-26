@@ -8,6 +8,7 @@ import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
+import 'package:tagarela/features/term/widgets/got_it_check.dart';
 import 'package:tagarela/features/term/widgets/seen_captures.dart';
 
 import '../../helpers/fake_capture_store.dart';
@@ -81,7 +82,7 @@ void main() {
     expect(_glass(tester).frosted, isTrue);
     expect(find.text('O que será que é?'), findsOneWidget);
     expect(find.bySemanticsLabel('be careful of the space'), findsNothing);
-    expect(find.text('Cobrir de novo'), findsNothing);
+    expect(find.text('Embaçar de novo'), findsNothing);
     expect(find.bySemanticsLabel('Ver em português'), findsNothing);
   });
 
@@ -90,22 +91,22 @@ void main() {
   ) async {
     await open(tester);
 
-    await tester.tap(find.text('Revelar agora'));
+    await tester.tap(find.text('Revelar de uma vez'));
     await tester.pumpAndSettle();
 
     expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {'revealed': true});
     expect(_glass(tester).frosted, isFalse);
     expect(find.text('EM INGLÊS'), findsOneWidget);
     expect(find.text('be careful of the space'), findsOneWidget);
-    expect(find.text('Cuidado com o vão ao sair do trem.'), findsNothing);
+    expect(find.text('EM PORTUGUÊS'), findsNothing);
 
     await tester.tap(find.bySemanticsLabel('Ver em português'));
     await tester.pumpAndSettle();
 
     final flip = tester.widget<FlipCard>(find.byType(FlipCard));
     expect(flip.flipped, isTrue);
-    expect(find.text('cuidado com o vão'), findsOneWidget);
-    expect(find.text('Cuidado com o vão ao sair do trem.'), findsOneWidget);
+    expect(find.text('EM PORTUGUÊS'), findsOneWidget);
+    expect(find.text('Aviso na plataforma do trem.'), findsOneWidget);
     expect(find.bySemanticsLabel('Ver em inglês'), findsOneWidget);
   });
 
@@ -119,9 +120,18 @@ void main() {
         )
         .height;
     double card() => tester.getSize(find.byType(FlipCard)).height;
+    vocabulary.api.cards['u1'] = {
+      ...sampleCardJson,
+      'base': {
+        ...sampleCardJson['base']! as Map,
+        'explanation':
+            'Frase famosa do metrô de Londres, repetida em todo trem que '
+            'para na plataforma, pra ninguém pisar no vão.',
+      },
+    };
 
     await open(tester);
-    await tester.tap(find.text('Revelar agora'));
+    await tester.tap(find.text('Revelar de uma vez'));
     await tester.pumpAndSettle();
     final front = side();
     expect(card(), front);
@@ -132,16 +142,16 @@ void main() {
     expect(card(), side());
   });
 
-  testWidgets('cobrir de novo volta o vidro e o lado em inglês', (
+  testWidgets('embaçar de novo volta o vidro e o lado em inglês', (
     tester,
   ) async {
     await open(tester);
-    await tester.tap(find.text('Revelar agora'));
+    await tester.tap(find.text('Revelar de uma vez'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Ver em português'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Cobrir de novo'));
+    await tester.tap(find.text('Embaçar de novo'));
     await tester.pumpAndSettle();
 
     expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
@@ -151,20 +161,25 @@ void main() {
     expect(tester.widget<FlipCard>(find.byType(FlipCard)).flipped, isFalse);
   });
 
-  testWidgets('o que já foi revelado abre revelado', (tester) async {
+  testWidgets('o que já foi revelado abre revelado, sem perguntar nem festa', (
+    tester,
+  ) async {
     vocabulary.api.revealed.add('u1');
 
     await open(tester);
 
     expect(_glass(tester).frosted, isFalse);
-    expect(find.text('Cobrir de novo'), findsOneWidget);
+    expect(find.text('Embaçar de novo'), findsOneWidget);
+    expect(find.byType(GotItCheck), findsNothing);
+    expect(find.byType(BubbleBurst), findsNothing);
+    expect(find.text('PRA LEMBRAR'), findsOneWidget);
   });
 
   testWidgets('salvar sem rede não impede de revelar', (tester) async {
     await open(tester);
     vocabulary.api.offline = true;
 
-    await tester.tap(find.text('Revelar agora'));
+    await tester.tap(find.text('Revelar de uma vez'));
     await tester.pumpAndSettle();
 
     expect(_glass(tester).frosted, isFalse);
@@ -173,14 +188,18 @@ void main() {
   testWidgets('abas: contexto, palavras e uso', (tester) async {
     await open(tester);
 
-    expect(find.text('Exemplos'), findsOneWidget);
+    expect(find.text('Numa conversa'), findsOneWidget);
+    expect(find.text('Exemplos'), findsNothing);
 
     await tester.tap(find.text('Palavras'));
     await tester.pumpAndSettle();
-    expect(find.text('Combina com'), findsOneWidget);
-    expect(find.text('mind the step'), findsOneWidget);
-    expect(find.text('Sinônimos'), findsOneWidget);
-    expect(find.text('Antônimos'), findsNothing);
+    expect(find.text('Monta a frase'), findsOneWidget);
+    expect(find.text('mind the'), findsOneWidget);
+    expect(find.text('step'), findsOneWidget);
+    expect(find.text('Vizinhos'), findsOneWidget);
+    expect(find.text('Quase o mesmo'), findsOneWidget);
+    expect(find.text('watch out'), findsOneWidget);
+    expect(find.text('O contrário'), findsNothing);
 
     await tester.tap(find.text('Uso'));
     await tester.pumpAndSettle();
@@ -188,8 +207,20 @@ void main() {
       tester.widget<SegmentBar>(find.byType(SegmentBar)).semanticLabel,
       'Formalidade: Neutro, 3 de 4',
     );
+    expect(find.text('Do chinelo à gravata'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is DrawnIcon && w.glyph != DrawnGlyph.turtle,
+      ),
+      findsNWidgets(2),
+    );
     expect(find.text('Serve em qualquer lugar.'), findsOneWidget);
     expect(find.text('Onde cabe'), findsOneWidget);
+    expect(find.bySemanticsLabel('Cabe: Aviso público'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(RegExp('^Não cabe: Conversa com amigos')),
+      findsOneWidget,
+    );
     expect(find.text('Prefira careful'), findsOneWidget);
   });
 
@@ -199,6 +230,7 @@ void main() {
     vocabulary.api.cards['u1'] = {
       ...sampleCardJson,
       'examples': <Object?>[],
+      'dialogue': <Object?>[],
       'collocations': <Object?>[],
       'synonyms': <Object?>[],
       'formality': null,
@@ -237,6 +269,10 @@ void main() {
 
     expect(find.text('Onde você viu'), findsOneWidget);
     expect(find.text('1 captura'), findsOneWidget);
+    expect(
+      find.textContaining('Você anotou · ', findRichText: true),
+      findsOneWidget,
+    );
     expect(find.text('Também marcado'), findsOneWidget);
     expect(
       find.descendant(
@@ -319,6 +355,12 @@ void main() {
       playback: playback,
     );
     await tester.pumpAndSettle();
+    expect(
+      find.textContaining('Você ouviu', findRichText: true),
+      findsOneWidget,
+    );
+    expect(find.byType(Waveform), findsOneWidget);
+
     await tester.tap(find.byTooltip('Ouvir gravação'));
     await tester.pump();
 
@@ -375,5 +417,232 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('SIGNIFICADO'), findsOneWidget);
+  });
+
+  Future<void> wipe(WidgetTester tester) async {
+    final box = tester.getRect(find.byType(FrostedGlass));
+    for (var y = 12.0; y < box.height; y += 36) {
+      await tester.timedDragFrom(
+        Offset(box.left + 4, box.top + y),
+        Offset(box.width - 8, 0),
+        const Duration(milliseconds: 300),
+      );
+    }
+    await tester.pump();
+  }
+
+  testWidgets('passar o dedo no vidro revela, salva e solta os balões', (
+    tester,
+  ) async {
+    await open(tester);
+
+    await wipe(tester);
+
+    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {'revealed': true});
+    expect(_glass(tester).frosted, isFalse);
+    expect(find.byType(BubbleBurst), findsOneWidget);
+    expect(find.text('Tinha sacado pelo contexto?'), findsOneWidget);
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('dica mostra o ao pé da letra sem revelar', (tester) async {
+    await open(tester);
+
+    expect(
+      find.textContaining('repare no vão', findRichText: true),
+      findsNothing,
+    );
+
+    await tester.tap(find.text('Dica'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.textContaining('Ao pé da letra: repare no vão', findRichText: true),
+      findsOneWidget,
+    );
+    expect(_glass(tester).frosted, isTrue);
+  });
+
+  testWidgets('sem ao pé da letra, não tem dica', (tester) async {
+    vocabulary.api.cards['u1'] = {
+      ...sampleCardJson,
+      'base': {...sampleCardJson['base']! as Map, 'literal': null},
+    };
+
+    await open(tester);
+
+    expect(find.text('Dica'), findsNothing);
+    expect(find.text('Revelar de uma vez'), findsOneWidget);
+  });
+
+  testWidgets('tinha sacado: responde como amigo e some ao embaçar', (
+    tester,
+  ) async {
+    await open(tester);
+    await tester.tap(find.text('Revelar de uma vez'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Saquei'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Boa! O contexto te entregou.'), findsOneWidget);
+    expect(find.text('Tinha sacado pelo contexto?'), findsNothing);
+
+    await tester.tap(find.text('Embaçar de novo'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(GotItCheck), findsNothing);
+
+    await tester.tap(find.text('Revelar de uma vez'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Não'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tranquilo. Agora você sabe.'), findsOneWidget);
+  });
+
+  testWidgets('pra lembrar: ao pé da letra, imagem e pegadinha só revelada', (
+    tester,
+  ) async {
+    await open(tester);
+
+    expect(find.text('PRA LEMBRAR'), findsNothing);
+    expect(find.text('mind the hole'), findsNothing);
+
+    await tester.tap(find.text('Revelar de uma vez'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('PRA LEMBRAR'), findsOneWidget);
+    expect(find.text('AO PÉ DA LETRA'), findsOneWidget);
+    expect(find.text('repare no vão'), findsOneWidget);
+    expect(find.text('QUER DIZER'), findsOneWidget);
+    expect(
+      find.textContaining('Imagine: Uma faixa amarela', findRichText: true),
+      findsOneWidget,
+    );
+    expect(find.text('Pegadinha'), findsOneWidget);
+    expect(find.text('Não diga'), findsOneWidget);
+    expect(find.text('mind the hole'), findsOneWidget);
+    expect(find.text('Diga'), findsOneWidget);
+    expect(find.text('Não é "mente o buraco".'), findsOneWidget);
+  });
+
+  testWidgets('pegadinha sem formas mostra só o aviso', (tester) async {
+    vocabulary.api.revealed.add('u1');
+    vocabulary.api.cards['u1'] = {
+      ...sampleCardJson,
+      'base': {
+        ...sampleCardJson['base']! as Map,
+        'literal': null,
+        'imagine': null,
+      },
+      'mistake': null,
+    };
+
+    await open(tester);
+
+    expect(find.text('AO PÉ DA LETRA'), findsNothing);
+    expect(find.text('Não diga'), findsNothing);
+    expect(find.text('Não é "mente o buraco".'), findsOneWidget);
+  });
+
+  testWidgets('conversa: ouvir acende a fala da vez, tradução só revelada', (
+    tester,
+  ) async {
+    final voice = FakeVoice();
+    await open(tester, voice: voice);
+    const first = 'Hurry up, the train is here!';
+    const second = 'Coming! I always forget to mind the gap.';
+
+    await tester.tap(find.text('Ouvir'));
+    await tester.pump();
+
+    expect(voice.conversations, [
+      [first, second],
+    ]);
+    voice.say(second, line: 1);
+    await tester.pumpAndSettle();
+
+    SpeechBalloon balloon(String text) => tester.widget<SpeechBalloon>(
+      find.ancestor(
+        of: find.textContaining(text, findRichText: true),
+        matching: find.byType(SpeechBalloon),
+      ),
+    );
+    expect(balloon(second).ring, isNotNull);
+    expect(balloon(first).ring, isNull);
+    expect(balloon(second).mirrored, isTrue);
+
+    await tester.tap(find.textContaining(first, findRichText: true));
+    await tester.pumpAndSettle();
+    expect(find.text('Corre, o trem chegou!'), findsNothing);
+    expect(
+      find.text('A tradução aparece depois que você revelar.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Revelar de uma vez'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.textContaining(first, findRichText: true));
+    await tester.tap(find.textContaining(first, findRichText: true));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Corre, o trem chegou!'), findsOneWidget);
+    expect(find.text('Toque num balão pra ver a tradução.'), findsOneWidget);
+  });
+
+  testWidgets('sem conversa, os exemplos voltam', (tester) async {
+    vocabulary.api.cards['u1'] = {...sampleCardJson, 'dialogue': <Object?>[]};
+
+    await open(tester);
+
+    expect(find.text('Numa conversa'), findsNothing);
+    expect(find.text('Exemplos'), findsOneWidget);
+  });
+
+  testWidgets('monta a frase: ouvir cada combinação', (tester) async {
+    final voice = FakeVoice();
+    await open(tester, voice: voice);
+    await tester.tap(find.text('Palavras'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Ouvir mind the step'));
+    await tester.pump();
+
+    expect(voice.spoken, [
+      ('mind the step', CourseLanguage.en, VoiceSpeed.normal),
+    ]);
+    expect(find.byTooltip('Ouvir mind the step'), findsOneWidget);
+    expect(
+      tester
+          .widget<AppIconButton>(
+            find.ancestor(
+              of: find.byIcon(AppIcons.stop),
+              matching: find.byType(AppIconButton),
+            ),
+          )
+          .tooltip,
+      'Ouvir mind the step',
+    );
+  });
+
+  testWidgets('a palavra falada acende no balão do termo', (tester) async {
+    final voice = FakeVoice();
+    await open(tester, voice: voice);
+
+    await tester.tap(find.byTooltip('Ouvir pronúncia'));
+    await tester.pump();
+    voice.say('mind the gap', word: (5, 8));
+    await tester.pump();
+
+    final spoken = tester
+        .widgetList<RichText>(find.byType(RichText))
+        .firstWhere((w) => w.text.toPlainText() == 'mind the gap');
+    final lit = <String>[];
+    spoken.text.visitChildren((span) {
+      if (span is TextSpan && span.style?.color != null) lit.add(span.text!);
+      return true;
+    });
+    expect(lit, ['the']);
   });
 }

@@ -29,6 +29,8 @@ abstract final class AppIcons {
   static const warning = Icons.warning_amber_rounded;
   static const fits = Icons.check_circle_outline_rounded;
   static const doesNotFit = Icons.cancel_outlined;
+  static const swipe = Icons.swipe_rounded;
+  static const wrong = Icons.close_rounded;
 
   static const camera = Icons.photo_camera_outlined;
   static const gallery = Icons.image_outlined;

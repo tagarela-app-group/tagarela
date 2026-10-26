@@ -1339,16 +1339,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get meaning => 'Significado';
 
   @override
-  String get coverAgain => 'Cobrir de novo';
+  String get coverAgain => 'Embaçar de novo';
 
   @override
-  String get revealNow => 'Revelar agora';
+  String get revealNow => 'Revelar de uma vez';
 
   @override
   String get guessTitle => 'O que será que é?';
 
   @override
-  String get guessHint => 'Tente entender pelo contexto antes de revelar.';
+  String get guessHint => 'Passe o dedo no vidro pra desembaçar.';
 
   @override
   String cardSide(String language) {
@@ -1379,9 +1379,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get explanation => 'Explicação';
 
   @override
-  String get pitfallLabel => 'Cuidado:';
-
-  @override
   String termTab(String tab) {
     String _temp0 = intl.Intl.selectLogic(tab, {
       'context': 'Contexto',
@@ -1402,16 +1399,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get examples => 'Exemplos';
 
   @override
-  String get collocations => 'Combina com';
+  String get collocations => 'Monta a frase';
 
   @override
-  String get synonyms => 'Sinônimos';
+  String get synonyms => 'Quase o mesmo';
 
   @override
-  String get antonyms => 'Antônimos';
+  String get antonyms => 'O contrário';
 
   @override
-  String get formality => 'Formalidade';
+  String get formality => 'Do chinelo à gravata';
 
   @override
   String formalityLevel(String level) {
@@ -1440,4 +1437,83 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get listenSlow => 'Devagar';
+
+  @override
+  String get hint => 'Dica';
+
+  @override
+  String get literally => 'Ao pé da letra';
+
+  @override
+  String get itMeans => 'Quer dizer';
+
+  @override
+  String get imagine => 'Imagine:';
+
+  @override
+  String get remember => 'Pra lembrar';
+
+  @override
+  String get pitfallTitle => 'Pegadinha';
+
+  @override
+  String get sayNot => 'Não diga';
+
+  @override
+  String get say => 'Diga';
+
+  @override
+  String get gotItQuestion => 'Tinha sacado pelo contexto?';
+
+  @override
+  String get gotItYes => 'Saquei';
+
+  @override
+  String get gotItNo => 'Não';
+
+  @override
+  String get gotItYesReply => 'Boa! O contexto te entregou.';
+
+  @override
+  String get gotItNoReply => 'Tranquilo. Agora você sabe.';
+
+  @override
+  String seenVia(String source) {
+    String _temp0 = intl.Intl.selectLogic(source, {
+      'photo': 'Você leu numa foto',
+      'audio': 'Você ouviu',
+      'text': 'Você anotou',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get dialogue => 'Numa conversa';
+
+  @override
+  String get listen => 'Ouvir';
+
+  @override
+  String get dialogueHint => 'Toque num balão pra ver a tradução.';
+
+  @override
+  String get dialogueLocked => 'A tradução aparece depois que você revelar.';
+
+  @override
+  String get collocationsHint => 'Peças que andam junto com o termo.';
+
+  @override
+  String listenTo(String text) {
+    return 'Ouvir $text';
+  }
+
+  @override
+  String get neighbors => 'Vizinhos';
+
+  @override
+  String get fitsYes => 'Cabe';
+
+  @override
+  String get fitsNo => 'Não cabe';
 }

@@ -432,6 +432,16 @@ void main() {
       expect(card.fits.last.instead, 'careful');
       expect(card.hasWords, isTrue);
       expect(card.hasUsage, isTrue);
+      expect(card.base.literal, 'repare no vão');
+      expect(card.base.imagine, startsWith('Uma faixa amarela'));
+      expect(card.mistake!.wrong, 'mind the hole');
+      expect(card.mistake!.right, 'mind the gap');
+      expect(card.hasReminders, isTrue);
+      expect(card.dialogue.map((l) => l.speaker), [
+        DialogueSpeaker.a,
+        DialogueSpeaker.b,
+      ]);
+      expect(card.dialogue.last.translation, startsWith('Já vou!'));
       final seen = detail.captures.single;
       expect(seen.source, CaptureSource.audio);
       expect(seen.spans.single.termId, 't1');
@@ -453,6 +463,9 @@ void main() {
           'antonyms': <Object?>[],
           'formality': null,
           'fits': <Object?>[],
+          'base': {'translation': 'vão'},
+          'mistake': null,
+          'dialogue': <Object?>[],
         },
         'captures': <Object?>[],
       });
@@ -460,6 +473,9 @@ void main() {
       expect(detail.group, isNull);
       expect(detail.card.hasWords, isFalse);
       expect(detail.card.hasUsage, isFalse);
+      expect(detail.card.hasReminders, isFalse);
+      expect(detail.card.mistake, isNull);
+      expect(detail.card.dialogue, isEmpty);
     });
   });
 }

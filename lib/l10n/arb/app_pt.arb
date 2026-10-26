@@ -770,10 +770,10 @@
   },
   "termCardLoading": "Montando a ficha…",
   "meaning": "Significado",
-  "coverAgain": "Cobrir de novo",
-  "revealNow": "Revelar agora",
+  "coverAgain": "Embaçar de novo",
+  "revealNow": "Revelar de uma vez",
   "guessTitle": "O que será que é?",
-  "guessHint": "Tente entender pelo contexto antes de revelar.",
+  "guessHint": "Passe o dedo no vidro pra desembaçar.",
   "cardSide": "Em {language, select, en{inglês} es{espanhol} pt{português} other{}}",
   "@cardSide": {
     "placeholders": {
@@ -792,7 +792,6 @@
   },
   "inYourContext": "No seu contexto",
   "explanation": "Explicação",
-  "pitfallLabel": "Cuidado:",
   "termTab": "{tab, select, context{Contexto} words{Palavras} usage{Uso} other{}}",
   "@termTab": {
     "placeholders": {
@@ -804,10 +803,10 @@
   "whereYouSaw": "Onde você viu",
   "alsoMarked": "Também marcado",
   "examples": "Exemplos",
-  "collocations": "Combina com",
-  "synonyms": "Sinônimos",
-  "antonyms": "Antônimos",
-  "formality": "Formalidade",
+  "collocations": "Monta a frase",
+  "synonyms": "Quase o mesmo",
+  "antonyms": "O contrário",
+  "formality": "Do chinelo à gravata",
   "formalityLevel": "{level, select, slang{Gíria} informal{Informal} neutral{Neutro} formal{Formal} other{}}",
   "@formalityLevel": {
     "placeholders": {
@@ -836,5 +835,42 @@
       }
     }
   },
-  "listenSlow": "Devagar"
+  "listenSlow": "Devagar",
+  "hint": "Dica",
+  "literally": "Ao pé da letra",
+  "itMeans": "Quer dizer",
+  "imagine": "Imagine:",
+  "remember": "Pra lembrar",
+  "pitfallTitle": "Pegadinha",
+  "sayNot": "Não diga",
+  "say": "Diga",
+  "gotItQuestion": "Tinha sacado pelo contexto?",
+  "gotItYes": "Saquei",
+  "gotItNo": "Não",
+  "gotItYesReply": "Boa! O contexto te entregou.",
+  "gotItNoReply": "Tranquilo. Agora você sabe.",
+  "seenVia": "{source, select, photo{Você leu numa foto} audio{Você ouviu} text{Você anotou} other{}}",
+  "@seenVia": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "dialogue": "Numa conversa",
+  "listen": "Ouvir",
+  "dialogueHint": "Toque num balão pra ver a tradução.",
+  "dialogueLocked": "A tradução aparece depois que você revelar.",
+  "collocationsHint": "Peças que andam junto com o termo.",
+  "listenTo": "Ouvir {text}",
+  "@listenTo": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors": "Vizinhos",
+  "fitsYes": "Cabe",
+  "fitsNo": "Não cabe"
 }

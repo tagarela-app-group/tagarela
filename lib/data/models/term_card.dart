@@ -5,18 +5,43 @@ import 'package:tagarela/data/models/vocabulary.dart';
 
 enum Formality { slang, informal, neutral, formal }
 
+enum DialogueSpeaker { a, b }
+
 class CardSide {
   const CardSide({
     this.headline,
     this.inContext,
     this.explanation,
     this.pitfall,
+    this.literal,
+    this.imagine,
   });
 
   final String? headline;
   final String? inContext;
   final String? explanation;
   final String? pitfall;
+  final String? literal;
+  final String? imagine;
+}
+
+class CardMistake {
+  const CardMistake(this.wrong, this.right);
+
+  final String wrong;
+  final String right;
+}
+
+class DialogueLine {
+  const DialogueLine({
+    required this.speaker,
+    required this.text,
+    required this.translation,
+  });
+
+  final DialogueSpeaker speaker;
+  final String text;
+  final String translation;
 }
 
 class CardExample {
@@ -40,6 +65,8 @@ class TermCard {
     this.learning = const CardSide(),
     this.base = const CardSide(),
     this.examples = const [],
+    this.mistake,
+    this.dialogue = const [],
     this.collocations = const [],
     this.synonyms = const [],
     this.antonyms = const [],
@@ -61,7 +88,26 @@ class TermCard {
           inContext: (json['base']! as Json)['in_context'] as String?,
           explanation: (json['base']! as Json)['explanation'] as String?,
           pitfall: (json['base']! as Json)['pitfall'] as String?,
+          literal: (json['base']! as Json)['literal'] as String?,
+          imagine: (json['base']! as Json)['imagine'] as String?,
         ),
+        mistake: switch (json['mistake']) {
+          final Json m => CardMistake(
+            m['wrong']! as String,
+            m['right']! as String,
+          ),
+          _ => null,
+        },
+        dialogue: [
+          for (final d in (json['dialogue']! as List<Object?>).cast<Json>())
+            DialogueLine(
+              speaker: DialogueSpeaker.values.byName(
+                (d['speaker']! as String).toLowerCase(),
+              ),
+              text: d['text']! as String,
+              translation: d['translation']! as String,
+            ),
+        ],
         examples: [
           for (final e in (json['examples']! as List<Object?>).cast<Json>())
             CardExample(e['text']! as String, e['translation']! as String),
@@ -85,6 +131,8 @@ class TermCard {
   final CardSide learning;
   final CardSide base;
   final List<CardExample> examples;
+  final CardMistake? mistake;
+  final List<DialogueLine> dialogue;
   final List<String> collocations;
   final List<String> synonyms;
   final List<String> antonyms;
@@ -96,6 +144,12 @@ class TermCard {
       collocations.isNotEmpty || synonyms.isNotEmpty || antonyms.isNotEmpty;
 
   bool get hasUsage => formality != null || fits.isNotEmpty;
+
+  bool get hasReminders =>
+      base.literal != null ||
+      base.imagine != null ||
+      base.pitfall != null ||
+      mistake != null;
 
   static List<String> _strings(Object? json) => [
     for (final s in json! as List<Object?>) s! as String,

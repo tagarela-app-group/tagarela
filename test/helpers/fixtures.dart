@@ -317,7 +317,10 @@ const Json sampleCardJson = {
     'in_context': 'Aviso na plataforma do trem.',
     'explanation': 'Frase famosa do metrô de Londres.',
     'pitfall': 'Não é "mente o buraco".',
+    'literal': 'repare no vão',
+    'imagine': 'Uma faixa amarela piscando na beira da plataforma.',
   },
+  'mistake': {'wrong': 'mind the hole', 'right': 'mind the gap'},
   'examples': [
     {
       'text': 'Please mind the gap when leaving the train.',
@@ -332,5 +335,17 @@ const Json sampleCardJson = {
   'fits': [
     {'context': 'Aviso público', 'fits': true, 'alternative': null},
     {'context': 'Conversa com amigos', 'fits': false, 'alternative': 'careful'},
+  ],
+  'dialogue': [
+    {
+      'speaker': 'A',
+      'text': 'Hurry up, the train is here!',
+      'translation': 'Corre, o trem chegou!',
+    },
+    {
+      'speaker': 'B',
+      'text': 'Coming! I always forget to mind the gap.',
+      'translation': 'Já vou! Sempre esqueço de tomar cuidado com o vão.',
+    },
   ],
 };

@@ -1,0 +1,208 @@
+import 'package:flutter/material.dart';
+
+import 'package:tagarela/data/device/voice.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/term/logic/card_text.dart';
+import 'package:tagarela/l10n/l10n.dart';
+
+class TermHeader extends StatelessWidget {
+  const TermHeader({
+    super.key,
+    required this.term,
+    required this.group,
+    required this.phonetic,
+    required this.loading,
+    required this.language,
+    required this.voice,
+  });
+
+  final Term term;
+  final TermGroup? group;
+  final String? phonetic;
+  final bool loading;
+  final CourseLanguage language;
+  final Voice voice;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final l10n = context.l10n;
+    final mastered = term.status == TermStatus.mastered;
+    return ListenableBuilder(
+      listenable: voice,
+      builder: (context, _) {
+        final speaking = voice.speaking;
+        final saying = voice.text == term.text ? speaking : null;
+        void speak(VoiceSpeed speed) => saying == speed
+            ? voice.stop()
+            : voice.speak(term.text, language, speed: speed);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: AppSpacing.s4,
+          children: [
+            Row(
+              children: [
+                AppIconButton(
+                  icon: AppIcons.back,
+                  tooltip: l10n.back,
+                  onPressed: () => Navigator.of(context).pop(),
+                  variant: AppIconButtonVariant.onHeader,
+                ),
+                const Spacer(),
+                Flexible(
+                  child: HeaderPill(
+                    height: 32,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.s3,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 6,
+                      children: [
+                        Icon(group?.icon ?? AppIcons.ungrouped, size: 14),
+                        Flexible(
+                          child: Text(
+                            group?.name ?? l10n.ungrouped,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SpeechBalloon(
+              color: c.surface,
+              radius: AppRadius.xl,
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.s5,
+                AppSpacing.s4,
+                AppSpacing.s5,
+                18,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 2,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: AppTag(label: l10n.termKind(term.kind.name)),
+                  ),
+                  Semantics(
+                    label: term.text,
+                    excludeSemantics: true,
+                    child: _Spoken(
+                      text: term.text,
+                      word: saying == null ? null : voice.word,
+                      locale: Locale(language.name),
+                    ),
+                  ),
+                  if (phonetic case final phonetic?)
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          for (final part in stressedParts(phonetic))
+                            TextSpan(
+                              text: part.text,
+                              style: part.marked
+                                  ? TextStyle(
+                                      color: c.ink,
+                                      fontWeight: FontWeight.w700,
+                                    )
+                                  : null,
+                            ),
+                        ],
+                      ),
+                      style: AppText.bodyLg.copyWith(color: c.inkSoft),
+                    )
+                  else if (loading)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      child: Skeleton(width: 120, height: 16),
+                    ),
+                ],
+              ),
+            ),
+            Row(
+              spacing: 10,
+              children: [
+                AppIconButton(
+                  icon: saying == VoiceSpeed.normal
+                      ? AppIcons.stop
+                      : AppIcons.listen,
+                  tooltip: saying == VoiceSpeed.normal
+                      ? l10n.stop
+                      : l10n.listenPronunciation,
+                  onPressed: () => speak(VoiceSpeed.normal),
+                  variant: AppIconButtonVariant.onHeaderSolid,
+                  size: 56,
+                ),
+                AppButton(
+                  label: l10n.listenSlow,
+                  variant: AppButtonVariant.onHeader,
+                  size: AppButtonSize.small,
+                  leading: saying == VoiceSpeed.slow
+                      ? const Icon(AppIcons.stop, size: 18)
+                      : const DrawnIcon(DrawnGlyph.turtle, size: 20),
+                  onPressed: () => speak(VoiceSpeed.slow),
+                ),
+                const Spacer(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  spacing: 6,
+                  children: [
+                    StatusPill(
+                      label: l10n.termStatus(term.status.name),
+                      tone: mastered
+                          ? StatusTone.mastered
+                          : StatusTone.learning,
+                    ),
+                    LevelDots(
+                      level: term.level,
+                      color: mastered ? c.mastered : c.learning,
+                      track: c.headerChip,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _Spoken extends StatelessWidget {
+  const _Spoken({required this.text, required this.word, required this.locale});
+
+  final String text;
+  final (int, int)? word;
+  final Locale locale;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final style = AppText.display.copyWith(color: c.ink);
+    final range = word;
+    if (range == null || range.$1 < 0 || range.$2 > text.length) {
+      return Text(text, locale: locale, style: style);
+    }
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: text.substring(0, range.$1)),
+          TextSpan(
+            text: text.substring(range.$1, range.$2),
+            style: TextStyle(color: c.primaryText),
+          ),
+          TextSpan(text: text.substring(range.$2)),
+        ],
+      ),
+      locale: locale,
+      style: style,
+    );
+  }
+}

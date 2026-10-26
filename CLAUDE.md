@@ -10,7 +10,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 - Tom de amigo ("você"), captura em um gesto, funciona offline, cor só com significado.
 - Recurso sem dado da API ainda: card some, não inventa.
 - Idioma da interface é do aparelho: escolha no Perfil, salva só nele; sem escolha segue o celular; idioma que o app não tem cai em inglês. Não confundir com país de origem. Mensagens da API seguem pt-BR por enquanto.
-- Ficha do termo: a IA gera no primeiro toque e a API salva. Frente do card, palavras e uso no idioma que a pessoa aprende; verso e tradução dos exemplos no idioma base. Enquanto gera, esqueleto da ficha. Significado nasce embaçado e o que foi revelado fica salvo. A lista de termos não mostra tradução, pra não entregar o vidro.
+- Ficha do termo: a IA gera no primeiro toque e a API salva. Frente do card, palavras e uso no idioma que a pessoa aprende; verso e tradução dos exemplos no idioma base. Enquanto gera, esqueleto da ficha. Significado nasce embaçado e o que foi revelado fica salvo. Desembaça passando o dedo no vidro (só arrasto na horizontal, pra rolagem seguir) ou no botão; a dica mostra só o ao pé da letra. Revelar na hora solta os balões e pergunta "Tinha sacado?", que não salva nada; ficha que já abre revelada não pergunta. "Pra lembrar" (ao pé da letra, imagem, pegadinha) só aparece revelada. Diálogo substitui os exemplos; sem diálogo, voltam os exemplos. A lista de termos não mostra tradução, pra não entregar o vidro.
 - País de origem: opcional, fica na conta, vira bandeira no canto inferior direito de todo avatar (o esquerdo é a cauda do balão). Nomes em `lib/l10n/countries/country_names.dart`, gerados do CLDR, mesma lista da API.
 
 ## Regras
