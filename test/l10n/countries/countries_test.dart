@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/l10n/countries.dart';
+import 'package:tagarela/l10n/countries/countries.dart';
 
-import '../helpers/l10n.dart';
+import '../../helpers/l10n.dart';
 
 void main() {
   test('250 países, os mesmos da API', () {

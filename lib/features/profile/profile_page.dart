@@ -12,7 +12,7 @@ import 'package:tagarela/features/profile/widgets/language_sheet.dart';
 import 'package:tagarela/features/profile/widgets/offline_section.dart';
 import 'package:tagarela/features/profile/widgets/profile_section.dart';
 import 'package:tagarela/features/profile/widgets/progress_card.dart';
-import 'package:tagarela/l10n/countries.dart';
+import 'package:tagarela/l10n/countries/countries.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class ProfilePage extends StatelessWidget {

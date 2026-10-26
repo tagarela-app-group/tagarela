@@ -84,7 +84,6 @@ class _WordPickerState extends State<WordPicker>
     int count(int i) => spans.where((s) => covers(s, _words[i])).length;
     bool linked(int a, int b) =>
         spans.any((s) => covers(s, _words[a]) && covers(s, _words[b]));
-    // Words in the linked run ending at [i]; badge only on the run's last word.
     int runEndingAt(int i) {
       if (i < _words.length - 1 && linked(i, i + 1)) return 0;
       var n = 1;
@@ -197,7 +196,6 @@ class _WordChip extends StatelessWidget {
   }
 }
 
-/// Dashed outline whose dashes march around the chip ("marching ants").
 class _AntsPainter extends CustomPainter {
   _AntsPainter({
     required this.progress,

@@ -38,7 +38,6 @@ void main() {
       captures: captures.store,
     );
     await tester.tap(find.text('Abrir'));
-    // Selected words animate forever, so settle on the route transition only.
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
     return opened;
