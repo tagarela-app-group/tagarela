@@ -106,18 +106,17 @@ class _TermPageState extends State<TermPage> {
         term: detail?.term ?? widget.term,
         group: group,
         phonetic: detail?.card.phonetic,
+        loading: detail == null && _error == null,
         language: learning,
         voice: _voice,
       ),
       gap: AppSpacing.s6,
-      centerLast: detail == null,
-      children: detail == null
-          ? [
-              _error == null
-                  ? const _Building()
-                  : AsyncStatus(error: _error, onRetry: _load),
-            ]
-          : _sections(detail, learning, base),
+      centerLast: _error != null,
+      children: switch ((detail, _error)) {
+        (final detail?, _) => _sections(detail, learning, base),
+        (null, null) => const [_Building()],
+        (null, final error) => [AsyncStatus(error: error, onRetry: _load)],
+      },
     );
   }
 
@@ -223,19 +222,95 @@ class _Building extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s10),
-      child: Column(
-        spacing: AppSpacing.s4,
-        children: [
-          CircularProgressIndicator(color: c.primary),
-          Text(
-            context.l10n.termCardLoading,
-            style: AppText.bodyMd.copyWith(color: c.inkSoft),
-          ),
-        ],
+    return Semantics(
+      label: context.l10n.termCardLoading,
+      child: const ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: AppSpacing.s6,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: AppSpacing.s1,
+              children: [
+                SizedBox(
+                  height: 44,
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Skeleton(width: 96, height: 12),
+                  ),
+                ),
+                AppCard(
+                  padding: EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: AppSpacing.s4,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: AppSpacing.s2,
+                        children: [
+                          Skeleton(width: 72, height: 10),
+                          Skeleton(width: 180, height: 22),
+                        ],
+                      ),
+                      _Lines(lines: 2),
+                      _Lines(lines: 3),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 14,
+              children: [
+                Skeleton(height: 44, radius: AppRadius.md),
+                AppCard(
+                  padding: EdgeInsets.all(AppSpacing.s4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: AppSpacing.s3,
+                    children: [
+                      Row(
+                        spacing: AppSpacing.s2,
+                        children: [
+                          Skeleton(width: 28, height: 28, radius: AppRadius.sm),
+                          Skeleton(width: 120, height: 12),
+                        ],
+                      ),
+                      _Lines(lines: 2, title: false),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _Lines extends StatelessWidget {
+  const _Lines({required this.lines, this.title = true});
+
+  final int lines;
+  final bool title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: AppSpacing.s2,
+      children: [
+        if (title) const Skeleton(width: 110, height: 10),
+        for (var i = 0; i < lines; i++)
+          FractionallySizedBox(
+            widthFactor: i == lines - 1 ? 0.6 : 1,
+            child: const Skeleton(),
+          ),
+      ],
     );
   }
 }
@@ -245,6 +320,7 @@ class _TermHeader extends StatelessWidget {
     required this.term,
     required this.group,
     required this.phonetic,
+    required this.loading,
     required this.language,
     required this.voice,
   });
@@ -252,6 +328,7 @@ class _TermHeader extends StatelessWidget {
   final Term term;
   final TermGroup? group;
   final String? phonetic;
+  final bool loading;
   final CourseLanguage language;
   final Voice voice;
 
@@ -311,6 +388,11 @@ class _TermHeader extends StatelessWidget {
                   fontSize: 17,
                   color: c.onHeaderSoft,
                 ),
+              )
+            else if (loading)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                child: Skeleton(width: 120, height: 17, onHeader: true),
               ),
           ],
         ),

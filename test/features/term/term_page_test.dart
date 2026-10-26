@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
+import 'package:tagarela/features/term/widgets/seen_captures.dart';
 
 import '../../helpers/fake_capture_store.dart';
 import '../../helpers/fake_course_api.dart';
@@ -20,6 +22,13 @@ const _layover = Term('t2', 'layover', 'escala (de voo)', TermKind.word, 4);
 
 FrostedGlass _glass(WidgetTester tester) =>
     tester.widget<FrostedGlass>(find.byType(FrostedGlass));
+
+Finder seenCard(String text) => find
+    .ancestor(
+      of: find.textContaining(text, findRichText: true),
+      matching: find.byType(AppCard),
+    )
+    .first;
 
 void main() {
   late FakeVocabulary vocabulary;
@@ -50,14 +59,16 @@ void main() {
     await tester.pump();
 
     expect(find.text('mind the gap'), findsOneWidget);
-    expect(find.text('Montando a ficha…'), findsOneWidget);
+    expect(find.bySemanticsLabel('Montando a ficha…'), findsOneWidget);
+    expect(find.byType(Skeleton), findsWidgets);
     expect(find.text('Sem grupo'), findsOneWidget);
 
     vocabulary.api.holdCard!.complete();
     await tester.pumpAndSettle();
 
     expect(vocabulary.api.calls, contains('GET /api/v1/terms/u1'));
-    expect(find.text('Montando a ficha…'), findsNothing);
+    expect(find.bySemanticsLabel('Montando a ficha…'), findsNothing);
+    expect(find.byType(Skeleton), findsNothing);
     expect(find.text('/maɪnd ðə ɡæp/'), findsOneWidget);
     expect(find.text('SIGNIFICADO'), findsOneWidget);
   });
@@ -96,6 +107,29 @@ void main() {
     expect(find.text('cuidado com o vão'), findsOneWidget);
     expect(find.text('Cuidado com o vão ao sair do trem.'), findsOneWidget);
     expect(find.bySemanticsLabel('Ver em inglês'), findsOneWidget);
+  });
+
+  testWidgets('o card tem a altura do lado à mostra', (tester) async {
+    double side() => tester
+        .getSize(
+          find.descendant(
+            of: find.byType(FlipCard),
+            matching: find.byType(AppCard),
+          ),
+        )
+        .height;
+    double card() => tester.getSize(find.byType(FlipCard)).height;
+
+    await open(tester);
+    await tester.tap(find.text('Revelar agora'));
+    await tester.pumpAndSettle();
+    final front = side();
+    expect(card(), front);
+
+    await tester.tap(find.bySemanticsLabel('Ver em português'));
+    await tester.pumpAndSettle();
+    expect(side(), greaterThan(front));
+    expect(card(), side());
   });
 
   testWidgets('cobrir de novo volta o vidro e o lado em inglês', (
@@ -204,6 +238,17 @@ void main() {
     expect(find.text('Onde você viu'), findsOneWidget);
     expect(find.text('1 captura'), findsOneWidget);
     expect(find.text('Também marcado'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(SeenCaptures),
+        matching: find.byType(SingleChildScrollView),
+      ),
+      findsNothing,
+    );
+    expect(
+      tester.getSize(find.byType(SeenCaptures)).width,
+      tester.getSize(seenCard('Please mind the gap and stand clear.')).width,
+    );
     final chips = tester.widgetList<AppChip>(find.byType(AppChip));
     expect(chips.map((c) => c.label), ['stand clear']);
 
@@ -212,6 +257,32 @@ void main() {
 
     expect(find.byType(TermPage, skipOffstage: false), findsNWidgets(2));
     expect(vocabulary.api.calls, contains('GET /api/v1/terms/u2'));
+  });
+
+  testWidgets('onde você viu: mais de uma captura vira carrossel', (
+    tester,
+  ) async {
+    vocabulary.api.seen['u1'] = [
+      for (final (id, text) in [
+        ('c1', 'Please mind the gap.'),
+        ('c2', 'Mind the gap, please.'),
+      ])
+        {
+          'id': id,
+          'source': 'text',
+          'text': text,
+          'captured_at': DateTime.now().toIso8601String(),
+          'terms': <Object?>[],
+        },
+    ];
+
+    await open(tester);
+
+    expect(find.text('2 capturas'), findsOneWidget);
+    expect(
+      tester.getSize(seenCard('Please mind the gap.')).width,
+      SeenCaptures.cardWidth,
+    );
   });
 
   testWidgets('captura de áudio no aparelho deixa ouvir a gravação', (

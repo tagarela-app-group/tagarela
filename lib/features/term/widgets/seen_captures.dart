@@ -53,29 +53,31 @@ class SeenCaptures extends StatelessWidget {
             ),
           ],
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          clipBehavior: Clip.none,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 10,
-            children: [
-              for (final capture in captures)
-                SizedBox(
-                  width: cardWidth,
-                  child: _SeenCard(
-                    capture: capture,
-                    termId: termId,
-                    locale: locale,
-                    onOpenTerm: onOpenTerm,
-                  ),
-                ),
-            ],
+        if (captures case [final capture])
+          _card(capture)
+        else
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            clipBehavior: Clip.none,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 10,
+              children: [
+                for (final capture in captures)
+                  SizedBox(width: cardWidth, child: _card(capture)),
+              ],
+            ),
           ),
-        ),
       ],
     );
   }
+
+  Widget _card(SeenCapture capture) => _SeenCard(
+    capture: capture,
+    termId: termId,
+    locale: locale,
+    onOpenTerm: onOpenTerm,
+  );
 }
 
 class _SeenCard extends StatelessWidget {

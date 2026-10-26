@@ -40,4 +40,25 @@ void main() {
     expect(find.bySemanticsLabel('segredo'), findsOneWidget);
     expect(find.text('revelar').hitTestable(), findsNothing);
   });
+
+  testWidgets(
+    'convite maior que o conteúdo estica o vidro só enquanto embaça',
+    (tester) async {
+      Future<void> pumpTall({required bool frosted}) => tester.pumpComponent(
+        FrostedGlass(
+          frosted: frosted,
+          overlay: const SizedBox(height: 200, child: Text('revelar')),
+          child: const SizedBox(height: 60, child: Text('segredo')),
+        ),
+      );
+
+      await pumpTall(frosted: true);
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.byType(FrostedGlass)).height, 240);
+
+      await pumpTall(frosted: false);
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.byType(FrostedGlass)).height, 60);
+    },
+  );
 }

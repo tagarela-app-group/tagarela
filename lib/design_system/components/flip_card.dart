@@ -18,43 +18,42 @@ class FlipCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final duration = MediaQuery.disableAnimationsOf(context)
-        ? Duration.zero
-        : AppMotion.flip;
-    return TweenAnimationBuilder<double>(
-      tween: Tween(end: flipped ? 1 : 0),
-      duration: duration,
+    final still = MediaQuery.disableAnimationsOf(context);
+    return AnimatedSize(
+      duration: still ? Duration.zero : AppMotion.slow,
       curve: AppMotion.standard,
-      builder: (context, turn, _) {
-        final backVisible = turn > 0.5;
-        return Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.001)
-            ..rotateY(turn * pi),
-          child: Stack(
-            children: [
-              _side(front, visible: !backVisible),
-              _side(
-                Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.rotationY(pi),
-                  child: back,
+      alignment: Alignment.topCenter,
+      clipBehavior: Clip.none,
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(end: flipped ? 1 : 0),
+        duration: still ? Duration.zero : AppMotion.flip,
+        curve: AppMotion.standard,
+        builder: (context, turn, _) {
+          final backVisible = turn > 0.5;
+          return Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.001)
+              ..rotateY(turn * pi),
+            child: Stack(
+              children: [
+                _side(front, visible: !backVisible),
+                _side(
+                  Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(pi),
+                    child: back,
+                  ),
+                  visible: backVisible,
                 ),
-                visible: backVisible,
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
-  static Widget _side(Widget child, {required bool visible}) => Visibility(
-    visible: visible,
-    maintainState: true,
-    maintainAnimation: true,
-    maintainSize: true,
-    child: child,
-  );
+  static Widget _side(Widget child, {required bool visible}) =>
+      Visibility(visible: visible, maintainState: true, child: child);
 }

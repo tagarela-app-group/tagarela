@@ -46,6 +46,7 @@ abstract final class AppMotion {
   static const reveal = Duration(milliseconds: 700);
   static const flip = Duration(milliseconds: 650);
   static const sheen = Duration(milliseconds: 1600);
+  static const pulse = Duration(milliseconds: 900);
   static const standard = Cubic(0.2, 0.8, 0.2, 1);
   static const smooth = Curves.easeInOutCubic;
   static const spring = Curves.easeOutBack;

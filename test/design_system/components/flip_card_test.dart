@@ -15,14 +15,12 @@ void main() {
         ),
       );
 
-  testWidgets('mostra a frente e guarda o tamanho do lado maior', (
-    tester,
-  ) async {
+  testWidgets('mostra a frente com a altura dela', (tester) async {
     await pump(tester, flipped: false);
 
     expect(find.text('frente').hitTestable(), findsOneWidget);
     expect(find.text('verso').hitTestable(), findsNothing);
-    expect(tester.getSize(find.byType(FlipCard)).height, 120);
+    expect(tester.getSize(find.byType(FlipCard)).height, 80);
   });
 
   testWidgets('virar gira até o verso', (tester) async {
@@ -34,5 +32,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('verso').hitTestable(), findsOneWidget);
     expect(find.text('frente').hitTestable(), findsNothing);
+    expect(tester.getSize(find.byType(FlipCard)).height, 120);
   });
 }
