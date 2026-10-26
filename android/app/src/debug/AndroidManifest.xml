@@ -4,6 +4,5 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- Só debug: json-server local é http (sem TLS). Release exige https. -->
     <application android:usesCleartextTraffic="true"/>
 </manifest>

@@ -13,7 +13,7 @@ import '../helpers/l10n.dart';
 void main() {
   test('os três idiomas têm as mesmas chaves', () {
     Set<String> keys(String lang) =>
-        (jsonDecode(File('lib/l10n/app_$lang.arb').readAsStringSync())
+        (jsonDecode(File('lib/l10n/arb/app_$lang.arb').readAsStringSync())
                 as Map<String, Object?>)
             .keys
             .where((k) => !k.startsWith('@'))

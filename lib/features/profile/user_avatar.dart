@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/l10n/countries.dart';
+import 'package:tagarela/l10n/countries/countries.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class UserAvatar extends StatelessWidget {
