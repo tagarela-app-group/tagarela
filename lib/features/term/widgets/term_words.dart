@@ -34,7 +34,7 @@ class TermWords extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.s4,
               AppSpacing.s4,
-              AppSpacing.s2,
+              AppSpacing.s4,
               10,
             ),
             child: ListenableBuilder(
@@ -47,7 +47,10 @@ class TermWords extends StatelessWidget {
                     child: Text(l10n.collocations, style: AppText.titleSm),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 2, bottom: 6),
+                    padding: const EdgeInsets.only(
+                      top: AppSpacing.s1,
+                      bottom: AppSpacing.s2,
+                    ),
                     child: Text(
                       l10n.collocationsHint,
                       style: AppText.label.copyWith(
@@ -146,19 +149,21 @@ class _Combo extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSpacing.s3,
                           ),
-                          alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: piece.marked ? c.primary : c.surfaceAlt,
                             borderRadius: BorderRadius.circular(AppRadius.sm),
                             boxShadow: piece.marked ? c.buttonShadow : null,
                           ),
-                          child: Text(
-                            piece.text,
-                            locale: locale,
-                            style: AppText.bodyLg.copyWith(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: piece.marked ? c.onPrimary : c.ink,
+                          child: Center(
+                            widthFactor: 1,
+                            child: Text(
+                              piece.text,
+                              locale: locale,
+                              style: AppText.bodyLg.copyWith(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: piece.marked ? c.onPrimary : c.ink,
+                              ),
                             ),
                           ),
                         ),
