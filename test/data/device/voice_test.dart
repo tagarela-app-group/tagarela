@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/voice.dart';
+import 'package:tagarela/data/device/voice.dart';
+import 'package:tagarela/data/models/models.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

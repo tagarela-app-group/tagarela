@@ -1,5 +1,5 @@
-import 'package:tagarela/data/api_client.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/api_client.dart';
 
 class CaptureService {
   const CaptureService(this._api);

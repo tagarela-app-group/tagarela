@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/text_extractor.dart';
+import 'package:tagarela/data/device/text_extractor.dart';
+import 'package:tagarela/data/models/models.dart';
 
-import '../helpers/fake_extraction.dart';
+import '../../helpers/fake_extraction.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

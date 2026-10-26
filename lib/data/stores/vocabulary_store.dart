@@ -1,6 +1,6 @@
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
-import 'package:tagarela/data/store.dart';
+import 'package:tagarela/data/stores/store.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 
 class VocabularyStore extends Store<Vocabulary> {

@@ -1,5 +1,5 @@
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/store.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/stores/store.dart';
 
 typedef HomeData = ({Stats stats, WordOfDay? wordOfDay});
 

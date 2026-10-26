@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 
 typedef Span = ({int start, int end});
 

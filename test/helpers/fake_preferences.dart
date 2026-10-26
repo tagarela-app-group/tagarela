@@ -1,4 +1,4 @@
-import 'package:tagarela/data/preferences.dart';
+import 'package:tagarela/data/storage/preferences.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 
 class FakePreferences implements Preferences {

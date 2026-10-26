@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';

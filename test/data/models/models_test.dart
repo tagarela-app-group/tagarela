@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
-import '../helpers/fixtures.dart';
+import '../../helpers/fixtures.dart';
 
 Term _term(int level) =>
     Term('t$level', 'word', 'palavra', TermKind.word, level);

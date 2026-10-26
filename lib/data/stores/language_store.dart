@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:tagarela/data/preferences.dart';
+import 'package:tagarela/data/storage/preferences.dart';
 
 enum AppLanguage {
   pt('Português (Brasil)'),

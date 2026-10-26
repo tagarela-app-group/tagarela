@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:tagarela/data/api_client.dart';
-import 'package:tagarela/data/database.dart';
-import 'package:tagarela/data/media_storage.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/device/text_extractor.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/capture_service.dart';
-import 'package:tagarela/data/store.dart';
-import 'package:tagarela/data/text_extractor.dart';
+import 'package:tagarela/data/storage/database.dart';
+import 'package:tagarela/data/storage/media_storage.dart';
+import 'package:tagarela/data/stores/store.dart';
 
 class CaptureStore extends Store<List<Capture>> {
   CaptureStore(

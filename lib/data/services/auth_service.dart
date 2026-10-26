@@ -1,6 +1,6 @@
-import 'package:tagarela/data/api_client.dart';
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/social_sign_in.dart';
+import 'package:tagarela/data/device/social_sign_in.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/api_client.dart';
 
 enum AuthStep {
   verifyEmail('verify_email'),

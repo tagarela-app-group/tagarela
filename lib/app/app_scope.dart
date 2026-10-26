@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-import 'package:tagarela/data/audio_playback.dart';
-import 'package:tagarela/data/capture_device.dart';
+import 'package:tagarela/data/device/audio_playback.dart';
+import 'package:tagarela/data/device/capture_device.dart';
+import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/course_store.dart';
@@ -11,7 +12,6 @@ import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
-import 'package:tagarela/data/voice.dart';
 
 class AppScope extends InheritedWidget {
   AppScope({

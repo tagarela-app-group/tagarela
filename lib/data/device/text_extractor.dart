@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:on_device_extraction/on_device_extraction.dart';
 
-import 'package:tagarela/data/model_storage.dart';
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/speech_model.dart';
+import 'package:tagarela/data/device/speech_model.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/storage/model_storage.dart';
 
 enum ExtractionError {
   noText('no_text'),

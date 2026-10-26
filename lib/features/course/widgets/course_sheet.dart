@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/course/course_picker_page.dart';
 import 'package:tagarela/features/course/widgets/course_bubble.dart';
