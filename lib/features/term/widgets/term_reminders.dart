@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/widgets/got_it_check.dart';
+import 'package:tagarela/features/term/widgets/term_pitfall.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class TermReminders extends StatelessWidget {
@@ -15,6 +16,9 @@ class TermReminders extends StatelessWidget {
     required this.asked,
     required this.bursts,
     required this.onReveal,
+    required this.pitfallRevealed,
+    required this.pitfallBursts,
+    required this.onPitfallReveal,
   });
 
   final TermCard card;
@@ -24,6 +28,9 @@ class TermReminders extends StatelessWidget {
   final bool asked;
   final int bursts;
   final VoidCallback onReveal;
+  final bool pitfallRevealed;
+  final int pitfallBursts;
+  final ValueChanged<bool> onPitfallReveal;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +42,7 @@ class TermReminders extends StatelessWidget {
     final meaning = card.base.headline;
     final imagine = card.learning.imagine;
     final mistake = card.mistake;
-    final pitfall = card.learning.pitfall;
+    final pitfall = card.base.pitfall;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 10,
@@ -145,57 +152,14 @@ class TermReminders extends StatelessWidget {
           ),
         if (asked) const GotItCheck(),
         if (mistake != null || pitfall != null)
-          AppCard(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.s4,
-              AppSpacing.s4,
-              AppSpacing.s4,
-              18,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: AppSpacing.s3,
-              children: [
-                Row(
-                  spacing: AppSpacing.s2,
-                  children: [
-                    Icon(AppIcons.warning, size: 18, color: c.alert),
-                    Text(l10n.pitfallTitle, style: AppText.titleSm),
-                  ],
-                ),
-                if (mistake != null)
-                  IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      spacing: AppSpacing.s2,
-                      children: [
-                        Expanded(
-                          child: _Say(
-                            label: l10n.sayNot,
-                            text: mistake.wrong,
-                            locale: learningLocale,
-                            wrong: true,
-                          ),
-                        ),
-                        Expanded(
-                          child: _Say(
-                            label: l10n.say,
-                            text: mistake.right,
-                            locale: learningLocale,
-                            wrong: false,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (pitfall != null)
-                  Text(
-                    pitfall,
-                    locale: learningLocale,
-                    style: AppText.bodyMd.copyWith(color: c.inkSoft),
-                  ),
-              ],
-            ),
+          TermPitfall(
+            mistake: mistake,
+            pitfall: pitfall,
+            learning: learning,
+            base: base,
+            revealed: pitfallRevealed,
+            bursts: pitfallBursts,
+            onReveal: onPitfallReveal,
           ),
       ],
     );
@@ -236,61 +200,6 @@ class _Labeled extends StatelessWidget {
           child: Text(text, locale: locale, style: style),
         ),
       ],
-    );
-  }
-}
-
-class _Say extends StatelessWidget {
-  const _Say({
-    required this.label,
-    required this.text,
-    required this.locale,
-    required this.wrong,
-  });
-
-  final String label;
-  final String text;
-  final Locale locale;
-  final bool wrong;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    final tone = wrong ? c.alert : c.primaryText;
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.s3),
-      decoration: BoxDecoration(
-        color: wrong ? c.surfaceAlt : c.primarySoft,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 6,
-        children: [
-          Row(
-            spacing: 6,
-            children: [
-              Icon(
-                wrong ? AppIcons.wrong : AppIcons.check,
-                size: 16,
-                color: tone,
-              ),
-              Text(label, style: AppText.pill.copyWith(color: tone)),
-            ],
-          ),
-          Text(
-            text,
-            locale: locale,
-            style: AppText.bodyLg.copyWith(
-              fontSize: 17,
-              fontWeight: FontWeight.w700,
-              color: wrong ? c.inkSoft : c.primaryText,
-              decoration: wrong ? TextDecoration.lineThrough : null,
-              decorationColor: c.inkSoft,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

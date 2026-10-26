@@ -122,4 +122,14 @@ void main() {
     expect(api.bodies['PATCH /api/v1/terms/u1'], {'revealed': true});
     expect(detail.revealed, isTrue);
   });
+
+  test('revelar a pegadinha manda só ela', () async {
+    final (:store, :api) = fakeVocabulary();
+
+    final detail = await store.reveal('u1', pitfallRevealed: true);
+
+    expect(api.bodies['PATCH /api/v1/terms/u1'], {'pitfall_revealed': true});
+    expect(detail.pitfallRevealed, isTrue);
+    expect(detail.revealed, isFalse);
+  });
 }

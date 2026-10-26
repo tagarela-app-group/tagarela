@@ -10,6 +10,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
 import 'package:tagarela/features/term/widgets/got_it_check.dart';
 import 'package:tagarela/features/term/widgets/seen_captures.dart';
+import 'package:tagarela/features/term/widgets/term_pitfall.dart';
 
 import '../../helpers/fake_capture_store.dart';
 import '../../helpers/fake_course_api.dart';
@@ -21,8 +22,21 @@ import '../../helpers/pump_app.dart';
 const _mind = Term('u1', 'mind the gap', '', TermKind.expression, 0);
 const _layover = Term('t2', 'layover', 'escala (de voo)', TermKind.word, 4);
 
-Iterable<bool> _fog(WidgetTester tester) =>
-    tester.widgetList<Obscured>(find.byType(Obscured)).map((o) => o.obscured);
+final _inPitfall = find.descendant(
+  of: find.byType(TermPitfall),
+  matching: find.byType(Obscured),
+);
+
+Iterable<bool> _fog(WidgetTester tester) {
+  final pitfall = tester.widgetList(_inPitfall).toSet();
+  return tester
+      .widgetList<Obscured>(find.byType(Obscured))
+      .where((o) => !pitfall.contains(o))
+      .map((o) => o.obscured);
+}
+
+Iterable<bool> _pitfallFog(WidgetTester tester) =>
+    tester.widgetList<Obscured>(_inPitfall).map((o) => o.obscured);
 
 Finder seenCard(String text) => find
     .ancestor(
@@ -495,9 +509,10 @@ void main() {
     expect(find.text('Tranquilo. Agora você sabe.'), findsOneWidget);
   });
 
-  testWidgets('pra lembrar: imagem e pegadinha no idioma do curso', (
+  testWidgets('pra lembrar: imagem no idioma do curso, pegadinha na base', (
     tester,
   ) async {
+    vocabulary.api.pitfallRevealed.add('u1');
     await open(tester);
 
     expect(find.text('PRA LEMBRAR'), findsOneWidget);
@@ -511,8 +526,67 @@ void main() {
     expect(find.text('Não diga'), findsOneWidget);
     expect(find.text('mind the hole'), findsOneWidget);
     expect(find.text('Diga'), findsOneWidget);
-    expect(find.text('It is not "mind the hole".'), findsOneWidget);
-    expect(find.text('Não é "mente o buraco".'), findsNothing);
+    expect(find.text('Não é "mente o buraco".'), findsOneWidget);
+    expect(find.text('It is not "mind the hole".'), findsNothing);
+  });
+
+  testWidgets('pegadinha nasce desfocada menos os títulos', (tester) async {
+    await open(tester);
+
+    expect(_pitfallFog(tester), [true, true, true]);
+    expect(find.bySemanticsLabel(RegExp('Pegadinha')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp('Não diga')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp('Diga')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp('mind the hole')), findsNothing);
+    expect(find.bySemanticsLabel(RegExp('mente o buraco')), findsNothing);
+  });
+
+  testWidgets('tocar na pegadinha revela, salva só ela e solta os balões', (
+    tester,
+  ) async {
+    await open(tester);
+
+    await tester.tap(find.text('Diga'));
+    await tester.pump();
+
+    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
+      'pitfall_revealed': true,
+    });
+    expect(_pitfallFog(tester), [false, false, false]);
+    expect(_fog(tester), [true, true]);
+    expect(
+      find.descendant(
+        of: find.byType(TermPitfall),
+        matching: find.byType(BubbleBurst),
+      ),
+      findsOneWidget,
+    );
+    expect(find.byType(GotItCheck), findsNothing);
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel(RegExp('mind the hole')), findsOneWidget);
+  });
+
+  testWidgets('pegadinha revelada abre revelada e embaça de novo', (
+    tester,
+  ) async {
+    vocabulary.api.pitfallRevealed.add('u1');
+    await open(tester);
+
+    expect(_pitfallFog(tester), [false, false, false]);
+    expect(find.byType(BubbleBurst), findsNothing);
+
+    await tester.tap(find.byTooltip('Embaçar de novo'));
+    await tester.pumpAndSettle();
+
+    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
+      'pitfall_revealed': false,
+    });
+    expect(_pitfallFog(tester), [true, true, true]);
+
+    await tester.tap(find.byTooltip('Revelar'));
+    await tester.pumpAndSettle();
+
+    expect(_pitfallFog(tester), [false, false, false]);
   });
 
   testWidgets('pegadinha sem formas mostra só o aviso', (tester) async {
@@ -528,7 +602,7 @@ void main() {
 
     expect(find.text('AO PÉ DA LETRA'), findsNothing);
     expect(find.text('Não diga'), findsNothing);
-    expect(find.text('It is not "mind the hole".'), findsOneWidget);
+    expect(find.text('Não é "mente o buraco".'), findsOneWidget);
   });
 
   testWidgets('conversa: ouvir acende a fala da vez e o toque traduz', (

@@ -35,6 +35,8 @@ class _TermPageState extends State<TermPage> {
   var _flipped = false;
   var _bursts = 0;
   var _asked = false;
+  var _pitfallRevealed = false;
+  var _pitfallBursts = 0;
   var _tab = _Tab.context;
   late final _voice = AppScope.of(context).voice;
 
@@ -53,6 +55,7 @@ class _TermPageState extends State<TermPage> {
       setState(() {
         _detail = detail;
         _revealed = detail.revealed;
+        _pitfallRevealed = detail.pitfallRevealed;
       });
     } on Exception catch (e) {
       if (mounted) setState(() => _error = e);
@@ -66,14 +69,29 @@ class _TermPageState extends State<TermPage> {
       _asked = revealed;
       if (revealed) _bursts++;
     });
-    _save(revealed);
+    _save(
+      () => AppScope.of(
+        context,
+      ).vocabulary.reveal(widget.term.id, revealed: revealed),
+    );
   }
 
-  Future<void> _save(bool revealed) async {
-    try {
-      await AppScope.of(
+  void _revealPitfall(bool revealed) {
+    if (revealed == _pitfallRevealed) return;
+    setState(() {
+      _pitfallRevealed = revealed;
+      if (revealed) _pitfallBursts++;
+    });
+    _save(
+      () => AppScope.of(
         context,
-      ).vocabulary.reveal(widget.term.id, revealed: revealed);
+      ).vocabulary.reveal(widget.term.id, pitfallRevealed: revealed),
+    );
+  }
+
+  Future<void> _save(Future<TermDetail> Function() reveal) async {
+    try {
+      await reveal();
     } on Exception {
       return;
     }
@@ -186,6 +204,9 @@ class _TermPageState extends State<TermPage> {
               asked: _revealed && _asked,
               bursts: _bursts,
               onReveal: () => _reveal(true),
+              pitfallRevealed: _pitfallRevealed,
+              pitfallBursts: _pitfallBursts,
+              onPitfallReveal: _revealPitfall,
             ),
           ],
         ),
