@@ -4,11 +4,11 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/store.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/course/widgets/course_sheet.dart';
+import 'package:tagarela/features/course/modals/course_modal.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
-import 'package:tagarela/features/profile/user_avatar.dart';
+import 'package:tagarela/features/profile/widgets/user_avatar.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class HomePage extends StatelessWidget {
@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
           now: DateTime.now(),
         );
         if (!stores.isReady) {
-          return SheetPage(
+          return AppPage(
             header: header,
             centerLast: true,
             children: [AsyncStatus(error: stores.error, onRetry: stores.retry)],
@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
         if (vocabulary.termCount == 0 &&
             home.wordOfDay == null &&
             home.stats.reviewCount == 0) {
-          return SheetPage(
+          return AppPage(
             header: header,
             centerLast: true,
             children: [
@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
             ],
           );
         }
-        return SheetPage(
+        return AppPage(
           header: header,
           children: [
             if (home.wordOfDay case final word?) WordOfDayCard(word: word),
@@ -124,7 +124,7 @@ class _HomeHeader extends StatelessWidget {
         ),
         if (course case final course?)
           HeaderPill(
-            onTap: () => CourseSheet.show(context),
+            onTap: () => CourseModal.show(context),
             semanticLabel: context.l10n.courseBadge(
               context.l10n.courseName(course.learning.name, course.base.name),
             ),

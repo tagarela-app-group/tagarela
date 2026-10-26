@@ -4,16 +4,16 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
-class TextCaptureSheet extends StatefulWidget {
-  const TextCaptureSheet({super.key});
+class TextCaptureModal extends StatefulWidget {
+  const TextCaptureModal({super.key});
 
   static const maxLength = 500;
 
   @override
-  State<TextCaptureSheet> createState() => _TextCaptureSheetState();
+  State<TextCaptureModal> createState() => _TextCaptureModalState();
 }
 
-class _TextCaptureSheetState extends State<TextCaptureSheet> {
+class _TextCaptureModalState extends State<TextCaptureModal> {
   final _text = TextEditingController();
   bool _saving = false;
 
@@ -32,7 +32,7 @@ class _TextCaptureSheetState extends State<TextCaptureSheet> {
   }
 
   @override
-  Widget build(BuildContext context) => AppSheet(
+  Widget build(BuildContext context) => AppModal(
     icon: AppIcons.text,
     accent: AppAccent.violet,
     title: context.l10n.typeText,
@@ -46,7 +46,7 @@ class _TextCaptureSheetState extends State<TextCaptureSheet> {
           helperText: context.l10n.textCaptureHelper,
           controller: _text,
           lines: 4,
-          maxLength: TextCaptureSheet.maxLength,
+          maxLength: TextCaptureModal.maxLength,
           autofocus: true,
         ),
         ListenableBuilder(

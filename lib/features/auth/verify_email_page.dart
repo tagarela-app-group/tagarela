@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/auth/auth_form.dart';
+import 'package:tagarela/features/auth/logic/auth_form.dart';
 import 'package:tagarela/features/auth/widgets/auth_header.dart';
 import 'package:tagarela/features/auth/widgets/code_step.dart';
 import 'package:tagarela/l10n/l10n.dart';
@@ -34,7 +34,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> with AuthForm {
 
   @override
   Widget build(BuildContext context) {
-    return SheetPage(
+    return AppPage(
       header: AuthHeader(
         title: context.l10n.verifyEmailTitle,
         subtitle: context.l10n.verifyEmailSubtitle,

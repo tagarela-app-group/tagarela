@@ -172,14 +172,14 @@ void main() {
       (AppIcons.text, 'Digitar texto'),
     ]) {
       await openFromMenu(tester, icon);
-      expect(find.byType(AppSheet), findsOneWidget, reason: title);
+      expect(find.byType(AppModal), findsOneWidget, reason: title);
       expect(find.text(title), findsOneWidget);
       expect(find.text('O que você ouviu hoje?'), findsNothing);
 
       await tester.tap(find.byTooltip('Fechar'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
-      expect(find.byType(AppSheet), findsNothing);
+      expect(find.byType(AppModal), findsNothing);
       expect(_currentTab(tester), 0);
     }
   });

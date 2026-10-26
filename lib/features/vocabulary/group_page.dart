@@ -4,8 +4,9 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
-import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
-import 'package:tagarela/features/vocabulary/widgets/move_sheet.dart';
+import 'package:tagarela/features/vocabulary/modals/delete_group_modal.dart';
+import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
+import 'package:tagarela/features/vocabulary/modals/move_modal.dart';
 import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -38,23 +39,23 @@ class _GroupPageState extends State<GroupPage> {
   );
 
   Future<void> _openMenu(TermGroup group) async {
-    final action = await AppSheet.show<_MenuAction>(
+    final action = await AppModal.show<_MenuAction>(
       context,
       (_) => _GroupMenu(group: group),
     );
     if (!mounted) return;
     switch (action) {
       case _MenuAction.edit:
-        await AppSheet.show<TermGroup>(
+        await AppModal.show<TermGroup>(
           context,
-          (_) => GroupSheet(group: group),
+          (_) => GroupModal(group: group),
         );
       case _MenuAction.select:
         _select({});
       case _MenuAction.delete:
-        final deleted = await AppSheet.show<bool>(
+        final deleted = await AppModal.show<bool>(
           context,
-          (_) => _DeleteGroupSheet(group: group),
+          (_) => DeleteGroupModal(group: group),
         );
         if (deleted == true && mounted) Navigator.of(context).pop(group);
       case null:
@@ -72,9 +73,9 @@ class _GroupPageState extends State<GroupPage> {
     List<Term> terms,
   ) async {
     final ids = _selectedIn(terms);
-    final target = await AppSheet.show<MoveTarget>(
+    final target = await AppModal.show<MoveTarget>(
       context,
-      (_) => MoveSheet(
+      (_) => MoveModal(
         groups: [
           for (final g in data.groups)
             if (g.id != from?.id) g,
@@ -86,7 +87,7 @@ class _GroupPageState extends State<GroupPage> {
     if (target == null || !mounted) return;
     final to =
         target.group ??
-        await AppSheet.show<TermGroup>(context, (_) => const GroupSheet());
+        await AppModal.show<TermGroup>(context, (_) => const GroupModal());
     if (to == null || !mounted) return;
     await _move(ids, from: from, to: to);
   }
@@ -184,7 +185,7 @@ class _GroupPageState extends State<GroupPage> {
             if (!didPop) return _select(null);
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },
-          child: SheetPage(
+          child: AppPage(
             header: _GroupHeader(
               icon: group?.icon ?? AppIcons.ungrouped,
               name: group?.name ?? context.l10n.ungrouped,
@@ -391,7 +392,7 @@ class _GroupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppSheet(
+    return AppModal(
       icon: group.icon,
       accent: group.accent,
       title: group.name,
@@ -421,73 +422,6 @@ class _GroupMenu extends StatelessWidget {
             title: context.l10n.deleteGroup,
             subtitle: context.l10n.deleteGroupHint,
             onTap: () => Navigator.pop(context, _MenuAction.delete),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DeleteGroupSheet extends StatefulWidget {
-  const _DeleteGroupSheet({required this.group});
-
-  final TermGroup group;
-
-  @override
-  State<_DeleteGroupSheet> createState() => _DeleteGroupSheetState();
-}
-
-class _DeleteGroupSheetState extends State<_DeleteGroupSheet> {
-  var _busy = false;
-  String? _error;
-
-  Future<void> _delete() async {
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    try {
-      await AppScope.of(context).vocabulary.deleteGroup(widget.group.id);
-      if (mounted) Navigator.pop(context, true);
-    } on Exception {
-      if (!mounted) return;
-      setState(() {
-        _busy = false;
-        _error = context.l10n.deleteFailed;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final group = widget.group;
-
-    return AppSheet(
-      icon: AppIcons.delete,
-      accent: AppAccent.coral,
-      title: context.l10n.deleteGroupTitle(group.name),
-      subtitle: context.l10n.deleteGroupSubtitle(group.terms.length),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: AppSpacing.s3,
-        children: [
-          if (_error case final error?)
-            Text(
-              error,
-              style: AppText.bodyMd.copyWith(color: context.colors.alert),
-            ),
-          AppButton(
-            label: context.l10n.deleteGroup,
-            variant: AppButtonVariant.danger,
-            expand: true,
-            loading: _busy,
-            onPressed: _delete,
-          ),
-          AppButton(
-            label: context.l10n.cancel,
-            variant: AppButtonVariant.text,
-            expand: true,
-            onPressed: _busy ? null : () => Navigator.pop(context),
           ),
         ],
       ),

@@ -8,7 +8,7 @@ import '../../helpers/pump_app.dart';
 void main() {
   testWidgets('mostra header e itens do body', (tester) async {
     await tester.pumpPage(
-      const SheetPage(
+      const AppPage(
         header: Text('Header'),
         children: [Text('Item 1'), Text('Item 2')],
       ),
@@ -21,7 +21,7 @@ void main() {
 
   testWidgets('body rola quando o conteúdo passa da tela', (tester) async {
     await tester.pumpPage(
-      SheetPage(
+      AppPage(
         header: const Text('Header'),
         children: [
           for (var i = 0; i < 40; i++)
@@ -40,7 +40,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpPage(
-      const SheetPage(
+      const AppPage(
         header: Text('Header'),
         centerLast: true,
         children: [Text('Topo'), Text('Vazio')],
@@ -59,7 +59,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpPage(
-      const SheetPage(
+      const AppPage(
         header: Text('Header'),
         centerLast: true,
         children: [
@@ -81,7 +81,7 @@ void main() {
   testWidgets('centerLast com onRefresh: puxar ainda atualiza', (tester) async {
     var refreshed = 0;
     await tester.pumpComponent(
-      SheetPage(
+      AppPage(
         header: const Text('Header'),
         centerLast: true,
         onRefresh: () async => refreshed++,
@@ -98,7 +98,7 @@ void main() {
   testWidgets('onRefresh: puxar a lista chama a função', (tester) async {
     var refreshed = 0;
     await tester.pumpComponent(
-      SheetPage(
+      AppPage(
         header: const Text('Header'),
         onRefresh: () async => refreshed++,
         children: const [Text('Item')],
@@ -113,7 +113,7 @@ void main() {
 
   testWidgets('sem onRefresh: sem RefreshIndicator', (tester) async {
     await tester.pumpComponent(
-      const SheetPage(header: Text('Header'), children: [Text('Item')]),
+      const AppPage(header: Text('Header'), children: [Text('Item')]),
     );
 
     expect(find.byType(RefreshIndicator), findsNothing);
@@ -121,7 +121,7 @@ void main() {
 
   testWidgets('footer fica fixo embaixo, fora da rolagem', (tester) async {
     await tester.pumpPage(
-      SheetPage(
+      AppPage(
         header: const Text('Header'),
         footer: const Text('Rodapé'),
         children: [
@@ -142,7 +142,7 @@ void main() {
   });
 
   testWidgets('trocar centerLast não recria os itens de cima', (tester) async {
-    Widget page({required bool centerLast}) => SheetPage(
+    Widget page({required bool centerLast}) => AppPage(
       header: const Text('Header'),
       centerLast: centerLast,
       children: const [Text('Topo'), Text('Último')],

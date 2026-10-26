@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/auth/auth_form.dart';
+import 'package:tagarela/features/auth/logic/auth_form.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class SocialButtons extends StatelessWidget {

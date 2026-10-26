@@ -1198,11 +1198,11 @@ abstract class AppLocalizations {
   /// **'Automático · {language}'**
   String languageAutoValue(String language);
 
-  /// No description provided for @languageSheetSubtitle.
+  /// No description provided for @languageModalSubtitle.
   ///
   /// In pt, this message translates to:
   /// **'Muda os textos do app'**
-  String get languageSheetSubtitle;
+  String get languageModalSubtitle;
 
   /// No description provided for @modelReady.
   ///
@@ -1612,17 +1612,17 @@ abstract class AppLocalizations {
   /// **'Sem conexão. Tente de novo.'**
   String get offlineRetry;
 
-  /// No description provided for @groupSheetNewHint.
+  /// No description provided for @groupModalNewHint.
   ///
   /// In pt, this message translates to:
   /// **'Junte termos do mesmo assunto'**
-  String get groupSheetNewHint;
+  String get groupModalNewHint;
 
-  /// No description provided for @groupSheetEditHint.
+  /// No description provided for @groupModalEditHint.
   ///
   /// In pt, this message translates to:
   /// **'Mude o nome, o ícone ou a cor'**
-  String get groupSheetEditHint;
+  String get groupModalEditHint;
 
   /// No description provided for @groupNameHint.
   ///
@@ -1648,17 +1648,17 @@ abstract class AppLocalizations {
   /// **'Salvar'**
   String get save;
 
-  /// No description provided for @moveSheetTitle.
+  /// No description provided for @moveModalTitle.
   ///
   /// In pt, this message translates to:
   /// **'Mover pra qual grupo?'**
-  String get moveSheetTitle;
+  String get moveModalTitle;
 
-  /// No description provided for @moveSheetSubtitle.
+  /// No description provided for @moveModalSubtitle.
   ///
   /// In pt, this message translates to:
   /// **'{terms} de {from}'**
-  String moveSheetSubtitle(String terms, String from);
+  String moveModalSubtitle(String terms, String from);
 
   /// No description provided for @noGroupsTitle.
   ///
@@ -1684,11 +1684,11 @@ abstract class AppLocalizations {
   /// **'Escolha pra mostrar a bandeira no seu avatar'**
   String get countryNotSet;
 
-  /// No description provided for @countrySheetSubtitle.
+  /// No description provided for @countryModalSubtitle.
   ///
   /// In pt, this message translates to:
   /// **'Aparece como bandeira no seu avatar'**
-  String get countrySheetSubtitle;
+  String get countryModalSubtitle;
 
   /// No description provided for @searchCountry.
   ///

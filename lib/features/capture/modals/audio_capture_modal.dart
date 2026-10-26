@@ -14,14 +14,14 @@ import 'package:tagarela/l10n/l10n.dart';
 
 enum _Phase { starting, recording, done, denied }
 
-class AudioCaptureSheet extends StatefulWidget {
-  const AudioCaptureSheet({super.key});
+class AudioCaptureModal extends StatefulWidget {
+  const AudioCaptureModal({super.key});
 
   @override
-  State<AudioCaptureSheet> createState() => _AudioCaptureSheetState();
+  State<AudioCaptureModal> createState() => _AudioCaptureModalState();
 }
 
-class _AudioCaptureSheetState extends State<AudioCaptureSheet> {
+class _AudioCaptureModalState extends State<AudioCaptureModal> {
   static const _bars = [
     10,
     18,
@@ -144,7 +144,7 @@ class _AudioCaptureSheetState extends State<AudioCaptureSheet> {
   @override
   Widget build(BuildContext context) {
     final recording = _phase == _Phase.recording || _phase == _Phase.starting;
-    return AppSheet(
+    return AppModal(
       icon: AppIcons.audio,
       accent: AppAccent.coral,
       title: recording ? context.l10n.recording : context.l10n.recordAudio,

@@ -9,8 +9,8 @@ import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
-class AppSheet extends StatelessWidget {
-  const AppSheet({
+class AppModal extends StatelessWidget {
+  const AppModal({
     super.key,
     this.icon,
     this.accent,

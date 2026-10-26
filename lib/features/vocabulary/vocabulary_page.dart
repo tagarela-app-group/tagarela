@@ -4,8 +4,8 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/vocabulary/group_page.dart';
+import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
 import 'package:tagarela/features/vocabulary/widgets/group_card.dart';
-import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class VocabularyPage extends StatelessWidget {
@@ -29,9 +29,9 @@ class VocabularyPage extends StatelessWidget {
   }
 
   static Future<void> _newGroup(BuildContext context) async {
-    final group = await AppSheet.show<TermGroup>(
+    final group = await AppModal.show<TermGroup>(
       context,
-      (_) => const GroupSheet(),
+      (_) => const GroupModal(),
     );
     if (group == null || !context.mounted) return;
     AppToast.show(
@@ -53,7 +53,7 @@ class VocabularyPage extends StatelessWidget {
       builder: (context, _) {
         final data = vocabulary.data;
         final empty = data == null || data.isEmpty;
-        return SheetPage(
+        return AppPage(
           header: PageHeader(
             title: context.l10n.tabVocabulary,
             subtitle: empty ? null : _subtitle(context.l10n, data),

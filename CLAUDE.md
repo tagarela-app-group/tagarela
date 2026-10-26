@@ -30,7 +30,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 
 ## Arquitetura
 
-- `lib/app/`: bootstrap, auth e shell. `lib/features/<f>/`: página + widgets da feature. `lib/design_system/`: tudo visual reutilizável. `lib/data/`: `models/` (um arquivo por domínio, import via `models.dart`), `services/` (API, sem estado, com o `ApiClient`), `stores/` (estado), `storage/` (o que fica salvo no aparelho) e `device/` (recursos do aparelho e libs nativas).
+- `lib/app/`: bootstrap, auth e shell. `lib/features/<f>/`: pages (`*_page.dart`) na raiz; `modals/` (`*_modal.dart`, abre com `AppModal.show`); `widgets/` (o que aparece na tela, inclusive toast); `logic/` (regra sem widget, testável sem tela). `lib/design_system/`: tudo visual reutilizável. `lib/data/`: `models/` (um arquivo por domínio, import via `models.dart`), `services/` (API, sem estado, com o `ApiClient`), `stores/` (estado), `storage/` (o que fica salvo no aparelho) e `device/` (recursos do aparelho e libs nativas).
 - Fluxo: tela → store → service → `ApiClient` (único ponto de rede). Estado com `ChangeNotifier`, sem pacotes de estado, rota ou HTTP.
 - Dependências injetadas por `AppScope` (teste troca).
 - Lib externa isolada no seu arquivo em `data/`; resto do app não importa.
@@ -41,7 +41,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 ## Estilo
 
 - Visual: header violeta + body arredondado, balão de fala como assinatura, tema do sistema. Cores têm papel fixo (ação, palavra do dia, aprendendo, dominado, erro); ver tokens.
-- Toda tela é `SheetPage`. Um primário por tela. Import único `design_system.dart`.
+- Toda tela é `AppPage`. Um primário por tela. Import único `design_system.dart`.
 - Código: `package:tagarela/...`, aspas simples, um widget público por arquivo.
 - Texto da UI só nos ARB (`lib/l10n/arb/`, modelo `app_pt.arb`; código gerado em `lib/l10n/generated/`, uso via `lib/l10n/l10n.dart`), via `context.l10n`; chave nova entra nos três idiomas. Rótulo de enum é `select` no ARB, não campo no model. Plural sempre com `=0` (no pt o CLDR põe 0 em `one`).
 - Testes: só `flutter_test` com fakes manuais; helpers em `test/helpers/`. `pumpPage` abre em pt; função pura recebe `AppLocalizations` (`pt`/`en`/`es` de `test/helpers/l10n.dart`).

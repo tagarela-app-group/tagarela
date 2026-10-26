@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/inbox/term_selection.dart';
+import 'package:tagarela/features/inbox/logic/term_selection.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 import 'package:tagarela/features/inbox/widgets/word_picker.dart';
 import 'package:tagarela/l10n/l10n.dart';
@@ -79,7 +79,7 @@ class _PickTermsPageState extends State<PickTermsPage> {
     final capture = widget.capture;
     final count = _selection.spans.length;
 
-    return SheetPage(
+    return AppPage(
       header: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s4,

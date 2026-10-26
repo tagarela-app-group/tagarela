@@ -402,7 +402,7 @@
       }
     }
   },
-  "languageSheetSubtitle": "Muda os textos do app",
+  "languageModalSubtitle": "Muda os textos do app",
   "modelReady": "Transcrito no celular · modelo de {size}",
   "@modelReady": {
     "placeholders": {
@@ -640,15 +640,15 @@
     }
   },
   "offlineRetry": "Sem conexão. Tente de novo.",
-  "groupSheetNewHint": "Junte termos do mesmo assunto",
-  "groupSheetEditHint": "Mude o nome, o ícone ou a cor",
+  "groupModalNewHint": "Junte termos do mesmo assunto",
+  "groupModalEditHint": "Mude o nome, o ícone ou a cor",
   "groupNameHint": "Ex.: Música, Faculdade",
   "groupNameTaken": "Você já tem um grupo com esse nome.",
   "nameTheGroup": "Dê um nome ao grupo",
   "save": "Salvar",
-  "moveSheetTitle": "Mover pra qual grupo?",
-  "moveSheetSubtitle": "{terms} de {from}",
-  "@moveSheetSubtitle": {
+  "moveModalTitle": "Mover pra qual grupo?",
+  "moveModalSubtitle": "{terms} de {from}",
+  "@moveModalSubtitle": {
     "placeholders": {
       "terms": {
         "type": "String"
@@ -662,7 +662,7 @@
   "noGroupsMessage": "Crie um grupo pra guardar esses termos.",
   "countryOfOrigin": "País de origem",
   "countryNotSet": "Escolha pra mostrar a bandeira no seu avatar",
-  "countrySheetSubtitle": "Aparece como bandeira no seu avatar",
+  "countryModalSubtitle": "Aparece como bandeira no seu avatar",
   "searchCountry": "Buscar país",
   "countryNone": "Prefiro não dizer",
   "countrySaveFailed": "Não deu pra salvar o país. Confira a internet e tente de novo.",

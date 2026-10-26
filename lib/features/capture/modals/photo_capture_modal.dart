@@ -10,14 +10,14 @@ import 'package:tagarela/features/capture/widgets/permission_notice.dart';
 import 'package:tagarela/features/capture/widgets/privacy_note.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
-class PhotoCaptureSheet extends StatefulWidget {
-  const PhotoCaptureSheet({super.key});
+class PhotoCaptureModal extends StatefulWidget {
+  const PhotoCaptureModal({super.key});
 
   @override
-  State<PhotoCaptureSheet> createState() => _PhotoCaptureSheetState();
+  State<PhotoCaptureModal> createState() => _PhotoCaptureModalState();
 }
 
-class _PhotoCaptureSheetState extends State<PhotoCaptureSheet> {
+class _PhotoCaptureModalState extends State<PhotoCaptureModal> {
   late final AppScope _scope;
   File? _photo;
   bool _denied = false;
@@ -69,7 +69,7 @@ class _PhotoCaptureSheetState extends State<PhotoCaptureSheet> {
   @override
   Widget build(BuildContext context) {
     final photo = _photo;
-    return AppSheet(
+    return AppModal(
       icon: AppIcons.camera,
       accent: AppAccent.mango,
       title: context.l10n.photo,

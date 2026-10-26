@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/features/inbox/term_selection.dart';
+import 'package:tagarela/features/inbox/logic/term_selection.dart';
 
-import '../../helpers/fake_capture_store.dart';
+import '../../../helpers/fake_capture_store.dart';
 
 void main() {
   const text = 'Please mind the gap between the train and the platform.';

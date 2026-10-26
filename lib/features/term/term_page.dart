@@ -101,7 +101,7 @@ class _TermPageState extends State<TermPage> {
             .where((g) => g.terms.any((t) => t.id == widget.term.id))
             .firstOrNull;
 
-    return SheetPage(
+    return AppPage(
       header: _TermHeader(
         term: detail?.term ?? widget.term,
         group: group,
