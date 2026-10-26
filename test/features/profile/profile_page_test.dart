@@ -8,8 +8,8 @@ import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
-import 'package:tagarela/features/profile/user_avatar.dart';
 import 'package:tagarela/features/profile/widgets/progress_card.dart';
+import 'package:tagarela/features/profile/widgets/user_avatar.dart';
 
 import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/fake_auth.dart';
@@ -19,7 +19,7 @@ import '../../helpers/fake_preferences.dart';
 import '../../helpers/fixtures.dart';
 import '../../helpers/pump_app.dart';
 import '../../helpers/fake_course_api.dart';
-import 'package:tagarela/features/course/widgets/course_sheet.dart';
+import 'package:tagarela/features/course/modals/course_modal.dart';
 
 void main() {
   testWidgets('topo centralizado: avatar grande com anel, nome e e-mail', (
@@ -120,7 +120,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(api.last('PATCH /api/v1/account').body, {'country': 'DE'});
-      expect(find.byType(AppSheet), findsNothing);
+      expect(find.byType(AppModal), findsNothing);
       expect(find.text('Alemanha'), findsOneWidget);
       expect(find.bySemanticsLabel('Bandeira: Alemanha'), findsOneWidget);
     });
@@ -139,7 +139,7 @@ void main() {
       expect(find.text('Nenhum país com esse nome'), findsOneWidget);
     });
 
-    testWidgets('falha ao salvar avisa e deixa o sheet aberto', (tester) async {
+    testWidgets('falha ao salvar avisa e deixa o modal aberto', (tester) async {
       final api = FakeAuthApi();
       final auth = await signedInAuthStore(api: api);
       api.responses['PATCH /api/v1/account'] = const ApiResponse(500, null);
@@ -156,7 +156,7 @@ void main() {
         ),
         findsOneWidget,
       );
-      expect(find.byType(AppSheet), findsOneWidget);
+      expect(find.byType(AppModal), findsOneWidget);
       expect(auth.user?.country, isNull);
     });
 
@@ -204,7 +204,7 @@ void main() {
       expect(find.text('Automático · Português (Brasil)'), findsOneWidget);
     });
 
-    testWidgets('escolher no sheet salva, fecha e mostra o nome', (
+    testWidgets('escolher no modal salva, fecha e mostra o nome', (
       tester,
     ) async {
       final preferences = FakePreferences();
@@ -213,7 +213,7 @@ void main() {
 
       await tester.tap(find.text('Idioma'));
       await tester.pumpAndSettle();
-      expect(find.byType(AppSheet), findsOneWidget);
+      expect(find.byType(AppModal), findsOneWidget);
       for (final option in AppLanguage.values) {
         expect(find.text(option.label), findsOneWidget);
       }
@@ -225,7 +225,7 @@ void main() {
       await tester.tap(find.text('Español'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AppSheet), findsNothing);
+      expect(find.byType(AppModal), findsNothing);
       expect(language.choice, AppLanguage.es);
       expect(preferences.stored, 'es');
       expect(find.text('Español'), findsOneWidget);
@@ -320,7 +320,7 @@ void main() {
     await tester.tap(find.text('Trocar ou adicionar curso'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(CourseSheet), findsOneWidget);
+    expect(find.byType(CourseModal), findsOneWidget);
   });
 
   testWidgets('progresso segue o curso ativo', (tester) async {

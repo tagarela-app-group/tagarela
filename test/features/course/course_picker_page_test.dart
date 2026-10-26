@@ -8,7 +8,7 @@ import '../../helpers/fake_course_api.dart';
 import '../../helpers/pump_app.dart';
 
 AppButton _start(WidgetTester tester) => tester.widget<AppButton>(
-  find.descendant(of: find.byType(SheetPage), matching: find.byType(AppButton)),
+  find.descendant(of: find.byType(AppPage), matching: find.byType(AppButton)),
 );
 
 void main() {

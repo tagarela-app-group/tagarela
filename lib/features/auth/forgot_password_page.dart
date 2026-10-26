@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/auth/auth_form.dart';
+import 'package:tagarela/features/auth/logic/auth_form.dart';
 import 'package:tagarela/features/auth/widgets/auth_header.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -38,7 +38,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with AuthForm {
   Widget build(BuildContext context) {
     final c = context.colors;
 
-    return SheetPage(
+    return AppPage(
       header: AuthHeader(
         title: context.l10n.forgotTitle,
         subtitle: context.l10n.forgotSubtitle,

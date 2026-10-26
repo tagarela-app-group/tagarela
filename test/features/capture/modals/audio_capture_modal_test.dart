@@ -3,11 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/capture/audio_capture_sheet.dart';
+import 'package:tagarela/features/capture/modals/audio_capture_modal.dart';
 import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
 
-import '../../helpers/fake_capture_store.dart';
-import '../../helpers/open_sheet.dart';
+import '../../../helpers/fake_capture_store.dart';
+import '../../../helpers/open_modal.dart';
 
 void main() {
   late FakeCaptures captures;
@@ -20,8 +20,8 @@ void main() {
     playback = FakeAudioPlayback();
   });
 
-  Future<List<Capture?>> open(WidgetTester tester) => tester.openSheet(
-    const AudioCaptureSheet(),
+  Future<List<Capture?>> open(WidgetTester tester) => tester.openModal(
+    const AudioCaptureModal(),
     captures: captures.store,
     device: device,
     playback: playback,
@@ -119,7 +119,7 @@ void main() {
     expect(captures.media.files.keys, ['captures/audio/${saved.id}.m4a']);
     expect(device.discarded, ['cache/gravacao-1.m4a']);
     expect(playback.playing, isNull);
-    expect(find.byType(AppSheet), findsNothing);
+    expect(find.byType(AppModal), findsNothing);
   });
 
   testWidgets('fechar gravando cancela a gravação', (tester) async {
@@ -155,6 +155,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(device.settingsOpened, 1);
-    expect(find.byType(AppSheet), findsNothing);
+    expect(find.byType(AppModal), findsNothing);
   });
 }

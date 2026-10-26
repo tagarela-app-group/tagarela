@@ -6,18 +6,18 @@ import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
-class GroupSheet extends StatefulWidget {
-  const GroupSheet({this.group, super.key});
+class GroupModal extends StatefulWidget {
+  const GroupModal({this.group, super.key});
 
   final TermGroup? group;
 
   static const maxName = 30;
 
   @override
-  State<GroupSheet> createState() => _GroupSheetState();
+  State<GroupModal> createState() => _GroupModalState();
 }
 
-class _GroupSheetState extends State<GroupSheet> {
+class _GroupModalState extends State<GroupModal> {
   late final _name = TextEditingController(text: widget.group?.name);
   late var _icon = GroupIcon.values.firstWhere(
     (i) => i.icon == widget.group?.icon,
@@ -79,13 +79,13 @@ class _GroupSheetState extends State<GroupSheet> {
     final editing = widget.group;
     final taken = vocabulary?.hasGroupNamed(name, except: editing?.id) ?? false;
 
-    return AppSheet(
+    return AppModal(
       icon: _icon.icon,
       accent: _accent,
       title: editing == null ? context.l10n.newGroup : context.l10n.editGroup,
       subtitle: editing == null
-          ? context.l10n.groupSheetNewHint
-          : context.l10n.groupSheetEditHint,
+          ? context.l10n.groupModalNewHint
+          : context.l10n.groupModalEditHint,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s4,
@@ -94,7 +94,7 @@ class _GroupSheetState extends State<GroupSheet> {
             label: context.l10n.name,
             hint: context.l10n.groupNameHint,
             controller: _name,
-            maxLength: GroupSheet.maxName,
+            maxLength: GroupModal.maxName,
             autofocus: editing == null,
             textInputAction: TextInputAction.done,
             errorText: taken ? context.l10n.groupNameTaken : _error,

@@ -10,21 +10,21 @@ import 'package:tagarela/design_system/design_system.dart';
 
 import 'pump_app.dart';
 
-extension OpenSheet on WidgetTester {
-  Future<List<Capture?>> openSheet(
-    Widget sheet, {
+extension OpenModal on WidgetTester {
+  Future<List<Capture?>> openModal(
+    Widget modal, {
     CaptureStore? captures,
     CaptureDevice? device,
     AudioPlayback? playback,
-  }) => openSheetOf<Capture>(
-    sheet,
+  }) => openModalOf<Capture>(
+    modal,
     captures: captures,
     device: device,
     playback: playback,
   );
 
-  Future<List<T?>> openSheetOf<T>(
-    Widget sheet, {
+  Future<List<T?>> openModalOf<T>(
+    Widget modal, {
     CaptureStore? captures,
     CaptureDevice? device,
     AudioPlayback? playback,
@@ -36,7 +36,7 @@ extension OpenSheet on WidgetTester {
         body: Builder(
           builder: (context) => TextButton(
             onPressed: () async =>
-                results.add(await AppSheet.show<T>(context, (_) => sheet)),
+                results.add(await AppModal.show<T>(context, (_) => modal)),
             child: const Text('abrir'),
           ),
         ),

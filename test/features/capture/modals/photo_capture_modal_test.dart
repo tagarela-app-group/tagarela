@@ -4,10 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/device/capture_device.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/capture/photo_capture_sheet.dart';
+import 'package:tagarela/features/capture/modals/photo_capture_modal.dart';
 
-import '../../helpers/fake_capture_store.dart';
-import '../../helpers/open_sheet.dart';
+import '../../../helpers/fake_capture_store.dart';
+import '../../../helpers/open_modal.dart';
 
 void main() {
   late FakeCaptures captures;
@@ -18,8 +18,8 @@ void main() {
     device = FakeCaptureDevice();
   });
 
-  Future<List<Capture?>> open(WidgetTester tester) => tester.openSheet(
-    const PhotoCaptureSheet(),
+  Future<List<Capture?>> open(WidgetTester tester) => tester.openModal(
+    const PhotoCaptureModal(),
     captures: captures.store,
     device: device,
   );
@@ -90,7 +90,7 @@ void main() {
     expect(saved.source, CaptureSource.photo);
     expect(captures.media.files.keys, ['captures/photo/${saved.id}.jpg']);
     expect(device.discarded, ['cache/foto.jpg']);
-    expect(find.byType(AppSheet), findsNothing);
+    expect(find.byType(AppModal), findsNothing);
   });
 
   testWidgets('fechar com foto escolhida apaga a foto', (tester) async {
@@ -120,6 +120,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(device.settingsOpened, 1);
-    expect(find.byType(AppSheet), findsNothing);
+    expect(find.byType(AppModal), findsNothing);
   });
 }

@@ -45,7 +45,7 @@ class _InboxPageState extends State<InboxPage> {
       listenable: captures,
       builder: (context, _) {
         final items = captures.data?.where((c) => c.section != null).toList();
-        return SheetPage(
+        return AppPage(
           header: PageHeader(
             title: context.l10n.tabInbox,
             subtitle: items == null ? null : summary(context.l10n, items),

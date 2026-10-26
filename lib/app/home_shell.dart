@@ -6,10 +6,10 @@ import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
-import 'package:tagarela/features/capture/audio_capture_sheet.dart';
-import 'package:tagarela/features/capture/capture_saved.dart';
-import 'package:tagarela/features/capture/photo_capture_sheet.dart';
-import 'package:tagarela/features/capture/text_capture_sheet.dart';
+import 'package:tagarela/features/capture/modals/audio_capture_modal.dart';
+import 'package:tagarela/features/capture/modals/photo_capture_modal.dart';
+import 'package:tagarela/features/capture/modals/text_capture_modal.dart';
+import 'package:tagarela/features/capture/widgets/capture_saved_toast.dart';
 import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/inbox/inbox_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
@@ -42,12 +42,12 @@ class _HomeShellState extends State<HomeShell> {
   void _goTo(int tab) => setState(() => _tab = tab);
 
   Future<void> _capture(CaptureSource source) async {
-    final saved = await AppSheet.show<Capture>(
+    final saved = await AppModal.show<Capture>(
       context,
       (_) => switch (source) {
-        CaptureSource.text => const TextCaptureSheet(),
-        CaptureSource.photo => const PhotoCaptureSheet(),
-        CaptureSource.audio => const AudioCaptureSheet(),
+        CaptureSource.text => const TextCaptureModal(),
+        CaptureSource.photo => const PhotoCaptureModal(),
+        CaptureSource.audio => const AudioCaptureModal(),
       },
     );
     if (saved == null || !mounted) return;

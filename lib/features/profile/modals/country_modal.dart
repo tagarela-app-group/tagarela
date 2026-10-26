@@ -5,14 +5,14 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/countries/countries.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
-class CountrySheet extends StatefulWidget {
-  const CountrySheet({super.key});
+class CountryModal extends StatefulWidget {
+  const CountryModal({super.key});
 
   @override
-  State<CountrySheet> createState() => _CountrySheetState();
+  State<CountryModal> createState() => _CountryModalState();
 }
 
-class _CountrySheetState extends State<CountrySheet> {
+class _CountryModalState extends State<CountryModal> {
   final _query = TextEditingController();
   var _saving = false;
   String? _error;
@@ -68,11 +68,11 @@ class _CountrySheetState extends State<CountrySheet> {
         ),
     ];
 
-    return AppSheet(
+    return AppModal(
       icon: AppIcons.flag,
       accent: AppAccent.mango,
       title: l10n.countryOfOrigin,
-      subtitle: l10n.countrySheetSubtitle,
+      subtitle: l10n.countryModalSubtitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s3,

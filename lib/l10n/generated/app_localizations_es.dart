@@ -738,7 +738,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get languageSheetSubtitle => 'Cambia los textos de la app';
+  String get languageModalSubtitle => 'Cambia los textos de la app';
 
   @override
   String modelReady(String size) {
@@ -1089,10 +1089,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get offlineRetry => 'Sin conexión. Inténtalo de nuevo.';
 
   @override
-  String get groupSheetNewHint => 'Junta términos del mismo tema';
+  String get groupModalNewHint => 'Junta términos del mismo tema';
 
   @override
-  String get groupSheetEditHint => 'Cambia el nombre, el ícono o el color';
+  String get groupModalEditHint => 'Cambia el nombre, el ícono o el color';
 
   @override
   String get groupNameHint => 'Ej.: Música, Facultad';
@@ -1107,10 +1107,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get save => 'Guardar';
 
   @override
-  String get moveSheetTitle => '¿A qué grupo mover?';
+  String get moveModalTitle => '¿A qué grupo mover?';
 
   @override
-  String moveSheetSubtitle(String terms, String from) {
+  String moveModalSubtitle(String terms, String from) {
     return '$terms de $from';
   }
 
@@ -1127,7 +1127,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get countryNotSet => 'Elige uno para mostrar su bandera en tu avatar';
 
   @override
-  String get countrySheetSubtitle => 'Aparece como bandera en tu avatar';
+  String get countryModalSubtitle => 'Aparece como bandera en tu avatar';
 
   @override
   String get searchCountry => 'Buscar país';

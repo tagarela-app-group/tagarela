@@ -5,8 +5,8 @@ import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
-class LanguageSheet extends StatelessWidget {
-  const LanguageSheet({super.key});
+class LanguageModal extends StatelessWidget {
+  const LanguageModal({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +18,11 @@ class LanguageSheet extends StatelessWidget {
       Navigator.pop(context);
     }
 
-    return AppSheet(
+    return AppModal(
       icon: AppIcons.language,
       accent: AppAccent.sky,
       title: l10n.language,
-      subtitle: l10n.languageSheetSubtitle,
+      subtitle: l10n.languageModalSubtitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s2,

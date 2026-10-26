@@ -68,7 +68,7 @@ class _CoursePickerPageState extends State<CoursePickerPage> {
       (final learning?, _) => l10n.courseStart(learning.name),
     };
 
-    return SheetPage(
+    return AppPage(
       header: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: AppSpacing.s4,

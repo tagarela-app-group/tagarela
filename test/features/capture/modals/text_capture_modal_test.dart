@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/capture/text_capture_sheet.dart';
+import 'package:tagarela/features/capture/modals/text_capture_modal.dart';
 
-import '../../helpers/fake_capture_store.dart';
-import '../../helpers/open_sheet.dart';
+import '../../../helpers/fake_capture_store.dart';
+import '../../../helpers/open_modal.dart';
 
 void main() {
   late FakeCaptures captures;
@@ -16,7 +16,7 @@ void main() {
   testWidgets('abre focado, contador em 0/500 e Salvar desligado', (
     tester,
   ) async {
-    await tester.openSheet(const TextCaptureSheet(), captures: captures.store);
+    await tester.openModal(const TextCaptureModal(), captures: captures.store);
 
     expect(find.text('Digitar texto'), findsOneWidget);
     expect(find.text('Palavra, expressão ou frase'), findsOneWidget);
@@ -33,7 +33,7 @@ void main() {
   });
 
   testWidgets('para em 500 caracteres', (tester) async {
-    await tester.openSheet(const TextCaptureSheet(), captures: captures.store);
+    await tester.openModal(const TextCaptureModal(), captures: captures.store);
 
     await tester.enterText(find.byType(TextField), 'a' * 600);
     await tester.pump();
@@ -42,8 +42,8 @@ void main() {
   });
 
   testWidgets('Salvar no Inbox cria a captura e fecha', (tester) async {
-    final results = await tester.openSheet(
-      const TextCaptureSheet(),
+    final results = await tester.openModal(
+      const TextCaptureModal(),
       captures: captures.store,
     );
 
@@ -52,7 +52,7 @@ void main() {
     await tester.tap(find.text('Salvar no Inbox'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(AppSheet), findsNothing);
+    expect(find.byType(AppModal), findsNothing);
     final saved = results.single!;
     expect(saved.source, CaptureSource.text);
     expect(saved.text, "I'm on the fence");
@@ -61,8 +61,8 @@ void main() {
   });
 
   testWidgets('fechar não salva', (tester) async {
-    final results = await tester.openSheet(
-      const TextCaptureSheet(),
+    final results = await tester.openModal(
+      const TextCaptureModal(),
       captures: captures.store,
     );
 

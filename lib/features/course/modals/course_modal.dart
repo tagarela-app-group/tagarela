@@ -7,17 +7,17 @@ import 'package:tagarela/features/course/course_picker_page.dart';
 import 'package:tagarela/features/course/widgets/course_bubble.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
-class CourseSheet extends StatefulWidget {
-  const CourseSheet({super.key});
+class CourseModal extends StatefulWidget {
+  const CourseModal({super.key});
 
   static Future<void> show(BuildContext context) =>
-      AppSheet.show<void>(context, (_) => const CourseSheet());
+      AppModal.show<void>(context, (_) => const CourseModal());
 
   @override
-  State<CourseSheet> createState() => _CourseSheetState();
+  State<CourseModal> createState() => _CourseModalState();
 }
 
-class _CourseSheetState extends State<CourseSheet> {
+class _CourseModalState extends State<CourseModal> {
   String? _switching;
 
   Future<void> _pick(Course course) async {
@@ -53,7 +53,7 @@ class _CourseSheetState extends State<CourseSheet> {
     final l10n = context.l10n;
     final courses = AppScope.of(context).courses.data ?? const <Course>[];
 
-    return AppSheet(
+    return AppModal(
       icon: AppIcons.language,
       accent: AppAccent.sky,
       title: l10n.coursesTitle,

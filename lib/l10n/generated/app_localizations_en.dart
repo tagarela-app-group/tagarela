@@ -731,7 +731,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get languageSheetSubtitle => 'Changes the app\'s text';
+  String get languageModalSubtitle => 'Changes the app\'s text';
 
   @override
   String modelReady(String size) {
@@ -1082,10 +1082,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offlineRetry => 'No connection. Try again.';
 
   @override
-  String get groupSheetNewHint => 'Group terms on the same topic';
+  String get groupModalNewHint => 'Group terms on the same topic';
 
   @override
-  String get groupSheetEditHint => 'Change the name, icon or color';
+  String get groupModalEditHint => 'Change the name, icon or color';
 
   @override
   String get groupNameHint => 'E.g.: Music, College';
@@ -1100,10 +1100,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
-  String get moveSheetTitle => 'Move to which group?';
+  String get moveModalTitle => 'Move to which group?';
 
   @override
-  String moveSheetSubtitle(String terms, String from) {
+  String moveModalSubtitle(String terms, String from) {
     return '$terms from $from';
   }
 
@@ -1120,7 +1120,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get countryNotSet => 'Pick one to show its flag on your avatar';
 
   @override
-  String get countrySheetSubtitle => 'Shows as a flag on your avatar';
+  String get countryModalSubtitle => 'Shows as a flag on your avatar';
 
   @override
   String get searchCountry => 'Search country';

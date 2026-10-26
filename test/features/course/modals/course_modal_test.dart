@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/course/course_picker_page.dart';
-import 'package:tagarela/features/course/widgets/course_sheet.dart';
+import 'package:tagarela/features/course/modals/course_modal.dart';
 
 import '../../../helpers/fake_course_api.dart';
 import '../../../helpers/fake_vocabulary_api.dart';
@@ -13,12 +13,12 @@ void main() {
   late FakeCourses courses;
   late FakeVocabulary vocabulary;
 
-  Future<void> openSheet(WidgetTester tester) async {
+  Future<void> openModal(WidgetTester tester) async {
     await tester.pumpPage(
       Scaffold(
         body: Builder(
           builder: (context) => TextButton(
-            onPressed: () => CourseSheet.show(context),
+            onPressed: () => CourseModal.show(context),
             child: const Text('abrir'),
           ),
         ),
@@ -38,7 +38,7 @@ void main() {
   testWidgets('lista os cursos com base, termos e aviso de áudio', (
     tester,
   ) async {
-    await openSheet(tester);
+    await openModal(tester);
 
     expect(find.text('Seus cursos'), findsOneWidget);
     expect(find.text('por meio do Português · 8 termos'), findsOneWidget);
@@ -53,30 +53,30 @@ void main() {
   testWidgets('trocar de curso ativa e recarrega o vocabulário', (
     tester,
   ) async {
-    await openSheet(tester);
+    await openModal(tester);
     vocabulary.api.calls.clear();
 
     await tester.tap(find.text('Espanhol'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(CourseSheet), findsNothing);
+    expect(find.byType(CourseModal), findsNothing);
     expect(courses.store.active!.id, 'curso-es');
     expect(vocabulary.api.calls, ['GET /api/v1/vocabulary']);
   });
 
   testWidgets('curso ativo só fecha', (tester) async {
-    await openSheet(tester);
+    await openModal(tester);
     courses.api.calls.clear();
 
     await tester.tap(find.text('Inglês'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(CourseSheet), findsNothing);
+    expect(find.byType(CourseModal), findsNothing);
     expect(courses.api.calls, isEmpty);
   });
 
   testWidgets('sem rede: avisa e fica no painel', (tester) async {
-    await openSheet(tester);
+    await openModal(tester);
     courses.api.offline = true;
 
     await tester.tap(find.text('Espanhol'));
@@ -86,17 +86,17 @@ void main() {
       find.text('Não deu pra trocar de curso. Confira sua conexão.'),
       findsOneWidget,
     );
-    expect(find.byType(CourseSheet), findsOneWidget);
+    expect(find.byType(CourseModal), findsOneWidget);
     expect(courses.store.active!.id, 'curso-en');
   });
 
   testWidgets('aprender outro idioma abre a escolha', (tester) async {
-    await openSheet(tester);
+    await openModal(tester);
 
     await tester.tap(find.text('Aprender outro idioma'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(CourseSheet), findsNothing);
+    expect(find.byType(CourseModal), findsNothing);
     expect(find.byType(CoursePickerPage), findsOneWidget);
   });
 }

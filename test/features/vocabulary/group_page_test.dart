@@ -4,12 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/vocabulary/group_page.dart';
-import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
-import 'package:tagarela/features/vocabulary/widgets/move_sheet.dart';
+import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
+import 'package:tagarela/features/vocabulary/modals/move_modal.dart';
 import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 
 import '../../helpers/fake_vocabulary_api.dart';
-import '../../helpers/open_sheet.dart';
+import '../../helpers/open_modal.dart';
 import '../../helpers/pump_app.dart';
 
 Json _term(String id, String text, int level) => {
@@ -230,13 +230,13 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Mover pra qual grupo?'), findsOneWidget);
     expect(find.text('2 termos de Viagem'), findsOneWidget);
-    final sheet = find.byType(MoveSheet);
+    final modal = find.byType(MoveModal);
     expect(
-      find.descendant(of: sheet, matching: find.text('Viagem')),
+      find.descendant(of: modal, matching: find.text('Viagem')),
       findsNothing,
     );
 
-    await tester.tap(find.descendant(of: sheet, matching: find.text('Música')));
+    await tester.tap(find.descendant(of: modal, matching: find.text('Música')));
     await tester.pumpUntilFound(find.text('2 termos movidos'));
 
     expect(api.termsOf('musica'), unorderedEquals(['carry-on', 'jet lag']));
@@ -263,7 +263,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Novo grupo'));
     await tester.pumpAndSettle();
-    expect(find.byType(GroupSheet), findsOneWidget);
+    expect(find.byType(GroupModal), findsOneWidget);
 
     await tester.enterText(textField('Nome'), 'Metrô');
     await tester.pump();
@@ -303,7 +303,7 @@ void main() {
     expect(find.text('Você ainda não tem grupos'), findsOneWidget);
     await tester.tap(find.text('Criar grupo'));
     await tester.pumpAndSettle();
-    expect(find.byType(GroupSheet), findsOneWidget);
+    expect(find.byType(GroupModal), findsOneWidget);
   });
 
   testWidgets('sem rede: avisa e mantém a seleção', (tester) async {
@@ -320,7 +320,7 @@ void main() {
 
     await tester.tap(
       find.descendant(
-        of: find.byType(MoveSheet),
+        of: find.byType(MoveModal),
         matching: find.text('Música'),
       ),
     );
@@ -405,14 +405,14 @@ void main() {
 
     await _menu(tester, 'Editar grupo');
 
-    expect(find.byType(GroupSheet), findsOneWidget);
+    expect(find.byType(GroupModal), findsOneWidget);
     expect(find.text('Editar grupo'), findsOneWidget);
     await tester.enterText(textField('Nome'), 'Viagens');
     await tester.pump();
     await tester.tap(find.text('Salvar'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(GroupSheet), findsNothing);
+    expect(find.byType(GroupModal), findsNothing);
     expect(api.bodies['PATCH /api/v1/groups/viagem'], {
       'name': 'Viagens',
       'icon': 'travel',

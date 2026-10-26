@@ -10,9 +10,9 @@ void main() {
     await tester.pumpComponent(
       Builder(
         builder: (context) => TextButton(
-          onPressed: () => AppSheet.show<void>(
+          onPressed: () => AppModal.show<void>(
             context,
-            (_) => const AppSheet(
+            (_) => const AppModal(
               icon: AppIcons.text,
               accent: AppAccent.mint,
               title: 'Digitar texto',
@@ -50,14 +50,14 @@ void main() {
     await tester.tap(find.byTooltip('Fechar'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(AppSheet), findsNothing);
+    expect(find.byType(AppModal), findsNothing);
   });
 
   testWidgets('monta no tema escuro', (tester) async {
     await open(tester, theme: AppTheme.dark);
 
     expect(tester.takeException(), isNull);
-    expect(find.byType(AppSheet), findsOneWidget);
+    expect(find.byType(AppModal), findsOneWidget);
   });
 
   testWidgets('sem ícone: só título e subtítulo; conteúdo longo rola', (
@@ -66,9 +66,9 @@ void main() {
     await tester.pumpComponent(
       Builder(
         builder: (context) => TextButton(
-          onPressed: () => AppSheet.show<void>(
+          onPressed: () => AppModal.show<void>(
             context,
-            (_) => AppSheet(
+            (_) => AppModal(
               title: 'Mover pra qual grupo?',
               subtitle: '2 termos de Viagem',
               child: Column(

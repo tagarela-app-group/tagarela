@@ -7,7 +7,7 @@ import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
-import 'package:tagarela/features/profile/user_avatar.dart';
+import 'package:tagarela/features/profile/widgets/user_avatar.dart';
 
 import 'package:tagarela/data/stores/home_store.dart';
 
@@ -17,7 +17,7 @@ import '../../helpers/fake_auth.dart';
 import '../../helpers/l10n.dart';
 import '../../helpers/pump_app.dart';
 import '../../helpers/fake_course_api.dart';
-import 'package:tagarela/features/course/widgets/course_sheet.dart';
+import 'package:tagarela/features/course/modals/course_modal.dart';
 
 void main() {
   group('greeting', () {
@@ -131,7 +131,7 @@ void main() {
     expect(find.byType(VocabularySummary), findsNothing);
     expect(find.text('Seu inglês começa aqui'), findsOneWidget);
     expect(find.byType(SpeechBubbleIcon), findsOneWidget);
-    expect(tester.widget<SheetPage>(find.byType(SheetPage)).centerLast, isTrue);
+    expect(tester.widget<AppPage>(find.byType(AppPage)).centerLast, isTrue);
 
     await tester.tap(find.text('Fazer a primeira captura'));
     expect(captures, 1);
@@ -183,7 +183,7 @@ void main() {
     await tester.tap(badge);
     await tester.pumpAndSettle();
 
-    expect(find.byType(CourseSheet), findsOneWidget);
+    expect(find.byType(CourseModal), findsOneWidget);
   });
 
   testWidgets('sem curso carregado: sem selo', (tester) async {

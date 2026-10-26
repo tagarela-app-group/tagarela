@@ -4,14 +4,14 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
+import 'package:tagarela/features/course/modals/course_modal.dart';
 import 'package:tagarela/features/course/widgets/course_bubble.dart';
-import 'package:tagarela/features/course/widgets/course_sheet.dart';
-import 'package:tagarela/features/profile/user_avatar.dart';
-import 'package:tagarela/features/profile/widgets/country_sheet.dart';
-import 'package:tagarela/features/profile/widgets/language_sheet.dart';
+import 'package:tagarela/features/profile/modals/country_modal.dart';
+import 'package:tagarela/features/profile/modals/language_modal.dart';
 import 'package:tagarela/features/profile/widgets/offline_section.dart';
 import 'package:tagarela/features/profile/widgets/profile_section.dart';
 import 'package:tagarela/features/profile/widgets/progress_card.dart';
+import 'package:tagarela/features/profile/widgets/user_avatar.dart';
 import 'package:tagarela/l10n/countries/countries.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -39,7 +39,7 @@ class ProfilePage extends StatelessWidget {
           mastered: vocabulary?.masteredCount ?? 0,
         );
         final l10n = context.l10n;
-        return SheetPage(
+        return AppPage(
           header: user == null
               ? PageHeader(title: l10n.tabProfile)
               : PageHeader(
@@ -67,7 +67,7 @@ class ProfilePage extends StatelessWidget {
                       course.base.name,
                     ),
                     text: l10n.courseChange,
-                    onTap: () => CourseSheet.show(context),
+                    onTap: () => CourseModal.show(context),
                   ),
                 ],
               ),
@@ -95,9 +95,9 @@ class ProfilePage extends StatelessWidget {
                       final country? => l10n.countryName(country) ?? country,
                       null => l10n.countryNotSet,
                     },
-                    onTap: () => AppSheet.show<void>(
+                    onTap: () => AppModal.show<void>(
                       context,
-                      (_) => const CountrySheet(),
+                      (_) => const CountryModal(),
                     ),
                   ),
                   ProfileRow(
@@ -123,9 +123,9 @@ class ProfilePage extends StatelessWidget {
                       ]).label,
                     ),
                   },
-                  onTap: () => AppSheet.show<void>(
+                  onTap: () => AppModal.show<void>(
                     context,
-                    (_) => const LanguageSheet(),
+                    (_) => const LanguageModal(),
                   ),
                 ),
               ],

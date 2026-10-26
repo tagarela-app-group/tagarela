@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/inbox/term_selection.dart';
+import 'package:tagarela/features/inbox/logic/term_selection.dart';
 
 class WordPicker extends StatefulWidget {
   const WordPicker({super.key, required this.selection, required this.onPick});

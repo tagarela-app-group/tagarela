@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/features/capture/capture_saved.dart';
+import 'package:tagarela/features/capture/widgets/capture_saved_toast.dart';
 
-import '../../helpers/fake_capture_store.dart';
-import '../../helpers/l10n.dart';
+import '../../../helpers/fake_capture_store.dart';
+import '../../../helpers/l10n.dart';
 
 void main() {
   test('aviso muda conforme o envio', () {

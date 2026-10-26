@@ -6,8 +6,8 @@ import 'package:tagarela/l10n/l10n.dart';
 
 typedef MoveTarget = ({TermGroup? group});
 
-class MoveSheet extends StatelessWidget {
-  const MoveSheet({
+class MoveModal extends StatelessWidget {
+  const MoveModal({
     super.key,
     required this.groups,
     required this.count,
@@ -23,9 +23,9 @@ class MoveSheet extends StatelessWidget {
     void pick(TermGroup? group) =>
         Navigator.pop<MoveTarget>(context, (group: group));
 
-    return AppSheet(
-      title: context.l10n.moveSheetTitle,
-      subtitle: context.l10n.moveSheetSubtitle(
+    return AppModal(
+      title: context.l10n.moveModalTitle,
+      subtitle: context.l10n.moveModalSubtitle(
         context.l10n.termCount(count),
         from,
       ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/auth/auth_form.dart';
 import 'package:tagarela/features/auth/forgot_password_page.dart';
+import 'package:tagarela/features/auth/logic/auth_form.dart';
 import 'package:tagarela/features/auth/signup_page.dart';
 import 'package:tagarela/features/auth/widgets/social_buttons.dart';
 import 'package:tagarela/l10n/l10n.dart';
@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
   Widget build(BuildContext context) {
     final c = context.colors;
 
-    return SheetPage(
+    return AppPage(
       header: const _LoginHeader(),
       gap: AppSpacing.s4,
       children: [

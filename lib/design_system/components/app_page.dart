@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 
-class SheetPage extends StatelessWidget {
-  const SheetPage({
+class AppPage extends StatelessWidget {
+  const AppPage({
     super.key,
     required this.header,
     required this.children,

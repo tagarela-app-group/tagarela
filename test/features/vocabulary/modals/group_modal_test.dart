@@ -2,18 +2,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
+import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
 
 import '../../../helpers/fake_vocabulary_api.dart';
-import '../../../helpers/open_sheet.dart';
+import '../../../helpers/open_modal.dart';
 import '../../../helpers/pump_app.dart';
 
 void main() {
   Future<(List<TermGroup?>, FakeVocabulary)> open(WidgetTester tester) async {
     final vocabulary = fakeVocabulary();
     await vocabulary.store.load();
-    final results = await tester.openSheetOf<TermGroup>(
-      const GroupSheet(),
+    final results = await tester.openModalOf<TermGroup>(
+      const GroupModal(),
       vocabulary: vocabulary.store,
     );
     return (results, vocabulary);
@@ -22,8 +22,8 @@ void main() {
   Future<(List<TermGroup?>, FakeVocabulary)> edit(WidgetTester tester) async {
     final vocabulary = fakeVocabulary();
     await vocabulary.store.load();
-    final results = await tester.openSheetOf<TermGroup>(
-      GroupSheet(group: vocabulary.store.data!.group('1')),
+    final results = await tester.openModalOf<TermGroup>(
+      GroupModal(group: vocabulary.store.data!.group('1')),
       vocabulary: vocabulary.store,
     );
     return (results, vocabulary);
@@ -78,7 +78,7 @@ void main() {
       'accent': 'pink',
     });
     expect(results.single!.name, 'Música');
-    expect(find.byType(GroupSheet), findsNothing);
+    expect(find.byType(GroupModal), findsNothing);
   });
 
   testWidgets('sem rede: erro no campo e o painel fica aberto', (tester) async {
@@ -91,7 +91,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Sem conexão. Tente de novo.'), findsOneWidget);
-    expect(find.byType(GroupSheet), findsOneWidget);
+    expect(find.byType(GroupModal), findsOneWidget);
     expect(results, isEmpty);
 
     await tester.enterText(textField('Nome'), 'Músicas');
@@ -115,7 +115,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Você já tem um grupo com esse nome.'), findsOneWidget);
-    expect(find.byType(GroupSheet), findsOneWidget);
+    expect(find.byType(GroupModal), findsOneWidget);
   });
 
   testWidgets('editar: abre preenchido e aceita o próprio nome', (
@@ -155,6 +155,6 @@ void main() {
     expect((body['name'], body['accent']), ('Viagem', 'pink'));
     expect(results.single!.accent, AppAccent.pink);
     expect(store.data!.groups.first.accent, AppAccent.pink);
-    expect(find.byType(GroupSheet), findsNothing);
+    expect(find.byType(GroupModal), findsNothing);
   });
 }
