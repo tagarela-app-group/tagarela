@@ -383,6 +383,18 @@ void main() {
     expect(find.text('Dominado'), findsOneWidget);
   });
 
+  testWidgets('selo do grupo fica no canto direito do cabeçalho', (
+    tester,
+  ) async {
+    await open(tester, term: _layover);
+
+    expect(find.text('Viagem'), findsOneWidget);
+    expect(
+      tester.getRect(find.byType(HeaderPill)).right,
+      tester.getRect(find.byType(StatusPill)).right,
+    );
+  });
+
   testWidgets('sair da ficha cala a voz', (tester) async {
     final voice = FakeVoice();
     await open(tester, voice: voice);

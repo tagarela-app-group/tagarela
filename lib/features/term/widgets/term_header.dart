@@ -42,6 +42,7 @@ class TermHeader extends StatelessWidget {
           spacing: AppSpacing.s4,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AppIconButton(
                   icon: AppIcons.back,
@@ -49,7 +50,6 @@ class TermHeader extends StatelessWidget {
                   onPressed: () => Navigator.of(context).pop(),
                   variant: AppIconButtonVariant.onHeader,
                 ),
-                const Spacer(),
                 Flexible(
                   child: HeaderPill(
                     height: 32,
