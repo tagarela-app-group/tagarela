@@ -8,7 +8,8 @@ class AppPage extends StatelessWidget {
   const AppPage({
     super.key,
     required this.header,
-    required this.children,
+    this.children = const [],
+    this.sheet = true,
     this.gap = AppSpacing.s5,
     this.onRefresh,
     this.footer,
@@ -17,6 +18,8 @@ class AppPage extends StatelessWidget {
 
   final Widget header;
   final List<Widget> children;
+
+  final bool sheet;
 
   final double gap;
 
@@ -28,66 +31,81 @@ class AppPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
-    final bottom = MediaQuery.paddingOf(context).bottom;
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        backgroundColor: c.header,
-        body: Column(
-          children: [
-            SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.screen,
-                  AppSpacing.s4,
-                  AppSpacing.screen,
-                  AppSpacing.s6,
-                ),
-                child: header,
-              ),
-            ),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(AppRadius.sheet),
-                ),
-                child: ColoredBox(
-                  color: c.bg,
-                  child: _refreshable(
-                    _body(
-                      EdgeInsets.fromLTRB(
-                        AppSpacing.screen,
-                        AppSpacing.s6,
-                        AppSpacing.screen,
-                        AppSpacing.s6 + (footer == null ? bottom : 0),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            if (footer case final footer?)
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: c.bg,
-                  border: Border(top: BorderSide(color: c.line)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    AppSpacing.screen,
-                    AppSpacing.s3,
-                    AppSpacing.screen,
-                    AppSpacing.s3 + bottom,
-                  ),
-                  child: footer,
-                ),
-              ),
-          ],
-        ),
+        backgroundColor: context.colors.header,
+        body: sheet ? _sheet(context) : _full(),
       ),
+    );
+  }
+
+  Widget _full() => SafeArea(
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.screen,
+        AppSpacing.s4,
+        AppSpacing.screen,
+        AppSpacing.s6,
+      ),
+      child: header,
+    ),
+  );
+
+  Widget _sheet(BuildContext context) {
+    final c = context.colors;
+    final bottom = MediaQuery.paddingOf(context).bottom;
+    return Column(
+      children: [
+        SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.screen,
+              AppSpacing.s4,
+              AppSpacing.screen,
+              AppSpacing.s6,
+            ),
+            child: header,
+          ),
+        ),
+        Expanded(
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppRadius.sheet),
+            ),
+            child: ColoredBox(
+              color: c.bg,
+              child: _refreshable(
+                _body(
+                  EdgeInsets.fromLTRB(
+                    AppSpacing.screen,
+                    AppSpacing.s6,
+                    AppSpacing.screen,
+                    AppSpacing.s6 + (footer == null ? bottom : 0),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (footer case final footer?)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: c.bg,
+              border: Border(top: BorderSide(color: c.line)),
+            ),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.screen,
+                AppSpacing.s3,
+                AppSpacing.screen,
+                AppSpacing.s3 + bottom,
+              ),
+              child: footer,
+            ),
+          ),
+      ],
     );
   }
 

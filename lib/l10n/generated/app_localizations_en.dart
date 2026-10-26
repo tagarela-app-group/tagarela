@@ -1335,6 +1335,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get termCardLoading => 'Building the card…';
 
   @override
+  String get termBuildingTitle => 'Building the card';
+
+  @override
+  String termBuildingVerb(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      'meaning': 'looking for',
+      'trick': 'cooking up',
+      'pitfall': 'spotting',
+      'dialogue': 'rehearsing',
+      'phrase': 'putting together',
+      'neighbors': 'calling',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String termBuildingObject(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      'meaning': 'the meaning',
+      'trick': 'a memory trick',
+      'pitfall': 'the trap',
+      'dialogue': 'a conversation',
+      'phrase': 'the phrase',
+      'neighbors': 'the neighbors',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get termBuildingNote =>
+      'It only takes a while the first time. After that, the card is saved.';
+
+  @override
   String get meaning => 'Meaning';
 
   @override

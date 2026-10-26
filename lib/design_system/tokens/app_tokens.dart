@@ -51,6 +51,12 @@ abstract final class AppMotion {
   static const flip = Duration(milliseconds: 650);
   static const pulse = Duration(milliseconds: 900);
   static const burst = Duration(milliseconds: 1000);
+  static const shuffle = Duration(milliseconds: 480);
+  static const shuffleStep = Duration(milliseconds: 640);
+  static const shuffleHold = Duration(milliseconds: 1700);
+  static const roll = Duration(milliseconds: 520);
+  static const rollEvery = Duration(milliseconds: 2200);
+  static const typing = Duration(milliseconds: 1200);
   static const standard = Cubic(0.2, 0.8, 0.2, 1);
   static const smooth = Curves.easeInOutCubic;
   static const spring = Curves.easeOutBack;
