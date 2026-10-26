@@ -1879,13 +1879,13 @@ abstract class AppLocalizations {
   /// No description provided for @coverAgain.
   ///
   /// In pt, this message translates to:
-  /// **'Cobrir de novo'**
+  /// **'Embaçar de novo'**
   String get coverAgain;
 
   /// No description provided for @revealNow.
   ///
   /// In pt, this message translates to:
-  /// **'Revelar agora'**
+  /// **'Revelar de uma vez'**
   String get revealNow;
 
   /// No description provided for @guessTitle.
@@ -1897,7 +1897,7 @@ abstract class AppLocalizations {
   /// No description provided for @guessHint.
   ///
   /// In pt, this message translates to:
-  /// **'Tente entender pelo contexto antes de revelar.'**
+  /// **'Passe o dedo no vidro pra desembaçar.'**
   String get guessHint;
 
   /// No description provided for @cardSide.
@@ -1923,12 +1923,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Explicação'**
   String get explanation;
-
-  /// No description provided for @pitfallLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Cuidado:'**
-  String get pitfallLabel;
 
   /// No description provided for @termTab.
   ///
@@ -1957,25 +1951,25 @@ abstract class AppLocalizations {
   /// No description provided for @collocations.
   ///
   /// In pt, this message translates to:
-  /// **'Combina com'**
+  /// **'Monta a frase'**
   String get collocations;
 
   /// No description provided for @synonyms.
   ///
   /// In pt, this message translates to:
-  /// **'Sinônimos'**
+  /// **'Quase o mesmo'**
   String get synonyms;
 
   /// No description provided for @antonyms.
   ///
   /// In pt, this message translates to:
-  /// **'Antônimos'**
+  /// **'O contrário'**
   String get antonyms;
 
   /// No description provided for @formality.
   ///
   /// In pt, this message translates to:
-  /// **'Formalidade'**
+  /// **'Do chinelo à gravata'**
   String get formality;
 
   /// No description provided for @formalityLevel.
@@ -2007,6 +2001,144 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Devagar'**
   String get listenSlow;
+
+  /// No description provided for @hint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dica'**
+  String get hint;
+
+  /// No description provided for @literally.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ao pé da letra'**
+  String get literally;
+
+  /// No description provided for @itMeans.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quer dizer'**
+  String get itMeans;
+
+  /// No description provided for @imagine.
+  ///
+  /// In pt, this message translates to:
+  /// **'Imagine:'**
+  String get imagine;
+
+  /// No description provided for @remember.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pra lembrar'**
+  String get remember;
+
+  /// No description provided for @pitfallTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pegadinha'**
+  String get pitfallTitle;
+
+  /// No description provided for @sayNot.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não diga'**
+  String get sayNot;
+
+  /// No description provided for @say.
+  ///
+  /// In pt, this message translates to:
+  /// **'Diga'**
+  String get say;
+
+  /// No description provided for @gotItQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tinha sacado pelo contexto?'**
+  String get gotItQuestion;
+
+  /// No description provided for @gotItYes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saquei'**
+  String get gotItYes;
+
+  /// No description provided for @gotItNo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get gotItNo;
+
+  /// No description provided for @gotItYesReply.
+  ///
+  /// In pt, this message translates to:
+  /// **'Boa! O contexto te entregou.'**
+  String get gotItYesReply;
+
+  /// No description provided for @gotItNoReply.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tranquilo. Agora você sabe.'**
+  String get gotItNoReply;
+
+  /// No description provided for @seenVia.
+  ///
+  /// In pt, this message translates to:
+  /// **'{source, select, photo{Você leu numa foto} audio{Você ouviu} text{Você anotou} other{}}'**
+  String seenVia(String source);
+
+  /// No description provided for @dialogue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Numa conversa'**
+  String get dialogue;
+
+  /// No description provided for @listen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ouvir'**
+  String get listen;
+
+  /// No description provided for @dialogueHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque num balão pra ver a tradução.'**
+  String get dialogueHint;
+
+  /// No description provided for @dialogueLocked.
+  ///
+  /// In pt, this message translates to:
+  /// **'A tradução aparece depois que você revelar.'**
+  String get dialogueLocked;
+
+  /// No description provided for @collocationsHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Peças que andam junto com o termo.'**
+  String get collocationsHint;
+
+  /// No description provided for @listenTo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ouvir {text}'**
+  String listenTo(String text);
+
+  /// No description provided for @neighbors.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vizinhos'**
+  String get neighbors;
+
+  /// No description provided for @fitsYes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cabe'**
+  String get fitsYes;
+
+  /// No description provided for @fitsNo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não cabe'**
+  String get fitsNo;
 }
 
 class _AppLocalizationsDelegate

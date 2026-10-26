@@ -122,19 +122,32 @@ class _SeenCard extends StatelessWidget {
             children: [
               IconTile(icon: icon, accent: accent, size: 28),
               Expanded(
-                child: Text(
-                  '${l10n.captureSource(capture.source.name)} · '
-                  '${timeAgo(l10n, capture.capturedAt, DateTime.now())}',
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: l10n.seenVia(capture.source.name),
+                        style: TextStyle(
+                          color: c.ink,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      TextSpan(
+                        text:
+                            ' · ${timeAgo(l10n, capture.capturedAt, DateTime.now())}',
+                      ),
+                    ],
+                  ),
                   style: AppText.label.copyWith(
                     color: c.inkSoft,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
-              if (capture.source == CaptureSource.audio)
-                _Recording(captureId: capture.id),
             ],
           ),
+          if (capture.source == CaptureSource.audio)
+            _Recording(captureId: capture.id),
           HighlightedText(
             text: capture.text,
             ranges: [
@@ -202,15 +215,31 @@ class _RecordingState extends State<_Recording> {
         return ListenableBuilder(
           listenable: playback,
           builder: (context, _) {
+            final c = context.colors;
             final playing = playback.playing == file.path;
-            return AppIconButton(
-              icon: playing ? AppIcons.stop : AppIcons.play,
-              tooltip: playing
-                  ? context.l10n.stop
-                  : context.l10n.listenRecording,
-              onPressed: () => playback.toggle(file),
-              variant: AppIconButtonVariant.soft,
-              size: 36,
+            final total = playback.total?.inMilliseconds ?? 0;
+            final progress = playing && total > 0
+                ? playback.position.inMilliseconds / total
+                : 0.0;
+            return Row(
+              spacing: 10,
+              children: [
+                AppIconButton(
+                  icon: playing ? AppIcons.stop : AppIcons.play,
+                  tooltip: playing
+                      ? context.l10n.stop
+                      : context.l10n.listenRecording,
+                  onPressed: () => playback.toggle(file),
+                  variant: AppIconButtonVariant.primary,
+                ),
+                Expanded(
+                  child: Waveform(
+                    progress: progress,
+                    color: c.primary,
+                    track: c.line,
+                  ),
+                ),
+              ],
             );
           },
         );

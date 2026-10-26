@@ -22,13 +22,16 @@ void main() {
 
   tearDown(() => messenger.setMockMethodCallHandler(channel, null));
 
-  Future<void> finish() => messenger.handlePlatformMessage(
-    channel.name,
-    const StandardMethodCodec().encodeMethodCall(
-      const MethodCall('speak.onComplete'),
-    ),
-    (_) {},
-  );
+  Future<void> send(String method, [Object? arguments]) =>
+      messenger.handlePlatformMessage(
+        channel.name,
+        const StandardMethodCodec().encodeMethodCall(
+          MethodCall(method, arguments),
+        ),
+        (_) {},
+      );
+
+  Future<void> finish() => send('speak.onComplete');
 
   test('fala no idioma do curso e na velocidade pedida', () async {
     final voice = Voice();
@@ -71,5 +74,60 @@ void main() {
       calls.where((c) => c.method == 'setLanguage').single.arguments,
       'pt-BR',
     );
+  });
+
+  test('acompanha a palavra que está sendo falada', () async {
+    final voice = Voice();
+    await voice.speak('on the fence', CourseLanguage.en);
+
+    await send('speak.onProgress', {
+      'text': 'on the fence',
+      'start': 3,
+      'end': 6,
+      'word': 'the',
+    });
+
+    expect(voice.text, 'on the fence');
+    expect(voice.word, (3, 6));
+    expect(voice.line, isNull);
+
+    await finish();
+
+    expect(voice.word, isNull);
+    expect(voice.text, isNull);
+  });
+
+  test('conversa fala uma fala depois da outra', () async {
+    final voice = Voice();
+
+    await voice.speakLines([
+      'Are you in?',
+      'Still on the fence.',
+    ], CourseLanguage.en);
+
+    expect(voice.line, 0);
+    expect(calls.last.arguments, 'Are you in?');
+
+    await finish();
+
+    expect(voice.line, 1);
+    expect(voice.text, 'Still on the fence.');
+    expect(calls.last.arguments, 'Still on the fence.');
+
+    await finish();
+
+    expect(voice.speaking, isNull);
+    expect(voice.line, isNull);
+  });
+
+  test('parar no meio da conversa não segue pra próxima fala', () async {
+    final voice = Voice();
+    await voice.speakLines(['one', 'two'], CourseLanguage.en);
+
+    await voice.stop();
+    await finish();
+
+    expect(voice.speaking, isNull);
+    expect(calls.where((c) => c.method == 'speak').length, 1);
   });
 }

@@ -24,12 +24,13 @@ abstract final class AppRadius {
   static const sheet = 32.0;
   static const pill = 999.0;
 
-  static BorderRadius bubble(double radius) => BorderRadius.only(
-    topLeft: Radius.circular(radius),
-    topRight: Radius.circular(radius),
-    bottomRight: Radius.circular(radius),
-    bottomLeft: Radius.circular(radius * 0.27),
-  );
+  static BorderRadius bubble(double radius, {bool mirrored = false}) =>
+      BorderRadius.only(
+        topLeft: Radius.circular(radius),
+        topRight: Radius.circular(radius),
+        bottomRight: Radius.circular(mirrored ? radius * 0.27 : radius),
+        bottomLeft: Radius.circular(mirrored ? radius : radius * 0.27),
+      );
 }
 
 abstract final class AppBlur {
@@ -47,6 +48,8 @@ abstract final class AppMotion {
   static const flip = Duration(milliseconds: 650);
   static const sheen = Duration(milliseconds: 1600);
   static const pulse = Duration(milliseconds: 900);
+  static const burst = Duration(milliseconds: 1000);
+  static const hint = Duration(milliseconds: 1800);
   static const standard = Cubic(0.2, 0.8, 0.2, 1);
   static const smooth = Curves.easeInOutCubic;
   static const spring = Curves.easeOutBack;
