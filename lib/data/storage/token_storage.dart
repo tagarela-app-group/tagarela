@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 
 class TokenStorage {
   TokenStorage([this._storage = const FlutterSecureStorage()]);

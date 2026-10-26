@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/widgets/highlighted_text.dart';
 import 'package:tagarela/l10n/l10n.dart';

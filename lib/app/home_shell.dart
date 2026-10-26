@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/app/course_gate.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';

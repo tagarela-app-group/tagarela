@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/voice.dart';
+import 'package:tagarela/data/device/voice.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/widgets/meaning_card.dart';
 import 'package:tagarela/features/term/widgets/seen_captures.dart';

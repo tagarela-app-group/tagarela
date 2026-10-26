@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:tagarela/data/api_client.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/course_service.dart';
 import 'package:tagarela/data/stores/course_store.dart';
 

@@ -4,14 +4,14 @@ import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:tagarela/data/audio_playback.dart';
-import 'package:tagarela/data/capture_device.dart';
-import 'package:tagarela/data/database.dart';
-import 'package:tagarela/data/media_storage.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/device/audio_playback.dart';
+import 'package:tagarela/data/device/capture_device.dart';
+import 'package:tagarela/data/device/text_extractor.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/capture_service.dart';
+import 'package:tagarela/data/storage/database.dart';
+import 'package:tagarela/data/storage/media_storage.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
-import 'package:tagarela/data/text_extractor.dart';
 
 import 'fake_capture_api.dart';
 import 'fake_extraction.dart';

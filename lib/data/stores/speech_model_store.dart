@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:tagarela/data/model_storage.dart';
-import 'package:tagarela/data/speech_model.dart';
+import 'package:tagarela/data/device/speech_model.dart';
+import 'package:tagarela/data/storage/model_storage.dart';
 
 enum SpeechModelState { missing, downloading, ready, failed }
 

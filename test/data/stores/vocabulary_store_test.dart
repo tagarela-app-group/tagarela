@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/api_client.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/design_system/design_system.dart';
 

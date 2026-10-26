@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/profile/user_avatar.dart';
 import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
+import 'package:tagarela/features/profile/user_avatar.dart';
 
 import 'package:tagarela/data/stores/home_store.dart';
 

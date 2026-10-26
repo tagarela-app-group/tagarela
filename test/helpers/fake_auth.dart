@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:tagarela/data/api_client.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/device/social_sign_in.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/auth_service.dart';
-import 'package:tagarela/data/social_sign_in.dart';
+import 'package:tagarela/data/storage/token_storage.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
-import 'package:tagarela/data/token_storage.dart';
 
 typedef FakeRequest = ({
   String route,

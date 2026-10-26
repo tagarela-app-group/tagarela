@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/features/capture/capture_saved.dart';
 
 import '../../helpers/fake_capture_store.dart';

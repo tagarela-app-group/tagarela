@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/vocabulary/widgets/move_sheet.dart';
-import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
 import 'package:tagarela/features/term/term_page.dart';
+import 'package:tagarela/features/vocabulary/widgets/group_sheet.dart';
+import 'package:tagarela/features/vocabulary/widgets/move_sheet.dart';
 import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 import 'package:tagarela/l10n/l10n.dart';
 

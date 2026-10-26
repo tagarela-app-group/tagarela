@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/api_client.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 

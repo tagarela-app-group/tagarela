@@ -30,7 +30,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 
 ## Arquitetura
 
-- `lib/app/`: bootstrap, auth e shell. `lib/features/<f>/`: página + widgets da feature. `lib/design_system/`: tudo visual reutilizável. `lib/data/`: models, services (API, sem estado), stores (estado), integrações externas.
+- `lib/app/`: bootstrap, auth e shell. `lib/features/<f>/`: página + widgets da feature. `lib/design_system/`: tudo visual reutilizável. `lib/data/`: `models/` (um arquivo por domínio, import via `models.dart`), `services/` (API, sem estado, com o `ApiClient`), `stores/` (estado), `storage/` (o que fica salvo no aparelho) e `device/` (recursos do aparelho e libs nativas).
 - Fluxo: tela → store → service → `ApiClient` (único ponto de rede). Estado com `ChangeNotifier`, sem pacotes de estado, rota ou HTTP.
 - Dependências injetadas por `AppScope` (teste troca).
 - Lib externa isolada no seu arquivo em `data/`; resto do app não importa.

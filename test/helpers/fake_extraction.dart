@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:tagarela/data/model_storage.dart';
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/speech_model.dart';
+import 'package:tagarela/data/device/speech_model.dart';
+import 'package:tagarela/data/device/text_extractor.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/storage/model_storage.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
-import 'package:tagarela/data/text_extractor.dart';
 
 class FakeTextExtractor implements TextExtractor {
   final results = <CaptureSource, Object>{};

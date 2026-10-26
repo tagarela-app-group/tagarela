@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:on_device_extraction/on_device_extraction.dart';
 
-import 'package:tagarela/data/speech_model.dart';
+import 'package:tagarela/data/device/speech_model.dart';
 
 void main() {
   test('modelo atual: Tiny Streaming, 8 arquivos, 45 MB', () {

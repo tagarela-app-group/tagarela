@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/audio_playback.dart';
-import 'package:tagarela/data/capture_device.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/device/audio_playback.dart';
+import 'package:tagarela/data/device/capture_device.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';

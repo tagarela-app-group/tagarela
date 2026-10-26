@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/api_client.dart';
+import 'package:tagarela/data/device/social_sign_in.dart';
+import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/auth_service.dart';
-import 'package:tagarela/data/social_sign_in.dart';
 
 import '../../helpers/fake_auth.dart';
 

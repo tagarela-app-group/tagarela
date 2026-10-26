@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
-import 'package:tagarela/data/capture_device.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/device/capture_device.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/capture/widgets/permission_notice.dart';
 import 'package:tagarela/features/capture/widgets/privacy_note.dart';

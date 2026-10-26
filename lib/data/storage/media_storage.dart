@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 
 class MediaStorage {
   MediaStorage([Future<Directory> Function()? root])

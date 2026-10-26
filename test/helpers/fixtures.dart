@@ -1,4 +1,4 @@
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 
 final sampleHome = (
   stats: Stats.fromJson(_stats),

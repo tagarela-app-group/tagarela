@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/database.dart';
-import 'package:tagarela/data/media_storage.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/device/text_extractor.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/capture_service.dart';
+import 'package:tagarela/data/storage/database.dart';
+import 'package:tagarela/data/storage/media_storage.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
-import 'package:tagarela/data/text_extractor.dart';
 
 import '../../helpers/fake_capture_api.dart';
 import '../../helpers/fake_extraction.dart';

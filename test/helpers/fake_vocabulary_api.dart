@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:tagarela/data/api_client.dart';
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 

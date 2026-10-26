@@ -5,8 +5,8 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:on_device_extraction/on_device_extraction.dart';
 
-import 'package:tagarela/data/model_storage.dart';
-import 'package:tagarela/data/speech_model.dart';
+import 'package:tagarela/data/device/speech_model.dart';
+import 'package:tagarela/data/storage/model_storage.dart';
 
 void main() {
   late HttpServer server;

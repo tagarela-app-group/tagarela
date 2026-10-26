@@ -1,6 +1,6 @@
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/stores/home_store.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
+import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 
 import 'fake_vocabulary_api.dart';

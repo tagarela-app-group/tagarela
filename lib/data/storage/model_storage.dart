@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:tagarela/data/speech_model.dart';
+import 'package:tagarela/data/device/speech_model.dart';
 
 class ModelStorage {
   ModelStorage({

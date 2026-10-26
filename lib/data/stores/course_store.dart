@@ -1,6 +1,6 @@
-import 'package:tagarela/data/models.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/course_service.dart';
-import 'package:tagarela/data/store.dart';
+import 'package:tagarela/data/stores/store.dart';
 
 class CourseStore extends Store<List<Course>> {
   CourseStore(this._service);

@@ -5,10 +5,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/app_scope.dart';
-import 'package:tagarela/data/models.dart';
-import 'package:tagarela/data/store.dart';
+import 'package:tagarela/data/device/text_extractor.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
-import 'package:tagarela/data/text_extractor.dart';
+import 'package:tagarela/data/stores/store.dart';
 
 import '../helpers/fake_vocabulary_api.dart';
 import '../helpers/fake_auth.dart';

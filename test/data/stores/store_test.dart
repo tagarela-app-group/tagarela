@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/store.dart';
+import 'package:tagarela/data/stores/store.dart';
 
 class _NumberStore extends Store<int> {
   Object? next;

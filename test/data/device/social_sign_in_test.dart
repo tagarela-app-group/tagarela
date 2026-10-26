@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_platform_interface/google_sign_in_platform_interface.dart';
 
-import 'package:tagarela/data/social_sign_in.dart';
+import 'package:tagarela/data/device/social_sign_in.dart';
 
 class FakeGooglePlatform extends GoogleSignInPlatform {
   final inits = <String?>[];
