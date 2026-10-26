@@ -29,6 +29,7 @@ export 'package:tagarela/design_system/components/page_header.dart';
 export 'package:tagarela/design_system/components/section_header.dart';
 export 'package:tagarela/design_system/components/segment_bar.dart';
 export 'package:tagarela/design_system/components/segmented_control.dart';
+export 'package:tagarela/design_system/components/skeleton.dart';
 export 'package:tagarela/design_system/components/app_page.dart';
 export 'package:tagarela/design_system/components/speech_bubble_icon.dart';
 export 'package:tagarela/design_system/components/state_message.dart';

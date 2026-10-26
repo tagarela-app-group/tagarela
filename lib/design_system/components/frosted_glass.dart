@@ -63,6 +63,7 @@ class _FrostedGlassState extends State<FrostedGlass>
     final radius = BorderRadius.circular(widget.radius);
 
     return Stack(
+      alignment: Alignment.center,
       children: [
         ExcludeSemantics(excluding: frosted, child: widget.child),
         Positioned.fill(
@@ -115,20 +116,22 @@ class _FrostedGlassState extends State<FrostedGlass>
           ),
         ),
         if (widget.overlay case final overlay?)
-          Positioned.fill(
-            child: IgnorePointer(
-              ignoring: !frosted,
-              child: AnimatedOpacity(
+          IgnorePointer(
+            ignoring: !frosted,
+            child: ExcludeSemantics(
+              excluding: !frosted,
+              child: AnimatedSize(
                 duration: duration,
-                opacity: frosted ? 1 : 0,
-                child: ExcludeSemantics(
-                  excluding: !frosted,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacing.s5),
-                      child: overlay,
-                    ),
-                  ),
+                curve: AppMotion.standard,
+                clipBehavior: Clip.none,
+                child: AnimatedSwitcher(
+                  duration: duration,
+                  child: frosted
+                      ? Padding(
+                          padding: const EdgeInsets.all(AppSpacing.s5),
+                          child: overlay,
+                        )
+                      : const SizedBox.shrink(),
                 ),
               ),
             ),
