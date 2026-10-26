@@ -82,14 +82,14 @@ class TermCard {
           headline: (json['learning']! as Json)['definition'] as String?,
           inContext: (json['learning']! as Json)['in_context'] as String?,
           explanation: (json['learning']! as Json)['explanation'] as String?,
+          pitfall: (json['learning']! as Json)['pitfall'] as String?,
+          imagine: (json['learning']! as Json)['imagine'] as String?,
         ),
         base: CardSide(
           headline: (json['base']! as Json)['translation'] as String?,
           inContext: (json['base']! as Json)['in_context'] as String?,
           explanation: (json['base']! as Json)['explanation'] as String?,
-          pitfall: (json['base']! as Json)['pitfall'] as String?,
           literal: (json['base']! as Json)['literal'] as String?,
-          imagine: (json['base']! as Json)['imagine'] as String?,
         ),
         mistake: switch (json['mistake']) {
           final Json m => CardMistake(
@@ -145,10 +145,12 @@ class TermCard {
 
   bool get hasUsage => formality != null || fits.isNotEmpty;
 
+  bool get hasReveal => base.literal != null || base.headline != null;
+
   bool get hasReminders =>
-      base.literal != null ||
-      base.imagine != null ||
-      base.pitfall != null ||
+      hasReveal ||
+      learning.imagine != null ||
+      learning.pitfall != null ||
       mistake != null;
 
   static List<String> _strings(Object? json) => [

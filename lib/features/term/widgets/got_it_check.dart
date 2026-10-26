@@ -34,19 +34,17 @@ class _GotItCheckState extends State<GotItCheck> {
           child: FadeTransition(opacity: animation, child: child),
         ),
         child: switch (_gotIt) {
-          null => Wrap(
+          null => Column(
             key: const ValueKey('ask'),
-            alignment: WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: AppSpacing.s3,
-            runSpacing: AppSpacing.s2,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: AppSpacing.s2,
             children: [
               Text(
                 l10n.gotItQuestion,
                 style: AppText.bodyLg.copyWith(fontWeight: FontWeight.w700),
               ),
               Row(
-                mainAxisSize: MainAxisSize.min,
                 spacing: 6,
                 children: [
                   AppButton(

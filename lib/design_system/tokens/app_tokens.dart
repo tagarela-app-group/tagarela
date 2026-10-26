@@ -35,8 +35,11 @@ abstract final class AppRadius {
 
 abstract final class AppBlur {
   static const scrim = 2.0;
-  static const frost = 14.0;
-  static const glass = 10.0;
+  static const obscured = 5.0;
+}
+
+abstract final class AppOpacity {
+  static const obscured = 0.4;
 }
 
 abstract final class AppMotion {
@@ -46,10 +49,8 @@ abstract final class AppMotion {
   static const toast = Duration(seconds: 5);
   static const reveal = Duration(milliseconds: 700);
   static const flip = Duration(milliseconds: 650);
-  static const sheen = Duration(milliseconds: 1600);
   static const pulse = Duration(milliseconds: 900);
   static const burst = Duration(milliseconds: 1000);
-  static const hint = Duration(milliseconds: 1800);
   static const standard = Cubic(0.2, 0.8, 0.2, 1);
   static const smooth = Curves.easeInOutCubic;
   static const spring = Curves.easeOutBack;

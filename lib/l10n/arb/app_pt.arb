@@ -771,9 +771,7 @@
   "termCardLoading": "Montando a ficha…",
   "meaning": "Significado",
   "coverAgain": "Embaçar de novo",
-  "revealNow": "Revelar de uma vez",
-  "guessTitle": "O que será que é?",
-  "guessHint": "Passe o dedo no vidro pra desembaçar.",
+  "reveal": "Revelar",
   "cardSide": "Em {language, select, en{inglês} es{espanhol} pt{português} other{}}",
   "@cardSide": {
     "placeholders": {
@@ -836,7 +834,6 @@
     }
   },
   "listenSlow": "Devagar",
-  "hint": "Dica",
   "literally": "Ao pé da letra",
   "itMeans": "Quer dizer",
   "imagine": "Imagine:",
@@ -860,7 +857,6 @@
   "dialogue": "Numa conversa",
   "listen": "Ouvir",
   "dialogueHint": "Toque num balão pra ver a tradução.",
-  "dialogueLocked": "A tradução aparece depois que você revelar.",
   "collocationsHint": "Peças que andam junto com o termo.",
   "listenTo": "Ouvir {text}",
   "@listenTo": {

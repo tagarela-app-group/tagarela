@@ -61,10 +61,6 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.contrast,
     required this.onContrast,
     required this.scrim,
-    required this.frost,
-    required this.frostSheen,
-    required this.glassPanel,
-    required this.watermark,
     required this.cardShadow,
     required this.buttonShadow,
     required this.fabShadow,
@@ -97,10 +93,6 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color contrast;
   final Color onContrast;
   final Color scrim;
-  final List<Color> frost;
-  final Color frostSheen;
-  final Color glassPanel;
-  final Color watermark;
   final List<BoxShadow> cardShadow;
   final List<BoxShadow> buttonShadow;
   final List<BoxShadow> fabShadow;
@@ -135,10 +127,6 @@ class AppColors extends ThemeExtension<AppColors> {
     contrast: AppPalette.black,
     onContrast: AppPalette.white,
     scrim: Color(0x9E17152B),
-    frost: [Color(0x94FFFFFF), Color(0xBDE8E5FE)],
-    frostSheen: Color(0x80FFFFFF),
-    glassPanel: Color(0xC7FFFFFF),
-    watermark: Color(0x125B47F5),
     cardShadow: [
       BoxShadow(color: Color(0x0A17152B), offset: Offset(0, 1), blurRadius: 2),
       BoxShadow(color: Color(0x0F17152B), offset: Offset(0, 8), blurRadius: 24),
@@ -196,10 +184,6 @@ class AppColors extends ThemeExtension<AppColors> {
     contrast: AppPalette.white,
     onContrast: AppPalette.black,
     scrim: Color(0xB805040C),
-    frost: [Color(0x8F1A1826), Color(0xB8241D5C)],
-    frostSheen: Color(0x14FFFFFF),
-    glassPanel: Color(0xC71A1826),
-    watermark: Color(0x14A99DFF),
     cardShadow: [BoxShadow(color: Color(0x0DFFFFFF), spreadRadius: 1)],
     buttonShadow: [],
     fabShadow: [

@@ -1349,13 +1349,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get coverAgain => 'Empañar de nuevo';
 
   @override
-  String get revealNow => 'Revelar de una vez';
-
-  @override
-  String get guessTitle => '¿Qué será?';
-
-  @override
-  String get guessHint => 'Pasa el dedo por el vidrio para desempañarlo.';
+  String get reveal => 'Revelar';
 
   @override
   String cardSide(String language) {
@@ -1446,9 +1440,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get listenSlow => 'Despacio';
 
   @override
-  String get hint => 'Pista';
-
-  @override
   String get literally => 'Al pie de la letra';
 
   @override
@@ -1503,10 +1494,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dialogueHint => 'Toca un globo para ver la traducción.';
-
-  @override
-  String get dialogueLocked =>
-      'La traducción aparece después de que lo reveles.';
 
   @override
   String get collocationsHint => 'Piezas que van con el término.';
