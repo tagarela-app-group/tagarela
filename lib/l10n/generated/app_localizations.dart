@@ -1870,6 +1870,30 @@ abstract class AppLocalizations {
   /// **'Montando a ficha…'**
   String get termCardLoading;
 
+  /// No description provided for @termBuildingTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Montando a ficha'**
+  String get termBuildingTitle;
+
+  /// No description provided for @termBuildingVerb.
+  ///
+  /// In pt, this message translates to:
+  /// **'{step, select, meaning{procurando} trick{bolando} pitfall{caçando} dialogue{ensaiando} phrase{montando} neighbors{chamando} other{}}'**
+  String termBuildingVerb(String step);
+
+  /// No description provided for @termBuildingObject.
+  ///
+  /// In pt, this message translates to:
+  /// **'{step, select, meaning{o sentido} trick{um macete} pitfall{a pegadinha} dialogue{uma conversa} phrase{a frase} neighbors{os vizinhos} other{}}'**
+  String termBuildingObject(String step);
+
+  /// No description provided for @termBuildingNote.
+  ///
+  /// In pt, this message translates to:
+  /// **'Só demora na primeira vez. Depois, a ficha fica salva.'**
+  String get termBuildingNote;
+
   /// No description provided for @meaning.
   ///
   /// In pt, this message translates to:

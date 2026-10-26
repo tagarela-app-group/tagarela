@@ -73,9 +73,13 @@ void main() {
     await tester.pumpPage(TermPage(term: _mind), vocabulary: vocabulary.store);
     await tester.pump();
 
-    expect(find.text('mind the gap'), findsOneWidget);
+    expect(find.bySemanticsLabel('mind the gap'), findsOneWidget);
     expect(find.bySemanticsLabel('Montando a ficha…'), findsOneWidget);
-    expect(find.byType(Skeleton), findsWidgets);
+    expect(find.byType(ShufflingTiles), findsOneWidget);
+    expect(
+      find.text('Só demora na primeira vez. Depois, a ficha fica salva.'),
+      findsOneWidget,
+    );
     expect(find.text('Sem grupo'), findsOneWidget);
 
     vocabulary.api.holdCard!.complete();
@@ -83,7 +87,7 @@ void main() {
 
     expect(vocabulary.api.calls, contains('GET /api/v1/terms/u1'));
     expect(find.bySemanticsLabel('Montando a ficha…'), findsNothing);
-    expect(find.byType(Skeleton), findsNothing);
+    expect(find.byType(ShufflingTiles), findsNothing);
     expect(find.text('/maɪnd ðə ɡæp/'), findsOneWidget);
     expect(find.text('SIGNIFICADO'), findsOneWidget);
   });

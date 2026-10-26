@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
+import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/widgets/meaning_card.dart';
+import 'package:tagarela/features/term/widgets/term_building.dart';
 import 'package:tagarela/features/term/widgets/seen_captures.dart';
 import 'package:tagarela/features/term/widgets/term_dialogue.dart';
 import 'package:tagarela/features/term/widgets/term_examples.dart';
@@ -38,11 +40,12 @@ class _TermPageState extends State<TermPage> {
   var _pitfallRevealed = false;
   var _pitfallBursts = 0;
   var _tab = _Tab.context;
-  late final _voice = AppScope.of(context).voice;
+  late final Voice _voice;
 
   @override
   void initState() {
     super.initState();
+    _voice = AppScope.of(context).voice;
     _load();
   }
 
@@ -125,21 +128,30 @@ class _TermPageState extends State<TermPage> {
             .where((g) => g.terms.any((t) => t.id == widget.term.id))
             .firstOrNull;
 
+    if (detail == null && _error == null) {
+      return AppPage(
+        sheet: false,
+        header: TermBuilding(
+          term: widget.term,
+          group: group,
+          language: learning,
+        ),
+      );
+    }
+
     return AppPage(
       header: TermHeader(
         term: detail?.term ?? widget.term,
         group: group,
         phonetic: detail?.card.phonetic,
-        loading: detail == null && _error == null,
         language: learning,
         voice: _voice,
       ),
       gap: AppSpacing.s6,
       centerLast: _error != null,
-      children: switch ((detail, _error)) {
-        (final detail?, _) => _sections(detail, learning, base),
-        (null, null) => const [_Building()],
-        (null, final error) => [AsyncStatus(error: error, onRetry: _load)],
+      children: switch (detail) {
+        final detail? => _sections(detail, learning, base),
+        null => [AsyncStatus(error: _error!, onRetry: _load)],
       },
     );
   }
@@ -265,103 +277,5 @@ class _TermPageState extends State<TermPage> {
           ],
         ),
     ];
-  }
-}
-
-class _Building extends StatelessWidget {
-  const _Building();
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      label: context.l10n.termCardLoading,
-      child: const ExcludeSemantics(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: AppSpacing.s6,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: AppSpacing.s1,
-              children: [
-                SizedBox(
-                  height: 44,
-                  child: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Skeleton(width: 96, height: 12),
-                  ),
-                ),
-                AppCard(
-                  padding: EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: AppSpacing.s4,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: AppSpacing.s2,
-                        children: [
-                          Skeleton(width: 72, height: 10),
-                          Skeleton(width: 180, height: 22),
-                        ],
-                      ),
-                      _Lines(lines: 2),
-                      _Lines(lines: 3),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: 14,
-              children: [
-                Skeleton(height: 44, radius: AppRadius.md),
-                AppCard(
-                  padding: EdgeInsets.all(AppSpacing.s4),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: AppSpacing.s3,
-                    children: [
-                      Row(
-                        spacing: AppSpacing.s2,
-                        children: [
-                          Skeleton(width: 28, height: 28, radius: AppRadius.sm),
-                          Skeleton(width: 120, height: 12),
-                        ],
-                      ),
-                      _Lines(lines: 2, title: false),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Lines extends StatelessWidget {
-  const _Lines({required this.lines, this.title = true});
-
-  final int lines;
-  final bool title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: AppSpacing.s2,
-      children: [
-        if (title) const Skeleton(width: 110, height: 10),
-        for (var i = 0; i < lines; i++)
-          FractionallySizedBox(
-            widthFactor: i == lines - 1 ? 0.6 : 1,
-            child: const Skeleton(),
-          ),
-      ],
-    );
   }
 }

@@ -769,6 +769,24 @@
     }
   },
   "termCardLoading": "Montando a ficha…",
+  "termBuildingTitle": "Montando a ficha",
+  "termBuildingVerb": "{step, select, meaning{procurando} trick{bolando} pitfall{caçando} dialogue{ensaiando} phrase{montando} neighbors{chamando} other{}}",
+  "@termBuildingVerb": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "termBuildingObject": "{step, select, meaning{o sentido} trick{um macete} pitfall{a pegadinha} dialogue{uma conversa} phrase{a frase} neighbors{os vizinhos} other{}}",
+  "@termBuildingObject": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "termBuildingNote": "Só demora na primeira vez. Depois, a ficha fica salva.",
   "meaning": "Significado",
   "coverAgain": "Embaçar de novo",
   "reveal": "Revelar",

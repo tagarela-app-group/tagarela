@@ -157,4 +157,14 @@ void main() {
     await tester.pumpPage(page(centerLast: false));
     expect(tester.element(find.text('Topo')), same(before));
   });
+
+  testWidgets('sem sheet: header ocupa a tela toda', (tester) async {
+    await tester.pumpPage(
+      const AppPage(sheet: false, header: SizedBox.expand(child: Text('Tudo'))),
+    );
+
+    expect(find.text('Tudo'), findsOneWidget);
+    expect(find.byType(CustomScrollView), findsNothing);
+    expect(tester.getSize(find.byType(SizedBox).last).height, greaterThan(400));
+  });
 }

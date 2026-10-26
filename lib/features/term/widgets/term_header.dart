@@ -4,6 +4,7 @@ import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/logic/card_text.dart';
+import 'package:tagarela/features/term/widgets/term_top_bar.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class TermHeader extends StatelessWidget {
@@ -12,7 +13,6 @@ class TermHeader extends StatelessWidget {
     required this.term,
     required this.group,
     required this.phonetic,
-    required this.loading,
     required this.language,
     required this.voice,
   });
@@ -20,7 +20,6 @@ class TermHeader extends StatelessWidget {
   final Term term;
   final TermGroup? group;
   final String? phonetic;
-  final bool loading;
   final CourseLanguage language;
   final Voice voice;
 
@@ -41,38 +40,7 @@ class TermHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: AppSpacing.s4,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AppIconButton(
-                  icon: AppIcons.back,
-                  tooltip: l10n.back,
-                  onPressed: () => Navigator.of(context).pop(),
-                  variant: AppIconButtonVariant.onHeader,
-                ),
-                Flexible(
-                  child: HeaderPill(
-                    height: 32,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.s3,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 6,
-                      children: [
-                        Icon(group?.icon ?? AppIcons.ungrouped, size: 14),
-                        Flexible(
-                          child: Text(
-                            group?.name ?? l10n.ungrouped,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            TermTopBar(group: group),
             SpeechBalloon(
               color: c.surface,
               radius: AppRadius.xl,
@@ -116,11 +84,6 @@ class TermHeader extends StatelessWidget {
                         ],
                       ),
                       style: AppText.bodyLg.copyWith(color: c.inkSoft),
-                    )
-                  else if (loading)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      child: Skeleton(width: 120, height: 16),
                     ),
                 ],
               ),

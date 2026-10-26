@@ -1343,6 +1343,41 @@ class AppLocalizationsEs extends AppLocalizations {
   String get termCardLoading => 'Armando la ficha…';
 
   @override
+  String get termBuildingTitle => 'Armando la ficha';
+
+  @override
+  String termBuildingVerb(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      'meaning': 'buscando',
+      'trick': 'inventando',
+      'pitfall': 'cazando',
+      'dialogue': 'ensayando',
+      'phrase': 'armando',
+      'neighbors': 'llamando',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String termBuildingObject(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      'meaning': 'el sentido',
+      'trick': 'un truco',
+      'pitfall': 'la trampa',
+      'dialogue': 'una conversación',
+      'phrase': 'la frase',
+      'neighbors': 'a los vecinos',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get termBuildingNote =>
+      'Solo tarda la primera vez. Después, la ficha queda guardada.';
+
+  @override
   String get meaning => 'Significado';
 
   @override
