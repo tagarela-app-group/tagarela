@@ -89,6 +89,7 @@ class TermCard {
           headline: (json['base']! as Json)['translation'] as String?,
           inContext: (json['base']! as Json)['in_context'] as String?,
           explanation: (json['base']! as Json)['explanation'] as String?,
+          pitfall: (json['base']! as Json)['pitfall'] as String?,
           literal: (json['base']! as Json)['literal'] as String?,
         ),
         mistake: switch (json['mistake']) {
@@ -150,7 +151,7 @@ class TermCard {
   bool get hasReminders =>
       hasReveal ||
       learning.imagine != null ||
-      learning.pitfall != null ||
+      base.pitfall != null ||
       mistake != null;
 
   static List<String> _strings(Object? json) => [
@@ -211,6 +212,7 @@ class TermDetail {
     required this.card,
     this.group,
     this.revealed = false,
+    this.pitfallRevealed = false,
     this.captures = const [],
   });
 
@@ -222,6 +224,7 @@ class TermDetail {
           _ => null,
         },
         revealed: json['revealed']! as bool,
+        pitfallRevealed: json['pitfall_revealed']! as bool,
         card: TermCard.fromJson(json['card']! as Json),
         captures: [
           for (final c in json['captures']! as List<Object?>)
@@ -232,6 +235,7 @@ class TermDetail {
   final Term term;
   final TermGroup? group;
   final bool revealed;
+  final bool pitfallRevealed;
   final TermCard card;
   final List<SeenCapture> captures;
 }

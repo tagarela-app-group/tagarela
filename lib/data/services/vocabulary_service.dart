@@ -13,10 +13,17 @@ class VocabularyService {
     await _api.get('/api/v1/terms/$id', timeout: cardTimeout) as Json,
   );
 
-  Future<TermDetail> reveal(String id, {required bool revealed}) async =>
-      TermDetail.fromJson(
-        await _api.patch('/api/v1/terms/$id', {'revealed': revealed}) as Json,
-      );
+  Future<TermDetail> reveal(
+    String id, {
+    bool? revealed,
+    bool? pitfallRevealed,
+  }) async => TermDetail.fromJson(
+    await _api.patch('/api/v1/terms/$id', {
+          'revealed': ?revealed,
+          'pitfall_revealed': ?pitfallRevealed,
+        })
+        as Json,
+  );
 
   Future<Vocabulary> fetch() async =>
       Vocabulary.fromJson(await _api.get('/api/v1/vocabulary') as Json);

@@ -400,6 +400,7 @@ void main() {
           'accent': 'sky',
         },
         'revealed': true,
+        'pitfall_revealed': false,
         'card': sampleCardJson,
         'captures': [
           {
@@ -418,12 +419,13 @@ void main() {
       expect(detail.group!.name, 'Viagem');
       expect(detail.group!.icon, AppIcons.travel);
       expect(detail.revealed, isTrue);
+      expect(detail.pitfallRevealed, isFalse);
       final card = detail.card;
       expect(card.phonetic, '/maɪnd ðə ɡæp/');
       expect(card.learning.headline, 'be careful of the space');
       expect(card.base.headline, 'cuidado com o vão');
       expect(card.learning.pitfall, 'It is not "mind the hole".');
-      expect(card.base.pitfall, isNull);
+      expect(card.base.pitfall, 'Não é "mente o buraco".');
       expect(
         card.examples.single.translation,
         'Cuidado com o vão ao sair do trem.',
@@ -456,6 +458,7 @@ void main() {
         'level': 0,
         'group': null,
         'revealed': false,
+        'pitfall_revealed': true,
         'card': {
           ...sampleCardJson,
           'collocations': <Object?>[],
@@ -472,6 +475,7 @@ void main() {
       });
 
       expect(detail.group, isNull);
+      expect(detail.pitfallRevealed, isTrue);
       expect(detail.card.hasWords, isFalse);
       expect(detail.card.hasUsage, isFalse);
       expect(detail.card.hasReminders, isFalse);
