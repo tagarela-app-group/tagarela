@@ -311,6 +311,8 @@ const Json sampleCardJson = {
     'definition': 'be careful of the space',
     'in_context': 'A warning on the train platform.',
     'explanation': 'Used on the London Underground.',
+    'pitfall': 'It is not "mind the hole".',
+    'imagine': 'A yellow line flashing at the edge of the platform.',
   },
   'base': {
     'translation': 'cuidado com o vão',

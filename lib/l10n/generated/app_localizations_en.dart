@@ -1341,13 +1341,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coverAgain => 'Fog it up again';
 
   @override
-  String get revealNow => 'Reveal it all';
-
-  @override
-  String get guessTitle => 'What could it be?';
-
-  @override
-  String get guessHint => 'Swipe across the glass to clear it.';
+  String get reveal => 'Reveal';
 
   @override
   String cardSide(String language) {
@@ -1438,9 +1432,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listenSlow => 'Slowly';
 
   @override
-  String get hint => 'Hint';
-
-  @override
   String get literally => 'Literally';
 
   @override
@@ -1495,9 +1486,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialogueHint => 'Tap a bubble to see the translation.';
-
-  @override
-  String get dialogueLocked => 'The translation shows up after you reveal it.';
 
   @override
   String get collocationsHint => 'Pieces that go with the term.';

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/term/widgets/got_it_check.dart';
 import 'package:tagarela/features/term/widgets/meaning_card.dart';
 import 'package:tagarela/features/term/widgets/seen_captures.dart';
 import 'package:tagarela/features/term/widgets/term_dialogue.dart';
@@ -65,11 +64,7 @@ class _TermPageState extends State<TermPage> {
     setState(() {
       _revealed = revealed;
       _asked = revealed;
-      if (revealed) {
-        _bursts++;
-      } else {
-        _flipped = false;
-      }
+      if (revealed) _bursts++;
     });
     _save(revealed);
   }
@@ -153,51 +148,47 @@ class _TermPageState extends State<TermPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s1,
         children: [
-          SizedBox(
-            height: 44,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Semantics(
-                    header: true,
-                    child: Text(
-                      l10n.meaning.toUpperCase(),
-                      style: AppText.overline.copyWith(
-                        color: context.colors.inkSoft,
-                      ),
-                    ),
-                  ),
-                ),
-                if (_revealed)
-                  AppButton(
-                    label: l10n.coverAgain,
-                    leading: const Icon(AppIcons.cover, size: 16),
-                    variant: AppButtonVariant.text,
-                    size: AppButtonSize.small,
-                    onPressed: () => _reveal(false),
-                  ),
-              ],
-            ),
-          ),
+          SectionLabel(label: l10n.meaning),
           MeaningCard(
             card: card,
             learning: learning,
             base: base,
-            revealed: _revealed,
             flipped: _flipped,
-            bursts: _bursts,
-            onReveal: () => _reveal(true),
             onFlip: () => setState(() => _flipped = !_flipped),
           ),
-          if (_revealed && _asked)
-            const Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: GotItCheck(),
-            ),
         ],
       ),
-      if (_revealed && card.hasReminders)
-        TermReminders(card: card, learning: learning, base: base),
+      if (card.hasReminders)
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: AppSpacing.s1,
+          children: [
+            SectionLabel(
+              label: l10n.remember,
+              action: card.hasReveal
+                  ? AppButton(
+                      label: _revealed ? l10n.coverAgain : l10n.reveal,
+                      leading: Icon(
+                        _revealed ? AppIcons.cover : AppIcons.reveal,
+                        size: 16,
+                      ),
+                      variant: AppButtonVariant.text,
+                      size: AppButtonSize.small,
+                      onPressed: () => _reveal(!_revealed),
+                    )
+                  : null,
+            ),
+            TermReminders(
+              card: card,
+              learning: learning,
+              base: base,
+              revealed: _revealed,
+              asked: _revealed && _asked,
+              bursts: _bursts,
+              onReveal: () => _reveal(true),
+            ),
+          ],
+        ),
       if (tab != null)
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -227,7 +218,6 @@ class _TermPageState extends State<TermPage> {
                       term: detail.term.text,
                       learning: learning,
                       base: base,
-                      translatable: _revealed,
                       voice: _voice,
                     )
                   else if (card.examples.isNotEmpty)
@@ -235,7 +225,7 @@ class _TermPageState extends State<TermPage> {
                       examples: card.examples,
                       term: detail.term.text,
                       locale: locale,
-                      translated: _revealed && _flipped,
+                      translated: _flipped,
                     ),
                 ],
               ),

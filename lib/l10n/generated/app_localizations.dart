@@ -1882,23 +1882,11 @@ abstract class AppLocalizations {
   /// **'Embaçar de novo'**
   String get coverAgain;
 
-  /// No description provided for @revealNow.
+  /// No description provided for @reveal.
   ///
   /// In pt, this message translates to:
-  /// **'Revelar de uma vez'**
-  String get revealNow;
-
-  /// No description provided for @guessTitle.
-  ///
-  /// In pt, this message translates to:
-  /// **'O que será que é?'**
-  String get guessTitle;
-
-  /// No description provided for @guessHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'Passe o dedo no vidro pra desembaçar.'**
-  String get guessHint;
+  /// **'Revelar'**
+  String get reveal;
 
   /// No description provided for @cardSide.
   ///
@@ -2002,12 +1990,6 @@ abstract class AppLocalizations {
   /// **'Devagar'**
   String get listenSlow;
 
-  /// No description provided for @hint.
-  ///
-  /// In pt, this message translates to:
-  /// **'Dica'**
-  String get hint;
-
   /// No description provided for @literally.
   ///
   /// In pt, this message translates to:
@@ -2103,12 +2085,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Toque num balão pra ver a tradução.'**
   String get dialogueHint;
-
-  /// No description provided for @dialogueLocked.
-  ///
-  /// In pt, this message translates to:
-  /// **'A tradução aparece depois que você revelar.'**
-  String get dialogueLocked;
 
   /// No description provided for @collocationsHint.
   ///
