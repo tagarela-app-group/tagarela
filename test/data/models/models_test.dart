@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
@@ -382,6 +384,18 @@ void main() {
       );
       expect(CourseLanguage.pt.code, 'PT');
       expect(CourseLanguage.es.nativeName, 'Español');
+    });
+
+    test('cada idioma tem país da bandeira, saudação e locale', () {
+      expect(
+        [for (final l in CourseLanguage.values) l.country],
+        ['US', 'ES', 'BR'],
+      );
+      expect(CourseLanguage.pt.hello, 'Oi, tudo bem?');
+      expect(CourseLanguage.es.locale, const Locale('es'));
+      expect(CourseLanguage.of('en'), CourseLanguage.en);
+      expect(CourseLanguage.of('fr'), isNull);
+      expect(CourseLanguage.of(null), isNull);
     });
   });
 

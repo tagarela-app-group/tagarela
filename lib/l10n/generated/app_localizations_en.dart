@@ -714,26 +714,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign out';
 
   @override
-  String get preferences => 'Preferences';
-
-  @override
-  String get language => 'Language';
-
-  @override
-  String get languageAuto => 'Automatic';
-
-  @override
-  String get languageAutoHint => 'Follows your phone\'s language';
-
-  @override
-  String languageAutoValue(String language) {
-    return 'Automatic · $language';
-  }
-
-  @override
-  String get languageModalSubtitle => 'Changes the app\'s text';
-
-  @override
   String modelReady(String size) {
     return 'Transcribed on the phone · $size model';
   }
@@ -1218,42 +1198,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String courseName(String learning, String base) {
-    String _temp0 = intl.Intl.selectLogic(learning, {
-      'en': 'English',
-      'es': 'Spanish',
-      'pt': 'Portuguese',
-      'other': '',
-    });
-    String _temp1 = intl.Intl.selectLogic(base, {
-      'en': 'English',
-      'es': 'Spanish',
-      'pt': 'Portuguese',
-      'other': '',
-    });
-    return '$_temp0 through $_temp1';
-  }
-
-  @override
-  String courseVia(String base, int count) {
+  String coursePair(String base, String learning) {
     String _temp0 = intl.Intl.selectLogic(base, {
       'en': 'English',
       'es': 'Spanish',
       'pt': 'Portuguese',
       'other': '',
     });
-    String _temp1 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count terms',
-      one: '1 term',
-      zero: 'no terms',
-    );
-    return 'through $_temp0 · $_temp1';
+    String _temp1 = intl.Intl.selectLogic(learning, {
+      'en': 'English',
+      'es': 'Spanish',
+      'pt': 'Portuguese',
+      'other': '',
+    });
+    return '$_temp0 → $_temp1';
   }
-
-  @override
-  String get courseNoAudio => 'Audio not available yet';
 
   @override
   String courseOptionNoAudio(String name) {
@@ -1261,26 +1220,38 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get coursePickTitle => 'What do you want to learn?';
+  String courseOptionAudio(String name) {
+    return '$name · with audio';
+  }
 
   @override
-  String get coursePickSubtitle => 'You can add another language later.';
+  String get coursePickTitle => 'Your languages';
+
+  @override
+  String get coursePickSubtitle => 'Chat in one, learn the other.';
 
   @override
   String get courseLearnSection => 'I want to learn';
 
   @override
-  String get courseBaseSection => 'Through';
+  String get courseBaseSection => 'I speak';
 
   @override
-  String get courseBaseHint =>
-      'Translations and explanations come in this language.';
+  String get courseBaseHint => 'The whole app comes in this language';
 
   @override
-  String get coursePickLearning => 'Choose the language you want to learn';
+  String get courseBaseChange => 'Change';
 
   @override
-  String get coursePickBase => 'Choose which language to learn through';
+  String get courseBaseModalSubtitle =>
+      'The app, translations and card explanations come in this language';
+
+  @override
+  String get courseBaseMore =>
+      'More languages show up here as the app gets translated.';
+
+  @override
+  String get coursePickLearning => 'Pick what you want to learn';
 
   @override
   String courseStart(String language) {
@@ -1304,7 +1275,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coursesTitle => 'Your courses';
 
   @override
-  String get coursesSubtitle => 'Each one has its own captures and terms';
+  String get coursesSubtitle =>
+      'The app follows the language you speak in the active course.';
+
+  @override
+  String courseAppIn(String name) {
+    return 'app in $name';
+  }
 
   @override
   String get courseAdd => 'Learn another language';
@@ -1318,7 +1295,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileStudy => 'Study';
 
   @override
-  String get courseChange => 'Switch or add a course';
+  String courseCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count courses',
+      one: '1 course',
+      zero: 'no courses',
+    );
+    return '$_temp0 · switch or add';
+  }
 
   @override
   String progressIn(String language) {

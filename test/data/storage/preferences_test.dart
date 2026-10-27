@@ -10,14 +10,14 @@ void main() {
         InMemorySharedPreferencesAsync.empty();
   });
 
-  test('guarda, lê e apaga o idioma', () async {
+  test('guarda e lê o idioma', () async {
     final preferences = Preferences();
     expect(await preferences.language(), isNull);
 
     await preferences.setLanguage('es');
     expect(await Preferences().language(), 'es');
 
-    await preferences.setLanguage(null);
-    expect(await Preferences().language(), isNull);
+    await preferences.setLanguage('en');
+    expect(await Preferences().language(), 'en');
   });
 }

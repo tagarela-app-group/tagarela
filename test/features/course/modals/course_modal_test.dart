@@ -35,16 +35,24 @@ void main() {
     vocabulary = fakeVocabulary();
   });
 
-  testWidgets('lista os cursos com base, termos e aviso de áudio', (
+  testWidgets('lista os cursos com as bandeiras, termos e idioma do app', (
     tester,
   ) async {
     await openModal(tester);
 
     expect(find.text('Seus cursos'), findsOneWidget);
-    expect(find.text('por meio do Português · 8 termos'), findsOneWidget);
     expect(
-      find.text('por meio do Inglês · 2 termos\nÁudio ainda não disponível'),
+      find.text('O app fica no idioma que você fala no curso ativo.'),
       findsOneWidget,
+    );
+    expect(find.text('Português → Inglês'), findsOneWidget);
+    expect(find.text('8 termos'), findsOneWidget);
+    expect(find.text('Inglês → Espanhol'), findsOneWidget);
+    expect(find.text('2 termos · app em English'), findsOneWidget);
+    final pairs = tester.widgetList<FlagPair>(find.byType(FlagPair));
+    expect(
+      [for (final p in pairs) (p.back, p.front)],
+      [('BR', 'US'), ('US', 'ES')],
     );
     final rows = tester.widgetList<OptionRow>(find.byType(OptionRow));
     expect(rows.map((r) => r.selected), [true, false]);
@@ -56,7 +64,7 @@ void main() {
     await openModal(tester);
     vocabulary.api.calls.clear();
 
-    await tester.tap(find.text('Espanhol'));
+    await tester.tap(find.text('Inglês → Espanhol'));
     await tester.pumpAndSettle();
 
     expect(find.byType(CourseModal), findsNothing);
@@ -68,7 +76,7 @@ void main() {
     await openModal(tester);
     courses.api.calls.clear();
 
-    await tester.tap(find.text('Inglês'));
+    await tester.tap(find.text('Português → Inglês'));
     await tester.pumpAndSettle();
 
     expect(find.byType(CourseModal), findsNothing);
@@ -79,7 +87,7 @@ void main() {
     await openModal(tester);
     courses.api.offline = true;
 
-    await tester.tap(find.text('Espanhol'));
+    await tester.tap(find.text('Inglês → Espanhol'));
     await tester.pump();
 
     expect(
@@ -94,7 +102,8 @@ void main() {
     await openModal(tester);
 
     await tester.tap(find.text('Aprender outro idioma'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.byType(CourseModal), findsNothing);
     expect(find.byType(CoursePickerPage), findsOneWidget);

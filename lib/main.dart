@@ -48,7 +48,7 @@ void main() {
         onConfirmed: vocabulary.load,
       ),
       vocabulary: vocabulary,
-      language: LanguageStore(Preferences()),
+      language: LanguageStore(Preferences(), courses),
       voice: Voice(),
       playback: AudioPlayback(),
       device: CaptureDevice(),

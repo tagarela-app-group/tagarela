@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
-import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/course/modals/course_modal.dart';
-import 'package:tagarela/features/course/widgets/course_bubble.dart';
 import 'package:tagarela/features/profile/modals/country_modal.dart';
-import 'package:tagarela/features/profile/modals/language_modal.dart';
 import 'package:tagarela/features/profile/widgets/offline_section.dart';
 import 'package:tagarela/features/profile/widgets/profile_section.dart';
 import 'package:tagarela/features/profile/widgets/progress_card.dart';
@@ -27,7 +24,6 @@ class ProfilePage extends StatelessWidget {
         scope.auth,
         scope.courses,
         scope.vocabulary,
-        scope.language,
       ]),
       builder: (context, _) {
         final user = scope.auth.user;
@@ -61,12 +57,15 @@ class ProfilePage extends StatelessWidget {
                 title: l10n.profileStudy,
                 rows: [
                   ProfileRow(
-                    leading: CourseBubble(language: course.learning, size: 40),
-                    title: l10n.courseName(
-                      course.learning.name,
-                      course.base.name,
+                    leading: FlagPair(
+                      back: course.base.country,
+                      front: course.learning.country,
                     ),
-                    text: l10n.courseChange,
+                    title: l10n.coursePair(
+                      course.base.name,
+                      course.learning.name,
+                    ),
+                    text: l10n.courseCount(scope.courses.data!.length),
                     onTap: () => CourseModal.show(context),
                   ),
                 ],
@@ -108,28 +107,6 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ],
               ),
-            ProfileSection(
-              title: l10n.preferences,
-              rows: [
-                ProfileRow(
-                  icon: AppIcons.language,
-                  accent: AppAccent.sky,
-                  title: l10n.language,
-                  text: switch (scope.language.choice) {
-                    final choice? => choice.label,
-                    null => l10n.languageAutoValue(
-                      AppLanguage.resolve([
-                        Localizations.localeOf(context),
-                      ]).label,
-                    ),
-                  },
-                  onTap: () => AppModal.show<void>(
-                    context,
-                    (_) => const LanguageModal(),
-                  ),
-                ),
-              ],
-            ),
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.s1),
               child: AppButton(

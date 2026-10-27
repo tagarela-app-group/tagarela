@@ -1,4 +1,5 @@
 import 'package:tagarela/data/storage/preferences.dart';
+import 'package:tagarela/data/stores/course_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 
 class FakePreferences implements Preferences {
@@ -10,8 +11,8 @@ class FakePreferences implements Preferences {
   Future<String?> language() async => stored;
 
   @override
-  Future<void> setLanguage(String? code) async => stored = code;
+  Future<void> setLanguage(String code) async => stored = code;
 }
 
-LanguageStore fakeLanguage([String? stored]) =>
-    LanguageStore(FakePreferences(stored));
+LanguageStore fakeLanguage(CourseStore courses, [String? stored]) =>
+    LanguageStore(FakePreferences(stored), courses);

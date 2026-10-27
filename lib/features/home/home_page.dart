@@ -126,17 +126,16 @@ class _HomeHeader extends StatelessWidget {
           HeaderPill(
             onTap: () => CourseModal.show(context),
             semanticLabel: context.l10n.courseBadge(
-              context.l10n.courseName(course.learning.name, course.base.name),
+              context.l10n.coursePair(course.base.name, course.learning.name),
             ),
             padding: const EdgeInsets.only(left: 6, right: 10),
             child: Row(
               spacing: AppSpacing.s1,
               children: [
-                AppBubble(
+                FlagBadge(
+                  country: course.learning.country,
                   size: 32,
-                  color: AppPalette.white,
-                  foreground: c.header,
-                  child: Text(course.learning.code),
+                  ring: AppPalette.white,
                 ),
                 const Icon(AppIcons.expand),
               ],

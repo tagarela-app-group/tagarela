@@ -8,21 +8,31 @@ class CourseBubble extends StatelessWidget {
     super.key,
     required this.language,
     this.size = 48,
-    this.active = false,
+    this.selected,
   });
 
   final CourseLanguage language;
   final double size;
-  final bool active;
+  final bool? selected;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final (color, foreground) = switch (selected) {
+      null => (c.surfaceAlt, c.ink),
+      true => (c.primary, c.onPrimary),
+      false => (c.primarySoft, c.primaryText),
+    };
     return ExcludeSemantics(
       child: AppBubble(
         size: size,
-        color: active ? c.primary : c.primarySoft,
-        foreground: active ? c.onPrimary : c.primaryText,
+        color: color,
+        foreground: foreground,
+        badge: FlagBadge(
+          country: language.country,
+          size: size / 2,
+          ring: c.surface,
+        ),
         child: Text(language.code),
       ),
     );

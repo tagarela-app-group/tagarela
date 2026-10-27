@@ -1,47 +1,50 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/storage/preferences.dart';
-
-enum AppLanguage {
-  pt('Português (Brasil)'),
-  en('English'),
-  es('Español');
-
-  const AppLanguage(this.label);
-
-  static const fallback = AppLanguage.en;
-
-  final String label;
-
-  Locale get locale => Locale(name);
-
-  static AppLanguage? of(String? code) => values.asNameMap()[code];
-
-  static AppLanguage resolve(Iterable<Locale> preferred) =>
-      preferred.map((l) => of(l.languageCode)).nonNulls.firstOrNull ?? fallback;
-}
+import 'package:tagarela/data/stores/course_store.dart';
 
 class LanguageStore extends ChangeNotifier {
-  LanguageStore(this._preferences);
+  LanguageStore(this._preferences, this._courses) {
+    _courses.addListener(_follow);
+  }
 
   final Preferences _preferences;
+  final CourseStore _courses;
 
-  AppLanguage? _choice;
+  CourseLanguage? _saved;
 
-  AppLanguage? get choice => _choice;
+  Locale? get locale => (_courses.active?.base ?? _saved)?.locale;
 
   Future<void> load() async {
     try {
-      _choice = AppLanguage.of(await _preferences.language());
+      _saved = CourseLanguage.of(await _preferences.language());
     } on Exception {
       return;
     }
     notifyListeners();
   }
 
-  Future<void> choose(AppLanguage? language) async {
-    _choice = language;
+  void _follow() {
+    final base = _courses.active?.base;
+    if (base == null || base == _saved) return;
+    _saved = base;
     notifyListeners();
-    await _preferences.setLanguage(language?.name);
+    unawaited(_preferences.setLanguage(base.name));
+  }
+
+  @override
+  void dispose() {
+    _courses.removeListener(_follow);
+    super.dispose();
   }
 }
+
+Locale appLocale(Iterable<Locale> preferred, Iterable<Locale> supported) =>
+    preferred
+        .map((l) => Locale(l.languageCode))
+        .where(supported.contains)
+        .firstOrNull ??
+    CourseLanguage.en.locale;

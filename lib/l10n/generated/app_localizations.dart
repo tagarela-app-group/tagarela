@@ -1168,42 +1168,6 @@ abstract class AppLocalizations {
   /// **'Sair'**
   String get signOut;
 
-  /// No description provided for @preferences.
-  ///
-  /// In pt, this message translates to:
-  /// **'Preferências'**
-  String get preferences;
-
-  /// No description provided for @language.
-  ///
-  /// In pt, this message translates to:
-  /// **'Idioma'**
-  String get language;
-
-  /// No description provided for @languageAuto.
-  ///
-  /// In pt, this message translates to:
-  /// **'Automático'**
-  String get languageAuto;
-
-  /// No description provided for @languageAutoHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'Segue o idioma do celular'**
-  String get languageAutoHint;
-
-  /// No description provided for @languageAutoValue.
-  ///
-  /// In pt, this message translates to:
-  /// **'Automático · {language}'**
-  String languageAutoValue(String language);
-
-  /// No description provided for @languageModalSubtitle.
-  ///
-  /// In pt, this message translates to:
-  /// **'Muda os textos do app'**
-  String get languageModalSubtitle;
-
   /// No description provided for @modelReady.
   ///
   /// In pt, this message translates to:
@@ -1738,23 +1702,11 @@ abstract class AppLocalizations {
   /// **'{language, select, en{Inglês} es{Espanhol} pt{Português} other{}}'**
   String courseLanguage(String language);
 
-  /// No description provided for @courseName.
+  /// No description provided for @coursePair.
   ///
   /// In pt, this message translates to:
-  /// **'{learning, select, en{Inglês} es{Espanhol} pt{Português} other{}} por meio do {base, select, en{Inglês} es{Espanhol} pt{Português} other{}}'**
-  String courseName(String learning, String base);
-
-  /// No description provided for @courseVia.
-  ///
-  /// In pt, this message translates to:
-  /// **'por meio do {base, select, en{Inglês} es{Espanhol} pt{Português} other{}} · {count, plural, =0{nenhum termo} =1{1 termo} other{{count} termos}}'**
-  String courseVia(String base, int count);
-
-  /// No description provided for @courseNoAudio.
-  ///
-  /// In pt, this message translates to:
-  /// **'Áudio ainda não disponível'**
-  String get courseNoAudio;
+  /// **'{base, select, en{Inglês} es{Espanhol} pt{Português} other{}} → {learning, select, en{Inglês} es{Espanhol} pt{Português} other{}}'**
+  String coursePair(String base, String learning);
 
   /// No description provided for @courseOptionNoAudio.
   ///
@@ -1762,16 +1714,22 @@ abstract class AppLocalizations {
   /// **'{name} · sem áudio por enquanto'**
   String courseOptionNoAudio(String name);
 
+  /// No description provided for @courseOptionAudio.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} · com áudio'**
+  String courseOptionAudio(String name);
+
   /// No description provided for @coursePickTitle.
   ///
   /// In pt, this message translates to:
-  /// **'O que você quer aprender?'**
+  /// **'Seus idiomas'**
   String get coursePickTitle;
 
   /// No description provided for @coursePickSubtitle.
   ///
   /// In pt, this message translates to:
-  /// **'Dá pra adicionar outro idioma depois.'**
+  /// **'Você conversa em um e aprende o outro.'**
   String get coursePickSubtitle;
 
   /// No description provided for @courseLearnSection.
@@ -1783,26 +1741,38 @@ abstract class AppLocalizations {
   /// No description provided for @courseBaseSection.
   ///
   /// In pt, this message translates to:
-  /// **'Por meio de'**
+  /// **'Eu falo'**
   String get courseBaseSection;
 
   /// No description provided for @courseBaseHint.
   ///
   /// In pt, this message translates to:
-  /// **'Traduções e explicações vêm nesse idioma.'**
+  /// **'O app inteiro fica nesse idioma'**
   String get courseBaseHint;
+
+  /// No description provided for @courseBaseChange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocar'**
+  String get courseBaseChange;
+
+  /// No description provided for @courseBaseModalSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'O app, as traduções e as explicações das fichas ficam nesse idioma'**
+  String get courseBaseModalSubtitle;
+
+  /// No description provided for @courseBaseMore.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais idiomas aparecem aqui conforme o app for traduzido.'**
+  String get courseBaseMore;
 
   /// No description provided for @coursePickLearning.
   ///
   /// In pt, this message translates to:
-  /// **'Escolha o idioma que quer aprender'**
+  /// **'Escolha o que quer aprender'**
   String get coursePickLearning;
-
-  /// No description provided for @coursePickBase.
-  ///
-  /// In pt, this message translates to:
-  /// **'Escolha por meio de qual idioma'**
-  String get coursePickBase;
 
   /// No description provided for @courseStart.
   ///
@@ -1831,8 +1801,14 @@ abstract class AppLocalizations {
   /// No description provided for @coursesSubtitle.
   ///
   /// In pt, this message translates to:
-  /// **'Cada um tem suas capturas e termos'**
+  /// **'O app fica no idioma que você fala no curso ativo.'**
   String get coursesSubtitle;
+
+  /// No description provided for @courseAppIn.
+  ///
+  /// In pt, this message translates to:
+  /// **'app em {name}'**
+  String courseAppIn(String name);
 
   /// No description provided for @courseAdd.
   ///
@@ -1852,11 +1828,11 @@ abstract class AppLocalizations {
   /// **'Estudo'**
   String get profileStudy;
 
-  /// No description provided for @courseChange.
+  /// No description provided for @courseCount.
   ///
   /// In pt, this message translates to:
-  /// **'Trocar ou adicionar curso'**
-  String get courseChange;
+  /// **'{count, plural, =0{nenhum curso} =1{1 curso} other{{count} cursos}} · trocar ou adicionar'**
+  String courseCount(int count);
 
   /// No description provided for @progressIn.
   ///

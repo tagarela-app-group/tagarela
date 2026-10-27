@@ -4,7 +4,6 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/course/course_picker_page.dart';
-import 'package:tagarela/features/course/widgets/course_bubble.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class CourseModal extends StatefulWidget {
@@ -52,10 +51,9 @@ class _CourseModalState extends State<CourseModal> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final courses = AppScope.of(context).courses.data ?? const <Course>[];
+    final app = Localizations.localeOf(context).languageCode;
 
     return AppModal(
-      icon: AppIcons.language,
-      accent: AppAccent.sky,
       title: l10n.coursesTitle,
       subtitle: l10n.coursesSubtitle,
       child: Column(
@@ -64,15 +62,16 @@ class _CourseModalState extends State<CourseModal> {
         children: [
           for (final course in courses)
             OptionRow(
-              leading: CourseBubble(
-                language: course.learning,
-                active: course.active,
+              leading: FlagPair(
+                back: course.base.country,
+                front: course.learning.country,
               ),
-              title: l10n.courseLanguage(course.learning.name),
+              title: l10n.coursePair(course.base.name, course.learning.name),
               subtitle: [
-                l10n.courseVia(course.base.name, course.terms),
-                if (!course.learning.hasAudio) l10n.courseNoAudio,
-              ].join('\n'),
+                l10n.termCount(course.terms),
+                if (course.base.name != app)
+                  l10n.courseAppIn(course.base.nativeName),
+              ].join(' · '),
               selected: course.active,
               trailing: _switching == course.id
                   ? SizedBox.square(

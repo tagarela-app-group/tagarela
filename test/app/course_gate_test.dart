@@ -25,7 +25,7 @@ void main() {
       courses: courses.store,
       vocabulary: vocabulary.store,
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(find.byType(CoursePickerPage), findsOneWidget);
     expect(vocabulary.api.calls, isEmpty);

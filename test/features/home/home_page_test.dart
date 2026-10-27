@@ -171,14 +171,20 @@ void main() {
     expect(find.byType(StateMessage), findsNothing);
   });
 
-  testWidgets('selo do curso mostra a sigla e abre os cursos', (tester) async {
+  testWidgets('selo do curso mostra a bandeira do idioma e abre os cursos', (
+    tester,
+  ) async {
     await tester.pumpPage(HomePage(onSeeVocabulary: () {}, onCapture: () {}));
 
-    final badge = find.bySemanticsLabel(
-      'Curso: Inglês por meio do Português. Trocar',
-    );
+    final badge = find.bySemanticsLabel('Curso: Português → Inglês. Trocar');
     expect(badge, findsOneWidget);
-    expect(find.text('EN'), findsOneWidget);
+    final flag = tester.widget<FlagBadge>(
+      find.descendant(
+        of: find.byType(HeaderPill),
+        matching: find.byType(FlagBadge),
+      ),
+    );
+    expect(flag.country, 'US');
 
     await tester.tap(badge);
     await tester.pumpAndSettle();
