@@ -1532,4 +1532,157 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fitsNo => 'No encaja';
+
+  @override
+  String get practiceLeave => 'Salir';
+
+  @override
+  String practiceRound(int current, int total) {
+    return 'Ronda $current de $total';
+  }
+
+  @override
+  String exerciseKind(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'listenWrite': 'Escuchar y escribir',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String exerciseKindHint(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'listenWrite': 'Escucha una frase nueva y completa lo que falta',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get practiceSection => 'Practicar';
+
+  @override
+  String get practiceLoading => 'Preparando la frase…';
+
+  @override
+  String get listenTap => 'Toca para escuchar';
+
+  @override
+  String get listening => 'Escuchando…';
+
+  @override
+  String get listenSentence => 'Escuchar la frase';
+
+  @override
+  String gapLetters(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Escucha y completa: $count letras',
+      one: 'Escucha y completa: 1 letra',
+      zero: 'Escucha y completa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gapLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Faltan $count letras',
+      one: 'Falta 1 letra',
+      zero: 'Todo listo. ¿Lo compruebas?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gapWrong(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '¡Casi! $count letras cambiadas',
+      one: '¡Casi! 1 letra cambiada',
+      zero: '¡Casi!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get showAnswer => 'Ver respuesta';
+
+  @override
+  String get hintKey => 'Pista: muestra una letra';
+
+  @override
+  String get backspace => 'Borrar';
+
+  @override
+  String letterKey(String letter) {
+    return 'Letra $letter';
+  }
+
+  @override
+  String get checkAnswer => 'Comprobar';
+
+  @override
+  String outcomeTitle(String outcome) {
+    String _temp0 = intl.Intl.selectLogic(outcome, {
+      'first': '¡A la primera!',
+      'retry': '¡A la segunda, bien!',
+      'hint': 'Listo, con una ayuda',
+      'missed': 'Era así',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String outcomeLabel(String outcome) {
+    String _temp0 = intl.Intl.selectLogic(outcome, {
+      'first': 'A la primera',
+      'retry': 'A la segunda',
+      'hint': 'Con pista',
+      'missed': 'Viste la respuesta',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get means => 'Quiere decir';
+
+  @override
+  String get takeAway => 'Llévate también';
+
+  @override
+  String get listenExtra => 'Escuchar';
+
+  @override
+  String get nextRound => 'Siguiente';
+
+  @override
+  String get seeSummary => 'Ver resumen';
+
+  @override
+  String get reviewDone => '¡Repaso hecho!';
+
+  @override
+  String get practiceDone => '¡Práctica hecha!';
+
+  @override
+  String firstTries(int count, int total) {
+    return '$count de $total a la primera';
+  }
+
+  @override
+  String get takenAway => 'Lo que te llevas';
+
+  @override
+  String get finish => 'Terminar';
+
+  @override
+  String get practiceFree => 'Práctica libre: no cuenta para el repaso.';
 }

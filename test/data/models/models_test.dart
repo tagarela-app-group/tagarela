@@ -20,20 +20,19 @@ TermGroup _group(List<Term> terms) => TermGroup(
 
 void main() {
   group('Term.status', () {
-    test('nível 0 a 3 = aprendendo', () {
-      for (final level in [0, 1, 2, 3]) {
+    test('nível 0 a 4 = aprendendo', () {
+      for (final level in [0, 1, 2, 3, 4]) {
         expect(_term(level).status, TermStatus.learning, reason: '$level');
       }
     });
 
-    test('nível 4 e 5 = dominado', () {
-      expect(_term(4).status, TermStatus.mastered);
+    test('só o nível 5 = dominado', () {
       expect(_term(5).status, TermStatus.mastered);
     });
   });
 
   group('TermGroup', () {
-    final group = _group([_term(1), _term(4), _term(5), _term(3)]);
+    final group = _group([_term(1), _term(5), _term(5), _term(3)]);
 
     test('masteredCount conta só dominados', () {
       expect(_group([]).masteredCount, 0);
@@ -43,7 +42,7 @@ void main() {
     test('termsWith filtra por status; null = todos', () {
       expect(group.termsWith(null), hasLength(4));
       expect(group.termsWith(TermStatus.learning).map((t) => t.level), [1, 3]);
-      expect(group.termsWith(TermStatus.mastered).map((t) => t.level), [4, 5]);
+      expect(group.termsWith(TermStatus.mastered).map((t) => t.level), [5, 5]);
     });
 
     test('fromJson lê termos embutidos, ícone e cor', () {
@@ -109,7 +108,7 @@ void main() {
     final vocabulary = Vocabulary(
       groups: [
         _group([_term(5), _term(1)]),
-        _group([_term(4), _term(4), _term(0)]),
+        _group([_term(5), _term(5), _term(0)]),
       ],
       ungrouped: [_term(5), _term(2)],
     );

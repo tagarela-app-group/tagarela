@@ -11,6 +11,7 @@ import 'package:tagarela/features/inbox/inbox_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
 
+import '../helpers/fake_practice_api.dart';
 import '../helpers/fake_vocabulary_api.dart';
 import '../helpers/fake_auth.dart';
 import '../helpers/fake_capture_store.dart';
@@ -135,6 +136,7 @@ void main() {
       const HomeShell(),
       home: HomeStore(),
       vocabulary: emptyVocabulary(),
+      practice: emptyPractice(),
     );
     expect(find.text('O que você ouviu hoje?'), findsNothing);
 

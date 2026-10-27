@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/practice/practice_page.dart';
 import 'package:tagarela/features/term/term_page.dart';
 import 'package:tagarela/features/term/widgets/got_it_check.dart';
 import 'package:tagarela/features/term/widgets/seen_captures.dart';
@@ -15,13 +16,14 @@ import 'package:tagarela/features/term/widgets/term_usage.dart';
 
 import '../../helpers/fake_capture_store.dart';
 import '../../helpers/fake_course_api.dart';
+import '../../helpers/fake_practice_api.dart';
 import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/fake_voice.dart';
 import '../../helpers/fixtures.dart';
 import '../../helpers/pump_app.dart';
 
 const _mind = Term('u1', 'mind the gap', '', TermKind.expression, 0);
-const _layover = Term('t2', 'layover', 'escala (de voo)', TermKind.word, 4);
+const _layover = Term('t2', 'layover', 'escala (de voo)', TermKind.word, 5);
 
 final _inPitfall = find.descendant(
   of: find.byType(TermPitfall),
@@ -823,5 +825,36 @@ void main() {
       return true;
     });
     expect(lit, ['the']);
+  });
+
+  testWidgets('Praticar abre o jogo com as frases do termo', (tester) async {
+    final api = FakePracticeApi()
+      ..exercises['u1'] = [
+        listenWriteJson(
+          'm0',
+          sentence: 'Please mind the gap on the way out.',
+          answer: 'mind the gap',
+        ),
+      ];
+    await tester.pumpPage(
+      const TermPage(term: _mind),
+      vocabulary: vocabulary.store,
+      practice: fakePractice(api).store,
+    );
+    await tester.pumpAndSettle();
+
+    final card = find.text('Ouvir e escrever');
+    expect(
+      find.text('Ouça uma frase nova e complete o que falta'),
+      findsOneWidget,
+    );
+
+    await tester.ensureVisible(card);
+    await tester.tap(card);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PracticePage), findsOneWidget);
+    expect(find.text('1/1'), findsOneWidget);
+    expect(api.calls.last, 'GET /api/v1/terms/u1/exercises/listen_write');
   });
 }

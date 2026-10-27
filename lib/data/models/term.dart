@@ -21,10 +21,12 @@ class Term {
   final String translation;
   final TermKind kind;
 
+  static const maxLevel = 5;
+
   final int level;
 
   TermStatus get status =>
-      level >= 4 ? TermStatus.mastered : TermStatus.learning;
+      level >= maxLevel ? TermStatus.mastered : TermStatus.learning;
 }
 
 extension TermList on List<Term> {

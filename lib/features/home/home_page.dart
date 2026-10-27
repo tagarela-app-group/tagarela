@@ -8,6 +8,7 @@ import 'package:tagarela/features/course/modals/course_modal.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
+import 'package:tagarela/features/practice/practice_page.dart';
 import 'package:tagarela/features/profile/widgets/user_avatar.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -24,7 +25,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
-    final stores = <Store>[scope.home, scope.vocabulary];
+    final stores = <Store>[scope.home, scope.vocabulary, scope.practice];
 
     return ListenableBuilder(
       listenable: Listenable.merge([...stores, scope.auth, scope.courses]),
@@ -43,9 +44,10 @@ class HomePage extends StatelessWidget {
         }
         final home = scope.home.data!;
         final vocabulary = scope.vocabulary.data!;
+        final review = scope.practice.data!;
         if (vocabulary.termCount == 0 &&
             home.wordOfDay == null &&
-            home.stats.reviewCount == 0) {
+            review.due == 0) {
           return AppPage(
             header: header,
             centerLast: true,
@@ -71,8 +73,13 @@ class HomePage extends StatelessWidget {
               weekGain: home.stats.weekGain,
               onSeeAll: onSeeVocabulary,
             ),
-            if (home.stats.reviewCount > 0)
-              ReviewCard(count: home.stats.reviewCount, onStart: () {}),
+            if (review.due > 0)
+              ReviewCard(
+                count: review.due,
+                onStart: review.rounds.isEmpty
+                    ? null
+                    : () => PracticePage.openReview(context, review.rounds),
+              ),
           ],
         );
       },

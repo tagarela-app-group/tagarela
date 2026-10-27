@@ -10,6 +10,7 @@ import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/course_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
+import 'package:tagarela/data/stores/practice_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 
@@ -23,6 +24,7 @@ class AppScope extends InheritedWidget {
     required this.device,
     required this.speech,
     required this.vocabulary,
+    required this.practice,
     required this.language,
     required this.voice,
     HomeStore? home,
@@ -37,6 +39,7 @@ class AppScope extends InheritedWidget {
   final SpeechModelStore speech;
   final HomeStore home;
   final VocabularyStore vocabulary;
+  final PracticeStore practice;
   final LanguageStore language;
   final Voice voice;
 
@@ -58,8 +61,12 @@ class AppScope extends InheritedWidget {
     _ensureSpeech();
   }
 
-  Future<void> _loadStores() =>
-      Future.wait([home.load(), vocabulary.load(), captures.load()]);
+  Future<void> _loadStores() => Future.wait([
+    home.load(),
+    vocabulary.load(),
+    practice.load(),
+    captures.load(),
+  ]);
 
   void _ensureSpeech() {
     if (courses.active?.learning.hasAudio ?? true) unawaited(speech.ensure());

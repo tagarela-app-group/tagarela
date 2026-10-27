@@ -26,7 +26,7 @@ const List<Json> _ungrouped = [
   },
 ];
 
-const Json _stats = {'weekGain': 5, 'reviewCount': 12};
+const Json _stats = {'weekGain': 5};
 
 const Json _wordOfDay = {
   'text': 'serendipity',
@@ -56,7 +56,7 @@ const List<Json> _groups = [
         'text': 'layover',
         'translation': 'escala (de voo)',
         'kind': 'word',
-        'level': 4,
+        'level': 5,
       },
       {
         'id': 't3',
@@ -84,7 +84,7 @@ const List<Json> _groups = [
         'text': 'check in',
         'translation': 'fazer check-in',
         'kind': 'expression',
-        'level': 4,
+        'level': 5,
       },
       {
         'id': 't7',
@@ -127,7 +127,7 @@ const List<Json> _groups = [
         'text': 'workload',
         'translation': 'carga de trabalho',
         'kind': 'word',
-        'level': 4,
+        'level': 5,
       },
       {
         'id': 't12',
@@ -156,7 +156,7 @@ const List<Json> _groups = [
         'text': 'catch up',
         'translation': 'colocar o papo em dia',
         'kind': 'expression',
-        'level': 4,
+        'level': 5,
       },
       {
         'id': 't15',
@@ -199,7 +199,7 @@ const List<Json> _groups = [
         'text': 'give up',
         'translation': 'desistir',
         'kind': 'expression',
-        'level': 4,
+        'level': 5,
       },
       {
         'id': 't20',
@@ -249,7 +249,7 @@ const List<Json> _groups = [
         'text': 'spoiler',
         'translation': 'revelação do enredo',
         'kind': 'word',
-        'level': 4,
+        'level': 5,
       },
       {
         'id': 't26',
@@ -292,7 +292,7 @@ const List<Json> _groups = [
         'text': 'the bill',
         'translation': 'a conta',
         'kind': 'expression',
-        'level': 4,
+        'level': 5,
       },
       {
         'id': 't31',

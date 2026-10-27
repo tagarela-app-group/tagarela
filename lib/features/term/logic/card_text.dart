@@ -52,22 +52,3 @@ List<Part> phrasePieces(String phrase, String term) {
   }
   return [(text: phrase, marked: false)];
 }
-
-List<Part> markedParts(String text) {
-  final parts = <Part>[];
-  var at = 0;
-  while (at < text.length) {
-    final open = text.indexOf('*', at);
-    final close = open < 0 ? -1 : text.indexOf('*', open + 1);
-    if (close < 0) {
-      parts.add((text: text.substring(at), marked: false));
-      break;
-    }
-    if (open > at) parts.add((text: text.substring(at, open), marked: false));
-    if (close > open + 1) {
-      parts.add((text: text.substring(open + 1, close), marked: true));
-    }
-    at = close + 1;
-  }
-  return parts;
-}

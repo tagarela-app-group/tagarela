@@ -11,6 +11,8 @@ import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/services/capture_service.dart';
 import 'package:tagarela/data/services/course_service.dart';
+import 'package:tagarela/data/services/exercise_service.dart';
+import 'package:tagarela/data/services/review_service.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/data/storage/database.dart';
 import 'package:tagarela/data/storage/media_storage.dart';
@@ -21,6 +23,7 @@ import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/course_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
+import 'package:tagarela/data/stores/practice_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 
@@ -48,6 +51,7 @@ void main() {
         onConfirmed: vocabulary.load,
       ),
       vocabulary: vocabulary,
+      practice: PracticeStore(ReviewService(api), ExerciseService(api)),
       language: LanguageStore(Preferences(), courses),
       voice: Voice(),
       playback: AudioPlayback(),

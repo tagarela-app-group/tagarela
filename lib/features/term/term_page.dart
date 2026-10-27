@@ -4,6 +4,8 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/practice/practice_page.dart';
+import 'package:tagarela/features/practice/widgets/practice_cards.dart';
 import 'package:tagarela/features/term/widgets/meaning_card.dart';
 import 'package:tagarela/features/term/widgets/term_building.dart';
 import 'package:tagarela/features/term/widgets/seen_captures.dart';
@@ -234,6 +236,16 @@ class _TermPageState extends State<TermPage> {
             ),
           ],
         ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: AppSpacing.s1,
+        children: [
+          SectionLabel(label: l10n.practiceSection),
+          PracticeCards(
+            onOpen: (kind) => PracticePage.openTerm(context, detail.term, kind),
+          ),
+        ],
+      ),
       if (tab != null)
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
