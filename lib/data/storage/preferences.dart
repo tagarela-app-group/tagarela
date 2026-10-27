@@ -11,7 +11,6 @@ class Preferences {
 
   Future<String?> language() => _preferences.getString(_language);
 
-  Future<void> setLanguage(String? code) => code == null
-      ? _preferences.remove(_language)
-      : _preferences.setString(_language, code);
+  Future<void> setLanguage(String code) =>
+      _preferences.setString(_language, code);
 }

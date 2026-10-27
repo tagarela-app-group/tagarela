@@ -32,15 +32,16 @@ void main() {
 
   test('sem dados de exemplo: Home e Vocabulário vazios', () async {
     final captures = fakeCaptures();
+    final courses = fakeCourses().store;
     final scope = AppScope(
       auth: fakeAuthStore(),
-      courses: fakeCourses().store,
+      courses: courses,
       captures: captures.store,
       playback: FakeAudioPlayback(),
       device: FakeCaptureDevice(),
       speech: fakeSpeechModel().store,
       vocabulary: emptyVocabulary(),
-      language: fakeLanguage(),
+      language: fakeLanguage(courses),
       voice: FakeVoice(),
       child: const SizedBox(),
     );

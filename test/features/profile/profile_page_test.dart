@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/services/api_client.dart';
-import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
@@ -15,11 +14,15 @@ import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/fake_auth.dart';
 import '../../helpers/fake_capture_store.dart';
 import '../../helpers/fake_extraction.dart';
-import '../../helpers/fake_preferences.dart';
 import '../../helpers/fixtures.dart';
 import '../../helpers/pump_app.dart';
 import '../../helpers/fake_course_api.dart';
 import 'package:tagarela/features/course/modals/course_modal.dart';
+
+final _avatarFlag = find.descendant(
+  of: find.byType(UserAvatar),
+  matching: find.byType(FlagBadge),
+);
 
 void main() {
   testWidgets('topo centralizado: avatar grande com anel, nome e e-mail', (
@@ -90,7 +93,7 @@ void main() {
         find.text('Escolha pra mostrar a bandeira no seu avatar'),
         findsOneWidget,
       );
-      expect(find.byType(FlagBadge), findsNothing);
+      expect(_avatarFlag, findsNothing);
     });
 
     testWidgets('busca, salva, fecha e põe a bandeira no avatar', (
@@ -170,7 +173,7 @@ void main() {
       );
       await tester.pumpPage(const ProfilePage(), auth: auth);
       expect(find.text('Brasil'), findsOneWidget);
-      expect(find.byType(FlagBadge), findsOneWidget);
+      expect(_avatarFlag, findsOneWidget);
 
       await tester.tap(find.text('País de origem'));
       await tester.pumpAndSettle();
@@ -190,45 +193,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(api.last('PATCH /api/v1/account').body, {'country': ''});
-      expect(find.byType(FlagBadge), findsNothing);
-    });
-  });
-
-  group('Idioma', () {
-    testWidgets('sem escolha mostra o automático com o idioma em uso', (
-      tester,
-    ) async {
-      await tester.pumpPage(const ProfilePage());
-
-      expect(find.text('PREFERÊNCIAS'), findsOneWidget);
-      expect(find.text('Automático · Português (Brasil)'), findsOneWidget);
-    });
-
-    testWidgets('escolher no modal salva, fecha e mostra o nome', (
-      tester,
-    ) async {
-      final preferences = FakePreferences();
-      final language = LanguageStore(preferences);
-      await tester.pumpPage(const ProfilePage(), language: language);
-
-      await tester.tap(find.text('Idioma'));
-      await tester.pumpAndSettle();
-      expect(find.byType(AppModal), findsOneWidget);
-      for (final option in AppLanguage.values) {
-        expect(find.text(option.label), findsOneWidget);
-      }
-      expect(
-        tester.getSemantics(find.text('Automático')),
-        isSemantics(isSelected: true, isInMutuallyExclusiveGroup: true),
-      );
-
-      await tester.tap(find.text('Español'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(AppModal), findsNothing);
-      expect(language.choice, AppLanguage.es);
-      expect(preferences.stored, 'es');
-      expect(find.text('Español'), findsOneWidget);
+      expect(_avatarFlag, findsNothing);
     });
   });
 
@@ -314,10 +279,12 @@ void main() {
     await tester.pumpPage(const ProfilePage(), auth: await signedInAuthStore());
 
     expect(find.text('ESTUDO'), findsOneWidget);
-    expect(find.text('Inglês por meio do Português'), findsOneWidget);
+    expect(find.text('Português → Inglês'), findsOneWidget);
     expect(find.text('PROGRESSO EM INGLÊS'), findsOneWidget);
+    final pair = tester.widget<FlagPair>(find.byType(FlagPair));
+    expect((pair.back, pair.front), ('BR', 'US'));
 
-    await tester.tap(find.text('Trocar ou adicionar curso'));
+    await tester.tap(find.text('1 curso · trocar ou adicionar'));
     await tester.pumpAndSettle();
 
     expect(find.byType(CourseModal), findsOneWidget);
@@ -328,11 +295,20 @@ void main() {
       const ProfilePage(),
       auth: await signedInAuthStore(),
       courses: fakeCourses([
+        {...englishCourseJson, 'active': false},
         {...spanishCourseJson, 'active': true},
       ]).store,
     );
 
-    expect(find.text('Espanhol por meio do Inglês'), findsOneWidget);
+    expect(find.text('Inglês → Espanhol'), findsOneWidget);
+    expect(find.text('2 cursos · trocar ou adicionar'), findsOneWidget);
     expect(find.text('PROGRESSO EM ESPANHOL'), findsOneWidget);
+  });
+
+  testWidgets('sem a escolha de idioma do app: segue o curso', (tester) async {
+    await tester.pumpPage(const ProfilePage(), auth: await signedInAuthStore());
+
+    expect(find.text('PREFERÊNCIAS'), findsNothing);
+    expect(find.text('Idioma'), findsNothing);
   });
 }

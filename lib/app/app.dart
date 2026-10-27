@@ -19,11 +19,11 @@ class TagarelaApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
-        locale: language.choice?.locale,
+        locale: language.locale,
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
-        localeListResolutionCallback: (preferred, _) =>
-            AppLanguage.resolve(preferred ?? const []).locale,
+        localeListResolutionCallback: (preferred, supported) =>
+            appLocale(preferred ?? const [], supported),
         home: const AuthGate(),
       ),
     );

@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
+import '../../helpers/fake_course_api.dart';
 import '../../helpers/fake_preferences.dart';
 
 class _BrokenPreferences extends FakePreferences {
@@ -13,69 +15,106 @@ class _BrokenPreferences extends FakePreferences {
 }
 
 void main() {
-  group('AppLanguage.resolve', () {
+  group('appLocale', () {
+    const supported = AppLocalizations.supportedLocales;
+
     test('primeiro idioma do aparelho que o app tem', () {
       expect(
-        AppLanguage.resolve(const [Locale('fr'), Locale('es', 'MX')]),
-        AppLanguage.es,
+        appLocale(const [Locale('fr'), Locale('es', 'MX')], supported),
+        const Locale('es'),
       );
-      expect(AppLanguage.resolve(const [Locale('pt', 'PT')]), AppLanguage.pt);
-      expect(AppLanguage.resolve(const [Locale('en', 'GB')]), AppLanguage.en);
+      expect(
+        appLocale(const [Locale('pt', 'PT')], supported),
+        const Locale('pt'),
+      );
     });
 
     test('nenhum idioma conhecido cai no inglês', () {
-      expect(AppLanguage.resolve(const [Locale('fr')]), AppLanguage.en);
-      expect(AppLanguage.resolve(const []), AppLanguage.en);
+      expect(appLocale(const [Locale('fr')], supported), const Locale('en'));
+      expect(appLocale(const [], supported), const Locale('en'));
     });
 
-    test('um idioma por locale do app', () {
-      expect(
-        AppLanguage.values.map((l) => l.locale).toSet(),
-        AppLocalizations.supportedLocales.toSet(),
-      );
+    test('todo idioma do app pode ser o que a pessoa fala no curso', () {
+      for (final locale in supported) {
+        expect(CourseLanguage.of(locale.languageCode)?.locale, locale);
+      }
     });
   });
 
-  test('sem escolha salva segue o aparelho', () async {
-    final store = fakeLanguage();
+  test('sem curso nem idioma salvo segue o aparelho', () async {
+    final store = fakeLanguage(fakeCourses(const []).store);
 
     await store.load();
 
-    expect(store.choice, isNull);
+    expect(store.locale, isNull);
   });
 
-  test('carrega a escolha salva e ignora código desconhecido', () async {
-    final saved = fakeLanguage('es');
-    final unknown = fakeLanguage('fr');
+  test('idioma salvo vale até os cursos chegarem', () async {
+    final courses = fakeCourses([
+      {...englishCourseJson, 'base': 'es'},
+    ]);
+    final store = fakeLanguage(courses.store, 'en');
 
-    await saved.load();
-    await unknown.load();
+    await store.load();
+    expect(store.locale, const Locale('en'));
 
-    expect(saved.choice, AppLanguage.es);
-    expect(unknown.choice, isNull);
+    await courses.store.load();
+    expect(store.locale, const Locale('es'));
   });
 
-  test('escolher avisa e salva; voltar pro automático apaga', () async {
+  test('código salvo desconhecido é ignorado', () async {
+    final store = fakeLanguage(fakeCourses(const []).store, 'fr');
+
+    await store.load();
+
+    expect(store.locale, isNull);
+  });
+
+  test('segue o que a pessoa fala no curso ativo e salva', () async {
+    final courses = fakeCourses([englishCourseJson, spanishCourseJson]);
     final preferences = FakePreferences();
-    final store = LanguageStore(preferences);
+    final store = LanguageStore(preferences, courses.store);
     var notified = 0;
     store.addListener(() => notified++);
 
-    await store.choose(AppLanguage.en);
-    expect(store.choice, AppLanguage.en);
-    expect(preferences.stored, 'en');
+    await courses.store.load();
+    expect(store.locale, const Locale('pt'));
+    expect(preferences.stored, 'pt');
 
-    await store.choose(null);
-    expect(store.choice, isNull);
-    expect(preferences.stored, isNull);
+    await courses.store.activate(courses.store.data!.last);
+    expect(store.locale, const Locale('en'));
+    expect(preferences.stored, 'en');
     expect(notified, 2);
   });
 
+  test('curso novo com a mesma base não avisa de novo', () async {
+    final courses = fakeCourses();
+    final store = fakeLanguage(courses.store);
+    await courses.store.load();
+    var notified = 0;
+    store.addListener(() => notified++);
+
+    await courses.store.start(CourseLanguage.es, CourseLanguage.pt);
+
+    expect(store.locale, const Locale('pt'));
+    expect(notified, 0);
+  });
+
   test('falha ao ler mantém o idioma do aparelho', () async {
-    final store = LanguageStore(_BrokenPreferences());
+    final store = LanguageStore(_BrokenPreferences(), fakeCourses().store);
 
     await store.load();
 
-    expect(store.choice, isNull);
+    expect(store.locale, isNull);
+  });
+
+  test('descartado para de seguir os cursos', () async {
+    final courses = fakeCourses();
+    final preferences = FakePreferences();
+    LanguageStore(preferences, courses.store).dispose();
+
+    await courses.store.load();
+
+    expect(preferences.stored, isNull);
   });
 }

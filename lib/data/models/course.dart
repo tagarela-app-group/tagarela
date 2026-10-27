@@ -1,17 +1,25 @@
+import 'dart:ui';
+
 import 'package:tagarela/data/models/json.dart';
 
 enum CourseLanguage {
-  en('English'),
-  es('Español'),
-  pt('Português');
+  en('English', 'US', "Hi, how's it going?"),
+  es('Español', 'ES', '¡Hola! ¿Qué tal?'),
+  pt('Português', 'BR', 'Oi, tudo bem?');
 
-  const CourseLanguage(this.nativeName);
+  const CourseLanguage(this.nativeName, this.country, this.hello);
 
   final String nativeName;
+  final String country;
+  final String hello;
 
   String get code => name.toUpperCase();
 
+  Locale get locale => Locale(name);
+
   bool get hasAudio => this == en;
+
+  static CourseLanguage? of(String? code) => values.asNameMap()[code];
 }
 
 class Course {

@@ -36,19 +36,22 @@ AppScope testScope({
   VocabularyStore? vocabulary,
   LanguageStore? language,
   Voice? voice,
-}) => AppScope(
-  auth: auth ?? fakeAuthStore(),
-  courses: courses ?? fakeCourses().store,
-  captures: captures ?? fakeCaptures().store,
-  playback: playback ?? FakeAudioPlayback(),
-  device: device ?? FakeCaptureDevice(),
-  speech: speech ?? fakeSpeechModel().store,
-  home: home ?? HomeStore(sampleHome),
-  vocabulary: vocabulary ?? fakeVocabulary().store,
-  language: language ?? fakeLanguage(),
-  voice: voice ?? FakeVoice(),
-  child: child,
-);
+}) {
+  final courseStore = courses ?? fakeCourses().store;
+  return AppScope(
+    auth: auth ?? fakeAuthStore(),
+    courses: courseStore,
+    captures: captures ?? fakeCaptures().store,
+    playback: playback ?? FakeAudioPlayback(),
+    device: device ?? FakeCaptureDevice(),
+    speech: speech ?? fakeSpeechModel().store,
+    home: home ?? HomeStore(sampleHome),
+    vocabulary: vocabulary ?? fakeVocabulary().store,
+    language: language ?? fakeLanguage(courseStore),
+    voice: voice ?? FakeVoice(),
+    child: child,
+  );
+}
 
 MaterialApp testApp(
   Widget home, {

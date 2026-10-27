@@ -2,27 +2,33 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/app.dart';
-import 'package:tagarela/data/stores/language_store.dart';
+import 'package:tagarela/data/stores/course_store.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 
+import '../helpers/fake_course_api.dart';
 import '../helpers/fake_preferences.dart';
 import '../helpers/pump_app.dart';
 
 void main() {
-  Future<LanguageStore> pumpApp(
+  Future<CourseStore> pumpApp(
     WidgetTester tester, {
     String? saved,
     List<Locale> device = const [Locale('pt', 'BR')],
+    FakeCourses? courses,
   }) async {
     tester.useTallScreen();
     tester.platformDispatcher.localesTestValue = device;
     addTearDown(tester.platformDispatcher.clearLocalesTestValue);
-    final language = fakeLanguage(saved);
+    final store = (courses ?? fakeCourses(const [])).store;
     await tester.pumpWidget(
-      testScope(language: language, child: const TagarelaApp()),
+      testScope(
+        courses: store,
+        language: fakeLanguage(store, saved),
+        child: const TagarelaApp(),
+      ),
     );
     await tester.pumpAndSettle();
-    return language;
+    return store;
   }
 
   testWidgets('app sem sessão abre no login', (tester) async {
@@ -32,7 +38,7 @@ void main() {
     expect(find.text('Continuar com Google'), findsOneWidget);
   });
 
-  testWidgets('sem escolha segue o idioma do aparelho', (tester) async {
+  testWidgets('sem idioma salvo segue o aparelho', (tester) async {
     await pumpApp(tester, device: const [Locale('es', 'AR')]);
 
     expect(find.text('Continuar con Google'), findsOneWidget);
@@ -46,15 +52,29 @@ void main() {
     expect(find.text('Continue with Google'), findsOneWidget);
   });
 
-  testWidgets('escolha salva vence o aparelho e troca na hora', (tester) async {
-    final language = await pumpApp(tester, saved: 'en');
-    expect(find.text('Continue with Google'), findsOneWidget);
+  testWidgets('idioma salvo vence o aparelho', (tester) async {
+    await pumpApp(tester, saved: 'en');
 
-    await language.choose(AppLanguage.es);
+    expect(find.text('Continue with Google'), findsOneWidget);
+  });
+
+  testWidgets('app fala o idioma do curso ativo e troca junto com ele', (
+    tester,
+  ) async {
+    final courses = await pumpApp(
+      tester,
+      saved: 'en',
+      courses: fakeCourses([
+        {...englishCourseJson, 'active': false},
+        {...spanishCourseJson, 'base': 'es', 'learning': 'en', 'active': true},
+      ]),
+    );
+
+    await courses.load();
     await tester.pumpAndSettle();
     expect(find.text('Continuar con Google'), findsOneWidget);
 
-    await language.choose(null);
+    await courses.activate(courses.data!.first);
     await tester.pumpAndSettle();
     expect(find.text('Continuar com Google'), findsOneWidget);
   });
