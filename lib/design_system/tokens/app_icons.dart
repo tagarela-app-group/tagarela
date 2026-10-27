@@ -16,6 +16,8 @@ abstract final class AppIcons {
   static const add = Icons.add_rounded;
   static const search = Icons.search_rounded;
   static const listen = Icons.volume_up_outlined;
+  static const headphones = Icons.headphones_outlined;
+  static const backspace = Icons.backspace_outlined;
   static const play = Icons.play_arrow_rounded;
   static const stop = Icons.stop_rounded;
   static const info = Icons.info_outline_rounded;

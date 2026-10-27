@@ -15,6 +15,7 @@ import '../helpers/fake_auth.dart';
 import '../helpers/fake_capture_store.dart';
 import '../helpers/fake_course_api.dart';
 import '../helpers/fake_extraction.dart';
+import '../helpers/fake_practice_api.dart';
 import '../helpers/fake_preferences.dart';
 import '../helpers/fake_voice.dart';
 import '../helpers/pump_app.dart';
@@ -25,7 +26,12 @@ void main() {
 
     await scope.loadAll();
 
-    for (final store in <Store>[scope.home, scope.vocabulary, scope.captures]) {
+    for (final store in <Store>[
+      scope.home,
+      scope.vocabulary,
+      scope.practice,
+      scope.captures,
+    ]) {
       expect(store.data, isNotNull, reason: '$store');
     }
   });
@@ -41,6 +47,7 @@ void main() {
       device: FakeCaptureDevice(),
       speech: fakeSpeechModel().store,
       vocabulary: emptyVocabulary(),
+      practice: emptyPractice(),
       language: fakeLanguage(courses),
       voice: FakeVoice(),
       child: const SizedBox(),
@@ -49,7 +56,7 @@ void main() {
     await scope.loadAll();
 
     expect(scope.home.data!.wordOfDay, isNull);
-    expect(scope.home.data!.stats.reviewCount, 0);
+    expect(scope.practice.data!.due, 0);
     expect(scope.vocabulary.data!.isEmpty, isTrue);
   });
 

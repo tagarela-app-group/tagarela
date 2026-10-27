@@ -7,7 +7,7 @@ class ReviewCard extends StatelessWidget {
   const ReviewCard({super.key, required this.count, required this.onStart});
 
   final int count;
-  final VoidCallback onStart;
+  final VoidCallback? onStart;
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/term/logic/card_text.dart';
+import 'package:tagarela/design_system/theme.dart';
 
 class MarkedText extends StatelessWidget {
   const MarkedText(
@@ -44,4 +43,23 @@ class MarkedText extends StatelessWidget {
       style: style,
     );
   }
+}
+
+List<({String text, bool marked})> markedParts(String text) {
+  final parts = <({String text, bool marked})>[];
+  var at = 0;
+  while (at < text.length) {
+    final open = text.indexOf('*', at);
+    final close = open < 0 ? -1 : text.indexOf('*', open + 1);
+    if (close < 0) {
+      parts.add((text: text.substring(at), marked: false));
+      break;
+    }
+    if (open > at) parts.add((text: text.substring(at, open), marked: false));
+    if (close > open + 1) {
+      parts.add((text: text.substring(open + 1, close), marked: true));
+    }
+    at = close + 1;
+  }
+  return parts;
 }

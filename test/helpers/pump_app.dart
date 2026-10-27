@@ -10,6 +10,7 @@ import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/course_store.dart';
 import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
+import 'package:tagarela/data/stores/practice_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
@@ -19,6 +20,7 @@ import 'fake_auth.dart';
 import 'fake_capture_store.dart';
 import 'fake_course_api.dart';
 import 'fake_extraction.dart';
+import 'fake_practice_api.dart';
 import 'fake_preferences.dart';
 import 'fake_vocabulary_api.dart';
 import 'fake_voice.dart';
@@ -34,6 +36,7 @@ AppScope testScope({
   SpeechModelStore? speech,
   HomeStore? home,
   VocabularyStore? vocabulary,
+  PracticeStore? practice,
   LanguageStore? language,
   Voice? voice,
 }) {
@@ -47,6 +50,7 @@ AppScope testScope({
     speech: speech ?? fakeSpeechModel().store,
     home: home ?? HomeStore(sampleHome),
     vocabulary: vocabulary ?? fakeVocabulary().store,
+    practice: practice ?? fakePractice().store,
     language: language ?? fakeLanguage(courseStore),
     voice: voice ?? FakeVoice(),
     child: child,
@@ -82,6 +86,7 @@ extension PumpApp on WidgetTester {
     SpeechModelStore? speech,
     HomeStore? home,
     VocabularyStore? vocabulary,
+    PracticeStore? practice,
     LanguageStore? language,
     Voice? voice,
     bool load = true,
@@ -98,6 +103,7 @@ extension PumpApp on WidgetTester {
       speech: speech,
       home: home,
       vocabulary: vocabulary,
+      practice: practice,
       language: language,
       voice: voice,
       child: testApp(page, theme: theme, locale: locale),

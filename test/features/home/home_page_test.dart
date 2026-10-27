@@ -7,10 +7,12 @@ import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
+import 'package:tagarela/features/practice/practice_page.dart';
 import 'package:tagarela/features/profile/widgets/user_avatar.dart';
 
 import 'package:tagarela/data/stores/home_store.dart';
 
+import '../../helpers/fake_practice_api.dart';
 import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/failing_stores.dart';
 import '../../helpers/fake_auth.dart';
@@ -88,7 +90,7 @@ void main() {
     );
     expect(
       tester.widget<ReviewCard>(find.byType(ReviewCard)).count,
-      home.stats.reviewCount,
+      scope.practice.data!.due,
     );
   });
 
@@ -124,6 +126,7 @@ void main() {
       HomePage(onSeeVocabulary: () {}, onCapture: () => captures++),
       home: HomeStore(),
       vocabulary: emptyVocabulary(),
+      practice: emptyPractice(),
     );
 
     expect(find.byType(WordOfDayCard), findsNothing);
@@ -142,11 +145,9 @@ void main() {
   ) async {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      home: HomeStore((
-        stats: const Stats(weekGain: 0, reviewCount: 3),
-        wordOfDay: null,
-      )),
+      home: HomeStore((stats: const Stats(weekGain: 0), wordOfDay: null)),
       vocabulary: emptyVocabulary(),
+      practice: fakePractice(FakePracticeApi(due: 3)).store,
     );
 
     expect(find.byType(ReviewCard), findsOneWidget);
@@ -201,5 +202,42 @@ void main() {
     );
 
     expect(find.byType(HeaderPill), findsNothing);
+  });
+
+  testWidgets('Começar abre a revisão e, ao sair, recarrega', (tester) async {
+    final practice = fakePractice();
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+      practice: practice.store,
+    );
+
+    await tester.tap(find.text('Começar'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.byType(PracticePage), findsOneWidget);
+    expect(find.text('1/2'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Sair'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PracticePage), findsNothing);
+    expect(
+      practice.api.calls.where((c) => c.startsWith('GET /api/v1/reviews')),
+      hasLength(2),
+    );
+  });
+
+  testWidgets('sem rodada que o app saiba jogar: Começar desligado', (
+    tester,
+  ) async {
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+      practice: fakePractice(FakePracticeApi(due: 4, rounds: [])).store,
+    );
+
+    final card = tester.widget<ReviewCard>(find.byType(ReviewCard));
+    expect(card.count, 4);
+    expect(card.onStart, isNull);
   });
 }

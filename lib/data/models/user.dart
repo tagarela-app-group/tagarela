@@ -40,17 +40,11 @@ class User {
 }
 
 class Stats {
-  const Stats({required this.weekGain, required this.reviewCount});
+  const Stats({required this.weekGain});
 
-  Stats.fromJson(Json json)
-    : this(
-        weekGain: json['weekGain']! as int,
-        reviewCount: json['reviewCount']! as int,
-      );
+  Stats.fromJson(Json json) : this(weekGain: json['weekGain']! as int);
 
   final int weekGain;
-
-  final int reviewCount;
 }
 
 class AuthTokens {

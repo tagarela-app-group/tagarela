@@ -2115,6 +2115,186 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não cabe'**
   String get fitsNo;
+
+  /// No description provided for @practiceLeave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair'**
+  String get practiceLeave;
+
+  /// No description provided for @practiceRound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rodada {current} de {total}'**
+  String practiceRound(int current, int total);
+
+  /// No description provided for @exerciseKind.
+  ///
+  /// In pt, this message translates to:
+  /// **'{kind, select, listenWrite{Ouvir e escrever} other{}}'**
+  String exerciseKind(String kind);
+
+  /// No description provided for @exerciseKindHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'{kind, select, listenWrite{Ouça uma frase nova e complete o que falta} other{}}'**
+  String exerciseKindHint(String kind);
+
+  /// No description provided for @practiceSection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Praticar'**
+  String get practiceSection;
+
+  /// No description provided for @practiceLoading.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preparando a frase…'**
+  String get practiceLoading;
+
+  /// No description provided for @listenTap.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque pra ouvir'**
+  String get listenTap;
+
+  /// No description provided for @listening.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ouvindo…'**
+  String get listening;
+
+  /// No description provided for @listenSentence.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ouvir a frase'**
+  String get listenSentence;
+
+  /// No description provided for @gapLetters.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Ouça e complete} =1{Ouça e complete: 1 letra} other{Ouça e complete: {count} letras}}'**
+  String gapLetters(int count);
+
+  /// No description provided for @gapLeft.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Tudo preenchido. Confere?} =1{Falta 1 letra} other{Faltam {count} letras}}'**
+  String gapLeft(int count);
+
+  /// No description provided for @gapWrong.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Quase!} =1{Quase! 1 letra trocada} other{Quase! {count} letras trocadas}}'**
+  String gapWrong(int count);
+
+  /// No description provided for @showAnswer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostrar resposta'**
+  String get showAnswer;
+
+  /// No description provided for @hintKey.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dica: mostra uma letra'**
+  String get hintKey;
+
+  /// No description provided for @backspace.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apagar'**
+  String get backspace;
+
+  /// No description provided for @letterKey.
+  ///
+  /// In pt, this message translates to:
+  /// **'Letra {letter}'**
+  String letterKey(String letter);
+
+  /// No description provided for @checkAnswer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conferir'**
+  String get checkAnswer;
+
+  /// No description provided for @outcomeTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'{outcome, select, first{De primeira!} retry{Na segunda, valeu!} hint{Foi, com uma ajuda} missed{Era assim} other{}}'**
+  String outcomeTitle(String outcome);
+
+  /// No description provided for @outcomeLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{outcome, select, first{De primeira} retry{Na segunda} hint{Com dica} missed{Viu a resposta} other{}}'**
+  String outcomeLabel(String outcome);
+
+  /// No description provided for @means.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quer dizer'**
+  String get means;
+
+  /// No description provided for @takeAway.
+  ///
+  /// In pt, this message translates to:
+  /// **'Leva junto'**
+  String get takeAway;
+
+  /// No description provided for @listenExtra.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ouvir'**
+  String get listenExtra;
+
+  /// No description provided for @nextRound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próxima'**
+  String get nextRound;
+
+  /// No description provided for @seeSummary.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver resumo'**
+  String get seeSummary;
+
+  /// No description provided for @reviewDone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Revisão feita!'**
+  String get reviewDone;
+
+  /// No description provided for @practiceDone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Treino feito!'**
+  String get practiceDone;
+
+  /// No description provided for @firstTries.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} de {total} de primeira'**
+  String firstTries(int count, int total);
+
+  /// No description provided for @takenAway.
+  ///
+  /// In pt, this message translates to:
+  /// **'O que você levou'**
+  String get takenAway;
+
+  /// No description provided for @finish.
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluir'**
+  String get finish;
+
+  /// No description provided for @practiceFree.
+  ///
+  /// In pt, this message translates to:
+  /// **'Treino livre: não conta pra revisão.'**
+  String get practiceFree;
 }
 
 class _AppLocalizationsDelegate

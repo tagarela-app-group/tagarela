@@ -12,7 +12,6 @@ void main() {
 
     expect(store.data!.wordOfDay, isNull);
     expect(store.data!.stats.weekGain, 0);
-    expect(store.data!.stats.reviewCount, 0);
   });
 
   test('com dados devolve o que recebeu', () async {

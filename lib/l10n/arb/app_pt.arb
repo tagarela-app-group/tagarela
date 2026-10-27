@@ -886,5 +886,111 @@
   },
   "neighbors": "Vizinhos",
   "fitsYes": "Cabe",
-  "fitsNo": "Não cabe"
+  "fitsNo": "Não cabe",
+  "practiceLeave": "Sair",
+  "practiceRound": "Rodada {current} de {total}",
+  "@practiceRound": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseKind": "{kind, select, listenWrite{Ouvir e escrever} other{}}",
+  "@exerciseKind": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseKindHint": "{kind, select, listenWrite{Ouça uma frase nova e complete o que falta} other{}}",
+  "@exerciseKindHint": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceSection": "Praticar",
+  "practiceLoading": "Preparando a frase…",
+  "listenTap": "Toque pra ouvir",
+  "listening": "Ouvindo…",
+  "listenSentence": "Ouvir a frase",
+  "gapLetters": "{count, plural, =0{Ouça e complete} =1{Ouça e complete: 1 letra} other{Ouça e complete: {count} letras}}",
+  "@gapLetters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gapLeft": "{count, plural, =0{Tudo preenchido. Confere?} =1{Falta 1 letra} other{Faltam {count} letras}}",
+  "@gapLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gapWrong": "{count, plural, =0{Quase!} =1{Quase! 1 letra trocada} other{Quase! {count} letras trocadas}}",
+  "@gapWrong": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "showAnswer": "Mostrar resposta",
+  "hintKey": "Dica: mostra uma letra",
+  "backspace": "Apagar",
+  "letterKey": "Letra {letter}",
+  "@letterKey": {
+    "placeholders": {
+      "letter": {
+        "type": "String"
+      }
+    }
+  },
+  "checkAnswer": "Conferir",
+  "outcomeTitle": "{outcome, select, first{De primeira!} retry{Na segunda, valeu!} hint{Foi, com uma ajuda} missed{Era assim} other{}}",
+  "@outcomeTitle": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "outcomeLabel": "{outcome, select, first{De primeira} retry{Na segunda} hint{Com dica} missed{Viu a resposta} other{}}",
+  "@outcomeLabel": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "means": "Quer dizer",
+  "takeAway": "Leva junto",
+  "listenExtra": "Ouvir",
+  "nextRound": "Próxima",
+  "seeSummary": "Ver resumo",
+  "reviewDone": "Revisão feita!",
+  "practiceDone": "Treino feito!",
+  "firstTries": "{count} de {total} de primeira",
+  "@firstTries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "takenAway": "O que você levou",
+  "finish": "Concluir",
+  "practiceFree": "Treino livre: não conta pra revisão."
 }
