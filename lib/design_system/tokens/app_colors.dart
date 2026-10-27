@@ -66,6 +66,8 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.fabShadow,
     required this.fabRing,
     required this.accents,
+    required this.scale,
+    required this.scaleText,
   });
 
   final Color header;
@@ -98,6 +100,8 @@ class AppColors extends ThemeExtension<AppColors> {
   final List<BoxShadow> fabShadow;
   final Color fabRing;
   final Map<AppAccent, AccentColors> accents;
+  final List<Color> scale;
+  final List<Color> scaleText;
 
   AccentColors accent(AppAccent accent) => accents[accent]!;
 
@@ -156,6 +160,18 @@ class AppColors extends ThemeExtension<AppColors> {
       AppAccent.teal: AccentColors(Color(0xFFD5F3F4), Color(0xFF0B7480)),
       AppAccent.slate: AccentColors(Color(0xFFE3E8EF), Color(0xFF4A5A70)),
     },
+    scale: [
+      Color(0xFFE5484D),
+      Color(0xFFE2639E),
+      Color(0xFF4C8EE6),
+      Color(0xFF1E3A8A),
+    ],
+    scaleText: [
+      Color(0xFFC42B31),
+      Color(0xFFB3367A),
+      Color(0xFF2563C9),
+      Color(0xFF1E3A8A),
+    ],
   );
 
   static const dark = AppColors(
@@ -208,6 +224,18 @@ class AppColors extends ThemeExtension<AppColors> {
       AppAccent.teal: AccentColors(Color(0x2922B8C8), Color(0xFF5FD3DE)),
       AppAccent.slate: AccentColors(Color(0x29A3B1C6), Color(0xFFB8C4D6)),
     },
+    scale: [
+      Color(0xFFFF6B6F),
+      Color(0xFFF07AB3),
+      Color(0xFF6FA6F5),
+      Color(0xFF5B7BE0),
+    ],
+    scaleText: [
+      Color(0xFFFF8A8D),
+      Color(0xFFF59AC6),
+      Color(0xFF8DB8F7),
+      Color(0xFF93A8F0),
+    ],
   );
 
   @override

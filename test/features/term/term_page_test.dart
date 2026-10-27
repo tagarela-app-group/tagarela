@@ -11,6 +11,7 @@ import 'package:tagarela/features/term/term_page.dart';
 import 'package:tagarela/features/term/widgets/got_it_check.dart';
 import 'package:tagarela/features/term/widgets/seen_captures.dart';
 import 'package:tagarela/features/term/widgets/term_pitfall.dart';
+import 'package:tagarela/features/term/widgets/term_usage.dart';
 
 import '../../helpers/fake_capture_store.dart';
 import '../../helpers/fake_course_api.dart';
@@ -231,6 +232,118 @@ void main() {
     expect(find.text('Prefira careful'), findsOneWidget);
   });
 
+  testWidgets('uso no idioma base: só o nível aceso, sem o termo na régua', (
+    tester,
+  ) async {
+    await open(tester);
+    await tester.tap(find.text('Uso'));
+    await tester.pumpAndSettle();
+
+    const scale = AppColors.light;
+    final bar = tester.widget<SegmentBar>(find.byType(SegmentBar));
+    expect(bar.segments.map((s) => s.color), [
+      scale.scale[0].withValues(alpha: 0.25),
+      scale.scale[1].withValues(alpha: 0.25),
+      scale.scale[2],
+      scale.scale[3].withValues(alpha: 0.25),
+    ]);
+    final level = tester.widget<Text>(find.text('Neutro'));
+    expect(level.style!.color, scale.scaleText[2]);
+    expect(level.style!.fontWeight, FontWeight.w700);
+    expect(tester.widget<Text>(find.text('Gíria')).style!.color, scale.inkSoft);
+    expect(
+      find.descendant(
+        of: find.byType(TermUsage),
+        matching: find.byType(SpeechBalloon),
+      ),
+      findsNothing,
+    );
+    expect(find.text('Fine anywhere.'), findsNothing);
+    expect(find.text('Public notice'), findsNothing);
+  });
+
+  testWidgets('nota de formalidade nasce embaçada; toque revela e salva', (
+    tester,
+  ) async {
+    await open(tester);
+    await tester.tap(find.text('Uso'));
+    await tester.pumpAndSettle();
+    final note = find.ancestor(
+      of: find.text('Serve em qualquer lugar.'),
+      matching: find.byType(Obscured),
+    );
+    expect(tester.widget<Obscured>(note).obscured, isTrue);
+
+    await tester.tap(find.text('Serve em qualquer lugar.'));
+    await tester.pumpAndSettle();
+
+    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
+      'formality_revealed': true,
+    });
+    expect(tester.widget<Obscured>(note).obscured, isFalse);
+    expect(find.byType(BubbleBurst), findsNothing);
+
+    await tester.tap(find.byTooltip('Embaçar de novo'));
+    await tester.pumpAndSettle();
+
+    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
+      'formality_revealed': false,
+    });
+    expect(tester.widget<Obscured>(note).obscured, isTrue);
+  });
+
+  testWidgets('nota de formalidade revelada abre revelada', (tester) async {
+    vocabulary.api.formalityRevealed.add('u1');
+    await open(tester);
+    await tester.tap(find.text('Uso'));
+    await tester.pumpAndSettle();
+
+    final note = find.ancestor(
+      of: find.text('Serve em qualquer lugar.'),
+      matching: find.byType(Obscured),
+    );
+    expect(tester.widget<Obscured>(note).obscured, isFalse);
+  });
+
+  testWidgets('idioma aprendido em itálico dentro do texto no idioma base', (
+    tester,
+  ) async {
+    vocabulary.api.pitfallRevealed.add('u1');
+    vocabulary.api.cards['u1'] = {
+      ...sampleCardJson,
+      'base': {
+        ...sampleCardJson['base']! as Map,
+        'pitfall': 'Não é *mind the hole*, é *mind the gap*.',
+      },
+    };
+    await open(tester);
+
+    TextSpan span(String text, String part) {
+      final root = tester.widget<Text>(find.text(text)).textSpan!;
+      late TextSpan found;
+      root.visitChildren((s) {
+        if (s is TextSpan && s.text == part) found = s;
+        return true;
+      });
+      return found;
+    }
+
+    const pitfall = 'Não é mind the hole, é mind the gap.';
+    expect(find.text(pitfall), findsOneWidget);
+    final hole = span(pitfall, 'mind the hole');
+    expect(hole.style!.fontStyle, FontStyle.italic);
+    expect(hole.style!.fontWeight, FontWeight.w700);
+    expect(hole.locale, const Locale('en'));
+    expect(span(pitfall, 'Não é ').style, isNull);
+
+    await tester.tap(find.text('Uso'));
+    await tester.pumpAndSettle();
+
+    final careful = span('Prefira careful', 'careful');
+    expect(careful.style!.fontStyle, FontStyle.italic);
+    expect(careful.locale, const Locale('en'));
+  });
+
   testWidgets('monta a frase: peças lado a lado', (tester) async {
     await open(tester);
     await tester.tap(find.text('Palavras'));
@@ -252,9 +365,12 @@ void main() {
       'collocations': <Object?>[],
       'synonyms': <Object?>[],
       'formality': null,
-      'fits': [
-        {'context': 'Aviso público', 'fits': true, 'alternative': null},
-      ],
+      'base': {
+        ...sampleCardJson['base']! as Map,
+        'fits': [
+          {'context': 'Aviso público', 'fits': true, 'alternative': null},
+        ],
+      },
       'phonetic': null,
     };
 
@@ -513,9 +629,7 @@ void main() {
     expect(find.text('Tranquilo. Agora você sabe.'), findsOneWidget);
   });
 
-  testWidgets('pra lembrar: imagem no idioma do curso, pegadinha na base', (
-    tester,
-  ) async {
+  testWidgets('pra lembrar: imagem e pegadinha no idioma base', (tester) async {
     vocabulary.api.pitfallRevealed.add('u1');
     await open(tester);
 
@@ -523,9 +637,10 @@ void main() {
     expect(find.text('AO PÉ DA LETRA'), findsOneWidget);
     expect(find.text('QUER DIZER'), findsOneWidget);
     expect(
-      find.textContaining('Imagine: A yellow line', findRichText: true),
+      find.text('Imagine: Uma faixa amarela piscando na beira da plataforma.'),
       findsOneWidget,
     );
+    expect(find.textContaining('A yellow line'), findsNothing);
     expect(find.text('Pegadinha'), findsOneWidget);
     expect(find.text('Não diga'), findsOneWidget);
     expect(find.text('mind the hole'), findsOneWidget);
@@ -597,8 +712,11 @@ void main() {
     vocabulary.api.revealed.add('u1');
     vocabulary.api.cards['u1'] = {
       ...sampleCardJson,
-      'learning': {...sampleCardJson['learning']! as Map, 'imagine': null},
-      'base': {...sampleCardJson['base']! as Map, 'literal': null},
+      'base': {
+        ...sampleCardJson['base']! as Map,
+        'literal': null,
+        'imagine': null,
+      },
       'mistake': null,
     };
 

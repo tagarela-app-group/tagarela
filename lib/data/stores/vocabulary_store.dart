@@ -17,8 +17,13 @@ class VocabularyStore extends Store<Vocabulary> {
     String id, {
     bool? revealed,
     bool? pitfallRevealed,
-  }) =>
-      _service.reveal(id, revealed: revealed, pitfallRevealed: pitfallRevealed);
+    bool? formalityRevealed,
+  }) => _service.reveal(
+    id,
+    revealed: revealed,
+    pitfallRevealed: pitfallRevealed,
+    formalityRevealed: formalityRevealed,
+  );
 
   Future<TermGroup> createGroup({
     required String name,

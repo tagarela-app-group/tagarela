@@ -415,6 +415,7 @@ void main() {
         },
         'revealed': true,
         'pitfall_revealed': false,
+        'formality_revealed': true,
         'card': sampleCardJson,
         'captures': [
           {
@@ -434,6 +435,7 @@ void main() {
       expect(detail.group!.icon, AppIcons.travel);
       expect(detail.revealed, isTrue);
       expect(detail.pitfallRevealed, isFalse);
+      expect(detail.formalityRevealed, isTrue);
       final card = detail.card;
       expect(card.phonetic, '/maɪnd ðə ɡæp/');
       expect(card.learning.headline, 'be careful of the space');
@@ -446,10 +448,13 @@ void main() {
       );
       expect(card.formality, Formality.neutral);
       expect(card.fits.last.instead, 'careful');
+      expect(card.fits.first.context, 'Aviso público');
+      expect(card.formalityNote, 'Serve em qualquer lugar.');
       expect(card.hasWords, isTrue);
       expect(card.hasUsage, isTrue);
       expect(card.base.literal, 'repare no vão');
       expect(card.learning.imagine, startsWith('A yellow line'));
+      expect(card.base.imagine, startsWith('Uma faixa amarela'));
       expect(card.mistake!.wrong, 'mind the hole');
       expect(card.mistake!.right, 'mind the gap');
       expect(card.hasReminders, isTrue);
@@ -473,6 +478,7 @@ void main() {
         'group': null,
         'revealed': false,
         'pitfall_revealed': true,
+        'formality_revealed': false,
         'card': {
           ...sampleCardJson,
           'collocations': <Object?>[],

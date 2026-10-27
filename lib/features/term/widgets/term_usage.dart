@@ -2,87 +2,85 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/term/widgets/marked_text.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class TermUsage extends StatelessWidget {
   const TermUsage({
     super.key,
     required this.card,
-    required this.term,
-    required this.language,
+    required this.learning,
+    required this.base,
+    required this.noteRevealed,
+    required this.onNoteReveal,
   });
 
   static const _tilts = [-0.035, 0.026, -0.017, 0.03];
 
   final TermCard card;
-  final String term;
-  final CourseLanguage language;
+  final CourseLanguage learning;
+  final CourseLanguage base;
+  final bool noteRevealed;
+  final ValueChanged<bool> onNoteReveal;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
     final l10n = context.l10n;
     final formality = card.formality;
-    final locale = Locale(language.name);
+    final note = card.formalityNote;
+    final inset = note == null ? 0.0 : AppSpacing.s2;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppSpacing.s3,
       children: [
         if (formality != null)
           AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: AppSpacing.s3,
-              children: [
-                Semantics(
-                  header: true,
-                  child: Text(l10n.formality, style: AppText.titleSm),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  spacing: 10,
-                  children: [
-                    DrawnIcon(DrawnGlyph.sandal, size: 26, color: c.inkSoft),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        spacing: 10,
-                        children: [
-                          ExcludeSemantics(
-                            child: Row(
-                              children: [
-                                for (final level in Formality.values)
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: 24,
-                                      child: level == formality
-                                          ? OverflowBox(
-                                              maxWidth: double.infinity,
-                                              child: SpeechBalloon(
-                                                color: c.primary,
-                                                radius: AppRadius.sm,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 9,
-                                                      vertical: 3,
-                                                    ),
-                                                child: Text(
-                                                  term,
-                                                  locale: locale,
-                                                  maxLines: 1,
-                                                  style: AppText.pill.copyWith(
-                                                    color: c.onPrimary,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : null,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          SegmentBar(
+            padding: note == null
+                ? const EdgeInsets.all(AppSpacing.s4)
+                : const EdgeInsets.fromLTRB(
+                    AppSpacing.s4,
+                    AppSpacing.s2,
+                    AppSpacing.s2,
+                    AppSpacing.s4,
+                  ),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: note == null || noteRevealed
+                  ? null
+                  : () => onNoteReveal(true),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: AppSpacing.s3,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Semantics(
+                          header: true,
+                          child: Text(l10n.formality, style: AppText.titleSm),
+                        ),
+                      ),
+                      if (note != null)
+                        AppIconButton(
+                          icon: noteRevealed ? AppIcons.cover : AppIcons.reveal,
+                          tooltip: noteRevealed ? l10n.coverAgain : l10n.reveal,
+                          onPressed: () => onNoteReveal(!noteRevealed),
+                        ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: inset),
+                    child: Row(
+                      spacing: 10,
+                      children: [
+                        DrawnIcon(
+                          DrawnGlyph.sandal,
+                          size: 26,
+                          color: c.inkSoft,
+                        ),
+                        Expanded(
+                          child: SegmentBar(
                             height: 10,
                             semanticLabel: l10n.formalityMeter(
                               l10n.formalityLevel(formality.name),
@@ -92,50 +90,59 @@ class TermUsage extends StatelessWidget {
                               for (final level in Formality.values)
                                 Segment(
                                   1,
-                                  level.index <= formality.index
-                                      ? c.primary
-                                      : c.surfaceAlt,
+                                  level == formality
+                                      ? c.scale[level.index]
+                                      : c.scale[level.index].withValues(
+                                          alpha: 0.25,
+                                        ),
                                 ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    DrawnIcon(DrawnGlyph.tie, size: 26, color: c.inkSoft),
-                  ],
-                ),
-                ExcludeSemantics(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 36),
-                    child: Row(
-                      spacing: AppSpacing.s1,
-                      children: [
-                        for (final level in Formality.values)
-                          Expanded(
-                            child: Text(
-                              l10n.formalityLevel(level.name),
-                              textAlign: TextAlign.center,
-                              style: AppText.caption.copyWith(
-                                color: level == formality
-                                    ? c.primaryText
-                                    : c.inkSoft,
-                                fontWeight: level == formality
-                                    ? FontWeight.w700
-                                    : FontWeight.w400,
-                              ),
-                            ),
-                          ),
+                        ),
+                        DrawnIcon(DrawnGlyph.tie, size: 26, color: c.inkSoft),
                       ],
                     ),
                   ),
-                ),
-                if (card.formalityNote case final note?)
-                  Text(
-                    note,
-                    locale: locale,
-                    style: AppText.bodyMd.copyWith(color: c.inkSoft),
+                  ExcludeSemantics(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 36, right: 36 + inset),
+                      child: Row(
+                        spacing: AppSpacing.s1,
+                        children: [
+                          for (final level in Formality.values)
+                            Expanded(
+                              child: Text(
+                                l10n.formalityLevel(level.name),
+                                textAlign: TextAlign.center,
+                                style: AppText.caption.copyWith(
+                                  color: level == formality
+                                      ? c.scaleText[level.index]
+                                      : c.inkSoft,
+                                  fontWeight: level == formality
+                                      ? FontWeight.w700
+                                      : FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
-              ],
+                  if (note != null)
+                    Padding(
+                      padding: EdgeInsets.only(right: inset),
+                      child: Obscured(
+                        obscured: !noteRevealed,
+                        child: MarkedText(
+                          note,
+                          locale: Locale(base.name),
+                          markLocale: Locale(learning.name),
+                          style: AppText.bodyMd.copyWith(color: c.inkSoft),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         if (card.fits.isNotEmpty)
@@ -161,7 +168,11 @@ class TermUsage extends StatelessWidget {
                     for (final (i, fit) in card.fits.indexed)
                       Transform.rotate(
                         angle: _tilts[i % _tilts.length],
-                        child: _Sticker(fit: fit, locale: locale),
+                        child: _Sticker(
+                          fit: fit,
+                          locale: Locale(base.name),
+                          insteadLocale: Locale(learning.name),
+                        ),
                       ),
                   ],
                 ),
@@ -174,10 +185,15 @@ class TermUsage extends StatelessWidget {
 }
 
 class _Sticker extends StatelessWidget {
-  const _Sticker({required this.fit, required this.locale});
+  const _Sticker({
+    required this.fit,
+    required this.locale,
+    required this.insteadLocale,
+  });
 
   final UsageFit fit;
   final Locale locale;
+  final Locale insteadLocale;
 
   @override
   Widget build(BuildContext context) {
@@ -220,8 +236,10 @@ class _Sticker extends StatelessWidget {
                     ),
                   ),
                   if (instead != null)
-                    Text(
-                      l10n.preferInstead(instead),
+                    MarkedText(
+                      l10n.preferInstead('*$instead*'),
+                      locale: locale,
+                      markLocale: insteadLocale,
                       style: AppText.label.copyWith(
                         color: c.inkSoft,
                         fontWeight: FontWeight.w400,

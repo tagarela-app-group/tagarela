@@ -91,6 +91,7 @@ class TermCard {
           explanation: (json['base']! as Json)['explanation'] as String?,
           pitfall: (json['base']! as Json)['pitfall'] as String?,
           literal: (json['base']! as Json)['literal'] as String?,
+          imagine: (json['base']! as Json)['imagine'] as String?,
         ),
         mistake: switch (json['mistake']) {
           final Json m => CardMistake(
@@ -117,9 +118,11 @@ class TermCard {
         synonyms: _strings(json['synonyms']),
         antonyms: _strings(json['antonyms']),
         formality: Formality.values.asNameMap()[json['formality']],
-        formalityNote: json['formality_note'] as String?,
+        formalityNote: (json['base']! as Json)['formality_note'] as String?,
         fits: [
-          for (final f in (json['fits']! as List<Object?>).cast<Json>())
+          for (final f
+              in ((json['base']! as Json)['fits'] as List<Object?>? ?? const [])
+                  .cast<Json>())
             UsageFit(
               context: f['context']! as String,
               fits: f['fits']! as bool,
@@ -150,7 +153,7 @@ class TermCard {
 
   bool get hasReminders =>
       hasReveal ||
-      learning.imagine != null ||
+      base.imagine != null ||
       base.pitfall != null ||
       mistake != null;
 
@@ -213,6 +216,7 @@ class TermDetail {
     this.group,
     this.revealed = false,
     this.pitfallRevealed = false,
+    this.formalityRevealed = false,
     this.captures = const [],
   });
 
@@ -225,6 +229,7 @@ class TermDetail {
         },
         revealed: json['revealed']! as bool,
         pitfallRevealed: json['pitfall_revealed']! as bool,
+        formalityRevealed: json['formality_revealed']! as bool,
         card: TermCard.fromJson(json['card']! as Json),
         captures: [
           for (final c in json['captures']! as List<Object?>)
@@ -236,6 +241,7 @@ class TermDetail {
   final TermGroup? group;
   final bool revealed;
   final bool pitfallRevealed;
+  final bool formalityRevealed;
   final TermCard card;
   final List<SeenCapture> captures;
 }

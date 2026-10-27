@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/term/widgets/marked_text.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class TermPitfall extends StatelessWidget {
@@ -95,9 +96,10 @@ class TermPitfall extends StatelessWidget {
                     padding: const EdgeInsets.only(right: AppSpacing.s2),
                     child: Obscured(
                       obscured: !revealed,
-                      child: Text(
+                      child: MarkedText(
                         pitfall,
                         locale: Locale(base.name),
+                        markLocale: Locale(learning.name),
                         style: AppText.bodyMd.copyWith(color: c.inkSoft),
                       ),
                     ),
