@@ -19,7 +19,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpComponent(
-      GroupCard(group: _group([4, 5, 1]), onTap: () {}),
+      GroupCard(group: _group([5, 5, 1]), onTap: () {}),
     );
 
     expect(find.text('Comida'), findsOneWidget);

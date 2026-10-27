@@ -31,7 +31,7 @@ Json _group(String id, String name, List<Json> terms) => {
 final _seed = <String, Object?>{
   'groups': [
     _group('viagem', 'Viagem', [
-      _term('t1', 'layover', 4),
+      _term('t1', 'layover', 5),
       _term('t2', 'carry-on', 2),
       _term('t3', 'jet lag', 1),
     ]),
@@ -288,7 +288,7 @@ void main() {
       const GroupPage(groupId: 'viagem'),
       seed: {
         'groups': [
-          _group('viagem', 'Viagem', [_term('t1', 'layover', 4)]),
+          _group('viagem', 'Viagem', [_term('t1', 'layover', 5)]),
         ],
         'ungrouped': <Object?>[],
       },
