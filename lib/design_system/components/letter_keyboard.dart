@@ -49,11 +49,15 @@ class LetterKeyboard extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        final longest = rows.fold(
-          10,
-          (most, row) => math.max(most, row.length),
-        );
-        final key = (width - gap * (longest - 1)) / longest;
+        final last = rows.length - 1;
+        double fit(int units, int items) => (width - gap * (items - 1)) / units;
+        final key = [
+          fit(10, 10),
+          for (final (index, row) in rows.indexed)
+            index == last
+                ? fit(row.length + 3, row.length + 2)
+                : fit(row.length, row.length),
+        ].reduce(math.min);
         final wide = key * 1.5;
         return Column(
           mainAxisSize: MainAxisSize.min,
