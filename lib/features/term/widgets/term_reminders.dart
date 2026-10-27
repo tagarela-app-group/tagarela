@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/widgets/got_it_check.dart';
+import 'package:tagarela/features/term/widgets/marked_text.dart';
 import 'package:tagarela/features/term/widgets/term_pitfall.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -40,7 +41,7 @@ class TermReminders extends StatelessWidget {
     final baseLocale = Locale(base.name);
     final literal = card.base.literal;
     final meaning = card.base.headline;
-    final imagine = card.learning.imagine;
+    final imagine = card.base.imagine;
     final mistake = card.mistake;
     final pitfall = card.base.pitfall;
     return Column(
@@ -119,21 +120,11 @@ class TermReminders extends StatelessWidget {
                               color: c.primaryText,
                             ),
                             Expanded(
-                              child: Text.rich(
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: '${l10n.imagine} ',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: imagine,
-                                      locale: learningLocale,
-                                    ),
-                                  ],
-                                ),
+                              child: MarkedText(
+                                imagine,
+                                lead: l10n.imagine,
+                                locale: baseLocale,
+                                markLocale: learningLocale,
                                 style: AppText.bodyLg.copyWith(
                                   fontSize: 15,
                                   height: 22 / 15,

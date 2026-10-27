@@ -321,6 +321,15 @@ const Json sampleCardJson = {
     'pitfall': 'Não é "mente o buraco".',
     'literal': 'repare no vão',
     'imagine': 'Uma faixa amarela piscando na beira da plataforma.',
+    'formality_note': 'Serve em qualquer lugar.',
+    'fits': [
+      {'context': 'Aviso público', 'fits': true, 'alternative': null},
+      {
+        'context': 'Conversa com amigos',
+        'fits': false,
+        'alternative': 'careful',
+      },
+    ],
   },
   'mistake': {'wrong': 'mind the hole', 'right': 'mind the gap'},
   'examples': [
@@ -333,10 +342,14 @@ const Json sampleCardJson = {
   'synonyms': ['watch out'],
   'antonyms': <String>[],
   'formality': 'neutral',
-  'formality_note': 'Serve em qualquer lugar.',
+  'formality_note': 'Fine anywhere.',
   'fits': [
-    {'context': 'Aviso público', 'fits': true, 'alternative': null},
-    {'context': 'Conversa com amigos', 'fits': false, 'alternative': 'careful'},
+    {'context': 'Public notice', 'fits': true, 'alternative': null},
+    {
+      'context': 'Chatting with friends',
+      'fits': false,
+      'alternative': 'careful',
+    },
   ],
   'dialogue': [
     {

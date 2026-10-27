@@ -25,6 +25,7 @@ class FakeVocabularyApi implements ApiClient {
   final seen = <String, List<Json>>{};
   final revealed = <String>{};
   final pitfallRevealed = <String>{};
+  final formalityRevealed = <String>{};
   Completer<void>? holdCard;
   final _deleted = <({Json term, String? groupId})>[];
 
@@ -74,6 +75,7 @@ class FakeVocabularyApi implements ApiClient {
         for (final (key, ids) in [
           ('revealed', revealed),
           ('pitfall_revealed', pitfallRevealed),
+          ('formality_revealed', formalityRevealed),
         ]) {
           if (body[key] case final bool on) on ? ids.add(id) : ids.remove(id);
         }
@@ -217,6 +219,7 @@ class FakeVocabularyApi implements ApiClient {
             },
       'revealed': revealed.contains(id),
       'pitfall_revealed': pitfallRevealed.contains(id),
+      'formality_revealed': formalityRevealed.contains(id),
       'card': cards[id] ?? sampleCardJson,
       'captures': seen[id] ?? const <Json>[],
     };

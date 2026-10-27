@@ -17,10 +17,12 @@ class VocabularyService {
     String id, {
     bool? revealed,
     bool? pitfallRevealed,
+    bool? formalityRevealed,
   }) async => TermDetail.fromJson(
     await _api.patch('/api/v1/terms/$id', {
           'revealed': ?revealed,
           'pitfall_revealed': ?pitfallRevealed,
+          'formality_revealed': ?formalityRevealed,
         })
         as Json,
   );

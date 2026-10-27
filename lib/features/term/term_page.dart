@@ -39,6 +39,7 @@ class _TermPageState extends State<TermPage> {
   var _asked = false;
   var _pitfallRevealed = false;
   var _pitfallBursts = 0;
+  var _formalityRevealed = false;
   var _tab = _Tab.context;
   late final Voice _voice;
 
@@ -59,6 +60,7 @@ class _TermPageState extends State<TermPage> {
         _detail = detail;
         _revealed = detail.revealed;
         _pitfallRevealed = detail.pitfallRevealed;
+        _formalityRevealed = detail.formalityRevealed;
       });
     } on Exception catch (e) {
       if (mounted) setState(() => _error = e);
@@ -89,6 +91,16 @@ class _TermPageState extends State<TermPage> {
       () => AppScope.of(
         context,
       ).vocabulary.reveal(widget.term.id, pitfallRevealed: revealed),
+    );
+  }
+
+  void _revealFormality(bool revealed) {
+    if (revealed == _formalityRevealed) return;
+    setState(() => _formalityRevealed = revealed);
+    _save(
+      () => AppScope.of(
+        context,
+      ).vocabulary.reveal(widget.term.id, formalityRevealed: revealed),
     );
   }
 
@@ -270,8 +282,10 @@ class _TermPageState extends State<TermPage> {
               ),
               _Tab.usage => TermUsage(
                 card: card,
-                term: detail.term.text,
-                language: learning,
+                learning: learning,
+                base: base,
+                noteRevealed: _formalityRevealed,
+                onNoteReveal: _revealFormality,
               ),
             },
           ],

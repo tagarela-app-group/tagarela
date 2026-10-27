@@ -132,4 +132,14 @@ void main() {
     expect(detail.pitfallRevealed, isTrue);
     expect(detail.revealed, isFalse);
   });
+
+  test('revelar a nota de formalidade manda só ela', () async {
+    final (:store, :api) = fakeVocabulary();
+
+    final detail = await store.reveal('u1', formalityRevealed: true);
+
+    expect(api.bodies['PATCH /api/v1/terms/u1'], {'formality_revealed': true});
+    expect(detail.formalityRevealed, isTrue);
+    expect(detail.pitfallRevealed, isFalse);
+  });
 }
