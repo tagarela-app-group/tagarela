@@ -228,6 +228,17 @@ void main() {
   });
 
   group('Capture', () {
+    test('newId gera UUID v4 diferente a cada vez', () {
+      final uuid = RegExp(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+      );
+
+      final ids = {for (var i = 0; i < 50; i++) Capture.newId()};
+
+      expect(ids, hasLength(50));
+      expect(ids, everyElement(matches(uuid)));
+    });
+
     Json json({String status = 'ready', String text = 'mind the gap'}) => {
       'id': 'c1',
       'source': 'photo',
