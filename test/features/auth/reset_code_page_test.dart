@@ -15,7 +15,7 @@ void main() {
 
   Future<void> pumpResetCode(WidgetTester tester) => tester.pumpPage(
     const ResetCodePage(email: 'ana@example.com', sessionToken: 'session-1'),
-    auth: fakeAuthStore(api: api),
+    deps: fakeDependencies(auth: fakeAuthStore(api: api)),
     load: false,
   );
 

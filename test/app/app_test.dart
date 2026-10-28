@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/app.dart';
+import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/stores/course_store.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 
@@ -21,9 +22,11 @@ void main() {
     addTearDown(tester.platformDispatcher.clearLocalesTestValue);
     final store = (courses ?? fakeCourses(const [])).store;
     await tester.pumpWidget(
-      testScope(
-        courses: store,
-        language: fakeLanguage(store, saved),
+      AppScope(
+        dependencies: fakeDependencies(
+          courses: store,
+          language: fakeLanguage(store, saved),
+        ),
         child: const TagarelaApp(),
       ),
     );

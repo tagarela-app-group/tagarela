@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tagarela/app/app_dependencies.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/device/audio_playback.dart';
 import 'package:tagarela/data/device/capture_device.dart';
@@ -26,8 +27,7 @@ import 'fake_vocabulary_api.dart';
 import 'fake_voice.dart';
 import 'fixtures.dart';
 
-AppScope testScope({
-  required Widget child,
+AppDependencies fakeDependencies({
   AuthStore? auth,
   CourseStore? courses,
   CaptureStore? captures,
@@ -41,7 +41,7 @@ AppScope testScope({
   Voice? voice,
 }) {
   final courseStore = courses ?? fakeCourses().store;
-  return AppScope(
+  return AppDependencies(
     auth: auth ?? fakeAuthStore(),
     courses: courseStore,
     captures: captures ?? fakeCaptures().store,
@@ -53,7 +53,6 @@ AppScope testScope({
     practice: practice ?? fakePractice().store,
     language: language ?? fakeLanguage(courseStore),
     voice: voice ?? FakeVoice(),
-    child: child,
   );
 }
 
@@ -76,41 +75,23 @@ extension PumpApp on WidgetTester {
     addTearDown(view.reset);
   }
 
-  Future<AppScope> pumpPage(
+  Future<AppDependencies> pumpPage(
     Widget page, {
-    AuthStore? auth,
-    CourseStore? courses,
-    CaptureStore? captures,
-    AudioPlayback? playback,
-    CaptureDevice? device,
-    SpeechModelStore? speech,
-    HomeStore? home,
-    VocabularyStore? vocabulary,
-    PracticeStore? practice,
-    LanguageStore? language,
-    Voice? voice,
+    AppDependencies? deps,
     bool load = true,
     ThemeData? theme,
     Locale locale = const Locale('pt'),
   }) async {
     useTallScreen();
-    final scope = testScope(
-      auth: auth,
-      courses: courses,
-      captures: captures,
-      playback: playback,
-      device: device,
-      speech: speech,
-      home: home,
-      vocabulary: vocabulary,
-      practice: practice,
-      language: language,
-      voice: voice,
-      child: testApp(page, theme: theme, locale: locale),
+    final app = deps ?? fakeDependencies();
+    if (load) await app.session.loadAll();
+    await pumpWidget(
+      AppScope(
+        dependencies: app,
+        child: testApp(page, theme: theme, locale: locale),
+      ),
     );
-    if (load) await scope.loadAll();
-    await pumpWidget(scope);
-    return scope;
+    return app;
   }
 
   Future<void> pumpComponent(

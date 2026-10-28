@@ -15,7 +15,7 @@ void main() {
 
   Future<void> pumpVerify(WidgetTester tester) => tester.pumpPage(
     const VerifyEmailPage(email: 'ana@example.com', sessionToken: 'session-1'),
-    auth: fakeAuthStore(api: api),
+    deps: fakeDependencies(auth: fakeAuthStore(api: api)),
     load: false,
   );
 

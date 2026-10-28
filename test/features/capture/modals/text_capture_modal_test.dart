@@ -7,6 +7,7 @@ import 'package:tagarela/features/capture/modals/text_capture_modal.dart';
 
 import '../../../helpers/fake_capture_store.dart';
 import '../../../helpers/open_modal.dart';
+import '../../../helpers/pump_app.dart';
 
 void main() {
   late FakeCaptures captures;
@@ -16,7 +17,10 @@ void main() {
   testWidgets('abre focado, contador em 0/500 e Salvar desligado', (
     tester,
   ) async {
-    await tester.openModal(const TextCaptureModal(), captures: captures.store);
+    await tester.openModal(
+      const TextCaptureModal(),
+      deps: fakeDependencies(captures: captures.store),
+    );
 
     expect(find.text('Digitar texto'), findsOneWidget);
     expect(find.text('Palavra, expressão ou frase'), findsOneWidget);
@@ -33,7 +37,10 @@ void main() {
   });
 
   testWidgets('para em 500 caracteres', (tester) async {
-    await tester.openModal(const TextCaptureModal(), captures: captures.store);
+    await tester.openModal(
+      const TextCaptureModal(),
+      deps: fakeDependencies(captures: captures.store),
+    );
 
     await tester.enterText(find.byType(TextField), 'a' * 600);
     await tester.pump();
@@ -44,7 +51,7 @@ void main() {
   testWidgets('Salvar no Inbox cria a captura e fecha', (tester) async {
     final results = await tester.openModal(
       const TextCaptureModal(),
-      captures: captures.store,
+      deps: fakeDependencies(captures: captures.store),
     );
 
     await tester.enterText(find.byType(TextField), "  I'm on the fence  ");
@@ -63,7 +70,7 @@ void main() {
   testWidgets('fechar não salva', (tester) async {
     final results = await tester.openModal(
       const TextCaptureModal(),
-      captures: captures.store,
+      deps: fakeDependencies(captures: captures.store),
     );
 
     await tester.enterText(find.byType(TextField), 'hello');

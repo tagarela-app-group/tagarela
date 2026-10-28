@@ -27,7 +27,9 @@ void main() {
 
   Future<void> pumpLogin(WidgetTester tester) => tester.pumpPage(
     const LoginPage(),
-    auth: fakeAuthStore(api: api, social: social),
+    deps: fakeDependencies(
+      auth: fakeAuthStore(api: api, social: social),
+    ),
     load: false,
   );
 
@@ -117,7 +119,9 @@ void main() {
     api.responses['POST /auth/login'] = const ApiResponse(429, null);
     await tester.pumpPage(
       const LoginPage(),
-      auth: fakeAuthStore(api: api, social: social),
+      deps: fakeDependencies(
+        auth: fakeAuthStore(api: api, social: social),
+      ),
       load: false,
       locale: const Locale('en'),
     );

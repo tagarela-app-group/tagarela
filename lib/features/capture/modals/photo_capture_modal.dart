@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'package:tagarela/app/app_dependencies.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/device/capture_device.dart';
 import 'package:tagarela/data/models/models.dart';
@@ -19,7 +20,7 @@ class PhotoCaptureModal extends StatefulWidget {
 }
 
 class _PhotoCaptureModalState extends State<PhotoCaptureModal> {
-  late final AppScope _scope;
+  late final AppDependencies _scope;
   File? _photo;
   bool _denied = false;
   bool _saving = false;

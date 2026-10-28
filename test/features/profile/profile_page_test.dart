@@ -28,7 +28,10 @@ void main() {
   testWidgets('topo centralizado: avatar grande com anel, nome e e-mail', (
     tester,
   ) async {
-    await tester.pumpPage(const ProfilePage(), auth: await signedInAuthStore());
+    await tester.pumpPage(
+      const ProfilePage(),
+      deps: fakeDependencies(auth: await signedInAuthStore()),
+    );
 
     expect(find.text('Ana Souza'), findsOneWidget);
     expect(find.text('ana@example.com'), findsNWidgets(2));
@@ -46,7 +49,10 @@ void main() {
   });
 
   testWidgets('progresso: termos, aprendendo e dominados', (tester) async {
-    await tester.pumpPage(const ProfilePage(), auth: await signedInAuthStore());
+    await tester.pumpPage(
+      const ProfilePage(),
+      deps: fakeDependencies(auth: await signedInAuthStore()),
+    );
 
     final card = tester.widget<ProgressCard>(find.byType(ProgressCard));
     expect(card.terms, sampleVocabulary.termCount);
@@ -60,8 +66,10 @@ void main() {
   testWidgets('sem vocabulário: progresso zerado', (tester) async {
     await tester.pumpPage(
       const ProfilePage(),
-      auth: await signedInAuthStore(),
-      vocabulary: emptyVocabulary(),
+      deps: fakeDependencies(
+        auth: await signedInAuthStore(),
+        vocabulary: emptyVocabulary(),
+      ),
     );
 
     final card = tester.widget<ProgressCard>(find.byType(ProgressCard));
@@ -85,7 +93,7 @@ void main() {
     ) async {
       await tester.pumpPage(
         const ProfilePage(),
-        auth: await signedInAuthStore(),
+        deps: fakeDependencies(auth: await signedInAuthStore()),
       );
 
       expect(find.text('País de origem'), findsOneWidget);
@@ -106,7 +114,7 @@ void main() {
       });
       await tester.pumpPage(
         const ProfilePage(),
-        auth: await signedInAuthStore(api: api),
+        deps: fakeDependencies(auth: await signedInAuthStore(api: api)),
       );
 
       await tester.tap(find.text('País de origem'));
@@ -131,7 +139,7 @@ void main() {
     testWidgets('busca sem resultado avisa', (tester) async {
       await tester.pumpPage(
         const ProfilePage(),
-        auth: await signedInAuthStore(),
+        deps: fakeDependencies(auth: await signedInAuthStore()),
       );
 
       await tester.tap(find.text('País de origem'));
@@ -146,7 +154,10 @@ void main() {
       final api = FakeAuthApi();
       final auth = await signedInAuthStore(api: api);
       api.responses['PATCH /api/v1/account'] = const ApiResponse(500, null);
-      await tester.pumpPage(const ProfilePage(), auth: auth);
+      await tester.pumpPage(
+        const ProfilePage(),
+        deps: fakeDependencies(auth: auth),
+      );
 
       await tester.tap(find.text('País de origem'));
       await tester.pumpAndSettle();
@@ -171,7 +182,10 @@ void main() {
         200,
         FakeAuthApi.user,
       );
-      await tester.pumpPage(const ProfilePage(), auth: auth);
+      await tester.pumpPage(
+        const ProfilePage(),
+        deps: fakeDependencies(auth: auth),
+      );
       expect(find.text('Brasil'), findsOneWidget);
       expect(_avatarFlag, findsOneWidget);
 
@@ -207,9 +221,11 @@ void main() {
         ..hold = Completer();
       await tester.pumpPage(
         const ProfilePage(),
-        auth: await signedInAuthStore(),
-        captures: fakeCaptures(extractor: FakeTextExtractor()).store,
-        speech: speech.store,
+        deps: fakeDependencies(
+          auth: await signedInAuthStore(),
+          captures: fakeCaptures(extractor: FakeTextExtractor()).store,
+          speech: speech.store,
+        ),
       );
       await tester.pump();
 
@@ -236,9 +252,11 @@ void main() {
       speech.storage.offline = true;
       await tester.pumpPage(
         const ProfilePage(),
-        auth: await signedInAuthStore(),
-        captures: fakeCaptures(extractor: FakeTextExtractor()).store,
-        speech: speech.store,
+        deps: fakeDependencies(
+          auth: await signedInAuthStore(),
+          captures: fakeCaptures(extractor: FakeTextExtractor()).store,
+          speech: speech.store,
+        ),
       );
       await tester.pump();
 
@@ -261,7 +279,10 @@ void main() {
     final storage = FakeTokenStorage();
     final auth = fakeAuthStore(api: api, storage: storage);
     await auth.login('ana@example.com', 'x');
-    await tester.pumpPage(const ProfilePage(), auth: auth);
+    await tester.pumpPage(
+      const ProfilePage(),
+      deps: fakeDependencies(auth: auth),
+    );
 
     await tester.ensureVisible(find.text('Sair'));
     await tester.tap(find.text('Sair'));
@@ -276,7 +297,10 @@ void main() {
   });
 
   testWidgets('estudo mostra o curso ativo e abre os cursos', (tester) async {
-    await tester.pumpPage(const ProfilePage(), auth: await signedInAuthStore());
+    await tester.pumpPage(
+      const ProfilePage(),
+      deps: fakeDependencies(auth: await signedInAuthStore()),
+    );
 
     expect(find.text('ESTUDO'), findsOneWidget);
     expect(find.text('Português → Inglês'), findsOneWidget);
@@ -293,11 +317,13 @@ void main() {
   testWidgets('progresso segue o curso ativo', (tester) async {
     await tester.pumpPage(
       const ProfilePage(),
-      auth: await signedInAuthStore(),
-      courses: fakeCourses([
-        {...englishCourseJson, 'active': false},
-        {...spanishCourseJson, 'active': true},
-      ]).store,
+      deps: fakeDependencies(
+        auth: await signedInAuthStore(),
+        courses: fakeCourses([
+          {...englishCourseJson, 'active': false},
+          {...spanishCourseJson, 'active': true},
+        ]).store,
+      ),
     );
 
     expect(find.text('Inglês → Espanhol'), findsOneWidget);
@@ -306,7 +332,10 @@ void main() {
   });
 
   testWidgets('sem a escolha de idioma do app: segue o curso', (tester) async {
-    await tester.pumpPage(const ProfilePage(), auth: await signedInAuthStore());
+    await tester.pumpPage(
+      const ProfilePage(),
+      deps: fakeDependencies(auth: await signedInAuthStore()),
+    );
 
     expect(find.text('PREFERÊNCIAS'), findsNothing);
     expect(find.text('Idioma'), findsNothing);

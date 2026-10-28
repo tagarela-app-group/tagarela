@@ -47,18 +47,20 @@ void main() {
   testWidgets('sem termo solto: sem o card Sem grupo', (tester) async {
     await tester.pumpPage(
       const VocabularyPage(),
-      vocabulary: fakeVocabulary({
-        'groups': [
-          {
-            'id': 'g1',
-            'name': 'Viagem',
-            'icon': 'travel',
-            'accent': 'sky',
-            'terms': <Object?>[],
-          },
-        ],
-        'ungrouped': <Object?>[],
-      }).store,
+      deps: fakeDependencies(
+        vocabulary: fakeVocabulary({
+          'groups': [
+            {
+              'id': 'g1',
+              'name': 'Viagem',
+              'icon': 'travel',
+              'accent': 'sky',
+              'terms': <Object?>[],
+            },
+          ],
+          'ungrouped': <Object?>[],
+        }).store,
+      ),
     );
 
     expect(find.text('Sem grupo'), findsNothing);
@@ -70,18 +72,20 @@ void main() {
   ) async {
     await tester.pumpPage(
       const VocabularyPage(),
-      vocabulary: fakeVocabulary({
-        'groups': <Object?>[],
-        'ungrouped': [
-          {
-            'id': 'u1',
-            'text': 'mind the gap',
-            'translation': '',
-            'kind': 'expression',
-            'level': 0,
-          },
-        ],
-      }).store,
+      deps: fakeDependencies(
+        vocabulary: fakeVocabulary({
+          'groups': <Object?>[],
+          'ungrouped': [
+            {
+              'id': 'u1',
+              'text': 'mind the gap',
+              'translation': '',
+              'kind': 'expression',
+              'level': 0,
+            },
+          ],
+        }).store,
+      ),
     );
 
     expect(find.text('1 termo'), findsOneWidget);
@@ -162,7 +166,10 @@ void main() {
 
   testWidgets('puxar a lista recarrega', (tester) async {
     final vocabulary = fakeVocabulary();
-    await tester.pumpPage(const VocabularyPage(), vocabulary: vocabulary.store);
+    await tester.pumpPage(
+      const VocabularyPage(),
+      deps: fakeDependencies(vocabulary: vocabulary.store),
+    );
     vocabulary.api.calls.clear();
 
     await tester.fling(find.text('Seus grupos'), const Offset(0, 400), 1000);
@@ -181,7 +188,7 @@ void main() {
   testWidgets('sem termos: estado vazio, sem contagem', (tester) async {
     await tester.pumpPage(
       const VocabularyPage(),
-      vocabulary: emptyVocabulary(),
+      deps: fakeDependencies(vocabulary: emptyVocabulary()),
     );
 
     expect(find.text('Nenhum termo ainda'), findsOneWidget);
@@ -195,7 +202,10 @@ void main() {
 
   testWidgets('erro: "Tentar de novo" recarrega', (tester) async {
     final vocabulary = FailingVocabularyStore();
-    await tester.pumpPage(const VocabularyPage(), vocabulary: vocabulary);
+    await tester.pumpPage(
+      const VocabularyPage(),
+      deps: fakeDependencies(vocabulary: vocabulary),
+    );
     expect(find.byType(StateMessage), findsOneWidget);
 
     vocabulary.failing = false;

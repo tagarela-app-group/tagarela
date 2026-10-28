@@ -8,6 +8,7 @@ import 'package:tagarela/shared/widgets/audio_clip.dart';
 
 import '../../../helpers/fake_capture_store.dart';
 import '../../../helpers/open_modal.dart';
+import '../../../helpers/pump_app.dart';
 
 void main() {
   late FakeCaptures captures;
@@ -22,9 +23,11 @@ void main() {
 
   Future<List<Capture?>> open(WidgetTester tester) => tester.openModal(
     const AudioCaptureModal(),
-    captures: captures.store,
-    device: device,
-    playback: playback,
+    deps: fakeDependencies(
+      captures: captures.store,
+      device: device,
+      playback: playback,
+    ),
   );
 
   Future<void> stop(WidgetTester tester) async {

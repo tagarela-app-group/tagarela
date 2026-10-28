@@ -49,7 +49,7 @@ void main() {
   ) async {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      auth: await signedInAuthStore(),
+      deps: fakeDependencies(auth: await signedInAuthStore()),
     );
 
     expect(
@@ -70,8 +70,10 @@ void main() {
   testWidgets('header aparece mesmo quando os dados falham', (tester) async {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      home: FailingHomeStore(),
-      auth: await signedInAuthStore(),
+      deps: fakeDependencies(
+        home: FailingHomeStore(),
+        auth: await signedInAuthStore(),
+      ),
     );
 
     expect(find.textContaining(', Ana'), findsOneWidget);
@@ -124,9 +126,11 @@ void main() {
     var captures = 0;
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () => captures++),
-      home: HomeStore(),
-      vocabulary: emptyVocabulary(),
-      practice: emptyPractice(),
+      deps: fakeDependencies(
+        home: HomeStore(),
+        vocabulary: emptyVocabulary(),
+        practice: emptyPractice(),
+      ),
     );
 
     expect(find.byType(WordOfDayCard), findsNothing);
@@ -145,9 +149,11 @@ void main() {
   ) async {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      home: HomeStore((stats: const Stats(weekGain: 0), wordOfDay: null)),
-      vocabulary: emptyVocabulary(),
-      practice: fakePractice(FakePracticeApi(due: 3)).store,
+      deps: fakeDependencies(
+        home: HomeStore((stats: const Stats(weekGain: 0), wordOfDay: null)),
+        vocabulary: emptyVocabulary(),
+        practice: fakePractice(FakePracticeApi(due: 3)).store,
+      ),
     );
 
     expect(find.byType(ReviewCard), findsOneWidget);
@@ -159,7 +165,7 @@ void main() {
     final vocabulary = FailingVocabularyStore();
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      vocabulary: vocabulary,
+      deps: fakeDependencies(vocabulary: vocabulary),
     );
     expect(find.byType(WordOfDayCard), findsNothing);
     expect(find.text('Não deu pra carregar'), findsOneWidget);
@@ -198,7 +204,7 @@ void main() {
 
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      courses: courses.store,
+      deps: fakeDependencies(courses: courses.store),
     );
 
     expect(find.byType(HeaderPill), findsNothing);
@@ -208,7 +214,7 @@ void main() {
     final practice = fakePractice();
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      practice: practice.store,
+      deps: fakeDependencies(practice: practice.store),
     );
 
     await tester.tap(find.text('Começar'));
@@ -233,7 +239,9 @@ void main() {
   ) async {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      practice: fakePractice(FakePracticeApi(due: 4, rounds: [])).store,
+      deps: fakeDependencies(
+        practice: fakePractice(FakePracticeApi(due: 4, rounds: [])).store,
+      ),
     );
 
     final card = tester.widget<ReviewCard>(find.byType(ReviewCard));

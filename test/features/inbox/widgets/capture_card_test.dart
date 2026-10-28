@@ -44,8 +44,7 @@ void main() {
           onConfirm: () => taps.add('confirmar'),
         ),
       ),
-      captures: captures.store,
-      speech: speech,
+      deps: fakeDependencies(captures: captures.store, speech: speech),
     );
     await tester.pump();
     return taps;

@@ -22,8 +22,10 @@ void main() {
     final vocabulary = fakeVocabulary();
     final scope = await tester.pumpPage(
       const CourseGate(),
-      courses: courses.store,
-      vocabulary: vocabulary.store,
+      deps: fakeDependencies(
+        courses: courses.store,
+        vocabulary: vocabulary.store,
+      ),
     );
     await tester.pump();
 

@@ -61,9 +61,11 @@ void main() {
   }) async {
     await tester.pumpPage(
       TermPage(term: term),
-      vocabulary: vocabulary.store,
-      voice: voice,
-      courses: courses?.store,
+      deps: fakeDependencies(
+        vocabulary: vocabulary.store,
+        voice: voice,
+        courses: courses?.store,
+      ),
     );
     await tester.pumpAndSettle();
   }
@@ -73,7 +75,10 @@ void main() {
   ) async {
     vocabulary.api.holdCard = Completer();
 
-    await tester.pumpPage(TermPage(term: _mind), vocabulary: vocabulary.store);
+    await tester.pumpPage(
+      TermPage(term: _mind),
+      deps: fakeDependencies(vocabulary: vocabulary.store),
+    );
     await tester.pump();
 
     expect(find.bySemanticsLabel('mind the gap'), findsOneWidget);
@@ -486,9 +491,11 @@ void main() {
 
     await tester.pumpPage(
       const TermPage(term: _mind),
-      vocabulary: vocabulary.store,
-      captures: captures.store,
-      playback: playback,
+      deps: fakeDependencies(
+        vocabulary: vocabulary.store,
+        captures: captures.store,
+        playback: playback,
+      ),
     );
     await tester.pumpAndSettle();
     expect(
@@ -838,8 +845,10 @@ void main() {
       ];
     await tester.pumpPage(
       const TermPage(term: _mind),
-      vocabulary: vocabulary.store,
-      practice: fakePractice(api).store,
+      deps: fakeDependencies(
+        vocabulary: vocabulary.store,
+        practice: fakePractice(api).store,
+      ),
     );
     await tester.pumpAndSettle();
 

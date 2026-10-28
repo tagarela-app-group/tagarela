@@ -1,35 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/device/audio_playback.dart';
-import 'package:tagarela/data/device/capture_device.dart';
+import 'package:tagarela/app/app_dependencies.dart';
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/data/stores/capture_store.dart';
-import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
 import 'pump_app.dart';
 
 extension OpenModal on WidgetTester {
-  Future<List<Capture?>> openModal(
-    Widget modal, {
-    CaptureStore? captures,
-    CaptureDevice? device,
-    AudioPlayback? playback,
-  }) => openModalOf<Capture>(
-    modal,
-    captures: captures,
-    device: device,
-    playback: playback,
-  );
+  Future<List<Capture?>> openModal(Widget modal, {AppDependencies? deps}) =>
+      openModalOf<Capture>(modal, deps: deps);
 
-  Future<List<T?>> openModalOf<T>(
-    Widget modal, {
-    CaptureStore? captures,
-    CaptureDevice? device,
-    AudioPlayback? playback,
-    VocabularyStore? vocabulary,
-  }) async {
+  Future<List<T?>> openModalOf<T>(Widget modal, {AppDependencies? deps}) async {
     final results = <T?>[];
     await pumpPage(
       Scaffold(
@@ -41,10 +23,7 @@ extension OpenModal on WidgetTester {
           ),
         ),
       ),
-      captures: captures,
-      device: device,
-      playback: playback,
-      vocabulary: vocabulary,
+      deps: deps,
     );
     await tap(find.text('abrir'));
     await pump();

@@ -90,7 +90,10 @@ void main() {
         sampleCapture(id, status: status),
       );
     }
-    await tester.pumpPage(const HomeShell(), captures: captures.store);
+    await tester.pumpPage(
+      const HomeShell(),
+      deps: fakeDependencies(captures: captures.store),
+    );
     Finder badge(int n) =>
         find.descendant(of: find.byType(AppTabBar), matching: find.text('$n'));
     expect(badge(2), findsOneWidget);
@@ -106,7 +109,10 @@ void main() {
   testWidgets('sessão expirada volta pro login com aviso', (tester) async {
     final api = FakeAuthApi();
     final auth = await signedInAuthStore(api: api);
-    await tester.pumpPage(const HomeShell(), auth: auth);
+    await tester.pumpPage(
+      const HomeShell(),
+      deps: fakeDependencies(auth: auth),
+    );
     api.responses['POST /tokens/refresh'] = FakeAuthApi.errors({
       'refresh_token': 'Inválido.',
     });
@@ -120,7 +126,10 @@ void main() {
 
   testWidgets('sair pelo Perfil não mostra aviso de sessão', (tester) async {
     final auth = await signedInAuthStore();
-    await tester.pumpPage(const HomeShell(), auth: auth);
+    await tester.pumpPage(
+      const HomeShell(),
+      deps: fakeDependencies(auth: auth),
+    );
 
     await auth.logout();
     await tester.pumpAndSettle();
@@ -134,9 +143,11 @@ void main() {
   ) async {
     await tester.pumpPage(
       const HomeShell(),
-      home: HomeStore(),
-      vocabulary: emptyVocabulary(),
-      practice: emptyPractice(),
+      deps: fakeDependencies(
+        home: HomeStore(),
+        vocabulary: emptyVocabulary(),
+        practice: emptyPractice(),
+      ),
     );
     expect(find.text('O que você ouviu hoje?'), findsNothing);
 
@@ -208,9 +219,11 @@ void main() {
   testWidgets('curso sem áudio esconde a gravação no +', (tester) async {
     await tester.pumpPage(
       const HomeShell(),
-      courses: fakeCourses([
-        {...spanishCourseJson, 'active': true},
-      ]).store,
+      deps: fakeDependencies(
+        courses: fakeCourses([
+          {...spanishCourseJson, 'active': true},
+        ]).store,
+      ),
     );
 
     await tester.tap(find.bySemanticsLabel('Adicionar termo'));

@@ -64,7 +64,7 @@ Future<FakeVocabulary> _open(
         child: const Text('Abrir'),
       ),
     ),
-    vocabulary: vocabulary.store,
+    deps: fakeDependencies(vocabulary: vocabulary.store),
   );
   await tester.tap(find.text('Abrir'));
   await tester.pumpAndSettle();

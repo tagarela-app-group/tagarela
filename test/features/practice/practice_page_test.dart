@@ -44,8 +44,7 @@ Future<FakePractice> _open(
         ),
       ),
     ),
-    practice: practice.store,
-    voice: voice,
+    deps: fakeDependencies(practice: practice.store, voice: voice),
   );
   await tester.tap(find.text('abrir'));
   await tester.pumpAndSettle();
@@ -209,7 +208,7 @@ void main() {
     final api = FakePracticeApi()..hold = Completer();
     await tester.pumpPage(
       PracticePage(rounds: [PracticeRound(_fence, ExerciseKind.listenWrite)]),
-      practice: fakePractice(api).store,
+      deps: fakeDependencies(practice: fakePractice(api).store),
     );
     await tester.pump();
 
@@ -238,7 +237,7 @@ void main() {
     final practice = fakePractice(api);
     await tester.pumpPage(
       PracticePage(rounds: [PracticeRound(_fence, ExerciseKind.listenWrite)]),
-      practice: practice.store,
+      deps: fakeDependencies(practice: practice.store),
     );
     tester.view.physicalSize = const Size(360, 780);
     await tester.pumpAndSettle();

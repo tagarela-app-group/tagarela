@@ -15,7 +15,7 @@ void main() {
   Future<void> pumpForgot(WidgetTester tester, {String email = ''}) =>
       tester.pumpPage(
         ForgotPasswordPage(email: email),
-        auth: fakeAuthStore(api: api),
+        deps: fakeDependencies(auth: fakeAuthStore(api: api)),
         load: false,
       );
 
