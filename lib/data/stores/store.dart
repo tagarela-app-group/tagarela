@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:tagarela/data/services/api_client.dart';
+
 abstract class Store<T extends Object> extends ChangeNotifier {
   T? _data;
   Object? _error;
@@ -24,6 +26,15 @@ abstract class Store<T extends Object> extends ChangeNotifier {
 
   @protected
   Future<T> fetch();
+
+  @protected
+  Future<R> guard<R>(Future<R> Function() request) async {
+    try {
+      return await request();
+    } on ApiException catch (e) {
+      throw e.forApp;
+    }
+  }
 
   @protected
   void emit(T data) {

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:tagarela/data/models/errors.dart';
+
 typedef AccessToken = Future<String?> Function({bool renew});
 
 class ApiClient {
@@ -127,13 +129,18 @@ class ApiException implements Exception {
   final String request;
   final Object? body;
 
-  String? fieldError(String field) => switch (body) {
-    final Map<String, Object?> json => switch (json[field]) {
-      [final String message, ...] => message,
-      _ => null,
+  Map<String, String> get fieldErrors => switch (body) {
+    final Map<String, Object?> json => {
+      for (final MapEntry(:key, :value) in json.entries)
+        if (value case [final String message, ...]) key: message,
     },
-    _ => null,
+    _ => const {},
   };
+
+  String? fieldError(String field) => fieldErrors[field];
+
+  Exception get forApp =>
+      rejected ? RejectedException(fieldErrors) : const ServerException();
 
   bool get rejected =>
       statusCode >= 400 &&

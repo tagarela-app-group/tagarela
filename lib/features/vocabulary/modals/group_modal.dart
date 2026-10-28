@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
 import 'package:tagarela/shared/logic/group_style.dart';
@@ -47,12 +46,10 @@ class _GroupModalState extends State<GroupModal> {
               color: _color,
             );
       if (mounted) Navigator.pop(context, group);
-    } on ApiException catch (e) {
-      _fail(
-        e.rejected
-            ? e.fieldError('name') ?? l10n.groupSaveRejected(action)
-            : l10n.groupSaveFailed(action),
-      );
+    } on RejectedException catch (e) {
+      _fail(e.fields['name'] ?? l10n.groupSaveRejected(action));
+    } on ServerException {
+      _fail(l10n.groupSaveFailed(action));
     } on Exception {
       _fail(l10n.offlineRetry);
     }

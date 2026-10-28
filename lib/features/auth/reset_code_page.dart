@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tagarela/data/services/auth_service.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/logic/auth_form.dart';
 import 'package:tagarela/features/auth/new_password_page.dart';

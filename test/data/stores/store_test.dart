@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/stores/store.dart';
 
 class _NumberStore extends Store<int> {
@@ -13,6 +17,8 @@ class _NumberStore extends Store<int> {
   };
 
   void set(int value) => emit(value);
+
+  Future<int> fail(Object error) => guard(() async => throw error);
 }
 
 void main() {
@@ -62,6 +68,35 @@ void main() {
 
     await expectLater(store.load(), throwsStateError);
     expect(store.error, isA<StateError>());
+  });
+
+  test('guard troca erro da API por erro do app', () async {
+    final store = _NumberStore();
+
+    await expectLater(
+      store.fail(
+        const ApiException(400, 'x', {
+          'name': ['Já existe.'],
+        }),
+      ),
+      throwsA(
+        isA<RejectedException>().having((e) => e.fields, 'fields', {
+          'name': 'Já existe.',
+        }),
+      ),
+    );
+    await expectLater(
+      store.fail(const ApiException(500, 'x')),
+      throwsA(isA<ServerException>()),
+    );
+    await expectLater(
+      store.fail(const ApiException(401, 'x')),
+      throwsA(isA<ServerException>()),
+    );
+    await expectLater(
+      store.fail(const SocketException('sem rede')),
+      throwsA(isA<SocketException>()),
+    );
   });
 
   test('emit troca o dado e avisa', () {

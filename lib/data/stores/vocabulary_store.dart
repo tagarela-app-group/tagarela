@@ -29,10 +29,8 @@ class VocabularyStore extends Store<Vocabulary> {
     required GroupIcon icon,
     required GroupColor color,
   }) async {
-    final group = await _service.createGroup(
-      name: name,
-      icon: icon,
-      color: color,
+    final group = await guard(
+      () => _service.createGroup(name: name, icon: icon, color: color),
     );
     emit((data ?? const Vocabulary()).withGroup(group));
     return group;
@@ -44,11 +42,8 @@ class VocabularyStore extends Store<Vocabulary> {
     required GroupIcon icon,
     required GroupColor color,
   }) async {
-    final group = await _service.updateGroup(
-      id,
-      name: name,
-      icon: icon,
-      color: color,
+    final group = await guard(
+      () => _service.updateGroup(id, name: name, icon: icon, color: color),
     );
     emit((data ?? const Vocabulary()).withGroup(group));
     return group;
