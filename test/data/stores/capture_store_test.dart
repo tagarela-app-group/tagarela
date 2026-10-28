@@ -56,6 +56,12 @@ void main() {
 
   Capture only() => store.data!.single;
 
+  Future<void> photoWithoutText() async {
+    extractor.results[CaptureSource.photo] = ExtractionError.noText;
+    await store.createMedia(CaptureSource.photo, await picture());
+    await store.extractions;
+  }
+
   group('criar', () {
     test('texto online: id UUID, enviado e sem pendência', () async {
       final capture = await store.createText(text);
@@ -198,9 +204,7 @@ void main() {
     );
 
     test('foto sem texto: erro no_text', () async {
-      extractor.results[CaptureSource.photo] = ExtractionError.noText;
-      await store.createMedia(CaptureSource.photo, await picture());
-      await store.extractions;
+      await photoWithoutText();
 
       expect(only().status, CaptureStatus.failed);
       expect(only().error, 'no_text');
@@ -368,9 +372,7 @@ void main() {
     });
 
     test('processar agora lê de novo no celular', () async {
-      extractor.results[CaptureSource.photo] = ExtractionError.noText;
-      await store.createMedia(CaptureSource.photo, await picture());
-      await store.extractions;
+      await photoWithoutText();
       expect(only().status, CaptureStatus.failed);
 
       extractor.results.remove(CaptureSource.photo);

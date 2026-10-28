@@ -5,6 +5,7 @@ import 'package:tagarela/app/app_dependencies.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
+import 'fake_capture_store.dart';
 import 'pump_app.dart';
 
 extension OpenModal on WidgetTester {
@@ -29,6 +30,14 @@ extension OpenModal on WidgetTester {
     await pump();
     await pump(const Duration(milliseconds: 400));
     return results;
+  }
+
+  Future<void> expectOpensSettings(FakeCaptureDevice device) async {
+    await tap(find.text('Abrir configurações'));
+    await pumpAndSettle();
+
+    expect(device.settingsOpened, 1);
+    expect(find.byType(AppModal), findsNothing);
   }
 }
 

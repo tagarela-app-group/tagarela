@@ -17,6 +17,15 @@ List<String> _flags(WidgetTester tester) => [
     f.country,
 ];
 
+Future<void> _spanishThroughEnglish(WidgetTester tester) async {
+  await tester.tap(find.text('Espanhol'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Trocar'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('English').last);
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets(
     'primeiro acesso: fala o idioma do app e escolhe o que aprender',
@@ -106,13 +115,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpPage(const CoursePickerPage(), load: false);
-    await tester.tap(find.text('Espanhol'));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Trocar'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('English').last);
-    await tester.pumpAndSettle();
+    await _spanishThroughEnglish(tester);
 
     expect(_start(tester).label, 'Start learning Spanish');
   });
@@ -152,12 +155,7 @@ void main() {
       deps: fakeDependencies(courses: courses.store),
       load: false,
     );
-    await tester.tap(find.text('Espanhol'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Trocar'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('English').last);
-    await tester.pumpAndSettle();
+    await _spanishThroughEnglish(tester);
 
     await tester.tap(find.text('Start learning Spanish'));
     await tester.pump();
@@ -178,12 +176,7 @@ void main() {
       load: false,
     );
     courses.api.offline = true;
-    await tester.tap(find.text('Espanhol'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Trocar'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('English').last);
-    await tester.pumpAndSettle();
+    await _spanishThroughEnglish(tester);
 
     await tester.tap(find.text('Start learning Spanish'));
     await tester.pump();

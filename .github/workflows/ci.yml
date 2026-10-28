@@ -55,6 +55,16 @@ jobs:
           path: coverage/lcov.info
           retention-days: 7
 
+  repeticao:
+    name: Código repetido
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: jscpd
+        run: npx --yes jscpd@5.4.1 lib test packages --format dart --ignore "**/*.g.dart,**/generated/**,**/country_names.dart" --threshold 0 --reporters console-full
+
   vulnerabilidades:
     name: Dependências vulneráveis
     runs-on: ubuntu-latest

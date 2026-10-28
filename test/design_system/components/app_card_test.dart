@@ -5,6 +5,10 @@ import 'package:tagarela/design_system/design_system.dart';
 
 import '../../helpers/pump_app.dart';
 
+T _inCard<T extends Widget>(WidgetTester tester) => tester.widget<T>(
+  find.descendant(of: find.byType(AppCard), matching: find.byType(T)).first,
+);
+
 void main() {
   testWidgets('sem onTap não é tocável', (tester) async {
     await tester.pumpComponent(const AppCard(child: Text('Card')));
@@ -37,33 +41,15 @@ void main() {
       const AppCard(color: AppPalette.mango, child: Text('Card')),
     );
 
-    final box = tester.widget<DecoratedBox>(
-      find
-          .descendant(
-            of: find.byType(AppCard),
-            matching: find.byType(DecoratedBox),
-          )
-          .first,
-    );
+    final box = _inCard<DecoratedBox>(tester);
     expect((box.decoration as BoxDecoration).boxShadow, isNull);
   });
 
   testWidgets('muted: sem fundo, sem sombra, com borda', (tester) async {
     await tester.pumpComponent(const AppCard(muted: true, child: Text('Card')));
 
-    final box = tester.widget<DecoratedBox>(
-      find
-          .descendant(
-            of: find.byType(AppCard),
-            matching: find.byType(DecoratedBox),
-          )
-          .first,
-    );
-    final material = tester.widget<Material>(
-      find
-          .descendant(of: find.byType(AppCard), matching: find.byType(Material))
-          .first,
-    );
+    final box = _inCard<DecoratedBox>(tester);
+    final material = _inCard<Material>(tester);
     final shape = material.shape! as RoundedRectangleBorder;
     expect((box.decoration as BoxDecoration).boxShadow, isNull);
     expect(material.color, Colors.transparent);
@@ -75,19 +61,8 @@ void main() {
       const AppCard(selected: true, child: Text('Card')),
     );
 
-    final box = tester.widget<DecoratedBox>(
-      find
-          .descendant(
-            of: find.byType(AppCard),
-            matching: find.byType(DecoratedBox),
-          )
-          .first,
-    );
-    final material = tester.widget<Material>(
-      find
-          .descendant(of: find.byType(AppCard), matching: find.byType(Material))
-          .first,
-    );
+    final box = _inCard<DecoratedBox>(tester);
+    final material = _inCard<Material>(tester);
     final shape = material.shape! as RoundedRectangleBorder;
     expect((box.decoration as BoxDecoration).boxShadow, isNull);
     expect(shape.side.color, AppColors.light.primary);

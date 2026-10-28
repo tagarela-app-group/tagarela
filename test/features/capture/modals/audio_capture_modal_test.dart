@@ -154,10 +154,6 @@ void main() {
     expect(device.recordings, 0);
     expect(find.text('Sem acesso ao microfone'), findsOneWidget);
 
-    await tester.tap(find.text('Abrir configurações'));
-    await tester.pumpAndSettle();
-
-    expect(device.settingsOpened, 1);
-    expect(find.byType(AppModal), findsNothing);
+    await tester.expectOpensSettings(device);
   });
 }
