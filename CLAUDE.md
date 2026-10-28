@@ -2,6 +2,22 @@
 
 App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ouve no dia. Público BR primeiro, básico/intermediário, pouco tempo; interface em pt-BR, en e es. API em `../api`.
 
+## Regras
+
+0. Início de sessão: ativar skill `caveman` nível `full`.
+1. Antes de alterar algo (código, doc, config, mockup): propor (o quê, onde, opções, recomendação) e esperar ok. Pedido fere regra/boa prática: avisar e propor alternativa.
+2. UI: reusar o design system; nada serve, criar lá. Valor visual sempre token.
+   - Antes de criar UI: procurar peça parecida em todo `lib/`, inclusive widget privado (`_X`) e de feature. Achou: extrair pro design system. Nome pelo que é, não por onde é usado. API genérica: conteúdo + papel de cor, sem regra de uso embutida.
+3. Código novo/alterado: com teste. Bug: teste que reproduz.
+4. Sem comentário em código/config. Porquê vai aqui ou no PR.
+5. Mudou regra ou decisão: atualizar aqui. Guia, não inventário: só o que o código não mostra.
+6. Fim de task: skill `entregar` (checagem, PR, esteira, merge, mockup, volta pra `develop`), sem perguntar.
+7. Nunca commitar direto em `develop`/`main`. `develop` → `main` só o usuário.
+8. Teste em aparelho é do usuário. Print só se pedir, ~400 px.
+9. Dependência nova: checar manutenção e contar ao usuário; nativa ou mal mantida: perguntar. Versões com 2+ semanas.
+10. Tipagem estrita: sem `dynamic` nem tipo implícito; parâmetros, retornos e coleções tipados. JSON entra como `Json`/`Object?` e vira model no `fromJson`, com cast explícito.
+11. Sem repetição: antes de escrever, procurar o que já existe em `lib/` e `test/`. Código igual em 2 lugares vira uma peça só, no lugar certo (função em `logic/`, widget no design system, helper em `test/helpers/`). Igual por acaso, com regra diferente, fica separado. Repetição antiga no arquivo mexido: avisar e propor extrair.
+
 ## Produto
 
 - Fluxo: captura (foto, áudio, texto) → escolhe termos → confirma → vocabulário → pessoa agrupa → revisão espaçada até dominar.
@@ -16,25 +32,10 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 - Ouvir e escrever: frase nova da IA com o termo, num balão; ouve sozinho ao abrir, Devagar com a tartaruga, a palavra falada acende. A lacuna é uma peça por letra (`LetterTile`, 24 px fixos); apóstrofo e espaço já vêm. Palavra que não cabe na linha desce inteira; maior que a linha quebra na sílaba (vem da API) com hífen no fim. Teclado do jogo (`LetterKeyboard`), não o do celular, pra não sugerir a resposta: QWERTY, es com ñ e pt com ç e uma fileira de acentos; letra da resposta que falta entra em cima. Dica põe a próxima letra em âmbar; Conferir só com tudo preenchido; erro marca as letras em vermelho, a próxima tecla limpa só elas, e aparece "Mostrar resposta". Acertou: peças violeta e balões.
 - País de origem: opcional, fica na conta, vira bandeira no canto inferior direito de todo avatar (o esquerdo é a cauda do balão). Nomes em `lib/l10n/countries/country_names.dart`, gerados do CLDR, mesma lista da API.
 
-## Regras
-
-0. Início de sessão: ativar skill `caveman` nível `full`.
-1. Antes de alterar algo (código, doc, config, mockup): propor (o quê, onde, opções, recomendação) e esperar ok. Pedido fere regra/boa prática: avisar e propor alternativa.
-2. UI: reusar o design system; nada serve, criar lá. Valor visual sempre token.
-   - Antes de criar UI: procurar peça parecida em todo `lib/`, inclusive widget privado (`_X`) e de feature. Achou: extrair pro design system. Nome pelo que é, não por onde é usado. API genérica: conteúdo + papel de cor, sem regra de uso embutida.
-3. Código novo/alterado: com teste. Bug: teste que reproduz.
-4. Sem comentário em código/config. Porquê vai aqui ou no PR.
-5. Mudou regra ou decisão: atualizar aqui. Guia, não inventário: só o que o código não mostra.
-6. Fim de task: skill `entregar` (checagem, PR, esteira, merge, mockup, volta pra `develop`), sem perguntar.
-7. Nunca commitar direto em `develop`/`main`. `develop` → `main` só o usuário.
-8. Teste em aparelho é do usuário. Print só se pedir, ~400 px.
-9. Dependência nova: checar manutenção e contar ao usuário; nativa ou mal mantida: perguntar. Versões com 2+ semanas.
-10. Troca de assunto: sugerir `/compact manter: ...` ou `/clear`.
-11. Tipagem estrita: sem `dynamic` nem tipo implícito; parâmetros, retornos e coleções tipados. JSON entra como `Json`/`Object?` e vira model no `fromJson`, com cast explícito.
-
 ## Arquitetura
 
 - `lib/app/`: bootstrap, auth e shell. `lib/features/<f>/`: pages (`*_page.dart`) na raiz; `modals/` (`*_modal.dart`, abre com `AppModal.show`); `widgets/` (o que aparece na tela, inclusive toast); `logic/` (regra sem widget, testável sem tela). `lib/design_system/`: tudo visual reutilizável. `lib/data/`: `models/` (um arquivo por domínio, import via `models.dart`), `services/` (API, sem estado, com o `ApiClient`), `stores/` (estado), `storage/` (o que fica salvo no aparelho) e `device/` (recursos do aparelho e libs nativas).
+- Dependências só descem: `features` usa `data` e `design_system`; `data` não importa `design_system`, `features` nem widget (model guarda chave, a tela traduz em cor e ícone); `design_system` não importa `data` nem `features`. Feature só abre página ou modal de outra; widget usado em 2+ features sai da feature. Tela não conhece HTTP: o store converte o erro da API em erro de domínio.
 - Fluxo: tela → store → service → `ApiClient` (único ponto de rede). Estado com `ChangeNotifier`, sem pacotes de estado, rota ou HTTP.
 - Dependências injetadas por `AppScope` (teste troca).
 - Lib externa isolada no seu arquivo em `data/`; resto do app não importa.
