@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/vocabulary/widgets/group_card.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -9,8 +8,8 @@ import '../../../helpers/pump_app.dart';
 TermGroup _group(List<int> levels) => TermGroup(
   id: '1',
   name: 'Comida',
-  icon: AppIcons.travel,
-  accent: AppAccent.mint,
+  icon: GroupIcon.travel,
+  color: GroupColor.mint,
   terms: [for (final l in levels) Term('t$l', 't', 't', TermKind.word, l)],
 );
 

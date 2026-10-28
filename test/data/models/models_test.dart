@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/design_system/design_system.dart';
 
 import '../../helpers/fixtures.dart';
 
@@ -13,8 +12,8 @@ Term _term(int level) =>
 TermGroup _group(List<Term> terms) => TermGroup(
   id: '1',
   name: 'Grupo',
-  icon: AppIcons.travel,
-  accent: AppAccent.violet,
+  icon: GroupIcon.travel,
+  color: GroupColor.violet,
   terms: terms,
 );
 
@@ -63,8 +62,8 @@ void main() {
       });
 
       expect(
-        (g.id, g.name, g.icon, g.accent),
-        ('7', 'Viagem', AppIcons.travel, AppAccent.sky),
+        (g.id, g.name, g.icon, g.color),
+        ('7', 'Viagem', GroupIcon.travel, GroupColor.sky),
       );
       expect(g.terms.single.id, 't1');
       expect(g.terms.single.text, 'layover');
@@ -80,17 +79,12 @@ void main() {
         'terms': <Object?>[],
       });
 
-      expect(g.icon, AppIcons.vocabulary);
-      expect(g.accent, AppAccent.violet);
+      expect(g.icon, isNull);
+      expect(g.color, GroupColor.violet);
     });
   });
 
   group('GroupIcon', () {
-    test('48 ícones, cada um com ícone próprio', () {
-      expect(GroupIcon.values, hasLength(48));
-      expect(GroupIcon.values.map((i) => i.icon).toSet(), hasLength(48));
-    });
-
     test('nome do enum = id da API', () {
       final g = TermGroup.fromJson({
         'id': '1',
@@ -100,7 +94,7 @@ void main() {
         'terms': <Object?>[],
       });
 
-      expect(g.icon, GroupIcon.paw.icon);
+      expect(g.icon, GroupIcon.paw);
     });
   });
 
@@ -173,8 +167,8 @@ void main() {
       final novo = TermGroup(
         id: '2',
         name: 'Música',
-        icon: AppIcons.music,
-        accent: AppAccent.pink,
+        icon: GroupIcon.music,
+        color: GroupColor.pink,
         terms: const [],
       );
 
@@ -431,7 +425,7 @@ void main() {
 
       expect(detail.term.text, 'mind the gap');
       expect(detail.group!.name, 'Viagem');
-      expect(detail.group!.icon, AppIcons.travel);
+      expect(detail.group!.icon, GroupIcon.travel);
       expect(detail.revealed, isTrue);
       expect(detail.pitfallRevealed, isFalse);
       expect(detail.formalityRevealed, isTrue);

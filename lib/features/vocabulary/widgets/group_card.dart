@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/group_style.dart';
 
 class GroupCard extends StatelessWidget {
   const GroupCard({super.key, required this.group, required this.onTap});
@@ -22,7 +23,7 @@ class GroupCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: AppSpacing.s3,
         children: [
-          IconTile(icon: group.icon, accent: group.accent),
+          IconTile(icon: group.glyph, accent: group.accent),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

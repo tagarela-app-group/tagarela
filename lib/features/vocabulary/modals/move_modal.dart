@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/group_style.dart';
 
 typedef MoveTarget = ({TermGroup? group});
 
@@ -59,7 +60,7 @@ class MoveModal extends StatelessWidget {
                 ),
                 for (final group in groups)
                   OptionRow(
-                    icon: group.icon,
+                    icon: group.glyph,
                     accent: group.accent,
                     title: group.name,
                     subtitle: group.terms.isEmpty

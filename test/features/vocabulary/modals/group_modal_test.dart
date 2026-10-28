@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
+import 'package:tagarela/shared/logic/group_style.dart';
 
 import '../../../helpers/fake_vocabulary_api.dart';
 import '../../../helpers/open_modal.dart';
@@ -52,13 +53,13 @@ void main() {
 
   testWidgets('ícone e cor mudam a prévia do topo', (tester) async {
     await open(tester);
-    expect(preview(tester).icon, GroupIcon.layers.icon);
+    expect(preview(tester).icon, GroupIcon.layers.glyph);
 
     await tester.tap(find.bySemanticsLabel('Música'));
     await tester.tap(find.bySemanticsLabel('Rosa'));
     await tester.pump();
 
-    expect(preview(tester).icon, GroupIcon.music.icon);
+    expect(preview(tester).icon, GroupIcon.music.glyph);
     expect(preview(tester).accent, AppAccent.pink);
   });
 
@@ -153,8 +154,8 @@ void main() {
 
     final body = api.bodies['PATCH /api/v1/groups/1']! as Map;
     expect((body['name'], body['accent']), ('Viagem', 'pink'));
-    expect(results.single!.accent, AppAccent.pink);
-    expect(store.data!.groups.first.accent, AppAccent.pink);
+    expect(results.single!.color, GroupColor.pink);
+    expect(store.data!.groups.first.color, GroupColor.pink);
     expect(find.byType(GroupModal), findsNothing);
   });
 }

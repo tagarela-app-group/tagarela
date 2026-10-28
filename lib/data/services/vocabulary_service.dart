@@ -1,6 +1,5 @@
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/api_client.dart';
-import 'package:tagarela/design_system/tokens/app_colors.dart';
 
 class VocabularyService {
   const VocabularyService(this._api);
@@ -33,12 +32,12 @@ class VocabularyService {
   Future<TermGroup> createGroup({
     required String name,
     required GroupIcon icon,
-    required AppAccent accent,
+    required GroupColor color,
   }) async => TermGroup.fromJson(
     await _api.post('/api/v1/groups', {
           'name': name,
           'icon': icon.name,
-          'accent': accent.name,
+          'accent': color.name,
         })
         as Json,
   );
@@ -47,12 +46,12 @@ class VocabularyService {
     String id, {
     required String name,
     required GroupIcon icon,
-    required AppAccent accent,
+    required GroupColor color,
   }) async => TermGroup.fromJson(
     await _api.patch('/api/v1/groups/$id', {
           'name': name,
           'icon': icon.name,
-          'accent': accent.name,
+          'accent': color.name,
         })
         as Json,
   );
