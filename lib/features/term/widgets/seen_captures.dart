@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 import 'package:tagarela/features/term/widgets/highlighted_text.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/capture_style.dart';
+import 'package:tagarela/shared/logic/time_ago.dart';
 
 class SeenCaptures extends StatelessWidget {
   const SeenCaptures({
@@ -97,11 +98,6 @@ class _SeenCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final l10n = context.l10n;
-    final (icon, accent) = switch (capture.source) {
-      CaptureSource.photo => (AppIcons.camera, AppAccent.mango),
-      CaptureSource.audio => (AppIcons.audio, AppAccent.coral),
-      CaptureSource.text => (AppIcons.text, AppAccent.violet),
-    };
     final also = <String, String>{
       for (final span in capture.spans)
         if (span.termId case final id? when id != termId) id: span.text,
@@ -120,7 +116,11 @@ class _SeenCard extends StatelessWidget {
           Row(
             spacing: AppSpacing.s2,
             children: [
-              IconTile(icon: icon, accent: accent, size: 28),
+              IconTile(
+                icon: capture.source.glyph,
+                accent: capture.source.accent,
+                size: 28,
+              ),
               Expanded(
                 child: Text.rich(
                   TextSpan(

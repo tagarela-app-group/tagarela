@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/profile/widgets/profile_section.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/capture_style.dart';
 
 class OfflineSection extends StatelessWidget {
   const OfflineSection({super.key});
@@ -38,15 +40,15 @@ class OfflineSection extends StatelessWidget {
           title: l10n.worksOffline,
           rows: [
             ProfileRow(
-              icon: AppIcons.camera,
-              accent: AppAccent.mango,
+              icon: CaptureSource.photo.glyph,
+              accent: CaptureSource.photo.accent,
               title: l10n.photoText,
               text: l10n.photoTextHint,
               trailing: StatusPill(label: l10n.ready, tone: StatusTone.primary),
             ),
             ProfileRow(
-              icon: AppIcons.audio,
-              accent: AppAccent.coral,
+              icon: CaptureSource.audio.glyph,
+              accent: CaptureSource.audio.accent,
               title: l10n.englishAudio,
               text: text,
               trailing: StatusPill(label: status, tone: tone),

@@ -9,8 +9,9 @@ import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/capture/widgets/permission_notice.dart';
 import 'package:tagarela/features/capture/widgets/privacy_note.dart';
-import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/capture_style.dart';
+import 'package:tagarela/shared/widgets/audio_clip.dart';
 
 enum _Phase { starting, recording, done, denied }
 
@@ -145,16 +146,16 @@ class _AudioCaptureModalState extends State<AudioCaptureModal> {
   Widget build(BuildContext context) {
     final recording = _phase == _Phase.recording || _phase == _Phase.starting;
     return AppModal(
-      icon: AppIcons.audio,
-      accent: AppAccent.coral,
+      icon: CaptureSource.audio.glyph,
+      accent: CaptureSource.audio.accent,
       title: recording ? context.l10n.recording : context.l10n.recordAudio,
       subtitle: _phase == _Phase.done
           ? context.l10n.listenBeforeSaving
           : context.l10n.recordHint,
       child: switch (_phase) {
         _Phase.denied => PermissionNotice(
-          icon: AppIcons.audio,
-          accent: AppAccent.coral,
+          icon: CaptureSource.audio.glyph,
+          accent: CaptureSource.audio.accent,
           title: context.l10n.micDeniedTitle,
           message: context.l10n.micDeniedMessage,
         ),
@@ -166,7 +167,7 @@ class _AudioCaptureModalState extends State<AudioCaptureModal> {
 
   Widget _recording(BuildContext context) {
     final c = context.colors;
-    final accent = c.accent(AppAccent.coral);
+    final accent = c.accent(CaptureSource.audio.accent);
     final max = CaptureDevice.maxRecording;
     final elapsed = _elapsed > max ? max : _elapsed;
     return Column(

@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/capture/modals/audio_capture_modal.dart';
-import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
+import 'package:tagarela/shared/widgets/audio_clip.dart';
 
 import '../../../helpers/fake_capture_store.dart';
 import '../../../helpers/open_modal.dart';

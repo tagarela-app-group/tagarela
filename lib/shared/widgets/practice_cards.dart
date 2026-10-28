@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/practice/games/games.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/exercise_style.dart';
 
 class PracticeCards extends StatelessWidget {
   const PracticeCards({super.key, required this.onOpen});
@@ -24,7 +24,7 @@ class PracticeCards extends StatelessWidget {
             child: Row(
               spacing: 14,
               children: [
-                IconTile(icon: gameIcon(kind), accent: AppAccent.violet),
+                IconTile(icon: kind.glyph, accent: AppAccent.violet),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

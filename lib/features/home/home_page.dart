@@ -9,7 +9,7 @@ import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
-import 'package:tagarela/features/profile/widgets/user_avatar.dart';
+import 'package:tagarela/shared/widgets/user_avatar.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class HomePage extends StatelessWidget {

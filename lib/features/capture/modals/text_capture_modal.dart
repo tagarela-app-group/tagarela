@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/capture_style.dart';
 
 class TextCaptureModal extends StatefulWidget {
   const TextCaptureModal({super.key});
@@ -33,8 +35,8 @@ class _TextCaptureModalState extends State<TextCaptureModal> {
 
   @override
   Widget build(BuildContext context) => AppModal(
-    icon: AppIcons.text,
-    accent: AppAccent.violet,
+    icon: CaptureSource.text.glyph,
+    accent: CaptureSource.text.accent,
     title: context.l10n.typeText,
     subtitle: context.l10n.typeTextHint,
     child: Column(
