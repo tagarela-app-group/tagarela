@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
 
 import '../../helpers/fake_vocabulary_api.dart';
@@ -51,8 +50,8 @@ void main() {
         color: GroupColor.sky,
       ),
       throwsA(
-        isA<ApiException>().having(
-          (e) => e.fieldError('name'),
+        isA<RejectedException>().having(
+          (e) => e.fields['name'],
           'name',
           'Você já tem um grupo com esse nome.',
         ),

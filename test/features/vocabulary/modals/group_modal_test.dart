@@ -119,6 +119,26 @@ void main() {
     expect(find.byType(GroupModal), findsOneWidget);
   });
 
+  testWidgets('API recusa sem mensagem ou cai: aviso de cada caso', (
+    tester,
+  ) async {
+    final (_, (store: _, :api)) = await open(tester);
+    await tester.enterText(textField('Nome'), 'Música');
+    await tester.pump();
+
+    for (final (status, message) in [
+      (400, 'Não deu pra criar o grupo.'),
+      (500, 'Não deu pra criar o grupo agora. Tente de novo.'),
+    ]) {
+      api.rejections['POST /api/v1/groups'] = status;
+      await tester.tap(find.text('Criar grupo'));
+      await tester.pumpAndSettle();
+
+      expect(find.text(message), findsOneWidget, reason: '$status');
+      expect(find.byType(GroupModal), findsOneWidget);
+    }
+  });
+
   testWidgets('editar: abre preenchido e aceita o próprio nome', (
     tester,
   ) async {

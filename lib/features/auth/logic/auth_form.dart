@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/app/home_shell.dart';
-import 'package:tagarela/data/services/auth_service.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/features/auth/reset_code_page.dart';
 import 'package:tagarela/features/auth/verify_email_page.dart';

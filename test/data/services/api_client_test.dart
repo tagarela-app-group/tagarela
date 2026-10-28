@@ -127,6 +127,18 @@ void main() {
     expect(const ApiException(500, 'x').fieldError('name'), isNull);
   });
 
+  test('fieldErrors pega a 1ª mensagem de cada campo e ignora o resto', () {
+    const error = ApiException(400, 'x', {
+      'name': ['Curto demais.', 'Outro.'],
+      'icon': ['Inválido.'],
+      'detail': 'Texto solto.',
+      'accent': <Object?>[],
+    });
+
+    expect(error.fieldErrors, {'name': 'Curto demais.', 'icon': 'Inválido.'});
+    expect(const ApiException(400, 'x', 'texto').fieldErrors, isEmpty);
+  });
+
   test('send devolve status e corpo sem lançar em 4xx, com headers', () async {
     final response = await api.send(
       'POST',

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/device/social_sign_in.dart';
+import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 
