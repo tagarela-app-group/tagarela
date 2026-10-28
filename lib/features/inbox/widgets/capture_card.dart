@@ -139,15 +139,15 @@ class _CaptureCardState extends State<CaptureCard> {
   }
 }
 
-_Message _failure(
+TitledText _failure(
   AppLocalizations l10n,
   Capture capture,
 ) => switch (capture.error) {
-  final e when e == ExtractionError.noText.code => _Message(
+  final e when e == ExtractionError.noText.code => TitledText(
     title: capture.source.isPhoto ? l10n.noTextInPhoto : l10n.noSpeech,
     text: capture.source.isPhoto ? l10n.noTextInPhotoHint : l10n.noSpeechHint,
   ),
-  _ => _Message(title: l10n.processFailedTitle, text: l10n.processFailedHint),
+  _ => TitledText(title: l10n.processFailedTitle, text: l10n.processFailedHint),
 };
 
 extension on CaptureSource {
@@ -250,31 +250,6 @@ class _Content extends StatelessWidget {
           style: AppText.bodyLg,
           maxLines: clamp ? 3 : null,
           overflow: clamp ? TextOverflow.ellipsis : null,
-        ),
-      ],
-    );
-  }
-}
-
-class _Message extends StatelessWidget {
-  const _Message({required this.title, required this.text});
-
-  final String title;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 2,
-      children: [
-        Text(
-          title,
-          style: AppText.bodyLg.copyWith(fontWeight: FontWeight.w700),
-        ),
-        Text(
-          text,
-          style: AppText.label.copyWith(color: context.colors.inkSoft),
         ),
       ],
     );

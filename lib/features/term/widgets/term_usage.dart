@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/term/widgets/obscured_note.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class TermUsage extends StatelessWidget {
@@ -130,14 +131,11 @@ class TermUsage extends StatelessWidget {
                   if (note != null)
                     Padding(
                       padding: EdgeInsets.only(right: inset),
-                      child: Obscured(
+                      child: ObscuredNote(
+                        note,
                         obscured: !noteRevealed,
-                        child: MarkedText(
-                          note,
-                          locale: Locale(base.name),
-                          markLocale: Locale(learning.name),
-                          style: AppText.bodyMd.copyWith(color: c.inkSoft),
-                        ),
+                        base: base,
+                        learning: learning,
                       ),
                     ),
                 ],

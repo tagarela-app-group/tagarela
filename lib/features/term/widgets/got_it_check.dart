@@ -79,7 +79,11 @@ class _GotItCheckState extends State<GotItCheck> {
                       color: c.primarySoft,
                       shape: BoxShape.circle,
                     ),
-                    child: SpeechBubbleIcon(size: 18, color: c.primaryText),
+                    child: DrawnIcon(
+                      DrawnGlyph.bubble,
+                      size: 18,
+                      color: c.primaryText,
+                    ),
                   ),
                   Expanded(
                     child: Text(

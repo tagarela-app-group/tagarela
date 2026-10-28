@@ -33,7 +33,7 @@ void main() {
     await tester.pumpComponent(const WordOfDayCard(word: _word));
 
     final card = tester.getRect(find.byType(AppCard));
-    final bubble = tester.getRect(find.byType(SpeechBubbleIcon));
+    final bubble = tester.getRect(drawnIcon(DrawnGlyph.bubble));
     expect(bubble.right - card.right, 34);
     expect(card.top - bubble.top, 38);
   });

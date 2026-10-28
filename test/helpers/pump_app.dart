@@ -133,6 +133,9 @@ extension PumpApp on WidgetTester {
   }
 }
 
+Finder drawnIcon(DrawnGlyph glyph) =>
+    find.byWidgetPredicate((w) => w is DrawnIcon && w.glyph == glyph);
+
 Finder textField(String label) => find.descendant(
   of: find.widgetWithText(AppTextField, label),
   matching: find.byType(TextField),

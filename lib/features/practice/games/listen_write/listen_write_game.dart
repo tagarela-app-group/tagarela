@@ -148,13 +148,8 @@ class _ListenWriteGameState extends State<ListenWriteGame> {
             ],
           ),
         ),
-        AppButton(
-          label: l10n.listenSlow,
-          variant: AppButtonVariant.onHeader,
-          size: AppButtonSize.small,
-          leading: saying == VoiceSpeed.slow
-              ? const Icon(AppIcons.stop, size: 18)
-              : const DrawnIcon(DrawnGlyph.turtle, size: 20),
+        ListenSlowButton(
+          playing: saying == VoiceSpeed.slow,
           onPressed: () => _listen(VoiceSpeed.slow),
         ),
       ],

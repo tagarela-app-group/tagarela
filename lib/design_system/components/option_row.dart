@@ -3,11 +3,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/components/icon_tile.dart';
+import 'package:tagarela/design_system/components/titled_text.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
-import 'package:tagarela/design_system/tokens/app_typography.dart';
 
 class OptionRow extends StatelessWidget {
   const OptionRow({
@@ -66,26 +66,7 @@ class OptionRow extends StatelessWidget {
                     size: 48,
                   ),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 2,
-                  children: [
-                    Text(
-                      title,
-                      style: AppText.bodyLg.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    if (subtitle case final subtitle?)
-                      Text(
-                        subtitle,
-                        style: AppText.label.copyWith(
-                          color: c.inkSoft,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                  ],
-                ),
+                child: TitledText(title: title, text: subtitle),
               ),
               trailing ??
                   switch (selected) {

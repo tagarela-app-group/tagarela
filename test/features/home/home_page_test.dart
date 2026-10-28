@@ -133,7 +133,7 @@ void main() {
     expect(find.byType(ReviewCard), findsNothing);
     expect(find.byType(VocabularySummary), findsNothing);
     expect(find.text('Seu inglês começa aqui'), findsOneWidget);
-    expect(find.byType(SpeechBubbleIcon), findsOneWidget);
+    expect(drawnIcon(DrawnGlyph.bubble), findsOneWidget);
     expect(tester.widget<AppPage>(find.byType(AppPage)).centerLast, isTrue);
 
     await tester.tap(find.text('Fazer a primeira captura'));

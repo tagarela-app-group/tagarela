@@ -7,6 +7,11 @@ import '../../helpers/pump_app.dart';
 
 const _color = Color(0xFF00FF00);
 
+Finder get _paint => find.descendant(
+  of: find.byType(DrawnIcon),
+  matching: find.byType(CustomPaint),
+);
+
 void main() {
   testWidgets('desenha cada traço no tamanho e cor pedidos', (tester) async {
     for (final glyph in DrawnGlyph.values) {
@@ -16,13 +21,11 @@ void main() {
 
       expect(tester.getSize(find.byType(DrawnIcon)), const Size(48, 48));
       expect(
-        tester.renderObject(
-          find.descendant(
-            of: find.byType(DrawnIcon),
-            matching: find.byType(CustomPaint),
-          ),
+        tester.renderObject(_paint),
+        paints..path(
+          color: _color,
+          style: glyph.filled ? PaintingStyle.fill : PaintingStyle.stroke,
         ),
-        paints..path(color: _color, style: PaintingStyle.stroke),
       );
     }
   });
@@ -38,5 +41,6 @@ void main() {
     );
 
     expect(tester.getSize(find.byType(DrawnIcon)), const Size(20, 20));
+    expect(tester.renderObject(_paint), paints..path(color: _color));
   });
 }

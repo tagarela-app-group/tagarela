@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
-enum DrawnGlyph { turtle, sandal, tie }
+enum DrawnGlyph {
+  turtle,
+  sandal,
+  tie,
+  bubble(filled: true);
+
+  const DrawnGlyph({this.filled = false});
+
+  final bool filled;
+}
 
 class DrawnIcon extends StatelessWidget {
   const DrawnIcon(this.glyph, {super.key, this.size, this.color});
@@ -18,12 +27,23 @@ class DrawnIcon extends StatelessWidget {
         painter: _GlyphPainter(
           _paths[glyph]!,
           color ?? theme.color ?? Colors.black,
+          filled: glyph.filled,
         ),
       ),
     );
   }
 
   static final _paths = {
+    DrawnGlyph.bubble: Path()
+      ..moveTo(21, 11.5)
+      ..arcToPoint(const Offset(12, 19.9), radius: const Radius.circular(8.4))
+      ..arcToPoint(const Offset(8, 19), radius: const Radius.circular(9))
+      ..lineTo(3, 21)
+      ..lineTo(4.9, 16.4)
+      ..arcToPoint(const Offset(3, 11.5), radius: const Radius.circular(8.4))
+      ..arcToPoint(const Offset(12, 3), radius: const Radius.circular(8.5))
+      ..arcToPoint(const Offset(21, 11.5), radius: const Radius.circular(8.4))
+      ..close(),
     DrawnGlyph.turtle: Path()
       ..moveTo(12, 10)
       ..lineTo(14, 14)
@@ -94,28 +114,29 @@ class DrawnIcon extends StatelessWidget {
 }
 
 class _GlyphPainter extends CustomPainter {
-  const _GlyphPainter(this.path, this.color);
+  const _GlyphPainter(this.path, this.color, {required this.filled});
 
   final Path path;
   final Color color;
+  final bool filled;
 
   static const _grid = 24.0;
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.scale(size.width / _grid);
-    canvas.drawPath(
-      path,
-      Paint()
-        ..color = color
+    final paint = Paint()..color = color;
+    if (!filled) {
+      paint
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.9
         ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round,
-    );
+        ..strokeJoin = StrokeJoin.round;
+    }
+    canvas.drawPath(path, paint);
   }
 
   @override
   bool shouldRepaint(_GlyphPainter old) =>
-      old.path != path || old.color != color;
+      old.path != path || old.color != color || old.filled != filled;
 }

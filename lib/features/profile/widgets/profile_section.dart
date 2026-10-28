@@ -81,23 +81,7 @@ class ProfileRow extends StatelessWidget {
         children: [
           leading ?? IconTile(icon: icon, accent: accent, size: 40),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 2,
-              children: [
-                Text(
-                  title,
-                  style: AppText.bodyLg.copyWith(fontWeight: FontWeight.w700),
-                ),
-                Text(
-                  text,
-                  style: AppText.label.copyWith(
-                    color: c.inkSoft,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
+            child: TitledText(title: title, text: text),
           ),
           ?(trailing ??
               (onTap == null

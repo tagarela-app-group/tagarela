@@ -53,7 +53,7 @@ class HomePage extends StatelessWidget {
             centerLast: true,
             children: [
               StateMessage(
-                glyph: const SpeechBubbleIcon(),
+                glyph: const DrawnIcon(DrawnGlyph.bubble),
                 title: context.l10n.homeEmptyTitle,
                 message: context.l10n.homeEmptyMessage,
                 actionLabel: context.l10n.homeFirstCapture,

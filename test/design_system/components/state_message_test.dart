@@ -23,7 +23,7 @@ void main() {
   testWidgets('glyph no lugar do ícone e ícone na ação', (tester) async {
     await tester.pumpComponent(
       StateMessage(
-        glyph: const SpeechBubbleIcon(),
+        glyph: const DrawnIcon(DrawnGlyph.bubble),
         title: 'Comece',
         message: 'Capture.',
         actionLabel: 'Capturar',
@@ -32,7 +32,7 @@ void main() {
       ),
     );
 
-    expect(find.byType(SpeechBubbleIcon), findsOneWidget);
+    expect(drawnIcon(DrawnGlyph.bubble), findsOneWidget);
     expect(
       find.descendant(
         of: find.byType(AppButton),
