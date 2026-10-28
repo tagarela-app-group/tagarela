@@ -16,7 +16,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 8. Teste em aparelho é do usuário. Print só se pedir, ~400 px.
 9. Dependência nova: checar manutenção e contar ao usuário; nativa ou mal mantida: perguntar. Versões com 2+ semanas.
 10. Tipagem estrita: sem `dynamic` nem tipo implícito; parâmetros, retornos e coleções tipados. JSON entra como `Json`/`Object?` e vira model no `fromJson`, com cast explícito.
-11. Sem repetição: antes de escrever, procurar o que já existe em `lib/` e `test/`. Código igual em 2 lugares vira uma peça só, no lugar certo (função em `logic/`, widget no design system, helper em `test/helpers/`). Igual por acaso, com regra diferente, fica separado. Repetição antiga no arquivo mexido: avisar e propor extrair.
+11. Sem repetição: antes de escrever, procurar o que já existe em `lib/` e `test/`. Código igual em 2 lugares vira uma peça só, no lugar certo (função em `logic/`, widget no design system, helper em `test/helpers/`). Igual por acaso, com regra diferente, fica separado. Repetição antiga no arquivo mexido: avisar e propor extrair. A esteira roda o `jscpd` e falha com qualquer trecho repetido.
 
 ## Produto
 
@@ -35,7 +35,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 ## Arquitetura
 
 - `lib/app/`: bootstrap, auth e shell. `lib/features/<f>/`: pages (`*_page.dart`) na raiz; `modals/` (`*_modal.dart`, abre com `AppModal.show`); `widgets/` (o que aparece na tela, inclusive toast); `logic/` (regra sem widget, testável sem tela). `lib/design_system/`: tudo visual reutilizável. `lib/shared/`: o que conhece model e serve 2+ features (`logic/` traduz chave do model em ícone e cor; `widgets/`). `lib/data/`: `models/` (um arquivo por domínio, import via `models.dart`), `services/` (API, sem estado, com o `ApiClient`), `stores/` (estado), `storage/` (o que fica salvo no aparelho), `sync/` (junta banco local e API, offline first) e `device/` (recursos do aparelho e libs nativas).
-- Dependências só descem: `features` usa `data` e `design_system`; `data` não importa `design_system`, `features` nem widget (model guarda chave, a tela traduz em cor e ícone); `design_system` não importa `data` nem `features`. Feature só abre página ou modal de outra; o que serve 2+ features sai dela: genérico pro design system, o que conhece model pra `lib/shared/` (que não importa `features`). Tela não conhece HTTP: o store converte o erro da API em erro de domínio.
+- Dependências só descem: `features` usa `data` e `design_system`; `data` não importa `design_system`, `features` nem widget (model guarda chave, a tela traduz em cor e ícone); `design_system` não importa `data` nem `features`. Feature só abre página ou modal de outra; o que serve 2+ features sai dela: genérico pro design system, o que conhece model pra `lib/shared/` (que não importa `features` e só lê o `AppScope` de `app/`). Tela não conhece HTTP: o store converte o erro da API em erro de domínio. `test/architecture_test.dart` cobra.
 - Fluxo: tela → store → service → `ApiClient` (único ponto de rede). Estado com `ChangeNotifier`, sem pacotes de estado, rota ou HTTP.
 - Montagem num lugar só: `AppDependencies.live()` (`lib/app/app_dependencies.dart`) cria stores, services e recursos do aparelho; `AppScope.of(context)` entrega pras telas; `AppSession` carrega e recarrega o estudo e, ao sair, limpa os stores (a próxima conta não vê dado da anterior). Teste monta com `fakeDependencies(...)` e passa em `pumpPage(page, deps: ...)`.
 - Lib externa isolada no seu arquivo em `data/`; resto do app não importa.
@@ -60,4 +60,4 @@ https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR (via Artifact tool). Registro 
 
 ## Comandos
 
-`dart format lib test packages` · `flutter analyze --no-pub` · `flutter test --no-pub -r failures-only` · drift mudou: `dart run build_runner build` · ARB mudou: `flutter gen-l10n`.
+`dart format lib test packages` · `flutter analyze --no-pub` · `flutter test --no-pub -r failures-only` · repetição: `npx jscpd@5.4.1 lib test packages --format dart --ignore "**/*.g.dart,**/generated/**,**/country_names.dart" --threshold 0` · drift mudou: `dart run build_runner build` · ARB mudou: `flutter gen-l10n`.

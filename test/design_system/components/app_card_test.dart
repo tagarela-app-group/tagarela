@@ -5,6 +5,22 @@ import 'package:tagarela/design_system/design_system.dart';
 
 import '../../helpers/pump_app.dart';
 
+T _inCard<T extends Widget>(WidgetTester tester) => tester.widget<T>(
+  find.descendant(of: find.byType(AppCard), matching: find.byType(T)).first,
+);
+
+({List<BoxShadow>? shadow, Color? fill, BorderSide border}) _look(
+  WidgetTester tester,
+) {
+  final material = _inCard<Material>(tester);
+  return (
+    shadow:
+        (_inCard<DecoratedBox>(tester).decoration as BoxDecoration).boxShadow,
+    fill: material.color,
+    border: (material.shape! as RoundedRectangleBorder).side,
+  );
+}
+
 void main() {
   testWidgets('sem onTap não é tocável', (tester) async {
     await tester.pumpComponent(const AppCard(child: Text('Card')));
@@ -37,37 +53,16 @@ void main() {
       const AppCard(color: AppPalette.mango, child: Text('Card')),
     );
 
-    final box = tester.widget<DecoratedBox>(
-      find
-          .descendant(
-            of: find.byType(AppCard),
-            matching: find.byType(DecoratedBox),
-          )
-          .first,
-    );
-    expect((box.decoration as BoxDecoration).boxShadow, isNull);
+    expect(_look(tester).shadow, isNull);
   });
 
   testWidgets('muted: sem fundo, sem sombra, com borda', (tester) async {
     await tester.pumpComponent(const AppCard(muted: true, child: Text('Card')));
 
-    final box = tester.widget<DecoratedBox>(
-      find
-          .descendant(
-            of: find.byType(AppCard),
-            matching: find.byType(DecoratedBox),
-          )
-          .first,
-    );
-    final material = tester.widget<Material>(
-      find
-          .descendant(of: find.byType(AppCard), matching: find.byType(Material))
-          .first,
-    );
-    final shape = material.shape! as RoundedRectangleBorder;
-    expect((box.decoration as BoxDecoration).boxShadow, isNull);
-    expect(material.color, Colors.transparent);
-    expect(shape.side.color, AppColors.light.line);
+    final look = _look(tester);
+    expect(look.shadow, isNull);
+    expect(look.fill, Colors.transparent);
+    expect(look.border.color, AppColors.light.line);
   });
 
   testWidgets('selected: borda primary de 2, sem sombra', (tester) async {
@@ -75,22 +70,9 @@ void main() {
       const AppCard(selected: true, child: Text('Card')),
     );
 
-    final box = tester.widget<DecoratedBox>(
-      find
-          .descendant(
-            of: find.byType(AppCard),
-            matching: find.byType(DecoratedBox),
-          )
-          .first,
-    );
-    final material = tester.widget<Material>(
-      find
-          .descendant(of: find.byType(AppCard), matching: find.byType(Material))
-          .first,
-    );
-    final shape = material.shape! as RoundedRectangleBorder;
-    expect((box.decoration as BoxDecoration).boxShadow, isNull);
-    expect(shape.side.color, AppColors.light.primary);
-    expect(shape.side.width, 2);
+    final look = _look(tester);
+    expect(look.shadow, isNull);
+    expect(look.border.color, AppColors.light.primary);
+    expect(look.border.width, 2);
   });
 }

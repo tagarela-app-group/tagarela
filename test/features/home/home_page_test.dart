@@ -8,7 +8,6 @@ import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
-import 'package:tagarela/shared/widgets/user_avatar.dart';
 
 import 'package:tagarela/data/stores/home_store.dart';
 
@@ -57,12 +56,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('AS'), findsOneWidget);
-    final bubble = tester.widget<AppBubble>(
-      find.descendant(
-        of: find.byType(UserAvatar),
-        matching: find.byType(AppBubble),
-      ),
-    );
+    final bubble = avatarBubble(tester);
     expect((bubble.image as NetworkImage?)?.url, 'https://example.com/ana.png');
     expect(find.byIcon(Icons.local_fire_department_rounded), findsNothing);
   });

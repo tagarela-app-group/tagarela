@@ -70,6 +70,16 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  Future<Finder> openFormalityNote(WidgetTester tester) async {
+    await open(tester);
+    await tester.tap(find.text('Uso'));
+    await tester.pumpAndSettle();
+    return find.ancestor(
+      of: find.text('Serve em qualquer lugar.'),
+      matching: find.byType(Obscured),
+    );
+  }
+
   testWidgets('primeira abertura monta a ficha e mostra o termo na hora', (
     tester,
   ) async {
@@ -272,13 +282,7 @@ void main() {
   testWidgets('nota de formalidade nasce embaçada; toque revela e salva', (
     tester,
   ) async {
-    await open(tester);
-    await tester.tap(find.text('Uso'));
-    await tester.pumpAndSettle();
-    final note = find.ancestor(
-      of: find.text('Serve em qualquer lugar.'),
-      matching: find.byType(Obscured),
-    );
+    final note = await openFormalityNote(tester);
     expect(tester.widget<Obscured>(note).obscured, isTrue);
 
     await tester.tap(find.text('Serve em qualquer lugar.'));
@@ -301,14 +305,7 @@ void main() {
 
   testWidgets('nota de formalidade revelada abre revelada', (tester) async {
     vocabulary.api.formalityRevealed.add('u1');
-    await open(tester);
-    await tester.tap(find.text('Uso'));
-    await tester.pumpAndSettle();
-
-    final note = find.ancestor(
-      of: find.text('Serve em qualquer lugar.'),
-      matching: find.byType(Obscured),
-    );
+    final note = await openFormalityNote(tester);
     expect(tester.widget<Obscured>(note).obscured, isFalse);
   });
 

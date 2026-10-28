@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'dart:ui';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/storage/preferences.dart';

@@ -16,6 +16,7 @@ import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/widgets/user_avatar.dart';
 
 import 'fake_auth.dart';
 import 'fake_capture_store.dart';
@@ -113,6 +114,13 @@ extension PumpApp on WidgetTester {
     await pump();
   }
 }
+
+AppBubble avatarBubble(WidgetTester tester) => tester.widget<AppBubble>(
+  find.descendant(
+    of: find.byType(UserAvatar),
+    matching: find.byType(AppBubble),
+  ),
+);
 
 Finder drawnIcon(DrawnGlyph glyph) =>
     find.byWidgetPredicate((w) => w is DrawnIcon && w.glyph == glyph);

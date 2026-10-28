@@ -71,6 +71,9 @@ Future<FakeVocabulary> _open(
   return vocabulary;
 }
 
+Future<FakeVocabularyApi> _openTravel(WidgetTester tester) async =>
+    (await _open(tester, const GroupPage(groupId: 'viagem'))).api;
+
 Future<void> _startSelection(WidgetTester tester) async {
   await _menu(tester, 'Selecionar termos');
 }
@@ -84,7 +87,7 @@ Future<void> _menu(WidgetTester tester, String option) async {
 
 void main() {
   testWidgets('header resume o grupo', (tester) async {
-    await _open(tester, const GroupPage(groupId: 'viagem'));
+    await _openTravel(tester);
 
     expect(find.text('Viagem'), findsOneWidget);
     expect(find.text('3 termos · 1 dominados'), findsOneWidget);
@@ -92,7 +95,7 @@ void main() {
   });
 
   testWidgets('filtra por todos, aprendendo e dominado', (tester) async {
-    await _open(tester, const GroupPage(groupId: 'viagem'));
+    await _openTravel(tester);
     expect(_shownTerms(tester), ['layover', 'carry-on', 'jet lag']);
 
     await tester.tap(_option('Aprendendo'));
@@ -109,7 +112,7 @@ void main() {
   });
 
   testWidgets('"Voltar" fecha a tela', (tester) async {
-    await _open(tester, const GroupPage(groupId: 'viagem'));
+    await _openTravel(tester);
 
     await tester.tap(find.byTooltip('Voltar'));
     await tester.pumpAndSettle();
@@ -165,7 +168,7 @@ void main() {
   testWidgets('seleção: marca, conta e libera o botão de mover', (
     tester,
   ) async {
-    await _open(tester, const GroupPage(groupId: 'viagem'));
+    await _openTravel(tester);
     await _startSelection(tester);
 
     expect(find.text('Toque nos termos pra escolher'), findsOneWidget);
@@ -187,7 +190,7 @@ void main() {
   });
 
   testWidgets('"Selecionar todos" marca os termos do filtro', (tester) async {
-    await _open(tester, const GroupPage(groupId: 'viagem'));
+    await _openTravel(tester);
     await tester.tap(_option('Aprendendo'));
     await tester.pump();
     await _startSelection(tester);
@@ -201,7 +204,7 @@ void main() {
   testWidgets('X e voltar do sistema saem da seleção, não da tela', (
     tester,
   ) async {
-    await _open(tester, const GroupPage(groupId: 'viagem'));
+    await _openTravel(tester);
     await _startSelection(tester);
 
     await tester.tap(find.byTooltip('Cancelar seleção'));
@@ -217,10 +220,7 @@ void main() {
   });
 
   testWidgets('move pra outro grupo e desfaz', (tester) async {
-    final (store: _, :api) = await _open(
-      tester,
-      const GroupPage(groupId: 'viagem'),
-    );
+    final api = await _openTravel(tester);
     await _startSelection(tester);
     await tester.tap(find.text('carry-on'));
     await tester.tap(find.text('jet lag'));
@@ -307,10 +307,7 @@ void main() {
   });
 
   testWidgets('sem rede: avisa e mantém a seleção', (tester) async {
-    final (store: _, :api) = await _open(
-      tester,
-      const GroupPage(groupId: 'viagem'),
-    );
+    final api = await _openTravel(tester);
     await _startSelection(tester);
     await tester.tap(find.text('carry-on'));
     await tester.pump();
@@ -337,7 +334,7 @@ void main() {
   testWidgets('segurar um termo liga a seleção com ele marcado', (
     tester,
   ) async {
-    await _open(tester, const GroupPage(groupId: 'viagem'));
+    await _openTravel(tester);
 
     await tester.longPress(find.text('carry-on'));
     await tester.pump();
@@ -348,10 +345,7 @@ void main() {
   });
 
   testWidgets('apaga termos e desfaz', (tester) async {
-    final (store: _, :api) = await _open(
-      tester,
-      const GroupPage(groupId: 'viagem'),
-    );
+    final api = await _openTravel(tester);
     await tester.longPress(find.text('carry-on'));
     await tester.pump();
     await tester.tap(find.text('jet lag'));
@@ -374,10 +368,7 @@ void main() {
   });
 
   testWidgets('apagar sem rede: avisa e mantém a seleção', (tester) async {
-    final (store: _, :api) = await _open(
-      tester,
-      const GroupPage(groupId: 'viagem'),
-    );
+    final api = await _openTravel(tester);
     await tester.longPress(find.text('carry-on'));
     await tester.pump();
     api.offline = true;
@@ -398,10 +389,7 @@ void main() {
   testWidgets('editar grupo: painel preenchido, salva e o header muda', (
     tester,
   ) async {
-    final (store: _, :api) = await _open(
-      tester,
-      const GroupPage(groupId: 'viagem'),
-    );
+    final api = await _openTravel(tester);
 
     await _menu(tester, 'Editar grupo');
 
@@ -423,10 +411,7 @@ void main() {
 
   testWidgets('apagar grupo: confirma, fecha a tela e os termos vão pra '
       'Sem grupo', (tester) async {
-    final (store: _, :api) = await _open(
-      tester,
-      const GroupPage(groupId: 'viagem'),
-    );
+    final api = await _openTravel(tester);
 
     await _menu(tester, 'Apagar grupo');
 
@@ -441,10 +426,7 @@ void main() {
   });
 
   testWidgets('apagar grupo sem rede: avisa no painel e fica', (tester) async {
-    final (store: _, :api) = await _open(
-      tester,
-      const GroupPage(groupId: 'viagem'),
-    );
+    final api = await _openTravel(tester);
     await _menu(tester, 'Apagar grupo');
     api.offline = true;
 

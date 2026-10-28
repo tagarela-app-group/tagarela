@@ -37,12 +37,7 @@ void main() {
     expect(find.text('Ana Souza'), findsOneWidget);
     expect(find.text('ana@example.com'), findsNWidgets(2));
     expect(find.text('AS'), findsOneWidget);
-    final bubble = tester.widget<AppBubble>(
-      find.descendant(
-        of: find.byType(UserAvatar),
-        matching: find.byType(AppBubble),
-      ),
-    );
+    final bubble = avatarBubble(tester);
     expect(bubble.image, isNotNull);
     expect(bubble.size, 84);
     expect(bubble.ring, isNotNull);
@@ -213,6 +208,18 @@ void main() {
   });
 
   group('Funciona sem internet', () {
+    Future<void> pumpWithSpeech(
+      WidgetTester tester,
+      FakeSpeechModel speech,
+    ) async => tester.pumpPage(
+      const ProfilePage(),
+      deps: fakeDependencies(
+        auth: await signedInAuthStore(),
+        captures: fakeCaptures(extractor: FakeTextExtractor()).store,
+        speech: speech.store,
+      ),
+    );
+
     testWidgets('baixa o modelo sozinho, sem botão, e fica pronto', (
       tester,
     ) async {
@@ -220,14 +227,7 @@ void main() {
       speech.storage
         ..steps = const [0.42]
         ..hold = Completer();
-      await tester.pumpPage(
-        const ProfilePage(),
-        deps: fakeDependencies(
-          auth: await signedInAuthStore(),
-          captures: fakeCaptures(extractor: FakeTextExtractor()).store,
-          speech: speech.store,
-        ),
-      );
+      await pumpWithSpeech(tester, speech);
       await tester.pump();
 
       expect(find.text('FUNCIONA SEM INTERNET'), findsOneWidget);
@@ -251,14 +251,7 @@ void main() {
     testWidgets('sem rede: esperando, sem botão de tentar', (tester) async {
       final speech = fakeSpeechModel();
       speech.storage.offline = true;
-      await tester.pumpPage(
-        const ProfilePage(),
-        deps: fakeDependencies(
-          auth: await signedInAuthStore(),
-          captures: fakeCaptures(extractor: FakeTextExtractor()).store,
-          speech: speech.store,
-        ),
-      );
+      await pumpWithSpeech(tester, speech);
       await tester.pump();
 
       expect(find.text('Esperando'), findsOneWidget);
