@@ -63,6 +63,24 @@ mixin AuthForm<T extends StatefulWidget> on State<T> {
     }
   }
 
+  VoidCallback? get onGoogle => busy
+      ? null
+      : () => submit(
+          auth.signInWithGoogle,
+          onResult,
+          failure: context.l10n.googleFailed,
+          button: AuthAction.google,
+        );
+
+  VoidCallback? get onApple => busy
+      ? null
+      : () => submit(
+          auth.signInWithApple,
+          onResult,
+          failure: context.l10n.appleFailed,
+          button: AuthAction.apple,
+        );
+
   void push(Widget page) =>
       Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
 

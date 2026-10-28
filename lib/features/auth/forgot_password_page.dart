@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/logic/auth_form.dart';
 import 'package:tagarela/features/auth/widgets/auth_header.dart';
+import 'package:tagarela/features/auth/widgets/email_field.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -49,13 +50,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with AuthForm {
           context.l10n.forgotBody,
           style: AppText.bodyLg.copyWith(color: c.inkSoft),
         ),
-        AppTextField(
-          label: context.l10n.email,
-          hint: context.l10n.emailHint,
-          icon: AppIcons.mail,
+        EmailField(
           controller: _email,
           errorText: errors['email'],
-          keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.done,
         ),
         AppButton(
@@ -65,20 +62,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with AuthForm {
           size: AppButtonSize.large,
           expand: true,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              context.l10n.rememberedPassword,
-              style: AppText.bodyMd.copyWith(color: c.inkSoft),
-            ),
-            AppButton(
-              label: context.l10n.signIn,
-              onPressed: () => Navigator.of(context).pop(),
-              variant: AppButtonVariant.text,
-              size: AppButtonSize.small,
-            ),
-          ],
+        TextLinkRow(
+          text: context.l10n.rememberedPassword,
+          link: context.l10n.signIn,
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ],
     );

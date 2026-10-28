@@ -4,6 +4,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/forgot_password_page.dart';
 import 'package:tagarela/features/auth/logic/auth_form.dart';
 import 'package:tagarela/features/auth/signup_page.dart';
+import 'package:tagarela/features/auth/widgets/email_field.dart';
 import 'package:tagarela/features/auth/widgets/social_buttons.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -54,15 +55,7 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
             ),
           ],
         ),
-        AppTextField(
-          label: context.l10n.email,
-          hint: context.l10n.emailHint,
-          icon: AppIcons.mail,
-          controller: _email,
-          errorText: errors['email'],
-          keyboardType: TextInputType.emailAddress,
-          textInputAction: TextInputAction.next,
-        ),
+        EmailField(controller: _email, errorText: errors['email']),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -91,39 +84,11 @@ class _LoginPageState extends State<LoginPage> with AuthForm {
           expand: true,
           loading: loading == AuthAction.submit,
         ),
-        SocialButtons(
-          loading: loading,
-          onGoogle: busy
-              ? null
-              : () => submit(
-                  auth.signInWithGoogle,
-                  onResult,
-                  failure: context.l10n.googleFailed,
-                  button: AuthAction.google,
-                ),
-          onApple: busy
-              ? null
-              : () => submit(
-                  auth.signInWithApple,
-                  onResult,
-                  failure: context.l10n.appleFailed,
-                  button: AuthAction.apple,
-                ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              context.l10n.newHere,
-              style: AppText.bodyMd.copyWith(color: c.inkSoft),
-            ),
-            AppButton(
-              label: context.l10n.createAccount,
-              onPressed: () => push(const SignupPage()),
-              variant: AppButtonVariant.text,
-              size: AppButtonSize.small,
-            ),
-          ],
+        SocialButtons(loading: loading, onGoogle: onGoogle, onApple: onApple),
+        TextLinkRow(
+          text: context.l10n.newHere,
+          link: context.l10n.createAccount,
+          onPressed: () => push(const SignupPage()),
         ),
       ],
     );

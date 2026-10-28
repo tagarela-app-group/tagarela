@@ -24,13 +24,13 @@ void main() {
   ) async {
     await tester.pumpComponent(
       const IconTile(
-        glyph: SpeechBubbleIcon(),
+        glyph: DrawnIcon(DrawnGlyph.bubble),
         accent: AppAccent.violet,
         size: 64,
       ),
     );
 
-    final bubble = find.byType(SpeechBubbleIcon);
+    final bubble = drawnIcon(DrawnGlyph.bubble);
     expect(bubble, findsOneWidget);
     expect(tester.getSize(bubble), const Size.square(32));
     expect(

@@ -12,11 +12,11 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.byType(SpeechBubbleIcon), findsNWidgets(4));
+    expect(drawnIcon(DrawnGlyph.bubble), findsNWidgets(4));
 
     await tester.pumpAndSettle();
 
-    expect(find.byType(SpeechBubbleIcon), findsNothing);
+    expect(drawnIcon(DrawnGlyph.bubble), findsNothing);
   });
 
   testWidgets('com animação desligada não mostra nada', (tester) async {
@@ -28,6 +28,6 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.byType(SpeechBubbleIcon), findsNothing);
+    expect(drawnIcon(DrawnGlyph.bubble), findsNothing);
   });
 }

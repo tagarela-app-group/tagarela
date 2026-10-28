@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/design_system/components/status_pill.dart';
 import 'package:tagarela/design_system/theme.dart';
-import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
@@ -157,16 +156,9 @@ class _ActionKey extends StatelessWidget {
     final c = context.colors;
     final icon = this.icon;
     if (icon == null) return SizedBox(width: width);
-    final (bg, fg) = switch (tone) {
-      StatusTone.learning => (c.learningSoft, c.learningText),
-      StatusTone.mastered => (c.masteredSoft, c.masteredText),
-      StatusTone.primary => (c.primarySoft, c.primaryText),
-      StatusTone.neutral => (c.line, c.ink),
-      StatusTone.alert => (
-        c.accent(AppAccent.coral).soft,
-        c.accent(AppAccent.coral).fg,
-      ),
-    };
+    final (bg, fg) = tone == StatusTone.neutral
+        ? (c.line, c.ink)
+        : tone.colors(c);
     return Semantics(
       button: true,
       enabled: onPressed != null,

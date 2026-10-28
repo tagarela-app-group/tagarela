@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import 'package:tagarela/design_system/components/speech_bubble_icon.dart';
+import 'package:tagarela/design_system/components/drawn_icon.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 
@@ -86,7 +86,8 @@ class _BubbleBurstState extends State<BubbleBurst>
         child: Transform.scale(
           scale: 0.3 + 0.7 * travel,
           child: bubble
-              ? SpeechBubbleIcon(
+              ? DrawnIcon(
+                  DrawnGlyph.bubble,
                   size: size,
                   color: i % 4 == 0 ? primaryText : primary,
                 )

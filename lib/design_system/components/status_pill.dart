@@ -5,7 +5,21 @@ import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
-enum StatusTone { learning, mastered, primary, neutral, alert }
+enum StatusTone {
+  learning,
+  mastered,
+  primary,
+  neutral,
+  alert;
+
+  (Color, Color) colors(AppColors c) => switch (this) {
+    learning => (c.learningSoft, c.learningText),
+    mastered => (c.masteredSoft, c.masteredText),
+    primary => (c.primarySoft, c.primaryText),
+    neutral => (c.surfaceAlt, c.inkSoft),
+    alert => (c.accent(AppAccent.coral).soft, c.accent(AppAccent.coral).fg),
+  };
+}
 
 class StatusPill extends StatelessWidget {
   const StatusPill({super.key, required this.label, required this.tone});
@@ -15,17 +29,7 @@ class StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
-    final (bg, fg) = switch (tone) {
-      StatusTone.learning => (c.learningSoft, c.learningText),
-      StatusTone.mastered => (c.masteredSoft, c.masteredText),
-      StatusTone.primary => (c.primarySoft, c.primaryText),
-      StatusTone.neutral => (c.surfaceAlt, c.inkSoft),
-      StatusTone.alert => (
-        c.accent(AppAccent.coral).soft,
-        c.accent(AppAccent.coral).fg,
-      ),
-    };
+    final (bg, fg) = tone.colors(context.colors);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
