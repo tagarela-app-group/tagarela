@@ -16,7 +16,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 8. Teste em aparelho é do usuário. Print só se pedir, ~400 px.
 9. Dependência nova: checar manutenção e contar ao usuário; nativa ou mal mantida: perguntar. Versões com 2+ semanas.
 10. Tipagem estrita: sem `dynamic` nem tipo implícito; parâmetros, retornos e coleções tipados. JSON entra como `Json`/`Object?` e vira model no `fromJson`, com cast explícito.
-12. Sem repetição: antes de escrever, procurar o que já existe em `lib/` e `test/`. Código igual em 2 lugares vira uma peça só, no lugar certo (função em `logic/`, widget no design system, helper em `test/helpers/`). Igual por acaso, com regra diferente, fica separado. Repetição antiga no arquivo mexido: avisar e propor extrair.
+11. Sem repetição: antes de escrever, procurar o que já existe em `lib/` e `test/`. Código igual em 2 lugares vira uma peça só, no lugar certo (função em `logic/`, widget no design system, helper em `test/helpers/`). Igual por acaso, com regra diferente, fica separado. Repetição antiga no arquivo mexido: avisar e propor extrair.
 
 ## Produto
 
