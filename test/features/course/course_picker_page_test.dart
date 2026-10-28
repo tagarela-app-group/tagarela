@@ -128,7 +128,7 @@ void main() {
           child: const Text('abrir'),
         ),
       ),
-      courses: courses.store,
+      deps: fakeDependencies(courses: courses.store),
     );
     await tester.tap(find.text('abrir'));
     await tester.pump();
@@ -149,7 +149,7 @@ void main() {
     final courses = fakeCourses(const []);
     await tester.pumpPage(
       const CoursePickerPage(),
-      courses: courses.store,
+      deps: fakeDependencies(courses: courses.store),
       load: false,
     );
     await tester.tap(find.text('Espanhol'));
@@ -174,7 +174,7 @@ void main() {
     final courses = fakeCourses(const []);
     await tester.pumpPage(
       const CoursePickerPage(),
-      courses: courses.store,
+      deps: fakeDependencies(courses: courses.store),
       load: false,
     );
     courses.api.offline = true;

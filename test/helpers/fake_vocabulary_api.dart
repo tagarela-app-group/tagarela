@@ -1,26 +1,22 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/data/stores/vocabulary_store.dart';
 
+import 'fake_api.dart';
 import 'fixtures.dart';
 
-class FakeVocabularyApi implements ApiClient {
+class FakeVocabularyApi extends FakeApi {
   FakeVocabularyApi([Json seed = sampleVocabularyJson]) {
-    final copy = _copy(seed) as Json;
+    final copy = FakeApi.copyJson(seed)! as Json;
     groups.addAll([for (final g in copy['groups']! as List) g as Json]);
     ungrouped.addAll([for (final t in copy['ungrouped']! as List) t as Json]);
   }
 
   final groups = <Json>[];
   final ungrouped = <Json>[];
-  final calls = <String>[];
-  final bodies = <String, Object?>{};
-  final rejections = <String, int>{};
   final cards = <String, Json>{};
   final seen = <String, List<Json>>{};
   final revealed = <String>{};
@@ -29,96 +25,66 @@ class FakeVocabularyApi implements ApiClient {
   Completer<void>? holdCard;
   final _deleted = <({Json term, String? groupId})>[];
 
-  bool offline = false;
   var _ids = 0;
 
   @override
-  String get baseUrl => 'fake-vocabulary://';
-
-  @override
-  AccessToken? get accessToken => null;
-
-  @override
   Future<Object?> get(String path, {Duration? timeout}) async {
-    if (path.startsWith(_termPath)) {
-      await holdCard?.future;
-      return _handle('GET', path, null, () => _detail(path));
-    }
-    return _handle('GET', path, null, () => _vocabulary());
+    if (path.startsWith(_termPath)) await holdCard?.future;
+    return super.get(path);
   }
 
   @override
-  Future<Object?> post(String path, Map<String, Object?> body) =>
-      _handle('POST', path, body, () {
-        if (path == '/api/v1/groups') return _createGroup(body);
-        final ids = [for (final id in body['terms']! as List) id as String];
-        switch (path) {
-          case '/api/v1/terms/delete':
-            _deleted
-              ..clear()
-              ..addAll(_take(ids));
-          case '/api/v1/terms/restore':
-            _restore(ids);
-          default:
-            _move(ids, body['group'] as String?);
-        }
-        return _vocabulary();
-      });
+  Object? respond(String method, String path, Map<String, Object?>? body) =>
+      switch (method) {
+        'GET' => path.startsWith(_termPath) ? _detail(path) : _vocabulary(),
+        'POST' => _post(path, body!),
+        'PATCH' => _patch(path, body!),
+        'DELETE' => _delete(path),
+        _ => throw UnimplementedError(),
+      };
 
-  @override
-  Future<Object?> patch(String path, Map<String, Object?> body) =>
-      _handle('PATCH', path, body, () {
-        if (!path.startsWith(_termPath)) {
-          return _updateGroup(_groupOf(path), body);
-        }
-        final id = path.substring(_termPath.length);
-        for (final (key, ids) in [
-          ('revealed', revealed),
-          ('pitfall_revealed', pitfallRevealed),
-          ('formality_revealed', formalityRevealed),
-        ]) {
-          if (body[key] case final bool on) on ? ids.add(id) : ids.remove(id);
-        }
-        return _detail(path);
-      });
+  Json _post(String path, Map<String, Object?> body) {
+    if (path == '/api/v1/groups') return _createGroup(body);
+    final ids = [for (final id in body['terms']! as List) id as String];
+    switch (path) {
+      case '/api/v1/terms/delete':
+        _deleted
+          ..clear()
+          ..addAll(_take(ids));
+      case '/api/v1/terms/restore':
+        _restore(ids);
+      default:
+        _move(ids, body['group'] as String?);
+    }
+    return _vocabulary();
+  }
 
-  @override
-  Future<Object?> delete(String path) => _handle('DELETE', path, null, () {
+  Json _patch(String path, Map<String, Object?> body) {
+    if (!path.startsWith(_termPath)) {
+      return _updateGroup(_groupOf(path), body);
+    }
+    final id = path.substring(_termPath.length);
+    for (final (key, ids) in [
+      ('revealed', revealed),
+      ('pitfall_revealed', pitfallRevealed),
+      ('formality_revealed', formalityRevealed),
+    ]) {
+      if (body[key] case final bool on) on ? ids.add(id) : ids.remove(id);
+    }
+    return _detail(path);
+  }
+
+  Json _delete(String path) {
     final group = _groupOf(path);
     groups.remove(group);
     ungrouped.insertAll(0, (group['terms']! as List).cast<Json>());
     return _vocabulary();
-  });
-
-  @override
-  Future<ApiResponse> send(
-    String method,
-    String path, {
-    Object? body,
-    Map<String, String> headers = const {},
-    Duration? timeout,
-  }) => throw UnimplementedError();
+  }
 
   List<String> termsOf(String? groupId) => [
     for (final t in groupId == null ? ungrouped : _terms(groupId))
       t['text']! as String,
   ];
-
-  Future<Object?> _handle(
-    String method,
-    String path,
-    Object? body,
-    Object? Function() handler,
-  ) async {
-    final route = '$method $path';
-    calls.add(route);
-    bodies[route] = body;
-    if (offline) throw const SocketException('sem rede');
-    if (rejections[route] case final status?) {
-      throw ApiException(status, route);
-    }
-    return _copy(handler());
-  }
 
   Json _createGroup(Map<String, Object?> body) {
     final name = body['name']! as String;
@@ -224,8 +190,6 @@ class FakeVocabularyApi implements ApiClient {
       'captures': seen[id] ?? const <Json>[],
     };
   }
-
-  static Object? _copy(Object? json) => jsonDecode(jsonEncode(json));
 }
 
 typedef FakeVocabulary = ({VocabularyStore store, FakeVocabularyApi api});

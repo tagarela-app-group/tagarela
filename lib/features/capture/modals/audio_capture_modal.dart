@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'package:tagarela/app/app_dependencies.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/device/capture_device.dart';
 import 'package:tagarela/data/models/models.dart';
@@ -56,7 +57,7 @@ class _AudioCaptureModalState extends State<AudioCaptureModal> {
 
   static const _tick = Duration(milliseconds: 200);
 
-  late final AppScope _scope;
+  late final AppDependencies _scope;
   Timer? _ticker;
   Duration _elapsed = Duration.zero;
   _Phase _phase = _Phase.starting;

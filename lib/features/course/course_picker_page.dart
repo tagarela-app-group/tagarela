@@ -53,9 +53,9 @@ class _CoursePickerPageState extends State<CoursePickerPage> {
     }
     if (widget.closable) {
       navigator.pop();
-      await scope.loadStudy();
+      await scope.session.loadStudy();
     } else {
-      await scope.loadAll();
+      await scope.session.loadAll();
     }
   }
 

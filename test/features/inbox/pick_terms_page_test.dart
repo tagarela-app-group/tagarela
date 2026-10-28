@@ -35,7 +35,7 @@ void main() {
           ),
         ),
       ),
-      captures: captures.store,
+      deps: fakeDependencies(captures: captures.store),
     );
     await tester.tap(find.text('Abrir'));
     await tester.pump();

@@ -38,7 +38,7 @@ class _CourseModalState extends State<CourseModal> {
       return;
     }
     navigator.pop();
-    await scope.loadStudy();
+    await scope.session.loadStudy();
   }
 
   void _add() {

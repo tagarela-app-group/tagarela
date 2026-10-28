@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tagarela/app/app_dependencies.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/app/auth_gate.dart';
 import 'package:tagarela/app/home_shell.dart';
@@ -13,18 +14,19 @@ void main() {
 
   setUp(() => api = FakeAuthApi());
 
-  Future<AppScope> pumpGate(
+  Future<AppDependencies> pumpGate(
     WidgetTester tester,
     FakeTokenStorage storage,
   ) async {
     tester.useTallScreen();
-    final scope = testScope(
+    final app = fakeDependencies(
       auth: fakeAuthStore(api: api, storage: storage),
-      child: testApp(const AuthGate()),
     );
-    await tester.pumpWidget(scope);
+    await tester.pumpWidget(
+      AppScope(dependencies: app, child: testApp(const AuthGate())),
+    );
     await tester.pumpAndSettle();
-    return scope;
+    return app;
   }
 
   testWidgets('sem sessão salva abre o login', (tester) async {

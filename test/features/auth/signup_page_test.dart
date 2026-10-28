@@ -16,7 +16,7 @@ void main() {
 
   Future<void> pumpSignup(WidgetTester tester) => tester.pumpPage(
     const SignupPage(),
-    auth: fakeAuthStore(api: api),
+    deps: fakeDependencies(auth: fakeAuthStore(api: api)),
     load: false,
   );
 

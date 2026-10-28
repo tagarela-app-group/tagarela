@@ -18,7 +18,10 @@ void main() {
   testWidgets('mostra a duração e toca/para no toque', (tester) async {
     final playback = FakeAudioPlayback();
     final file = File('captures/audio/a1.m4a');
-    await tester.pumpPage(AudioClip(file: file), playback: playback);
+    await tester.pumpPage(
+      AudioClip(file: file),
+      deps: fakeDependencies(playback: playback),
+    );
     await tester.pump();
 
     expect(find.text('0:04'), findsOneWidget);

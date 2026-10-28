@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/exercise_service.dart';
 import 'package:tagarela/data/services/review_service.dart';
 import 'package:tagarela/data/stores/practice_store.dart';
+
+import 'fake_api.dart';
 
 const Json fenceTermJson = {
   'id': 't-fence',
@@ -47,7 +48,7 @@ Json listenWriteJson(
   };
 }
 
-class FakePracticeApi implements ApiClient {
+class FakePracticeApi extends FakeApi {
   FakePracticeApi({this.due = 2, List<Json>? rounds})
     : rounds =
           rounds ??
@@ -58,7 +59,6 @@ class FakePracticeApi implements ApiClient {
 
   int due;
   final List<Json> rounds;
-  final calls = <String>[];
   final attempts = <Map<String, Object?>>[];
   final exercises = <String, List<Json>>{
     't-fence': [
@@ -81,18 +81,14 @@ class FakePracticeApi implements ApiClient {
   };
   final failing = <String>{};
   Completer<void>? hold;
-  bool offline = false;
 
   @override
-  String get baseUrl => 'fake-practice://';
-
-  @override
-  AccessToken? get accessToken => null;
-
-  @override
-  Future<Object?> get(String path, {Duration? timeout}) async {
-    calls.add('GET $path');
-    if (offline) throw const SocketException('sem rede');
+  Future<Object?> respond(
+    String method,
+    String path,
+    Map<String, Object?>? body,
+  ) async {
+    if (method == 'POST') return _attempt(body!);
     if (path.startsWith('/api/v1/reviews')) {
       return {'due': due, 'rounds': rounds};
     }
@@ -102,9 +98,7 @@ class FakePracticeApi implements ApiClient {
     return {'exercises': exercises[termId] ?? const <Json>[]};
   }
 
-  @override
-  Future<Object?> post(String path, Map<String, Object?> body) async {
-    calls.add('POST $path');
+  Json _attempt(Map<String, Object?> body) {
     attempts.add(body);
     final term = [
       for (final r in rounds) r['term']! as Json,
@@ -113,22 +107,6 @@ class FakePracticeApi implements ApiClient {
       'term': {...term, 'level': (term['level']! as int) + 1},
     };
   }
-
-  @override
-  Future<Object?> patch(String path, Map<String, Object?> body) =>
-      throw UnimplementedError();
-
-  @override
-  Future<Object?> delete(String path) => throw UnimplementedError();
-
-  @override
-  Future<ApiResponse> send(
-    String method,
-    String path, {
-    Object? body,
-    Map<String, String> headers = const {},
-    Duration? timeout,
-  }) => throw UnimplementedError();
 }
 
 typedef FakePractice = ({PracticeStore store, FakePracticeApi api});

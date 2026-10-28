@@ -15,7 +15,7 @@ void main() {
     await vocabulary.store.load();
     final results = await tester.openModalOf<TermGroup>(
       const GroupModal(),
-      vocabulary: vocabulary.store,
+      deps: fakeDependencies(vocabulary: vocabulary.store),
     );
     return (results, vocabulary);
   }
@@ -25,7 +25,7 @@ void main() {
     await vocabulary.store.load();
     final results = await tester.openModalOf<TermGroup>(
       GroupModal(group: vocabulary.store.data!.group('1')),
-      vocabulary: vocabulary.store,
+      deps: fakeDependencies(vocabulary: vocabulary.store),
     );
     return (results, vocabulary);
   }

@@ -40,7 +40,10 @@ void main() {
   ]);
 
   Future<void> pumpInbox(WidgetTester tester) async {
-    await tester.pumpPage(const InboxPage(), captures: captures.store);
+    await tester.pumpPage(
+      const InboxPage(),
+      deps: fakeDependencies(captures: captures.store),
+    );
   }
 
   List<String> sectionLabels(WidgetTester tester) => [

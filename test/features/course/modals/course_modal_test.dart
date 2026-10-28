@@ -23,8 +23,10 @@ void main() {
           ),
         ),
       ),
-      courses: courses.store,
-      vocabulary: vocabulary.store,
+      deps: fakeDependencies(
+        courses: courses.store,
+        vocabulary: vocabulary.store,
+      ),
     );
     await tester.tap(find.text('abrir'));
     await tester.pumpAndSettle();

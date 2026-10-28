@@ -16,7 +16,7 @@ void main() {
   Future<void> save(WidgetTester tester) async {
     await tester.pumpPage(
       const NewPasswordPage(code: '482913', sessionToken: 'session-1'),
-      auth: fakeAuthStore(api: api),
+      deps: fakeDependencies(auth: fakeAuthStore(api: api)),
       load: false,
     );
     await tester.enterText(textField('Nova senha'), 'nova-s3nha-456');

@@ -8,6 +8,7 @@ import 'package:tagarela/features/capture/modals/photo_capture_modal.dart';
 
 import '../../../helpers/fake_capture_store.dart';
 import '../../../helpers/open_modal.dart';
+import '../../../helpers/pump_app.dart';
 
 void main() {
   late FakeCaptures captures;
@@ -20,8 +21,7 @@ void main() {
 
   Future<List<Capture?>> open(WidgetTester tester) => tester.openModal(
     const PhotoCaptureModal(),
-    captures: captures.store,
-    device: device,
+    deps: fakeDependencies(captures: captures.store, device: device),
   );
 
   testWidgets('mostra câmera, galeria e aviso de privacidade', (tester) async {

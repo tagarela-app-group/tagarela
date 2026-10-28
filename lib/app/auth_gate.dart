@@ -19,7 +19,7 @@ class _AuthGateState extends State<AuthGate> {
     final scope = AppScope.of(context);
     await scope.language.load();
     final signedIn = await scope.auth.restore();
-    if (signedIn) scope.loadAll();
+    if (signedIn) scope.session.loadAll();
     return signedIn;
   }
 

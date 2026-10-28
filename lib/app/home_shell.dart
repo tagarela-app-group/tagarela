@@ -20,7 +20,7 @@ class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
 
   static void open(BuildContext context) {
-    AppScope.of(context).loadAll();
+    AppScope.of(context).session.loadAll();
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const CourseGate()),
       (_) => false,
