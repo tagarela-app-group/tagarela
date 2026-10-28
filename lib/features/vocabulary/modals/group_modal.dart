@@ -5,6 +5,7 @@ import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/group_style.dart';
 
 class GroupModal extends StatefulWidget {
   const GroupModal({this.group, super.key});
@@ -19,11 +20,8 @@ class GroupModal extends StatefulWidget {
 
 class _GroupModalState extends State<GroupModal> {
   late final _name = TextEditingController(text: widget.group?.name);
-  late var _icon = GroupIcon.values.firstWhere(
-    (i) => i.icon == widget.group?.icon,
-    orElse: () => GroupIcon.layers,
-  );
-  late var _accent = widget.group?.accent ?? AppAccent.violet;
+  late var _icon = widget.group?.icon ?? GroupIcon.layers;
+  late var _color = widget.group?.color ?? GroupColor.violet;
   var _busy = false;
   String? _error;
 
@@ -41,16 +39,12 @@ class _GroupModalState extends State<GroupModal> {
     final action = editing == null ? 'create' : 'save';
     try {
       final group = editing == null
-          ? await vocabulary.createGroup(
-              name: name,
-              icon: _icon,
-              accent: _accent,
-            )
+          ? await vocabulary.createGroup(name: name, icon: _icon, color: _color)
           : await vocabulary.updateGroup(
               editing.id,
               name: name,
               icon: _icon,
-              accent: _accent,
+              color: _color,
             );
       if (mounted) Navigator.pop(context, group);
     } on ApiException catch (e) {
@@ -80,8 +74,8 @@ class _GroupModalState extends State<GroupModal> {
     final taken = vocabulary?.hasGroupNamed(name, except: editing?.id) ?? false;
 
     return AppModal(
-      icon: _icon.icon,
-      accent: _accent,
+      icon: _icon.glyph,
+      accent: _color.accent,
       title: editing == null ? context.l10n.newGroup : context.l10n.editGroup,
       subtitle: editing == null
           ? context.l10n.groupModalNewHint
@@ -103,15 +97,16 @@ class _GroupModalState extends State<GroupModal> {
           IconPicker(
             icons: [
               for (final i in GroupIcon.values)
-                (icon: i.icon, label: context.l10n.groupIcon(i.name)),
+                (icon: i.glyph, label: context.l10n.groupIcon(i.name)),
             ],
             selected: _icon.index,
-            accent: _accent,
+            accent: _color.accent,
             onChanged: (i) => setState(() => _icon = GroupIcon.values[i]),
           ),
           AccentPicker(
-            selected: _accent,
-            onChanged: (accent) => setState(() => _accent = accent),
+            selected: _color.accent,
+            onChanged: (accent) =>
+                setState(() => _color = GroupColorAccent.of(accent)),
           ),
           AppButton(
             label: switch ((name.isEmpty, editing)) {

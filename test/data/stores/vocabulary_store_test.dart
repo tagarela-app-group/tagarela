@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
-import 'package:tagarela/design_system/design_system.dart';
 
 import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/fixtures.dart';
@@ -29,7 +28,7 @@ void main() {
     final group = await store.createGroup(
       name: 'Música',
       icon: GroupIcon.music,
-      accent: AppAccent.pink,
+      color: GroupColor.pink,
     );
 
     expect(api.bodies['POST /api/v1/groups'], {
@@ -37,7 +36,7 @@ void main() {
       'icon': 'music',
       'accent': 'pink',
     });
-    expect(group.icon, AppIcons.music);
+    expect(group.icon, GroupIcon.music);
     expect(store.data!.groups.first.id, group.id);
   });
 
@@ -49,7 +48,7 @@ void main() {
       store.createGroup(
         name: 'viagem',
         icon: GroupIcon.travel,
-        accent: AppAccent.sky,
+        color: GroupColor.sky,
       ),
       throwsA(
         isA<ApiException>().having(

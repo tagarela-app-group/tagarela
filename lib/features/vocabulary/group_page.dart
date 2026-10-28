@@ -9,6 +9,7 @@ import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
 import 'package:tagarela/features/vocabulary/modals/move_modal.dart';
 import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/group_style.dart';
 
 class GroupPage extends StatefulWidget {
   const GroupPage({super.key, required String this.groupId});
@@ -187,7 +188,7 @@ class _GroupPageState extends State<GroupPage> {
           },
           child: AppPage(
             header: _GroupHeader(
-              icon: group?.icon ?? AppIcons.ungrouped,
+              icon: group?.glyph ?? AppIcons.ungrouped,
               name: group?.name ?? context.l10n.ungrouped,
               meta: _meta(context.l10n, group, terms, selected),
               bar: filtered ? group : null,
@@ -266,7 +267,7 @@ class _GroupPageState extends State<GroupPage> {
                         message: context.l10n.allOrganizedMessage,
                       )
                     : StateMessage(
-                        icon: group?.icon ?? AppIcons.vocabulary,
+                        icon: group?.glyph ?? AppIcons.vocabulary,
                         accent: group?.accent ?? AppAccent.violet,
                         title: context.l10n.groupEmptyTitle,
                         message: context.l10n.groupEmptyMessage,
@@ -393,7 +394,7 @@ class _GroupMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppModal(
-      icon: group.icon,
+      icon: group.glyph,
       accent: group.accent,
       title: group.name,
       subtitle: context.l10n.termCount(group.terms.length),

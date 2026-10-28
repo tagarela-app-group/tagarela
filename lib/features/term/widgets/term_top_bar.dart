@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/group_style.dart';
 
 class TermTopBar extends StatelessWidget {
   const TermTopBar({super.key, required this.group});
@@ -29,7 +30,7 @@ class TermTopBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: 6,
               children: [
-                Icon(group?.icon ?? AppIcons.ungrouped, size: 14),
+                Icon(group?.glyph ?? AppIcons.ungrouped, size: 14),
                 Flexible(
                   child: Text(
                     group?.name ?? l10n.ungrouped,

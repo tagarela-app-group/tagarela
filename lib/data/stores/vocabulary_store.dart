@@ -1,7 +1,6 @@
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/data/stores/store.dart';
-import 'package:tagarela/design_system/tokens/app_colors.dart';
 
 class VocabularyStore extends Store<Vocabulary> {
   VocabularyStore(this._service);
@@ -28,12 +27,12 @@ class VocabularyStore extends Store<Vocabulary> {
   Future<TermGroup> createGroup({
     required String name,
     required GroupIcon icon,
-    required AppAccent accent,
+    required GroupColor color,
   }) async {
     final group = await _service.createGroup(
       name: name,
       icon: icon,
-      accent: accent,
+      color: color,
     );
     emit((data ?? const Vocabulary()).withGroup(group));
     return group;
@@ -43,13 +42,13 @@ class VocabularyStore extends Store<Vocabulary> {
     String id, {
     required String name,
     required GroupIcon icon,
-    required AppAccent accent,
+    required GroupColor color,
   }) async {
     final group = await _service.updateGroup(
       id,
       name: name,
       icon: icon,
-      accent: accent,
+      color: color,
     );
     emit((data ?? const Vocabulary()).withGroup(group));
     return group;
