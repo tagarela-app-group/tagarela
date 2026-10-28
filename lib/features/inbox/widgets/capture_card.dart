@@ -6,8 +6,10 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/device/text_extractor.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/capture_style.dart';
+import 'package:tagarela/shared/logic/time_ago.dart';
+import 'package:tagarela/shared/widgets/audio_clip.dart';
 
 typedef CardAction = (String label, VoidCallback? onPressed);
 
@@ -152,19 +154,6 @@ extension on CaptureSource {
   bool get isPhoto => this == CaptureSource.photo;
 }
 
-String timeAgo(AppLocalizations l10n, DateTime at, DateTime now) {
-  final local = at.toLocal();
-  final diff = now.difference(local);
-  if (diff.inMinutes < 1) return l10n.timeNow;
-  if (diff.inHours < 1) return l10n.minutesAgo(diff.inMinutes);
-  final day = DateTime(local.year, local.month, local.day);
-  if (day == DateTime(now.year, now.month, now.day)) {
-    return l10n.hoursAgo(diff.inHours);
-  }
-  if (day == DateTime(now.year, now.month, now.day - 1)) return l10n.yesterday;
-  return l10n.shortDate(local);
-}
-
 class _Header extends StatelessWidget {
   const _Header({required this.capture, required this.now});
 
@@ -173,11 +162,6 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (icon, accent) = switch (capture.source) {
-      CaptureSource.photo => (AppIcons.camera, AppAccent.mango),
-      CaptureSource.audio => (AppIcons.audio, AppAccent.coral),
-      CaptureSource.text => (AppIcons.text, AppAccent.violet),
-    };
     final tone = switch (capture.status) {
       CaptureStatus.failed => StatusTone.alert,
       CaptureStatus.ready => StatusTone.primary,
@@ -188,7 +172,11 @@ class _Header extends StatelessWidget {
     return Row(
       spacing: AppSpacing.s2,
       children: [
-        IconTile(icon: icon, accent: accent, size: 28),
+        IconTile(
+          icon: capture.source.glyph,
+          accent: capture.source.accent,
+          size: 28,
+        ),
         Expanded(
           child: Text(
             '${l10n.captureSource(capture.source.name)} · '

@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
+import 'package:tagarela/shared/widgets/audio_clip.dart';
 
-import '../../../helpers/fake_capture_store.dart';
-import '../../../helpers/pump_app.dart';
+import '../../helpers/fake_capture_store.dart';
+import '../../helpers/pump_app.dart';
 
 void main() {
   test('clockLabel', () {

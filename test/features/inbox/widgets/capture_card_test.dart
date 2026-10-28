@@ -3,16 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
-import 'package:tagarela/features/inbox/widgets/audio_clip.dart';
+import 'package:tagarela/shared/widgets/audio_clip.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 
 import '../../../helpers/fake_capture_store.dart';
 import '../../../helpers/fake_extraction.dart';
-import '../../../helpers/l10n.dart';
 import '../../../helpers/pump_app.dart';
 
 void main() {
@@ -66,36 +64,6 @@ void main() {
     status: status,
     mediaPath: 'captures/audio/a1.m4a',
   );
-
-  group('timeAgo', () {
-    setUpAll(initializeDateFormatting);
-
-    test('minutos, horas, ontem e data', () {
-      expect(
-        timeAgo(pt, now.subtract(const Duration(seconds: 30)), now),
-        'agora',
-      );
-      expect(
-        timeAgo(pt, now.subtract(const Duration(minutes: 5)), now),
-        'há 5 min',
-      );
-      expect(
-        timeAgo(pt, now.subtract(const Duration(hours: 2)), now),
-        'há 2 h',
-      );
-      expect(timeAgo(pt, DateTime(2026, 10, 22, 23), now), 'ontem');
-      expect(timeAgo(pt, DateTime(2026, 10, 3, 8), now), '03/10');
-    });
-
-    test('data no formato do idioma', () {
-      expect(timeAgo(en, DateTime(2026, 10, 3, 8), now), '10/3');
-      expect(timeAgo(es, DateTime(2026, 10, 3, 8), now), '3/10');
-      expect(
-        timeAgo(en, now.subtract(const Duration(minutes: 5)), now),
-        '5 min ago',
-      );
-    });
-  });
 
   testWidgets('erro: aviso, Descartar e Processar agora', (tester) async {
     final taps = await pumpCard(tester, photo(CaptureStatus.failed));

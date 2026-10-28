@@ -8,7 +8,7 @@ import 'package:tagarela/features/profile/modals/country_modal.dart';
 import 'package:tagarela/features/profile/widgets/offline_section.dart';
 import 'package:tagarela/features/profile/widgets/profile_section.dart';
 import 'package:tagarela/features/profile/widgets/progress_card.dart';
-import 'package:tagarela/features/profile/widgets/user_avatar.dart';
+import 'package:tagarela/shared/widgets/user_avatar.dart';
 import 'package:tagarela/l10n/countries/countries.dart';
 import 'package:tagarela/l10n/l10n.dart';
 

@@ -4,9 +4,9 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/inbox/logic/term_selection.dart';
-import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 import 'package:tagarela/features/inbox/widgets/word_picker.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/time_ago.dart';
 
 class PickTermsPage extends StatefulWidget {
   const PickTermsPage({super.key, required this.capture});

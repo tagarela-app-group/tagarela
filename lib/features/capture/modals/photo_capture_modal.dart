@@ -9,6 +9,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/capture/widgets/permission_notice.dart';
 import 'package:tagarela/features/capture/widgets/privacy_note.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/capture_style.dart';
 
 class PhotoCaptureModal extends StatefulWidget {
   const PhotoCaptureModal({super.key});
@@ -70,16 +71,16 @@ class _PhotoCaptureModalState extends State<PhotoCaptureModal> {
   Widget build(BuildContext context) {
     final photo = _photo;
     return AppModal(
-      icon: AppIcons.camera,
-      accent: AppAccent.mango,
+      icon: CaptureSource.photo.glyph,
+      accent: CaptureSource.photo.accent,
       title: context.l10n.photo,
       subtitle: photo == null
           ? context.l10n.photoHint
           : context.l10n.checkBeforeSaving,
       child: _denied
           ? PermissionNotice(
-              icon: AppIcons.camera,
-              accent: AppAccent.mango,
+              icon: CaptureSource.photo.glyph,
+              accent: CaptureSource.photo.accent,
               title: context.l10n.cameraDeniedTitle,
               message: context.l10n.cameraDeniedMessage,
             )
@@ -93,8 +94,8 @@ class _PhotoCaptureModalState extends State<PhotoCaptureModal> {
                   spacing: AppSpacing.s3,
                   children: [
                     OptionRow(
-                      icon: AppIcons.camera,
-                      accent: AppAccent.mango,
+                      icon: CaptureSource.photo.glyph,
+                      accent: CaptureSource.photo.accent,
                       title: context.l10n.takePhoto,
                       subtitle: context.l10n.takePhotoHint,
                       onTap: () => _pick(PhotoOrigin.camera),
