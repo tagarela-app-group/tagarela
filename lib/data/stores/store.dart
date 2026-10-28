@@ -36,6 +36,12 @@ abstract class Store<T extends Object> extends ChangeNotifier {
     }
   }
 
+  void clear() {
+    _data = null;
+    _error = null;
+    notifyListeners();
+  }
+
   @protected
   void emit(T data) {
     _data = data;

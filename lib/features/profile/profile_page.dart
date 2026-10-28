@@ -124,7 +124,7 @@ class ProfilePage extends StatelessWidget {
 
   Future<void> _logout(BuildContext context) async {
     final navigator = Navigator.of(context, rootNavigator: true);
-    await AppScope.of(context).auth.logout();
+    await AppScope.of(context).session.signOut();
     navigator.pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const LoginPage()),
       (_) => false,

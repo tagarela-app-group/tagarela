@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/services/api_client.dart';
+import 'package:tagarela/data/stores/store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
@@ -279,7 +280,7 @@ void main() {
     final storage = FakeTokenStorage();
     final auth = fakeAuthStore(api: api, storage: storage);
     await auth.login('ana@example.com', 'x');
-    await tester.pumpPage(
+    final app = await tester.pumpPage(
       const ProfilePage(),
       deps: fakeDependencies(auth: auth),
     );
@@ -294,6 +295,16 @@ void main() {
     expect(navigator.canPop(), isFalse);
     expect(storage.token, isNull);
     expect(api.routes, contains('DELETE /auth/session'));
+    expect(
+      <Store>[
+        app.courses,
+        app.home,
+        app.vocabulary,
+        app.practice,
+        app.captures,
+      ].map((store) => store.data),
+      everyElement(isNull),
+    );
   });
 
   testWidgets('estudo mostra o curso ativo e abre os cursos', (tester) async {

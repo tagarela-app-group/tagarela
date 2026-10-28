@@ -191,4 +191,23 @@ void main() {
 
     expect(speech.storage.downloads, 1);
   });
+
+  test('sair esquece o estudo da conta antes da próxima entrar', () async {
+    final app = fakeDependencies();
+    await app.auth.login('ana@example.com', 'x');
+    await app.session.loadAll();
+
+    await app.session.signOut();
+
+    expect(app.auth.user, isNull);
+    for (final store in <Store>[
+      app.courses,
+      app.home,
+      app.vocabulary,
+      app.practice,
+      app.captures,
+    ]) {
+      expect(store.data, isNull, reason: '$store');
+    }
+  });
 }

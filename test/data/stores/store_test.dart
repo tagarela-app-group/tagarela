@@ -99,6 +99,18 @@ void main() {
     );
   });
 
+  test('clear esquece dado e erro e avisa', () async {
+    final store = _NumberStore()..next = 3;
+    await store.load();
+    var notified = 0;
+    store.addListener(() => notified++);
+
+    store.clear();
+
+    expect((store.data, store.error), (null, null));
+    expect(notified, 1);
+  });
+
   test('emit troca o dado e avisa', () {
     final store = _NumberStore();
     var notified = 0;
