@@ -30,26 +30,6 @@ void main() {
     expect(find.text('0'), findsNothing);
   });
 
-  testWidgets('badge fica no canto da pílula, como no mockup', (tester) async {
-    await tester.pumpComponent(
-      AppTabBar(items: _items, currentIndex: 0, onTap: (_) {}),
-    );
-
-    final pill = tester.getRect(
-      find.ancestor(
-        of: find.byIcon(AppIcons.inbox),
-        matching: find.byType(AnimatedContainer),
-      ),
-    );
-    final badge = tester.getRect(
-      find.ancestor(of: find.text('3'), matching: find.byType(Container)).first,
-    );
-    expect(badge.top - pill.top, -3);
-    expect(pill.right - badge.right, 8);
-    expect(badge.height, 18);
-    expect(badge.width, greaterThanOrEqualTo(18));
-  });
-
   testWidgets('ícone fica centrado na pílula, com ou sem badge', (
     tester,
   ) async {

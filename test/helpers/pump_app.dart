@@ -57,17 +57,14 @@ AppDependencies fakeDependencies({
   );
 }
 
-MaterialApp testApp(
-  Widget home, {
-  ThemeData? theme,
-  Locale locale = const Locale('pt'),
-}) => MaterialApp(
-  theme: theme ?? AppTheme.light,
-  locale: locale,
-  supportedLocales: AppLocalizations.supportedLocales,
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
-  home: home,
-);
+MaterialApp testApp(Widget home, {Locale locale = const Locale('pt')}) =>
+    MaterialApp(
+      theme: AppTheme.light,
+      locale: locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      home: home,
+    );
 
 extension PumpApp on WidgetTester {
   void useTallScreen() {
@@ -80,7 +77,6 @@ extension PumpApp on WidgetTester {
     Widget page, {
     AppDependencies? deps,
     bool load = true,
-    ThemeData? theme,
     Locale locale = const Locale('pt'),
   }) async {
     useTallScreen();
@@ -89,7 +85,7 @@ extension PumpApp on WidgetTester {
     await pumpWidget(
       AppScope(
         dependencies: app,
-        child: testApp(page, theme: theme, locale: locale),
+        child: testApp(page, locale: locale),
       ),
     );
     return app;
@@ -97,14 +93,8 @@ extension PumpApp on WidgetTester {
 
   Future<void> pumpComponent(
     Widget child, {
-    ThemeData? theme,
     Locale locale = const Locale('pt'),
-  }) => pumpPage(
-    Scaffold(body: child),
-    theme: theme,
-    locale: locale,
-    load: false,
-  );
+  }) => pumpPage(Scaffold(body: child), locale: locale, load: false);
 
   Future<void> pumpUntilFound(Finder finder) async {
     for (var i = 0; i < 20 && finder.evaluate().isEmpty; i++) {

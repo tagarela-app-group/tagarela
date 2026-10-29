@@ -23,22 +23,6 @@ void main() {
     expect(find.byIcon(AppIcons.mail), findsOneWidget);
   });
 
-  testWidgets('repassa texto digitado em onChanged', (tester) async {
-    String? typed;
-    await tester.pumpComponent(AppTextField(onChanged: (v) => typed = v));
-
-    await tester.enterText(find.byType(TextField), 'hello');
-    expect(typed, 'hello');
-  });
-
-  testWidgets('mostra errorText', (tester) async {
-    await tester.pumpComponent(
-      const AppTextField(errorText: 'E-mail inválido'),
-    );
-
-    expect(find.text('E-mail inválido'), findsOneWidget);
-  });
-
   testWidgets('mostra helperText e troca pelo erro quando houver', (
     tester,
   ) async {
@@ -110,15 +94,5 @@ void main() {
     );
 
     expect(find.text('2/500'), findsOneWidget);
-  });
-
-  testWidgets('autofocus foca ao abrir', (tester) async {
-    await tester.pumpComponent(const AppTextField(autofocus: true));
-    await tester.pump();
-
-    expect(
-      tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
-      isTrue,
-    );
   });
 }

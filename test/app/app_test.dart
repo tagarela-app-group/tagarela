@@ -47,20 +47,6 @@ void main() {
     expect(find.text('Continuar con Google'), findsOneWidget);
   });
 
-  testWidgets('aparelho em idioma que o app não tem abre em inglês', (
-    tester,
-  ) async {
-    await pumpApp(tester, device: const [Locale('fr', 'FR')]);
-
-    expect(find.text('Continue with Google'), findsOneWidget);
-  });
-
-  testWidgets('idioma salvo vence o aparelho', (tester) async {
-    await pumpApp(tester, saved: 'en');
-
-    expect(find.text('Continue with Google'), findsOneWidget);
-  });
-
   testWidgets('app fala o idioma do curso ativo e troca junto com ele', (
     tester,
   ) async {

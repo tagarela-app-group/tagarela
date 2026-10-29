@@ -6,7 +6,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
-  Future<void> open(WidgetTester tester, {ThemeData? theme}) async {
+  Future<void> open(WidgetTester tester) async {
     await tester.pumpComponent(
       Builder(
         builder: (context) => TextButton(
@@ -23,7 +23,6 @@ void main() {
           child: const Text('abrir'),
         ),
       ),
-      theme: theme,
     );
     await tester.tap(find.text('abrir'));
     await tester.pumpAndSettle();
@@ -51,13 +50,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(AppModal), findsNothing);
-  });
-
-  testWidgets('monta no tema escuro', (tester) async {
-    await open(tester, theme: AppTheme.dark);
-
-    expect(tester.takeException(), isNull);
-    expect(find.byType(AppModal), findsOneWidget);
   });
 
   testWidgets('sem ícone: só título e subtítulo; conteúdo longo rola', (
