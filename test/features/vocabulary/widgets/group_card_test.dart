@@ -10,7 +10,7 @@ TermGroup _group(List<int> levels) => TermGroup(
   name: 'Comida',
   icon: GroupIcon.travel,
   color: GroupColor.mint,
-  terms: [for (final l in levels) Term('t$l', 't', 't', TermKind.word, l)],
+  terms: [for (final l in levels) Term('t$l', 't', TermKind.word, l)],
 );
 
 void main() {

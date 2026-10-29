@@ -6,8 +6,7 @@ import 'package:tagarela/data/models/models.dart';
 
 import '../../helpers/fixtures.dart';
 
-Term _term(int level) =>
-    Term('t$level', 'word', 'palavra', TermKind.word, level);
+Term _term(int level) => Term('t$level', 'word', TermKind.word, level);
 
 TermGroup _group(List<Term> terms) => TermGroup(
   id: '1',
@@ -144,7 +143,6 @@ void main() {
 
       expect(v.groups.single.name, 'Viagem');
       expect(v.ungrouped.single.text, 'touch base');
-      expect(v.ungrouped.single.translation, isEmpty);
     });
 
     test('group acha pelo id', () {

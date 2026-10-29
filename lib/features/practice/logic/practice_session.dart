@@ -38,7 +38,6 @@ class PracticeSession extends ChangeNotifier {
   int get index => _index;
   int get total => _rounds.length;
   bool get done => _index >= _rounds.length;
-  bool get records => record != null;
   PracticeRound? get round => done ? null : _rounds[_index];
   Exercise? get exercise => _exercise;
   Object? get error => _error;

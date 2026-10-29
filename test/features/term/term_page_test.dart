@@ -22,8 +22,8 @@ import '../../helpers/fake_voice.dart';
 import '../../helpers/fixtures.dart';
 import '../../helpers/pump_app.dart';
 
-const _mind = Term('u1', 'mind the gap', '', TermKind.expression, 0);
-const _layover = Term('t2', 'layover', 'escala (de voo)', TermKind.word, 5);
+const _mind = Term('u1', 'mind the gap', TermKind.expression, 0);
+const _layover = Term('t2', 'layover', TermKind.word, 5);
 
 final _inPitfall = find.descendant(
   of: find.byType(TermPitfall),

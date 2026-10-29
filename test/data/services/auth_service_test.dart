@@ -131,7 +131,7 @@ void main() {
         isA<ApiException>()
             .having((e) => e.statusCode, 'statusCode', 400)
             .having(
-              (e) => e.fieldError('country'),
+              (e) => e.fieldErrors['country'],
               'country',
               'Escolha um país da lista.',
             ),

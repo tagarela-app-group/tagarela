@@ -40,6 +40,12 @@ jobs:
       - name: Análise
         run: flutter analyze
 
+      - name: Código sem uso
+        run: dart run dart_code_linter:metrics check-unused-code lib packages test --analyze-private-members --analyze-public-members
+
+      - name: Arquivo sem uso
+        run: dart run dart_code_linter:metrics check-unused-files lib test
+
       - name: Testes
         run: flutter test --coverage
 
