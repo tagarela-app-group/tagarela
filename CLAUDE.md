@@ -17,6 +17,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 9. Dependência nova: checar manutenção e contar ao usuário; nativa ou mal mantida: perguntar. Versões com 2+ semanas.
 10. Tipagem estrita: sem `dynamic` nem tipo implícito; parâmetros, retornos e coleções tipados. JSON entra como `Json`/`Object?` e vira model no `fromJson`, com cast explícito.
 11. Sem repetição: antes de escrever, procurar o que já existe em `lib/` e `test/`. Código igual em 2 lugares vira uma peça só, no lugar certo (função em `logic/`, widget no design system, helper em `test/helpers/`). Igual por acaso, com regra diferente, fica separado. Repetição antiga no arquivo mexido: avisar e propor extrair. A esteira roda o `jscpd` e falha com qualquer trecho repetido.
+12. Sem código morto: a esteira roda o `dart_code_linter` (classe, função, membro público ou privado e arquivo sem uso) e falha com qualquer achado. `test/` conta como uso, pra gancho de teste (ex.: `CaptureStore.extractions`) passar; a ferramenta ignora `@visibleForTesting`. Membro que só teste usa e não é gancho: tirar. `check-unused-l10n` fica de fora: não segue o `context.l10n` e acusa quase toda chave.
 
 ## Produto
 
@@ -60,4 +61,4 @@ https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR (via Artifact tool). Registro 
 
 ## Comandos
 
-`dart format lib test packages` · `flutter analyze --no-pub` · `flutter test --no-pub -r failures-only` · repetição: `npx jscpd@5.4.1 lib test packages --format dart --ignore "**/*.g.dart,**/generated/**,**/country_names.dart" --threshold 0` · drift mudou: `dart run build_runner build` · ARB mudou: `flutter gen-l10n`.
+`dart format lib test packages` · `flutter analyze --no-pub` · `flutter test --no-pub -r failures-only` · repetição: `npx jscpd@5.4.1 lib test packages --format dart --ignore "**/*.g.dart,**/generated/**,**/country_names.dart" --threshold 0` · sem uso: `dart run dart_code_linter:metrics check-unused-code lib packages test --analyze-private-members --analyze-public-members` e `check-unused-files lib test` · drift mudou: `dart run build_runner build` · ARB mudou: `flutter gen-l10n`.

@@ -1,10 +1,7 @@
 import 'package:flutter/services.dart';
 
 enum MoonshineArch {
-  tinyStreaming(2),
-  baseStreaming(3),
-  smallStreaming(4),
-  mediumStreaming(5);
+  tinyStreaming(2);
 
   const MoonshineArch(this.code);
 

@@ -117,7 +117,6 @@ void main() {
     session.solve(Outcome.retry);
     await pumpEventQueue();
 
-    expect(session.records, isTrue);
     expect(recorded, [(fence.id, 'f0', Outcome.retry)]);
   });
 

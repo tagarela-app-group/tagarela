@@ -137,8 +137,6 @@ class ApiException implements Exception {
     _ => const {},
   };
 
-  String? fieldError(String field) => fieldErrors[field];
-
   Exception get forApp =>
       rejected ? RejectedException(fieldErrors) : const ServerException();
 

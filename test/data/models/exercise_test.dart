@@ -72,7 +72,7 @@ void main() {
   });
 
   test('dominado só no último nível', () {
-    Term at(int level) => Term('t', 'x', '', TermKind.word, level);
+    Term at(int level) => Term('t', 'x', TermKind.word, level);
 
     expect(at(Term.maxLevel - 1).status, TermStatus.learning);
     expect(at(Term.maxLevel).status, TermStatus.mastered);

@@ -11,9 +11,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpComponent(
-      const TermTile(
-        term: Term('t1', 'jet lag', 'cansaço', TermKind.expression, 1),
-      ),
+      const TermTile(term: Term('t1', 'jet lag', TermKind.expression, 1)),
     );
 
     expect(find.text('jet lag'), findsOneWidget);
@@ -29,7 +27,7 @@ void main() {
 
   testWidgets('termo dominado', (tester) async {
     await tester.pumpComponent(
-      const TermTile(term: Term('t2', 'layover', 'escala', TermKind.word, 5)),
+      const TermTile(term: Term('t2', 'layover', TermKind.word, 5)),
     );
 
     expect(find.text('PALAVRA'), findsOneWidget);
@@ -42,9 +40,7 @@ void main() {
 
   testWidgets('sem tradução: some a linha', (tester) async {
     await tester.pumpComponent(
-      const TermTile(
-        term: Term('t3', 'touch base', '', TermKind.expression, 0),
-      ),
+      const TermTile(term: Term('t3', 'touch base', TermKind.expression, 0)),
     );
 
     expect(find.text('touch base'), findsOneWidget);
@@ -55,7 +51,7 @@ void main() {
     var taps = 0;
     await tester.pumpComponent(
       TermTile(
-        term: const Term('t1', 'jet lag', 'cansaço', TermKind.expression, 1),
+        term: const Term('t1', 'jet lag', TermKind.expression, 1),
         selecting: true,
         selected: true,
         onTap: () => taps++,
@@ -74,9 +70,7 @@ void main() {
 
   testWidgets('fora da seleção: sem caixa', (tester) async {
     await tester.pumpComponent(
-      const TermTile(
-        term: Term('t1', 'jet lag', 'cansaço', TermKind.expression, 1),
-      ),
+      const TermTile(term: Term('t1', 'jet lag', TermKind.expression, 1)),
     );
 
     expect(find.byType(AppCheckbox), findsNothing);

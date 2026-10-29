@@ -36,16 +36,10 @@ final class WordPiece extends LinePiece {
 }
 
 final class TilesPiece extends LinePiece {
-  const TilesPiece(
-    this.token,
-    this.indices,
-    super.space, {
-    required this.first,
-  });
+  const TilesPiece(this.token, this.indices, super.space);
 
   final GapToken token;
   final List<int> indices;
-  final bool first;
 }
 
 final class HyphenPiece extends LinePiece {
@@ -167,7 +161,7 @@ List<List<LinePiece>> layoutSentence(
           final whole = rest.expand((c) => c).toList();
           final width = m.groupWidth(whole);
           if (x + space + width <= m.maxWidth) {
-            line().add(TilesPiece(token, whole, space, first: first));
+            line().add(TilesPiece(token, whole, space));
             x += space + width;
             break;
           }
@@ -187,14 +181,14 @@ List<List<LinePiece>> layoutSentence(
             continue;
           }
           if (rest.length == 1) {
-            line().add(TilesPiece(token, whole, space, first: first));
+            line().add(TilesPiece(token, whole, space));
             x += space + width;
             break;
           }
           fit = math.max(1, fit);
           final head = rest.take(fit).expand((c) => c).toList();
           line()
-            ..add(TilesPiece(token, head, space, first: first))
+            ..add(TilesPiece(token, head, space))
             ..add(const HyphenPiece());
           wrap();
           rest = rest.sublist(fit);

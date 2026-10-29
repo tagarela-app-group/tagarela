@@ -23,8 +23,6 @@ class ReviewSession {
     ],
   );
 
-  static const empty = ReviewSession(due: 0, rounds: []);
-
   final int due;
   final List<ReviewRound> rounds;
 }

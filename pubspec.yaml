@@ -39,6 +39,7 @@ dev_dependencies:
   drift_dev: ^2.35.1
   build_runner: ^2.15.1
   shared_preferences_platform_interface: ^2.4.2
+  dart_code_linter: ^4.4.2
 
 flutter:
   generate: true

@@ -122,9 +122,9 @@ void main() {
         );
 
     expect(error!.statusCode, 400);
-    expect(error.fieldError('name'), 'Você já tem um grupo com esse nome.');
-    expect(error.fieldError('icon'), isNull);
-    expect(const ApiException(500, 'x').fieldError('name'), isNull);
+    expect(error.fieldErrors['name'], 'Você já tem um grupo com esse nome.');
+    expect(error.fieldErrors['icon'], isNull);
+    expect(const ApiException(500, 'x').fieldErrors['name'], isNull);
   });
 
   test('fieldErrors pega a 1ª mensagem de cada campo e ignora o resto', () {
