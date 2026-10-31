@@ -349,7 +349,7 @@ abstract class AppLocalizations {
   /// No description provided for @tagline.
   ///
   /// In pt, this message translates to:
-  /// **'Inglês de verdade, tirado das conversas do seu dia.'**
+  /// **'Idiomas de verdade, tirados das conversas do seu dia.'**
   String get tagline;
 
   /// No description provided for @forgotTitle.
@@ -745,7 +745,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeEmptyTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Seu inglês começa aqui'**
+  /// **'Seu vocabulário começa aqui'**
   String get homeEmptyTitle;
 
   /// No description provided for @homeEmptyMessage.

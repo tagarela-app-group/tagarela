@@ -170,7 +170,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tagline =>
-      'Inglés de verdad, sacado de las conversaciones de tu día.';
+      'Idiomas de verdad, sacados de las conversaciones de tu día.';
 
   @override
   String get forgotTitle => '¿Olvidaste tu contraseña?';
@@ -383,7 +383,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get openSettings => 'Abrir configuración';
 
   @override
-  String get homeEmptyTitle => 'Tu inglés empieza aquí';
+  String get homeEmptyTitle => 'Tu vocabulario empieza aquí';
 
   @override
   String get homeEmptyMessage =>

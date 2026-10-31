@@ -118,7 +118,7 @@ void main() {
 
     expect(find.byType(ReviewCard), findsNothing);
     expect(find.byType(VocabularySummary), findsNothing);
-    expect(find.text('Seu inglês começa aqui'), findsOneWidget);
+    expect(find.text('Seu vocabulário começa aqui'), findsOneWidget);
     expect(drawnIcon(DrawnGlyph.bubble), findsOneWidget);
     expect(tester.widget<AppPage>(find.byType(AppPage)).centerLast, isTrue);
 
@@ -139,7 +139,7 @@ void main() {
 
     expect(find.byType(ReviewCard), findsOneWidget);
     expect(find.byType(VocabularySummary), findsOneWidget);
-    expect(find.text('Seu inglês começa aqui'), findsNothing);
+    expect(find.text('Seu vocabulário começa aqui'), findsNothing);
   });
 
   testWidgets('espera todos os stores; erro tenta de novo', (tester) async {

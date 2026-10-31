@@ -86,6 +86,13 @@ class AppDatabase extends _$AppDatabase {
     return row == null ? null : _toCapture(row);
   }
 
+  Future<Capture?> captureOf(String owner, String id) async {
+    final query = select(captureRows)
+      ..where((c) => c.id.equals(id) & c.owner.equals(owner));
+    final row = await query.getSingleOrNull();
+    return row == null ? null : _toCapture(row);
+  }
+
   Future<List<Capture>> capturesWithMedia() async {
     final query = select(captureRows)..where((c) => c.mediaPath.isNotNull());
     return [for (final row in await query.get()) _toCapture(row)];
