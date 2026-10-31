@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:tagarela/design_system/components/app_spinner.dart';
 import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
-import 'package:tagarela/l10n/l10n.dart';
 
 enum AppButtonVariant {
   primary,
@@ -95,16 +95,7 @@ class AppButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: AppSpacing.s3,
         children: [
-          ?(loading
-              ? SizedBox.square(
-                  dimension: 18,
-                  child: CircularProgressIndicator(
-                    color: fg,
-                    strokeWidth: 2.5,
-                    semanticsLabel: context.l10n.loading,
-                  ),
-                )
-              : leading),
+          ?(loading ? AppSpinner(size: 18, color: fg) : leading),
           Flexible(
             child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
           ),

@@ -116,17 +116,7 @@ class _StatTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: AppSpacing.s1,
         children: [
-          Row(
-            spacing: 6,
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
-              ),
-              Text(label, style: AppText.label.copyWith(color: fg)),
-            ],
-          ),
+          DotLabel(label: label, dot: dot, color: fg),
           Text('$value', style: AppText.stat),
         ],
       ),

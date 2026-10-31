@@ -4,6 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/busy_action.dart';
 
 class DeleteGroupModal extends StatefulWidget {
   const DeleteGroupModal({super.key, required this.group});
@@ -14,26 +15,11 @@ class DeleteGroupModal extends StatefulWidget {
   State<DeleteGroupModal> createState() => _DeleteGroupModalState();
 }
 
-class _DeleteGroupModalState extends State<DeleteGroupModal> {
-  var _busy = false;
-  String? _error;
-
-  Future<void> _delete() async {
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    try {
-      await AppScope.of(context).vocabulary.deleteGroup(widget.group.id);
-      if (mounted) Navigator.pop(context, true);
-    } on Exception {
-      if (!mounted) return;
-      setState(() {
-        _busy = false;
-        _error = context.l10n.deleteFailed;
-      });
-    }
-  }
+class _DeleteGroupModalState extends State<DeleteGroupModal> with BusyAction {
+  Future<void> _delete() => runAction(() async {
+    await AppScope.of(context).vocabulary.deleteGroup(widget.group.id);
+    if (mounted) Navigator.pop(context, true);
+  }, failureOf: (_) => context.l10n.deleteFailed);
 
   @override
   Widget build(BuildContext context) {
@@ -48,23 +34,19 @@ class _DeleteGroupModalState extends State<DeleteGroupModal> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s3,
         children: [
-          if (_error case final error?)
-            Text(
-              error,
-              style: AppText.bodyMd.copyWith(color: context.colors.alert),
-            ),
+          if (failure case final error?) FormError(error),
           AppButton(
             label: context.l10n.deleteGroup,
             variant: AppButtonVariant.danger,
             expand: true,
-            loading: _busy,
+            loading: busy,
             onPressed: _delete,
           ),
           AppButton(
             label: context.l10n.cancel,
             variant: AppButtonVariant.text,
             expand: true,
-            onPressed: _busy ? null : () => Navigator.pop(context),
+            onPressed: busy ? null : () => Navigator.pop(context),
           ),
         ],
       ),

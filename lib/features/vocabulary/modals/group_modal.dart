@@ -4,6 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/busy_action.dart';
 import 'package:tagarela/shared/logic/group_style.dart';
 
 class GroupModal extends StatefulWidget {
@@ -17,12 +18,10 @@ class GroupModal extends StatefulWidget {
   State<GroupModal> createState() => _GroupModalState();
 }
 
-class _GroupModalState extends State<GroupModal> {
+class _GroupModalState extends State<GroupModal> with BusyAction {
   late final _name = TextEditingController(text: widget.group?.name);
   late var _icon = widget.group?.icon ?? GroupIcon.layers;
   late var _color = widget.group?.color ?? GroupColor.violet;
-  var _busy = false;
-  String? _error;
 
   @override
   void dispose() {
@@ -30,37 +29,34 @@ class _GroupModalState extends State<GroupModal> {
     super.dispose();
   }
 
-  Future<void> _save(String name) async {
-    setState(() => _busy = true);
+  Future<void> _save(String name) {
     final vocabulary = AppScope.of(context).vocabulary;
     final l10n = context.l10n;
     final editing = widget.group;
     final action = editing == null ? 'create' : 'save';
-    try {
-      final group = editing == null
-          ? await vocabulary.createGroup(name: name, icon: _icon, color: _color)
-          : await vocabulary.updateGroup(
-              editing.id,
-              name: name,
-              icon: _icon,
-              color: _color,
-            );
-      if (mounted) Navigator.pop(context, group);
-    } on RejectedException catch (e) {
-      _fail(e.fields['name'] ?? l10n.groupSaveRejected(action));
-    } on ServerException {
-      _fail(l10n.groupSaveFailed(action));
-    } on Exception {
-      _fail(l10n.offlineRetry);
-    }
-  }
-
-  void _fail(String message) {
-    if (!mounted) return;
-    setState(() {
-      _busy = false;
-      _error = message;
-    });
+    return runAction(
+      () async {
+        final group = editing == null
+            ? await vocabulary.createGroup(
+                name: name,
+                icon: _icon,
+                color: _color,
+              )
+            : await vocabulary.updateGroup(
+                editing.id,
+                name: name,
+                icon: _icon,
+                color: _color,
+              );
+        if (mounted) Navigator.pop(context, group);
+      },
+      failureOf: (error) => switch (error) {
+        RejectedException(:final fields) =>
+          fields['name'] ?? l10n.groupSaveRejected(action),
+        ServerException() => l10n.groupSaveFailed(action),
+        _ => l10n.offlineRetry,
+      },
+    );
   }
 
   @override
@@ -88,8 +84,8 @@ class _GroupModalState extends State<GroupModal> {
             maxLength: GroupModal.maxName,
             autofocus: editing == null,
             textInputAction: TextInputAction.done,
-            errorText: taken ? context.l10n.groupNameTaken : _error,
-            onChanged: (_) => setState(() => _error = null),
+            errorText: taken ? context.l10n.groupNameTaken : failure,
+            onChanged: (_) => setState(() => failure = null),
           ),
           IconPicker(
             icons: [
@@ -112,7 +108,7 @@ class _GroupModalState extends State<GroupModal> {
               _ => context.l10n.save,
             },
             expand: true,
-            loading: _busy,
+            loading: busy,
             onPressed: name.isEmpty || taken ? null : () => _save(name),
           ),
         ],

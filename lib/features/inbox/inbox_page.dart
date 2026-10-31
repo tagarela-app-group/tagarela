@@ -99,8 +99,9 @@ class _InboxPageState extends State<InboxPage> {
           message: context.l10n.noCapturesInTab,
         ),
       for (final (section, group) in sections) ...[
-        _SectionLabel(
-          '${context.l10n.captureSection(section.name)} · ${group.length}',
+        SectionLabel(
+          label:
+              '${context.l10n.captureSection(section.name)} · ${group.length}',
         ),
         for (final capture in group)
           CaptureCard(
@@ -125,21 +126,4 @@ String summary(AppLocalizations l10n, List<Capture> items) {
   final count = l10n.captureCount(items.length);
   final waiting = items.where((c) => c.pending.isNotEmpty).length;
   return waiting == 0 ? count : '$count · ${l10n.waitingUpload(waiting)}';
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.s1),
-      child: Text(
-        text.toUpperCase(),
-        style: AppText.overline.copyWith(color: context.colors.inkSoft),
-      ),
-    );
-  }
 }

@@ -52,28 +52,11 @@ class _Stat extends StatelessWidget {
           spacing: AppSpacing.s1,
           children: [
             Text('$value', style: AppText.stat),
-            Row(
-              spacing: 6,
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: dot,
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    label,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppText.label.copyWith(
-                      color: context.colors.inkSoft,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
+            DotLabel(
+              label: label,
+              dot: dot,
+              color: context.colors.inkSoft,
+              fontWeight: FontWeight.w600,
             ),
           ],
         ),

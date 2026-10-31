@@ -4,6 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/countries/countries.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/busy_action.dart';
 
 class CountryModal extends StatefulWidget {
   const CountryModal({super.key});
@@ -12,10 +13,8 @@ class CountryModal extends StatefulWidget {
   State<CountryModal> createState() => _CountryModalState();
 }
 
-class _CountryModalState extends State<CountryModal> {
+class _CountryModalState extends State<CountryModal> with BusyAction {
   final _query = TextEditingController();
-  var _saving = false;
-  String? _error;
 
   @override
   void dispose() {
@@ -23,23 +22,10 @@ class _CountryModalState extends State<CountryModal> {
     super.dispose();
   }
 
-  Future<void> _pick(String? country) async {
-    final failed = context.l10n.countrySaveFailed;
-    setState(() {
-      _saving = true;
-      _error = null;
-    });
-    try {
-      await AppScope.of(context).auth.updateCountry(country);
-      if (mounted) Navigator.pop(context);
-    } on Exception {
-      if (!mounted) return;
-      setState(() {
-        _saving = false;
-        _error = failed;
-      });
-    }
-  }
+  Future<void> _pick(String? country) => runAction(() async {
+    await AppScope.of(context).auth.updateCountry(country);
+    if (mounted) Navigator.pop(context);
+  }, failureOf: (_) => context.l10n.countrySaveFailed);
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +43,14 @@ class _CountryModalState extends State<CountryModal> {
           accent: AppAccent.mango,
           title: l10n.countryNone,
           selected: current == null,
-          onTap: _saving ? null : () => _pick(null),
+          onTap: busy ? null : () => _pick(null),
         ),
       for (final country in countries)
         OptionRow(
           leading: FlagBadge(country: country.code, size: 40),
           title: country.name,
           selected: current == country.code,
-          onTap: _saving ? null : () => _pick(country.code),
+          onTap: busy ? null : () => _pick(country.code),
         ),
     ];
 
@@ -84,11 +70,7 @@ class _CountryModalState extends State<CountryModal> {
             textInputAction: TextInputAction.search,
             onChanged: (_) => setState(() {}),
           ),
-          if (_error case final error?)
-            Text(
-              error,
-              style: AppText.bodyMd.copyWith(color: context.colors.alert),
-            ),
+          if (failure case final error?) FormError(error),
           SizedBox(
             height: MediaQuery.sizeOf(context).height * 0.45,
             child: rows.isEmpty

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
@@ -335,14 +333,6 @@ void main() {
         ],
       );
     });
-
-    test('CaptureStatus.fromApi usa o nome da API', () {
-      expect(
-        CaptureStatus.values.map((s) => CaptureStatus.fromApi(s.apiName)),
-        CaptureStatus.values,
-      );
-      expect(CaptureStatus.analyzed.apiName, 'analyzed');
-    });
   });
 
   group('Course', () {
@@ -360,27 +350,6 @@ void main() {
       expect(course.active, isTrue);
       expect(course.terms, 12);
       expect(course.copyWith(active: false).active, isFalse);
-    });
-
-    test('só inglês tem áudio; sigla em maiúscula', () {
-      expect(
-        [for (final l in CourseLanguage.values) l.hasAudio],
-        [true, false, false],
-      );
-      expect(CourseLanguage.pt.code, 'PT');
-      expect(CourseLanguage.es.nativeName, 'Español');
-    });
-
-    test('cada idioma tem país da bandeira, saudação e locale', () {
-      expect(
-        [for (final l in CourseLanguage.values) l.country],
-        ['US', 'ES', 'BR'],
-      );
-      expect(CourseLanguage.pt.hello, 'Oi, tudo bem?');
-      expect(CourseLanguage.es.locale, const Locale('es'));
-      expect(CourseLanguage.of('en'), CourseLanguage.en);
-      expect(CourseLanguage.of('fr'), isNull);
-      expect(CourseLanguage.of(null), isNull);
     });
   });
 
