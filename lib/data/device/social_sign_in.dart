@@ -15,10 +15,9 @@ class SocialToken {
 
 class SocialSignIn {
   SocialSignIn({
-    required String googleIosClientId,
-    required String appleClientId,
-  }) : _googleIosClientId = googleIosClientId,
-       _appleClientId = appleClientId;
+    required this._googleIosClientId,
+    required this._appleClientId,
+  });
 
   final String _googleIosClientId;
   final String _appleClientId;
