@@ -440,11 +440,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get totalTerms => 'Total de termos';
 
   @override
-  String thisWeek(int count) {
-    return '+$count esta semana';
-  }
-
-  @override
   String learningMastered(int learning, int mastered) {
     return '$learning aprendendo, $mastered dominados';
   }
@@ -460,13 +455,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get wordOfDay => 'Palavra do dia';
-
-  @override
   String get listenPronunciation => 'Ouvir pronúncia';
-
-  @override
-  String get addToVocabulary => 'Adicionar ao vocabulário';
 
   @override
   String inboxTab(String tab) {

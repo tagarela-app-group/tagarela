@@ -209,14 +209,6 @@
   "yourVocabulary": "Seu vocabulário",
   "seeAll": "Ver tudo",
   "totalTerms": "Total de termos",
-  "thisWeek": "+{count} esta semana",
-  "@thisWeek": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "learningMastered": "{learning} aprendendo, {mastered} dominados",
   "@learningMastered": {
     "placeholders": {
@@ -236,9 +228,7 @@
       }
     }
   },
-  "wordOfDay": "Palavra do dia",
   "listenPronunciation": "Ouvir pronúncia",
-  "addToVocabulary": "Adicionar ao vocabulário",
   "inboxTab": "{tab, select, all{Todas} ready{Prontas} pending{Pendentes} other{}}",
   "@inboxTab": {
     "placeholders": {

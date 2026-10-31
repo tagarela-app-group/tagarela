@@ -814,12 +814,6 @@ abstract class AppLocalizations {
   /// **'Total de termos'**
   String get totalTerms;
 
-  /// No description provided for @thisWeek.
-  ///
-  /// In pt, this message translates to:
-  /// **'+{count} esta semana'**
-  String thisWeek(int count);
-
   /// No description provided for @learningMastered.
   ///
   /// In pt, this message translates to:
@@ -832,23 +826,11 @@ abstract class AppLocalizations {
   /// **'{status, select, learning{Aprendendo} mastered{Dominado} other{}}'**
   String termStatus(String status);
 
-  /// No description provided for @wordOfDay.
-  ///
-  /// In pt, this message translates to:
-  /// **'Palavra do dia'**
-  String get wordOfDay;
-
   /// No description provided for @listenPronunciation.
   ///
   /// In pt, this message translates to:
   /// **'Ouvir pronúncia'**
   String get listenPronunciation;
-
-  /// No description provided for @addToVocabulary.
-  ///
-  /// In pt, this message translates to:
-  /// **'Adicionar ao vocabulário'**
-  String get addToVocabulary;
 
   /// No description provided for @inboxTab.
   ///

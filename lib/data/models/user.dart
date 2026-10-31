@@ -39,14 +39,6 @@ class User {
   }
 }
 
-class Stats {
-  const Stats({required this.weekGain});
-
-  Stats.fromJson(Json json) : this(weekGain: json['weekGain']! as int);
-
-  final int weekGain;
-}
-
 class AuthTokens {
   const AuthTokens({required this.access, required this.refresh});
 

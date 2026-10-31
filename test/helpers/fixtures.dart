@@ -2,11 +2,6 @@ import 'package:tagarela/data/models/models.dart';
 
 import 'contract.dart';
 
-final sampleHome = (
-  stats: Stats.fromJson(_stats),
-  wordOfDay: WordOfDay.fromJson(_wordOfDay),
-);
-
 const Json sampleVocabularyJson = {'groups': _groups, 'ungrouped': _ungrouped};
 
 final sampleVocabulary = Vocabulary.fromJson(sampleVocabularyJson);
@@ -27,17 +22,6 @@ const List<Json> _ungrouped = [
     'level': 0,
   },
 ];
-
-const Json _stats = {'weekGain': 5};
-
-const Json _wordOfDay = {
-  'text': 'serendipity',
-  'phonetic': '/ˌser.ənˈdɪp.ə.ti/',
-  'partOfSpeech': 'substantivo',
-  'translation': 'acaso feliz',
-  'example': 'Finding this café was pure serendipity.',
-  'dateLabel': 'Qua, 22 out',
-};
 
 const List<Json> _groups = [
   {

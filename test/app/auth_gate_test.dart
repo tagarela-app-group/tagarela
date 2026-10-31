@@ -39,7 +39,7 @@ void main() {
     final scope = await pumpGate(tester, FakeTokenStorage('refresh-1'));
 
     expect(find.byType(HomeShell), findsOneWidget);
-    expect(scope.home.data, isNotNull);
+    expect(scope.vocabulary.data, isNotNull);
     expect(scope.captures.data, isEmpty);
     expect(scope.auth.user?.name, 'Ana Souza');
   });

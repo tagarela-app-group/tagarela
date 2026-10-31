@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/app/home_shell.dart';
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/login_page.dart';
 import 'package:tagarela/features/home/home_page.dart';
@@ -144,7 +143,6 @@ void main() {
     await tester.pumpPage(
       const HomeShell(),
       deps: fakeDependencies(
-        home: HomeStore(),
         vocabulary: emptyVocabulary(),
         practice: emptyPractice(),
       ),

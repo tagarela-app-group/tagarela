@@ -9,7 +9,6 @@ import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/course_store.dart';
-import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/practice_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
@@ -26,7 +25,6 @@ import 'fake_practice_api.dart';
 import 'fake_preferences.dart';
 import 'fake_vocabulary_api.dart';
 import 'fake_voice.dart';
-import 'fixtures.dart';
 
 AppDependencies fakeDependencies({
   AuthStore? auth,
@@ -35,7 +33,6 @@ AppDependencies fakeDependencies({
   AudioPlayback? playback,
   CaptureDevice? device,
   SpeechModelStore? speech,
-  HomeStore? home,
   VocabularyStore? vocabulary,
   PracticeStore? practice,
   LanguageStore? language,
@@ -49,7 +46,6 @@ AppDependencies fakeDependencies({
     playback: playback ?? FakeAudioPlayback(),
     device: device ?? FakeCaptureDevice(),
     speech: speech ?? fakeSpeechModel().store,
-    home: home ?? HomeStore(sampleHome),
     vocabulary: vocabulary ?? fakeVocabulary().store,
     practice: practice ?? fakePractice().store,
     language: language ?? fakeLanguage(courseStore),

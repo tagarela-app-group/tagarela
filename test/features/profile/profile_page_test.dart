@@ -291,7 +291,6 @@ void main() {
     expect(
       <Store>[
         app.courses,
-        app.home,
         app.vocabulary,
         app.practice,
         app.captures,
