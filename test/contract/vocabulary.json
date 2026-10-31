@@ -1,0 +1,26 @@
+{
+  "groups": [
+    {
+      "id": "b2d4f6a8-1c3e-4a5b-8d7f-9e0a1b2c3d4e",
+      "name": "Viagem",
+      "icon": "travel",
+      "accent": "sky",
+      "terms": [
+        {
+          "id": "c3e5a7b9-2d4f-4b6c-9e8a-0f1b2c3d4e5f",
+          "text": "mind the gap",
+          "kind": "expression",
+          "level": 2
+        }
+      ]
+    }
+  ],
+  "ungrouped": [
+    {
+      "id": "d4f6b8c0-3e5a-4c7d-8f9b-1a2c3d4e5f60",
+      "text": "awkward",
+      "kind": "word",
+      "level": 0
+    }
+  ]
+}

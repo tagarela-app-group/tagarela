@@ -1,0 +1,14 @@
+{
+  "id": "1f0c2a54-9d7e-4b1a-8c3e-2d6f5a7b9c10",
+  "course": "7a1e4c2b-3f5d-4e6a-9b8c-0d1e2f3a4b5c",
+  "source": "text",
+  "status": "analyzed",
+  "text": "Please mind the gap between the train and the platform.",
+  "original_text": "Please mind the gap between the train and the platform.",
+  "terms": [{ "text": "mind the gap", "start": 7, "end": 19 }],
+  "captured_at": "2026-10-30T12:00:00Z",
+  "processed_at": null,
+  "analyzed_at": "2026-10-30T12:05:00Z",
+  "discarded_at": null,
+  "updated_at": "2026-10-30T12:05:00Z"
+}

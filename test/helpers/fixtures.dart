@@ -1,5 +1,7 @@
 import 'package:tagarela/data/models/models.dart';
 
+import 'contract.dart';
+
 final sampleHome = (
   stats: Stats.fromJson(_stats),
   wordOfDay: WordOfDay.fromJson(_wordOfDay),
@@ -305,62 +307,4 @@ const List<Json> _groups = [
   },
 ];
 
-const Json sampleCardJson = {
-  'phonetic': '/maɪnd ðə ɡæp/',
-  'learning': {
-    'definition': 'be careful of the space',
-    'in_context': 'A warning on the train platform.',
-    'explanation': 'Used on the London Underground.',
-    'pitfall': 'It is not "mind the hole".',
-    'imagine': 'A yellow line flashing at the edge of the platform.',
-  },
-  'base': {
-    'translation': 'cuidado com o vão',
-    'in_context': 'Aviso na plataforma do trem.',
-    'explanation': 'Frase famosa do metrô de Londres.',
-    'pitfall': 'Não é "mente o buraco".',
-    'literal': 'repare no vão',
-    'imagine': 'Uma faixa amarela piscando na beira da plataforma.',
-    'formality_note': 'Serve em qualquer lugar.',
-    'fits': [
-      {'context': 'Aviso público', 'fits': true, 'alternative': null},
-      {
-        'context': 'Conversa com amigos',
-        'fits': false,
-        'alternative': 'careful',
-      },
-    ],
-  },
-  'mistake': {'wrong': 'mind the hole', 'right': 'mind the gap'},
-  'examples': [
-    {
-      'text': 'Please mind the gap when leaving the train.',
-      'translation': 'Cuidado com o vão ao sair do trem.',
-    },
-  ],
-  'collocations': ['mind the step'],
-  'synonyms': ['watch out'],
-  'antonyms': <String>[],
-  'formality': 'neutral',
-  'formality_note': 'Fine anywhere.',
-  'fits': [
-    {'context': 'Public notice', 'fits': true, 'alternative': null},
-    {
-      'context': 'Chatting with friends',
-      'fits': false,
-      'alternative': 'careful',
-    },
-  ],
-  'dialogue': [
-    {
-      'speaker': 'A',
-      'text': 'Hurry up, the train is here!',
-      'translation': 'Corre, o trem chegou!',
-    },
-    {
-      'speaker': 'B',
-      'text': 'Coming! I always forget to mind the gap.',
-      'translation': 'Já vou! Sempre esqueço de tomar cuidado com o vão.',
-    },
-  ],
-};
+final sampleCardJson = contractExample('term_detail')['card']! as Json;

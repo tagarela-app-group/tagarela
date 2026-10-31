@@ -1,0 +1,19 @@
+{
+  "exercises": [
+    {
+      "id": "e5a7c9d1-4f6b-4d8e-9a0c-2b3d4e5f6071",
+      "kind": "listen_write",
+      "payload": {
+        "sentence": "I'm still on the fence about moving to Lisbon.",
+        "start": 10,
+        "end": 22,
+        "syllables": "on the fence",
+        "translation": "Ainda tô em cima do muro sobre me mudar pra Lisboa.",
+        "extra": {
+          "note": "Depois vem *about*: *on the fence about* alguma coisa.",
+          "say": "on the fence about"
+        }
+      }
+    }
+  ]
+}
