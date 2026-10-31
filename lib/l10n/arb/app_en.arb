@@ -159,6 +159,8 @@
   "noSpeechHint": "Record again or discard this audio.",
   "processFailedTitle": "Couldn't process right now",
   "processFailedHint": "Tap Process now to try again.",
+  "syncRefusedTitle": "Couldn't send this",
+  "syncRefusedHint": "This capture wasn't accepted. Tap Try again to review it, or discard it.",
   "timeNow": "now",
   "minutesAgo": "{minutes} min ago",
   "hoursAgo": "{hours} h ago",

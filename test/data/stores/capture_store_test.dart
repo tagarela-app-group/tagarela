@@ -361,12 +361,23 @@ void main() {
       expect(only().pending, {CaptureSync.create});
     });
 
-    test('API recusa (409): larga a etapa e segue', () async {
-      api.rejections['POST ${FakeCaptureApi.path}'] = 409;
-
+    test('tentar de novo recusada: volta pra Prontas sem confirmar', () async {
       await store.createText(text);
+      final route = 'POST ${FakeCaptureApi.path}/${only().id}/confirm';
+      api.rejections[route] = 400;
+      await store.confirm(only(), terms: const [mindTheGap]);
+      expect(only().status, CaptureStatus.failed);
+      api.rejections.remove(route);
+      api.calls.clear();
 
+      await store.processNow(only());
+
+      expect(only().status, CaptureStatus.ready);
+      expect(only().error, isNull);
+      expect(only().analyzedAt, isNull);
+      expect(only().terms, [mindTheGap]);
       expect(only().pending, isEmpty);
+      expect(api.calls, isNot(contains(route)));
     });
 
     test('processar agora lê de novo no celular', () async {
@@ -458,7 +469,7 @@ void main() {
       final now = DateTime(2026, 12, 1);
       await db.saveCapture(
         'ana@example.com',
-        old.copyWith(analyzedAt: now.subtract(const Duration(days: 31))),
+        old.copyWith(analyzedAt: () => now.subtract(const Duration(days: 31))),
       );
       await db.saveCapture(
         'ana@example.com',

@@ -64,6 +64,19 @@ void main() {
     mediaPath: 'captures/audio/a1.m4a',
   );
 
+  testWidgets('recusada pela API: diz que não enviou e oferece tentar', (
+    tester,
+  ) async {
+    await pumpCard(
+      tester,
+      photo(CaptureStatus.failed).copyWith(error: () => Capture.refusedError),
+    );
+
+    expect(find.text('Não deu pra enviar'), findsOneWidget);
+    expect(find.text('Tentar de novo'), findsOneWidget);
+    expect(find.text('Processar agora'), findsNothing);
+  });
+
   testWidgets('erro: aviso, Descartar e Processar agora', (tester) async {
     final taps = await pumpCard(tester, photo(CaptureStatus.failed));
 

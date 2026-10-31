@@ -1054,6 +1054,18 @@ abstract class AppLocalizations {
   /// **'Toque em Processar agora pra tentar de novo.'**
   String get processFailedHint;
 
+  /// No description provided for @syncRefusedTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não deu pra enviar'**
+  String get syncRefusedTitle;
+
+  /// No description provided for @syncRefusedHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Essa captura não foi aceita. Toque em Tentar de novo pra revisar ou descarte.'**
+  String get syncRefusedHint;
+
   /// No description provided for @timeNow.
   ///
   /// In pt, this message translates to:

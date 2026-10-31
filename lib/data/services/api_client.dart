@@ -144,7 +144,11 @@ class ApiException implements Exception {
   bool get rejected =>
       statusCode >= 400 &&
       statusCode < 500 &&
-      statusCode != HttpStatus.unauthorized;
+      statusCode != HttpStatus.unauthorized &&
+      statusCode != HttpStatus.tooManyRequests;
+
+  bool get settled =>
+      statusCode == HttpStatus.notFound || statusCode == HttpStatus.conflict;
 
   @override
   String toString() => 'ApiException: $statusCode em $request';

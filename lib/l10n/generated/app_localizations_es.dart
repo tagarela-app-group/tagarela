@@ -629,6 +629,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Toca Procesar ahora para intentarlo de nuevo.';
 
   @override
+  String get syncRefusedTitle => 'No se pudo enviar';
+
+  @override
+  String get syncRefusedHint =>
+      'Esta captura no fue aceptada. Toca Intentar de nuevo para revisarla o descártala.';
+
+  @override
   String get timeNow => 'ahora';
 
   @override

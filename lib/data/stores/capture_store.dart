@@ -91,7 +91,7 @@ class CaptureStore extends Store<List<Capture>> {
       status: CaptureStatus.analyzed,
       text: text,
       terms: terms,
-      analyzedAt: DateTime.now(),
+      analyzedAt: DateTime.now,
       pending: {
         ...capture.pending,
         if (text != null || terms != null) CaptureSync.update,
@@ -110,6 +110,15 @@ class CaptureStore extends Store<List<Capture>> {
   );
 
   Future<void> processNow(Capture capture) async {
+    if (capture.refused) {
+      return _change(
+        capture.copyWith(
+          status: CaptureStatus.ready,
+          error: () => null,
+          pending: capture.pending.difference({CaptureSync.confirm}),
+        ),
+      );
+    }
     final owner = _owner();
     if (owner == null || !capture.pending.contains(CaptureSync.extract)) {
       return;
