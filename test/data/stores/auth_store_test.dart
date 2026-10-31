@@ -49,21 +49,6 @@ void main() {
       expect(store.user?.country, isNull);
     });
 
-    test('token vencido: renova e tenta de novo', () async {
-      await store.login('ana@example.com', 'x');
-      api.queued['PATCH /api/v1/account'] = [const ApiResponse(401, null)];
-
-      await store.updateCountry('PT');
-
-      expect(store.user?.country, 'BR');
-      expect(
-        api.requests
-            .where((r) => r.route == 'PATCH /api/v1/account')
-            .map((r) => r.headers['Authorization']),
-        ['Bearer access-1', 'Bearer access-2'],
-      );
-    });
-
     test('falha mantém o usuário e repassa o erro', () async {
       await store.login('ana@example.com', 'x');
       api.responses['PATCH /api/v1/account'] = const ApiResponse(500, null);

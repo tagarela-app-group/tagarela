@@ -4,6 +4,7 @@ import 'package:tagarela/data/device/capture_device.dart';
 import 'package:tagarela/data/device/social_sign_in.dart';
 import 'package:tagarela/data/device/text_extractor.dart';
 import 'package:tagarela/data/device/voice.dart';
+import 'package:tagarela/data/services/account_service.dart';
 import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/services/capture_service.dart';
@@ -40,12 +41,16 @@ class AppDependencies {
 
   factory AppDependencies.live() {
     final models = ModelStorage();
-    final auth = AuthStore(
+    late final AuthStore auth;
+    final api = ApiClient(
+      accessToken: ({renew = false}) => auth.accessToken(renew: renew),
+    );
+    auth = AuthStore(
       AuthService(ApiClient()),
+      AccountService(api),
       TokenStorage(),
       SocialSignIn(),
     );
-    final api = ApiClient(accessToken: auth.accessToken);
     final courses = CourseStore(CourseService(api));
     final vocabulary = VocabularyStore(VocabularyService(api));
     return AppDependencies(
