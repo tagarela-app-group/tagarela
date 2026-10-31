@@ -59,10 +59,8 @@ class FakeCaptureApi extends FakeApi {
       'source': body['source'],
       'status': 'ready',
       'text': text,
-      'original_text': text,
       'terms': <Object?>[],
       'captured_at': body['captured_at'],
-      'processed_at': _now(),
       'analyzed_at': null,
       'discarded_at': null,
     });

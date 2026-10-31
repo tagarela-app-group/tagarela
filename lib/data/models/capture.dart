@@ -63,10 +63,8 @@ class Capture {
     required this.capturedAt,
     this.course,
     this.text = '',
-    this.originalText = '',
     this.terms = const [],
     this.error,
-    this.processedAt,
     this.analyzedAt,
     this.discardedAt,
     this.updatedAt,
@@ -81,13 +79,11 @@ class Capture {
         source: CaptureSource.values.byName(json['source']! as String),
         status: CaptureStatus.fromApi(json['status']! as String),
         text: json['text']! as String,
-        originalText: json['original_text']! as String,
         terms: [
           for (final t in json['terms']! as List<Object?>)
             CaptureTerm.fromJson(t! as Json),
         ],
         capturedAt: DateTime.parse(json['captured_at']! as String),
-        processedAt: _date(json['processed_at']),
         analyzedAt: _date(json['analyzed_at']),
         discardedAt: _date(json['discarded_at']),
         updatedAt: _date(json['updated_at']),
@@ -101,11 +97,9 @@ class Capture {
   final CaptureSource source;
   final CaptureStatus status;
   final String text;
-  final String originalText;
   final List<CaptureTerm> terms;
   final String? error;
   final DateTime capturedAt;
-  final DateTime? processedAt;
   final DateTime? analyzedAt;
   final DateTime? discardedAt;
   final DateTime? updatedAt;
@@ -142,11 +136,9 @@ class Capture {
       source: source,
       status: confirming ? status : server.status,
       text: editing ? text : server.text,
-      originalText: server.originalText,
       terms: editing ? terms : server.terms,
       error: server.error,
       capturedAt: server.capturedAt,
-      processedAt: server.processedAt,
       analyzedAt: confirming ? analyzedAt : server.analyzedAt,
       discardedAt: pending.contains(CaptureSync.discard)
           ? discardedAt
@@ -160,10 +152,8 @@ class Capture {
   Capture copyWith({
     CaptureStatus? status,
     String? text,
-    String? originalText,
     List<CaptureTerm>? terms,
     ValueGetter<String?>? error,
-    DateTime? processedAt,
     DateTime? analyzedAt,
     DateTime? discardedAt,
     ValueGetter<String?>? mediaPath,
@@ -174,11 +164,9 @@ class Capture {
     source: source,
     status: status ?? this.status,
     text: text ?? this.text,
-    originalText: originalText ?? this.originalText,
     terms: terms ?? this.terms,
     error: error == null ? this.error : error(),
     capturedAt: capturedAt,
-    processedAt: processedAt ?? this.processedAt,
     analyzedAt: analyzedAt ?? this.analyzedAt,
     discardedAt: discardedAt ?? this.discardedAt,
     updatedAt: updatedAt,

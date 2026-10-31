@@ -18,8 +18,8 @@ void main() {
     String? discardedAt,
   }) => db.customStatement(
     'INSERT INTO captures (id, owner, source, status, content, '
-    'original_content, terms, error, captured_at, discarded_at, pending) '
-    "VALUES (?, 'ana', 'photo', ?, '', '', '[]', ?, '2026-10-23T10:00:00.000', ?, ?)",
+    'terms, error, captured_at, discarded_at, pending) '
+    "VALUES (?, 'ana', 'photo', ?, '', '[]', ?, '2026-10-23T10:00:00.000', ?, ?)",
     [id, status, error, discardedAt, pending],
   );
 
@@ -63,5 +63,43 @@ void main() {
     await db.pullEverything();
 
     expect(await db.cursor('ana'), isNull);
+  });
+
+  test('banco da versão 3 mantém as capturas ao tirar as colunas', () async {
+    final old = AppDatabase(
+      NativeDatabase.memory(
+        setup: (raw) {
+          raw.execute(
+            'CREATE TABLE captures (id TEXT NOT NULL PRIMARY KEY, '
+            'owner TEXT NOT NULL, course TEXT, source TEXT NOT NULL, '
+            'status TEXT NOT NULL, content TEXT NOT NULL, '
+            'original_content TEXT NOT NULL, terms TEXT NOT NULL, error TEXT, '
+            'captured_at TEXT NOT NULL, processed_at TEXT, analyzed_at TEXT, '
+            'discarded_at TEXT, updated_at TEXT, media_path TEXT, '
+            'pending TEXT NOT NULL)',
+          );
+          raw.execute(
+            'CREATE TABLE capture_cursors (owner TEXT NOT NULL PRIMARY KEY, '
+            'updated_since TEXT NOT NULL)',
+          );
+          raw.execute(
+            'INSERT INTO captures (id, owner, source, status, content, '
+            'original_content, terms, captured_at, processed_at, pending) '
+            "VALUES ('c1', 'ana', 'text', 'ready', 'mind the gap', 'MIND', "
+            "'[]', '2026-10-23T10:00:00.000', '2026-10-23T10:00:05.000', "
+            "'update')",
+          );
+          raw.userVersion = 3;
+        },
+      ),
+    );
+    addTearDown(old.close);
+
+    final capture = (await old.capture('c1'))!;
+
+    expect(capture.text, 'mind the gap');
+    expect(capture.pending, {CaptureSync.update});
+    await old.saveCapture('ana', capture.copyWith(text: 'mind'));
+    expect((await old.capture('c1'))!.text, 'mind');
   });
 }

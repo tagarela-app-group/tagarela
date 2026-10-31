@@ -60,7 +60,6 @@ class CaptureStore extends Store<List<Capture>> {
       source: CaptureSource.text,
       status: CaptureStatus.ready,
       text: text,
-      originalText: text,
       capturedAt: DateTime.now(),
       pending: const {CaptureSync.create},
     ),
@@ -203,9 +202,7 @@ class CaptureStore extends Store<List<Capture>> {
       done = capture.copyWith(
         status: CaptureStatus.ready,
         text: text,
-        originalText: text,
         error: () => null,
-        processedAt: DateTime.now(),
         pending: capture.pending.difference({CaptureSync.extract}),
       );
     } on ExtractionException catch (e) {

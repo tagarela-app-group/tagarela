@@ -4,10 +4,8 @@
   "source": "text",
   "status": "analyzed",
   "text": "Please mind the gap between the train and the platform.",
-  "original_text": "Please mind the gap between the train and the platform.",
   "terms": [{ "text": "mind the gap", "start": 7, "end": 19 }],
   "captured_at": "2026-10-30T12:00:00Z",
-  "processed_at": null,
   "analyzed_at": "2026-10-30T12:05:00Z",
   "discarded_at": null,
   "updated_at": "2026-10-30T12:05:00Z"
