@@ -25,6 +25,11 @@ class _FormState extends State<_Form> with BusyAction {
   );
 }
 
+Future<void> _tap(WidgetTester tester) async {
+  await tester.tap(find.byType(Text));
+  await tester.pump();
+}
+
 void main() {
   testWidgets('ocupado durante a ação; a falha libera e mostra o erro', (
     tester,
@@ -32,12 +37,11 @@ void main() {
     final done = Completer<void>();
     await tester.pumpWidget(_Form(() => done.future));
 
-    await tester.tap(find.byType(Text));
-    await tester.pump();
+    await _tap(tester);
     expect(find.text('ocupado sem erro'), findsOneWidget);
 
     done.completeError(Exception('sem rede'));
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(find.text('livre falhou'), findsOneWidget);
   });
 
@@ -51,12 +55,11 @@ void main() {
       }),
     );
 
-    await tester.tap(find.byType(Text));
-    await tester.pump();
+    await _tap(tester);
+    await tester.pumpAndSettle();
     expect(find.text('livre falhou'), findsOneWidget);
 
-    await tester.tap(find.byType(Text));
-    await tester.pump();
+    await _tap(tester);
     expect(find.text('ocupado sem erro'), findsOneWidget);
     retry.complete();
   });
@@ -64,12 +67,11 @@ void main() {
   testWidgets('falha depois de sair da tela não quebra', (tester) async {
     final done = Completer<void>();
     await tester.pumpWidget(_Form(() => done.future));
-    await tester.tap(find.byType(Text));
-    await tester.pump();
+    await _tap(tester);
 
     await tester.pumpWidget(const SizedBox());
     done.completeError(Exception('x'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
   });
