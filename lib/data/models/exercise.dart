@@ -1,4 +1,5 @@
 import 'package:tagarela/data/models/json.dart';
+import 'package:tagarela/data/models/text_offsets.dart';
 
 enum ExerciseKind {
   listenWrite('listen_write');
@@ -57,9 +58,7 @@ final class ListenWriteExercise extends Exercise {
 
   factory ListenWriteExercise.fromPayload(String id, Json payload) {
     final sentence = payload['sentence']! as String;
-    final runes = sentence.runes.toList();
-    int offset(String key) =>
-        String.fromCharCodes(runes.take(payload[key]! as int)).length;
+    int offset(String key) => codeUnitOffset(sentence, payload[key]! as int);
     return ListenWriteExercise(
       id: id,
       sentence: sentence,
