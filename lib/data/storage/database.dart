@@ -17,11 +17,9 @@ class CaptureRows extends Table {
   TextColumn get source => textEnum<CaptureSource>()();
   TextColumn get status => textEnum<CaptureStatus>()();
   TextColumn get content => text()();
-  TextColumn get originalContent => text()();
   TextColumn get terms => text().map(const _TermsConverter())();
   TextColumn get error => text().nullable()();
   DateTimeColumn get capturedAt => dateTime()();
-  DateTimeColumn get processedAt => dateTime().nullable()();
   DateTimeColumn get analyzedAt => dateTime().nullable()();
   DateTimeColumn get discardedAt => dateTime().nullable()();
   DateTimeColumn get updatedAt => dateTime().nullable()();
@@ -46,7 +44,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'tagarela'));
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -56,6 +54,7 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(captureRows, captureRows.course);
         await pullEverything();
       }
+      if (from < 4) await m.alterTable(TableMigration(captureRows));
     },
   );
 
@@ -101,11 +100,9 @@ class AppDatabase extends _$AppDatabase {
           source: capture.source,
           status: capture.status,
           content: capture.text,
-          originalContent: capture.originalText,
           terms: capture.terms,
           error: Value(capture.error),
           capturedAt: capture.capturedAt,
-          processedAt: Value(capture.processedAt),
           analyzedAt: Value(capture.analyzedAt),
           discardedAt: Value(capture.discardedAt),
           updatedAt: Value(capture.updatedAt),
@@ -138,11 +135,9 @@ class AppDatabase extends _$AppDatabase {
     source: row.source,
     status: row.status,
     text: row.content,
-    originalText: row.originalContent,
     terms: row.terms,
     error: row.error,
     capturedAt: row.capturedAt,
-    processedAt: row.processedAt,
     analyzedAt: row.analyzedAt,
     discardedAt: row.discardedAt,
     updatedAt: row.updatedAt,

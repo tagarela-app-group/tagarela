@@ -157,7 +157,6 @@ Capture sampleCapture(
   source: source,
   status: status,
   text: text,
-  originalText: text,
   terms: terms,
   capturedAt: capturedAt ?? DateTime(2026, 10, 23, 9),
   error: error,

@@ -65,17 +65,6 @@ class $CaptureRowsTable extends CaptureRows
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _originalContentMeta = const VerificationMeta(
-    'originalContent',
-  );
-  @override
-  late final GeneratedColumn<String> originalContent = GeneratedColumn<String>(
-    'original_content',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
   @override
   late final GeneratedColumnWithTypeConverter<List<CaptureTerm>, String> terms =
       GeneratedColumn<String>(
@@ -104,17 +93,6 @@ class $CaptureRowsTable extends CaptureRows
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
-  );
-  static const VerificationMeta _processedAtMeta = const VerificationMeta(
-    'processedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> processedAt = GeneratedColumn<DateTime>(
-    'processed_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
   );
   static const VerificationMeta _analyzedAtMeta = const VerificationMeta(
     'analyzedAt',
@@ -177,11 +155,9 @@ class $CaptureRowsTable extends CaptureRows
     source,
     status,
     content,
-    originalContent,
     terms,
     error,
     capturedAt,
-    processedAt,
     analyzedAt,
     discardedAt,
     updatedAt,
@@ -227,17 +203,6 @@ class $CaptureRowsTable extends CaptureRows
     } else if (isInserting) {
       context.missing(_contentMeta);
     }
-    if (data.containsKey('original_content')) {
-      context.handle(
-        _originalContentMeta,
-        originalContent.isAcceptableOrUnknown(
-          data['original_content']!,
-          _originalContentMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_originalContentMeta);
-    }
     if (data.containsKey('error')) {
       context.handle(
         _errorMeta,
@@ -251,15 +216,6 @@ class $CaptureRowsTable extends CaptureRows
       );
     } else if (isInserting) {
       context.missing(_capturedAtMeta);
-    }
-    if (data.containsKey('processed_at')) {
-      context.handle(
-        _processedAtMeta,
-        processedAt.isAcceptableOrUnknown(
-          data['processed_at']!,
-          _processedAtMeta,
-        ),
-      );
     }
     if (data.containsKey('analyzed_at')) {
       context.handle(
@@ -325,10 +281,6 @@ class $CaptureRowsTable extends CaptureRows
         DriftSqlType.string,
         data['${effectivePrefix}content'],
       )!,
-      originalContent: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}original_content'],
-      )!,
       terms: $CaptureRowsTable.$converterterms.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -343,10 +295,6 @@ class $CaptureRowsTable extends CaptureRows
         DriftSqlType.dateTime,
         data['${effectivePrefix}captured_at'],
       )!,
-      processedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}processed_at'],
-      ),
       analyzedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}analyzed_at'],
@@ -394,11 +342,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
   final CaptureSource source;
   final CaptureStatus status;
   final String content;
-  final String originalContent;
   final List<CaptureTerm> terms;
   final String? error;
   final DateTime capturedAt;
-  final DateTime? processedAt;
   final DateTime? analyzedAt;
   final DateTime? discardedAt;
   final DateTime? updatedAt;
@@ -411,11 +357,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     required this.source,
     required this.status,
     required this.content,
-    required this.originalContent,
     required this.terms,
     this.error,
     required this.capturedAt,
-    this.processedAt,
     this.analyzedAt,
     this.discardedAt,
     this.updatedAt,
@@ -441,7 +385,6 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
       );
     }
     map['content'] = Variable<String>(content);
-    map['original_content'] = Variable<String>(originalContent);
     {
       map['terms'] = Variable<String>(
         $CaptureRowsTable.$converterterms.toSql(terms),
@@ -451,9 +394,6 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
       map['error'] = Variable<String>(error);
     }
     map['captured_at'] = Variable<DateTime>(capturedAt);
-    if (!nullToAbsent || processedAt != null) {
-      map['processed_at'] = Variable<DateTime>(processedAt);
-    }
     if (!nullToAbsent || analyzedAt != null) {
       map['analyzed_at'] = Variable<DateTime>(analyzedAt);
     }
@@ -484,15 +424,11 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
       source: Value(source),
       status: Value(status),
       content: Value(content),
-      originalContent: Value(originalContent),
       terms: Value(terms),
       error: error == null && nullToAbsent
           ? const Value.absent()
           : Value(error),
       capturedAt: Value(capturedAt),
-      processedAt: processedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(processedAt),
       analyzedAt: analyzedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(analyzedAt),
@@ -525,11 +461,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
         serializer.fromJson<String>(json['status']),
       ),
       content: serializer.fromJson<String>(json['content']),
-      originalContent: serializer.fromJson<String>(json['originalContent']),
       terms: serializer.fromJson<List<CaptureTerm>>(json['terms']),
       error: serializer.fromJson<String?>(json['error']),
       capturedAt: serializer.fromJson<DateTime>(json['capturedAt']),
-      processedAt: serializer.fromJson<DateTime?>(json['processedAt']),
       analyzedAt: serializer.fromJson<DateTime?>(json['analyzedAt']),
       discardedAt: serializer.fromJson<DateTime?>(json['discardedAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
@@ -551,11 +485,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
         $CaptureRowsTable.$converterstatus.toJson(status),
       ),
       'content': serializer.toJson<String>(content),
-      'originalContent': serializer.toJson<String>(originalContent),
       'terms': serializer.toJson<List<CaptureTerm>>(terms),
       'error': serializer.toJson<String?>(error),
       'capturedAt': serializer.toJson<DateTime>(capturedAt),
-      'processedAt': serializer.toJson<DateTime?>(processedAt),
       'analyzedAt': serializer.toJson<DateTime?>(analyzedAt),
       'discardedAt': serializer.toJson<DateTime?>(discardedAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
@@ -571,11 +503,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     CaptureSource? source,
     CaptureStatus? status,
     String? content,
-    String? originalContent,
     List<CaptureTerm>? terms,
     Value<String?> error = const Value.absent(),
     DateTime? capturedAt,
-    Value<DateTime?> processedAt = const Value.absent(),
     Value<DateTime?> analyzedAt = const Value.absent(),
     Value<DateTime?> discardedAt = const Value.absent(),
     Value<DateTime?> updatedAt = const Value.absent(),
@@ -588,11 +518,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     source: source ?? this.source,
     status: status ?? this.status,
     content: content ?? this.content,
-    originalContent: originalContent ?? this.originalContent,
     terms: terms ?? this.terms,
     error: error.present ? error.value : this.error,
     capturedAt: capturedAt ?? this.capturedAt,
-    processedAt: processedAt.present ? processedAt.value : this.processedAt,
     analyzedAt: analyzedAt.present ? analyzedAt.value : this.analyzedAt,
     discardedAt: discardedAt.present ? discardedAt.value : this.discardedAt,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
@@ -607,17 +535,11 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
       source: data.source.present ? data.source.value : this.source,
       status: data.status.present ? data.status.value : this.status,
       content: data.content.present ? data.content.value : this.content,
-      originalContent: data.originalContent.present
-          ? data.originalContent.value
-          : this.originalContent,
       terms: data.terms.present ? data.terms.value : this.terms,
       error: data.error.present ? data.error.value : this.error,
       capturedAt: data.capturedAt.present
           ? data.capturedAt.value
           : this.capturedAt,
-      processedAt: data.processedAt.present
-          ? data.processedAt.value
-          : this.processedAt,
       analyzedAt: data.analyzedAt.present
           ? data.analyzedAt.value
           : this.analyzedAt,
@@ -639,11 +561,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
           ..write('source: $source, ')
           ..write('status: $status, ')
           ..write('content: $content, ')
-          ..write('originalContent: $originalContent, ')
           ..write('terms: $terms, ')
           ..write('error: $error, ')
           ..write('capturedAt: $capturedAt, ')
-          ..write('processedAt: $processedAt, ')
           ..write('analyzedAt: $analyzedAt, ')
           ..write('discardedAt: $discardedAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -661,11 +581,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
     source,
     status,
     content,
-    originalContent,
     terms,
     error,
     capturedAt,
-    processedAt,
     analyzedAt,
     discardedAt,
     updatedAt,
@@ -682,11 +600,9 @@ class CaptureRow extends DataClass implements Insertable<CaptureRow> {
           other.source == this.source &&
           other.status == this.status &&
           other.content == this.content &&
-          other.originalContent == this.originalContent &&
           other.terms == this.terms &&
           other.error == this.error &&
           other.capturedAt == this.capturedAt &&
-          other.processedAt == this.processedAt &&
           other.analyzedAt == this.analyzedAt &&
           other.discardedAt == this.discardedAt &&
           other.updatedAt == this.updatedAt &&
@@ -701,11 +617,9 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
   final Value<CaptureSource> source;
   final Value<CaptureStatus> status;
   final Value<String> content;
-  final Value<String> originalContent;
   final Value<List<CaptureTerm>> terms;
   final Value<String?> error;
   final Value<DateTime> capturedAt;
-  final Value<DateTime?> processedAt;
   final Value<DateTime?> analyzedAt;
   final Value<DateTime?> discardedAt;
   final Value<DateTime?> updatedAt;
@@ -719,11 +633,9 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     this.source = const Value.absent(),
     this.status = const Value.absent(),
     this.content = const Value.absent(),
-    this.originalContent = const Value.absent(),
     this.terms = const Value.absent(),
     this.error = const Value.absent(),
     this.capturedAt = const Value.absent(),
-    this.processedAt = const Value.absent(),
     this.analyzedAt = const Value.absent(),
     this.discardedAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -738,11 +650,9 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     required CaptureSource source,
     required CaptureStatus status,
     required String content,
-    required String originalContent,
     required List<CaptureTerm> terms,
     this.error = const Value.absent(),
     required DateTime capturedAt,
-    this.processedAt = const Value.absent(),
     this.analyzedAt = const Value.absent(),
     this.discardedAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -754,7 +664,6 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
        source = Value(source),
        status = Value(status),
        content = Value(content),
-       originalContent = Value(originalContent),
        terms = Value(terms),
        capturedAt = Value(capturedAt),
        pending = Value(pending);
@@ -765,11 +674,9 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     Expression<String>? source,
     Expression<String>? status,
     Expression<String>? content,
-    Expression<String>? originalContent,
     Expression<String>? terms,
     Expression<String>? error,
     Expression<DateTime>? capturedAt,
-    Expression<DateTime>? processedAt,
     Expression<DateTime>? analyzedAt,
     Expression<DateTime>? discardedAt,
     Expression<DateTime>? updatedAt,
@@ -784,11 +691,9 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
       if (source != null) 'source': source,
       if (status != null) 'status': status,
       if (content != null) 'content': content,
-      if (originalContent != null) 'original_content': originalContent,
       if (terms != null) 'terms': terms,
       if (error != null) 'error': error,
       if (capturedAt != null) 'captured_at': capturedAt,
-      if (processedAt != null) 'processed_at': processedAt,
       if (analyzedAt != null) 'analyzed_at': analyzedAt,
       if (discardedAt != null) 'discarded_at': discardedAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -805,11 +710,9 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     Value<CaptureSource>? source,
     Value<CaptureStatus>? status,
     Value<String>? content,
-    Value<String>? originalContent,
     Value<List<CaptureTerm>>? terms,
     Value<String?>? error,
     Value<DateTime>? capturedAt,
-    Value<DateTime?>? processedAt,
     Value<DateTime?>? analyzedAt,
     Value<DateTime?>? discardedAt,
     Value<DateTime?>? updatedAt,
@@ -824,11 +727,9 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
       source: source ?? this.source,
       status: status ?? this.status,
       content: content ?? this.content,
-      originalContent: originalContent ?? this.originalContent,
       terms: terms ?? this.terms,
       error: error ?? this.error,
       capturedAt: capturedAt ?? this.capturedAt,
-      processedAt: processedAt ?? this.processedAt,
       analyzedAt: analyzedAt ?? this.analyzedAt,
       discardedAt: discardedAt ?? this.discardedAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -863,9 +764,6 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     if (content.present) {
       map['content'] = Variable<String>(content.value);
     }
-    if (originalContent.present) {
-      map['original_content'] = Variable<String>(originalContent.value);
-    }
     if (terms.present) {
       map['terms'] = Variable<String>(
         $CaptureRowsTable.$converterterms.toSql(terms.value),
@@ -876,9 +774,6 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
     }
     if (capturedAt.present) {
       map['captured_at'] = Variable<DateTime>(capturedAt.value);
-    }
-    if (processedAt.present) {
-      map['processed_at'] = Variable<DateTime>(processedAt.value);
     }
     if (analyzedAt.present) {
       map['analyzed_at'] = Variable<DateTime>(analyzedAt.value);
@@ -912,11 +807,9 @@ class CaptureRowsCompanion extends UpdateCompanion<CaptureRow> {
           ..write('source: $source, ')
           ..write('status: $status, ')
           ..write('content: $content, ')
-          ..write('originalContent: $originalContent, ')
           ..write('terms: $terms, ')
           ..write('error: $error, ')
           ..write('capturedAt: $capturedAt, ')
-          ..write('processedAt: $processedAt, ')
           ..write('analyzedAt: $analyzedAt, ')
           ..write('discardedAt: $discardedAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -1175,11 +1068,9 @@ typedef $$CaptureRowsTableCreateCompanionBuilder =
       required CaptureSource source,
       required CaptureStatus status,
       required String content,
-      required String originalContent,
       required List<CaptureTerm> terms,
       Value<String?> error,
       required DateTime capturedAt,
-      Value<DateTime?> processedAt,
       Value<DateTime?> analyzedAt,
       Value<DateTime?> discardedAt,
       Value<DateTime?> updatedAt,
@@ -1195,11 +1086,9 @@ typedef $$CaptureRowsTableUpdateCompanionBuilder =
       Value<CaptureSource> source,
       Value<CaptureStatus> status,
       Value<String> content,
-      Value<String> originalContent,
       Value<List<CaptureTerm>> terms,
       Value<String?> error,
       Value<DateTime> capturedAt,
-      Value<DateTime?> processedAt,
       Value<DateTime?> analyzedAt,
       Value<DateTime?> discardedAt,
       Value<DateTime?> updatedAt,
@@ -1249,11 +1138,6 @@ class $$CaptureRowsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get originalContent => $composableBuilder(
-    column: $table.originalContent,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnWithTypeConverterFilters<List<CaptureTerm>, List<CaptureTerm>, String>
   get terms => $composableBuilder(
     column: $table.terms,
@@ -1267,11 +1151,6 @@ class $$CaptureRowsTableFilterComposer
 
   ColumnFilters<DateTime> get capturedAt => $composableBuilder(
     column: $table.capturedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get processedAt => $composableBuilder(
-    column: $table.processedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1341,11 +1220,6 @@ class $$CaptureRowsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get originalContent => $composableBuilder(
-    column: $table.originalContent,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get terms => $composableBuilder(
     column: $table.terms,
     builder: (column) => ColumnOrderings(column),
@@ -1358,11 +1232,6 @@ class $$CaptureRowsTableOrderingComposer
 
   ColumnOrderings<DateTime> get capturedAt => $composableBuilder(
     column: $table.capturedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get processedAt => $composableBuilder(
-    column: $table.processedAt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1419,11 +1288,6 @@ class $$CaptureRowsTableAnnotationComposer
   GeneratedColumn<String> get content =>
       $composableBuilder(column: $table.content, builder: (column) => column);
 
-  GeneratedColumn<String> get originalContent => $composableBuilder(
-    column: $table.originalContent,
-    builder: (column) => column,
-  );
-
   GeneratedColumnWithTypeConverter<List<CaptureTerm>, String> get terms =>
       $composableBuilder(column: $table.terms, builder: (column) => column);
 
@@ -1432,11 +1296,6 @@ class $$CaptureRowsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get capturedAt => $composableBuilder(
     column: $table.capturedAt,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<DateTime> get processedAt => $composableBuilder(
-    column: $table.processedAt,
     builder: (column) => column,
   );
 
@@ -1497,11 +1356,9 @@ class $$CaptureRowsTableTableManager
                 Value<CaptureSource> source = const Value.absent(),
                 Value<CaptureStatus> status = const Value.absent(),
                 Value<String> content = const Value.absent(),
-                Value<String> originalContent = const Value.absent(),
                 Value<List<CaptureTerm>> terms = const Value.absent(),
                 Value<String?> error = const Value.absent(),
                 Value<DateTime> capturedAt = const Value.absent(),
-                Value<DateTime?> processedAt = const Value.absent(),
                 Value<DateTime?> analyzedAt = const Value.absent(),
                 Value<DateTime?> discardedAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
@@ -1515,11 +1372,9 @@ class $$CaptureRowsTableTableManager
                 source: source,
                 status: status,
                 content: content,
-                originalContent: originalContent,
                 terms: terms,
                 error: error,
                 capturedAt: capturedAt,
-                processedAt: processedAt,
                 analyzedAt: analyzedAt,
                 discardedAt: discardedAt,
                 updatedAt: updatedAt,
@@ -1535,11 +1390,9 @@ class $$CaptureRowsTableTableManager
                 required CaptureSource source,
                 required CaptureStatus status,
                 required String content,
-                required String originalContent,
                 required List<CaptureTerm> terms,
                 Value<String?> error = const Value.absent(),
                 required DateTime capturedAt,
-                Value<DateTime?> processedAt = const Value.absent(),
                 Value<DateTime?> analyzedAt = const Value.absent(),
                 Value<DateTime?> discardedAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
@@ -1553,11 +1406,9 @@ class $$CaptureRowsTableTableManager
                 source: source,
                 status: status,
                 content: content,
-                originalContent: originalContent,
                 terms: terms,
                 error: error,
                 capturedAt: capturedAt,
-                processedAt: processedAt,
                 analyzedAt: analyzedAt,
                 discardedAt: discardedAt,
                 updatedAt: updatedAt,

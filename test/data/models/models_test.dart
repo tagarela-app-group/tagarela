@@ -228,12 +228,10 @@ void main() {
       'source': 'photo',
       'status': status,
       'text': text,
-      'original_text': 'MIND THE GAP',
       'terms': [
         {'text': 'mind', 'start': 0, 'end': 4},
       ],
       'captured_at': '2026-10-23T10:00:00Z',
-      'processed_at': '2026-10-23T10:00:05Z',
       'analyzed_at': null,
       'discarded_at': null,
       'updated_at': '2026-10-23T10:00:05Z',
@@ -248,7 +246,6 @@ void main() {
         const CaptureTerm(text: 'mind', start: 0, end: 4),
       ]);
       expect(capture.error, isNull);
-      expect(capture.processedAt, DateTime.utc(2026, 10, 23, 10, 0, 5));
       expect(capture.analyzedAt, isNull);
     });
 

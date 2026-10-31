@@ -148,8 +148,6 @@ void main() {
       );
       expect(only().status, CaptureStatus.ready);
       expect(only().text, 'MIND THE GAP');
-      expect(only().originalText, 'MIND THE GAP');
-      expect(only().processedAt, isNotNull);
       expect(only().pending, isEmpty);
       expect(extractor.released, 1);
     });
@@ -529,7 +527,6 @@ void main() {
           status: capture.status,
           capturedAt: capture.capturedAt,
           text: capture.text,
-          originalText: capture.originalText,
         ),
       );
       await db.pullEverything();
