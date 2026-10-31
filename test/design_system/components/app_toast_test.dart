@@ -32,6 +32,33 @@ void main() {
     await tester.pump();
   }
 
+  testWidgets('aviso novo toma o lugar do anterior, sem fila', (tester) async {
+    await tester.pumpComponent(
+      Builder(
+        builder: (context) => Column(
+          children: [
+            TextButton(
+              onPressed: () => AppToast.notice(context, 'primeiro'),
+              child: const Text('a'),
+            ),
+            TextButton(
+              onPressed: () => AppToast.notice(context, 'segundo'),
+              child: const Text('b'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('a'));
+    await tester.pump();
+    await tester.tap(find.text('b'));
+    await tester.pumpAndSettle(const Duration(milliseconds: 100));
+
+    expect(find.text('primeiro'), findsNothing);
+    expect(find.text('segundo'), findsOneWidget);
+  });
+
   testWidgets('acima da tab bar e do botão + quando pedido', (tester) async {
     await show(tester, aboveTabBar: true);
 

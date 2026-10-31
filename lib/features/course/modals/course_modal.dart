@@ -26,7 +26,6 @@ class _CourseModalState extends State<CourseModal> {
       return;
     }
     final scope = AppScope.of(context);
-    final messenger = ScaffoldMessenger.of(context);
     final failed = context.l10n.courseSwitchFailed;
     setState(() => _switching = course.id);
     try {
@@ -34,7 +33,7 @@ class _CourseModalState extends State<CourseModal> {
     } on Exception {
       if (!mounted) return;
       setState(() => _switching = null);
-      messenger.showSnackBar(SnackBar(content: Text(failed)));
+      AppToast.notice(context, failed);
       return;
     }
     navigator.pop();

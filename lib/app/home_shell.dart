@@ -68,13 +68,10 @@ class _HomeShellState extends State<HomeShell> {
 
   void _onAuthChanged() {
     if (!_auth!.sessionExpired) return;
-    final messenger = ScaffoldMessenger.of(context);
+    AppToast.notice(context, context.l10n.sessionExpired);
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const LoginPage()),
       (_) => false,
-    );
-    messenger.showSnackBar(
-      SnackBar(content: Text(context.l10n.sessionExpired)),
     );
   }
 
