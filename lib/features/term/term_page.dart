@@ -5,6 +5,7 @@ import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
+import 'package:tagarela/features/term/logic/term_controller.dart';
 import 'package:tagarela/shared/widgets/practice_cards.dart';
 import 'package:tagarela/features/term/widgets/meaning_card.dart';
 import 'package:tagarela/features/term/widgets/term_building.dart';
@@ -16,8 +17,6 @@ import 'package:tagarela/features/term/widgets/term_reminders.dart';
 import 'package:tagarela/features/term/widgets/term_usage.dart';
 import 'package:tagarela/features/term/widgets/term_words.dart';
 import 'package:tagarela/l10n/l10n.dart';
-
-enum _Tab { context, words, usage }
 
 class TermPage extends StatefulWidget {
   const TermPage({super.key, required this.term});
@@ -33,85 +32,15 @@ class TermPage extends StatefulWidget {
 }
 
 class _TermPageState extends State<TermPage> {
-  TermDetail? _detail;
-  Object? _error;
-  var _revealed = false;
-  var _flipped = false;
-  var _bursts = 0;
-  var _asked = false;
-  var _pitfallRevealed = false;
-  var _pitfallBursts = 0;
-  var _formalityRevealed = false;
-  var _tab = _Tab.context;
+  late final TermController _term;
   late final Voice _voice;
 
   @override
   void initState() {
     super.initState();
-    _voice = AppScope.of(context).voice;
-    _load();
-  }
-
-  Future<void> _load() async {
-    final vocabulary = AppScope.of(context).vocabulary;
-    if (_error != null) setState(() => _error = null);
-    try {
-      final detail = await vocabulary.term(widget.term.id);
-      if (!mounted) return;
-      setState(() {
-        _detail = detail;
-        _revealed = detail.revealed;
-        _pitfallRevealed = detail.pitfallRevealed;
-        _formalityRevealed = detail.formalityRevealed;
-      });
-    } on Exception catch (e) {
-      if (mounted) setState(() => _error = e);
-    }
-  }
-
-  void _reveal(bool revealed) {
-    if (revealed == _revealed) return;
-    setState(() {
-      _revealed = revealed;
-      _asked = revealed;
-      if (revealed) _bursts++;
-    });
-    _save(
-      () => AppScope.of(
-        context,
-      ).vocabulary.reveal(widget.term.id, revealed: revealed),
-    );
-  }
-
-  void _revealPitfall(bool revealed) {
-    if (revealed == _pitfallRevealed) return;
-    setState(() {
-      _pitfallRevealed = revealed;
-      if (revealed) _pitfallBursts++;
-    });
-    _save(
-      () => AppScope.of(
-        context,
-      ).vocabulary.reveal(widget.term.id, pitfallRevealed: revealed),
-    );
-  }
-
-  void _revealFormality(bool revealed) {
-    if (revealed == _formalityRevealed) return;
-    setState(() => _formalityRevealed = revealed);
-    _save(
-      () => AppScope.of(
-        context,
-      ).vocabulary.reveal(widget.term.id, formalityRevealed: revealed),
-    );
-  }
-
-  Future<void> _save(Future<TermDetail> Function() reveal) async {
-    try {
-      await reveal();
-    } on Exception {
-      return;
-    }
+    final scope = AppScope.of(context);
+    _voice = scope.voice;
+    _term = TermController(scope.vocabulary, widget.term.id)..load();
   }
 
   void _openTerm(String id) {
@@ -125,24 +54,29 @@ class _TermPageState extends State<TermPage> {
 
   @override
   void dispose() {
+    _term.dispose();
     _voice.stop();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      ListenableBuilder(listenable: _term, builder: (context, _) => _page());
+
+  Widget _page() {
     final scope = AppScope.of(context);
     final course = scope.courses.active;
     final learning = course?.learning ?? CourseLanguage.en;
     final base = course?.base ?? CourseLanguage.pt;
-    final detail = _detail;
+    final detail = _term.detail;
+    final error = _term.error;
     final group =
         detail?.group ??
         scope.vocabulary.data?.groups
             .where((g) => g.terms.any((t) => t.id == widget.term.id))
             .firstOrNull;
 
-    if (detail == null && _error == null) {
+    if (detail == null && error == null) {
       return AppPage(
         sheet: false,
         header: TermBuilding(
@@ -162,10 +96,10 @@ class _TermPageState extends State<TermPage> {
         voice: _voice,
       ),
       gap: AppSpacing.s6,
-      centerLast: _error != null,
+      centerLast: error != null,
       children: switch (detail) {
         final detail? => _sections(detail, learning, base),
-        null => [AsyncStatus(error: _error!, onRetry: _load)],
+        null => [AsyncStatus(error: error, onRetry: _term.load)],
       },
     );
   }
@@ -178,15 +112,9 @@ class _TermPageState extends State<TermPage> {
     final l10n = context.l10n;
     final card = detail.card;
     final locale = Locale(learning.name);
-    final tabs = [
-      if (detail.captures.isNotEmpty ||
-          card.dialogue.isNotEmpty ||
-          card.examples.isNotEmpty)
-        _Tab.context,
-      if (card.hasWords) _Tab.words,
-      if (card.hasUsage) _Tab.usage,
-    ];
-    final tab = tabs.contains(_tab) ? _tab : tabs.firstOrNull;
+    final tabs = _term.tabs;
+    final tab = _term.tab;
+    final revealed = _term.revealed(TermNote.remember);
     return [
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -197,8 +125,8 @@ class _TermPageState extends State<TermPage> {
             card: card,
             learning: learning,
             base: base,
-            flipped: _flipped,
-            onFlip: () => setState(() => _flipped = !_flipped),
+            flipped: _term.flipped,
+            onFlip: _term.flip,
           ),
         ],
       ),
@@ -211,14 +139,15 @@ class _TermPageState extends State<TermPage> {
               label: l10n.remember,
               action: card.hasReveal
                   ? AppButton(
-                      label: _revealed ? l10n.coverAgain : l10n.reveal,
+                      label: revealed ? l10n.coverAgain : l10n.reveal,
                       leading: Icon(
-                        _revealed ? AppIcons.cover : AppIcons.reveal,
+                        revealed ? AppIcons.cover : AppIcons.reveal,
                         size: 16,
                       ),
                       variant: AppButtonVariant.text,
                       size: AppButtonSize.small,
-                      onPressed: () => _reveal(!_revealed),
+                      onPressed: () =>
+                          _term.reveal(TermNote.remember, revealed: !revealed),
                     )
                   : null,
             ),
@@ -226,13 +155,14 @@ class _TermPageState extends State<TermPage> {
               card: card,
               learning: learning,
               base: base,
-              revealed: _revealed,
-              asked: _revealed && _asked,
-              bursts: _bursts,
-              onReveal: () => _reveal(true),
-              pitfallRevealed: _pitfallRevealed,
-              pitfallBursts: _pitfallBursts,
-              onPitfallReveal: _revealPitfall,
+              revealed: revealed,
+              asked: revealed && _term.asked,
+              bursts: _term.bursts(TermNote.remember),
+              onReveal: () => _term.reveal(TermNote.remember, revealed: true),
+              pitfallRevealed: _term.revealed(TermNote.pitfall),
+              pitfallBursts: _term.bursts(TermNote.pitfall),
+              onPitfallReveal: (revealed) =>
+                  _term.reveal(TermNote.pitfall, revealed: revealed),
             ),
           ],
         ),
@@ -255,10 +185,10 @@ class _TermPageState extends State<TermPage> {
               SegmentedControl(
                 options: [for (final t in tabs) l10n.termTab(t.name)],
                 selected: tabs.indexOf(tab),
-                onChanged: (i) => setState(() => _tab = tabs[i]),
+                onChanged: (i) => _term.select(tabs[i]),
               ),
             switch (tab) {
-              _Tab.context => Column(
+              TermTab.context => Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: AppSpacing.s5,
                 children: [
@@ -282,22 +212,23 @@ class _TermPageState extends State<TermPage> {
                       examples: card.examples,
                       term: detail.term.text,
                       locale: locale,
-                      translated: _flipped,
+                      translated: _term.flipped,
                     ),
                 ],
               ),
-              _Tab.words => TermWords(
+              TermTab.words => TermWords(
                 card: card,
                 term: detail.term.text,
                 language: learning,
                 voice: _voice,
               ),
-              _Tab.usage => TermUsage(
+              TermTab.usage => TermUsage(
                 card: card,
                 learning: learning,
                 base: base,
-                noteRevealed: _formalityRevealed,
-                onNoteReveal: _revealFormality,
+                noteRevealed: _term.revealed(TermNote.formality),
+                onNoteReveal: (revealed) =>
+                    _term.reveal(TermNote.formality, revealed: revealed),
               ),
             },
           ],
