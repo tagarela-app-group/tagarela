@@ -10,6 +10,10 @@ TitledText captureFailure(AppLocalizations l10n, Capture capture) {
       title: photo ? l10n.noTextInPhoto : l10n.noSpeech,
       text: photo ? l10n.noTextInPhotoHint : l10n.noSpeechHint,
     ),
+    Capture.refusedError => TitledText(
+      title: l10n.syncRefusedTitle,
+      text: l10n.syncRefusedHint,
+    ),
     _ => TitledText(
       title: l10n.processFailedTitle,
       text: l10n.processFailedHint,

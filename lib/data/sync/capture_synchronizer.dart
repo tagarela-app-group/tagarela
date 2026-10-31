@@ -18,11 +18,20 @@ class CaptureSynchronizer {
 
     Future<void> step(CaptureSync op, Future<Capture?> Function() call) async {
       if (!current.pending.contains(op)) return;
+      if (current.refused && op != CaptureSync.discard) return;
       Capture? server;
       try {
         server = await call();
       } on ApiException catch (e) {
         if (!e.rejected) rethrow;
+        if (!e.settled) {
+          current = current.copyWith(
+            status: CaptureStatus.failed,
+            error: () => Capture.refusedError,
+            analyzedAt: () => null,
+          );
+          return _db.saveCapture(owner, current);
+        }
       }
       current = (server == null ? current : current.merge(server)).copyWith(
         pending: current.pending.difference({op}),
@@ -40,6 +49,7 @@ class CaptureSynchronizer {
     await step(CaptureSync.update, () => _service.update(current));
     if (!current.pending.contains(CaptureSync.confirm)) return;
     await step(CaptureSync.confirm, () => _service.confirm(current.id));
+    if (current.refused) return;
     if (_onConfirmed case final reload?) unawaited(reload());
   }
 

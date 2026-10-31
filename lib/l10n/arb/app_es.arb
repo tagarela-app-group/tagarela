@@ -159,6 +159,8 @@
   "noSpeechHint": "Graba de nuevo o descarta este audio.",
   "processFailedTitle": "No se pudo procesar ahora",
   "processFailedHint": "Toca Procesar ahora para intentarlo de nuevo.",
+  "syncRefusedTitle": "No se pudo enviar",
+  "syncRefusedHint": "Esta captura no fue aceptada. Toca Intentar de nuevo para revisarla o descártala.",
   "timeNow": "ahora",
   "minutesAgo": "hace {minutes} min",
   "hoursAgo": "hace {hours} h",

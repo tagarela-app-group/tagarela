@@ -55,7 +55,7 @@ void main() {
         source: CaptureSource.photo,
         status: CaptureStatus.analyzed,
         mediaPath: path,
-      ).copyWith(analyzedAt: DateTime(2020)),
+      ).copyWith(analyzedAt: () => DateTime(2020)),
     );
     final scope = fakeDependencies(captures: captures.store);
 

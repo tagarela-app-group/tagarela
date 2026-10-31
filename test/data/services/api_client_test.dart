@@ -190,10 +190,10 @@ void main() {
     expect(authorization, ['Bearer velho']);
   });
 
-  test('rejected: 4xx menos 401', () {
+  test('rejected: 4xx menos 401 e 429, que passam com o tempo', () {
     expect(
-      [400, 404, 409, 401, 500].map((s) => ApiException(s, 'x').rejected),
-      [true, true, true, false, false],
+      [400, 404, 409, 401, 429, 500].map((s) => ApiException(s, 'x').rejected),
+      [true, true, true, false, false, false],
     );
   });
 
