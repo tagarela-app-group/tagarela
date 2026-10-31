@@ -13,5 +13,5 @@ Fim de task em `mob/`. Todos os passos, na ordem, sem perguntar.
 4. Esperar a esteira: `gh pr checks <n> --repo tagarela-app-group/tagarela --watch`. Vermelha: ler o log do job, corrigir e subir de novo; se a segunda tentativa também falhar, trazer o erro pro usuário e parar. Conflito: rebase em `origin/develop`, resolver, push.
 5. Verde: `gh pr merge <n> --repo tagarela-app-group/tagarela --squash --delete-branch` (isolado, sem `cd`/`&&`).
 6. Mudou UI (`lib/features/`, `lib/design_system/`): atualizar o mockup da seção Mockup do CLAUDE.md. Ler o artifact antes, publicar a versão nova.
-7. `git switch develop && git pull`. Branch local fica.
+7. `git switch develop && git pull && git branch -D <branch>`.
 8. Fechar em uma linha: sugerir `/compact manter: ...` (mesmo assunto) ou `/clear` (assunto novo).
