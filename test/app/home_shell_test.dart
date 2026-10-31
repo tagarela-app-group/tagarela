@@ -200,6 +200,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
   }
 
+  Future<void> saveTextCapture(WidgetTester tester) async {
+    await openFromMenu(tester, AppIcons.text);
+    await tester.enterText(find.byType(TextField), 'mind the gap');
+    await tester.pump();
+    await tester.tap(find.text('Salvar no Inbox'));
+  }
+
   testWidgets('+ abre a captura de cada tipo', (tester) async {
     await tester.pumpPage(const HomeShell());
 
@@ -224,10 +231,7 @@ void main() {
   testWidgets('salvar avisa e Ver abre o Inbox', (tester) async {
     await tester.pumpPage(const HomeShell());
 
-    await openFromMenu(tester, AppIcons.text);
-    await tester.enterText(find.byType(TextField), 'mind the gap');
-    await tester.pump();
-    await tester.tap(find.text('Salvar no Inbox'));
+    await saveTextCapture(tester);
     await tester.pumpUntilFound(find.text('Salvo no Inbox'));
 
     expect(find.text('Salvo no Inbox'), findsOneWidget);
@@ -247,10 +251,7 @@ void main() {
     await tester.tap(_tab('Inbox'));
     await tester.pumpAndSettle();
 
-    await openFromMenu(tester, AppIcons.text);
-    await tester.enterText(find.byType(TextField), 'mind the gap');
-    await tester.pump();
-    await tester.tap(find.text('Salvar no Inbox'));
+    await saveTextCapture(tester);
     await tester.pumpUntilFound(find.text('“mind the gap”'));
 
     expect(find.text('“mind the gap”'), findsOneWidget);
