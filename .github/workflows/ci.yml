@@ -47,7 +47,7 @@ jobs:
         run: |
           achados=$(dart run dart_code_linter:metrics check-unused-code lib packages --analyze-private-members --analyze-public-members || true)
           printf '%s\n' "$achados" | grep -q 'unused getter extractions'
-          sobra=$(printf '%s\n' "$achados" | grep ' unused ' | grep -v 'total unused' | grep -v 'unused getter extractions' || true)
+          sobra=$(printf '%s\n' "$achados" | grep '⚠ unused' | grep -v 'unused getter extractions' || true)
           if [ -n "$sobra" ]; then printf '%s\n' "$sobra"; exit 1; fi
 
       - name: Arquivo sem uso
