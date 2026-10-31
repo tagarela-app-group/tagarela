@@ -1,0 +1,4 @@
+storeFile=keystore/tagarela-prd.jks
+storePassword=change-me
+keyAlias=tagarela-prd
+keyPassword=change-me

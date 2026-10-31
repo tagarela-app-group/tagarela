@@ -14,13 +14,13 @@ class SocialToken {
 }
 
 class SocialSignIn {
-  static const googleIosClientId = String.fromEnvironment(
-    'GOOGLE_IOS_CLIENT_ID',
-  );
-  static const appleClientId = String.fromEnvironment(
-    'APPLE_CLIENT_ID',
-    defaultValue: 'com.tagarela.tagarela',
-  );
+  SocialSignIn({
+    required this._googleIosClientId,
+    required this._appleClientId,
+  });
+
+  final String _googleIosClientId;
+  final String _appleClientId;
 
   String? _googleClientId;
 
@@ -28,7 +28,7 @@ class SocialSignIn {
     final google = GoogleSignIn.instance;
     if (_googleClientId != serverClientId) {
       await google.initialize(
-        clientId: googleIosClientId.isEmpty ? null : googleIosClientId,
+        clientId: _googleIosClientId.isEmpty ? null : _googleIosClientId,
         serverClientId: serverClientId,
       );
       _googleClientId = serverClientId;
@@ -59,7 +59,7 @@ class SocialSignIn {
       if (idToken == null) return null;
       return SocialToken(
         provider: 'apple',
-        clientId: appleClientId,
+        clientId: _appleClientId,
         idToken: idToken,
       );
     } on SignInWithAppleAuthorizationException catch (e) {

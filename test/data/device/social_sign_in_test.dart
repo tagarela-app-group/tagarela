@@ -29,7 +29,7 @@ void main() {
   setUp(() {
     platform = FakeGooglePlatform();
     GoogleSignInPlatform.instance = platform;
-    social = SocialSignIn();
+    social = SocialSignIn(googleIosClientId: '', appleClientId: '');
   });
 
   test('Google inicia uma vez e devolve o token com o client ID', () async {

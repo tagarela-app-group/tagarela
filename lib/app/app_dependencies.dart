@@ -1,3 +1,4 @@
+import 'package:tagarela/app/app_environment.dart';
 import 'package:tagarela/app/app_session.dart';
 import 'package:tagarela/data/device/audio_playback.dart';
 import 'package:tagarela/data/device/capture_device.dart';
@@ -39,17 +40,21 @@ class AppDependencies {
     required this.voice,
   });
 
-  factory AppDependencies.live() {
+  factory AppDependencies.live(AppEnvironment environment) {
     final models = ModelStorage();
     late final AuthStore auth;
     final api = ApiClient(
+      baseUrl: environment.apiUrl,
       accessToken: ({renew = false}) => auth.accessToken(renew: renew),
     );
     auth = AuthStore(
-      AuthService(ApiClient()),
+      AuthService(ApiClient(baseUrl: environment.apiUrl)),
       AccountService(api),
       TokenStorage(),
-      SocialSignIn(),
+      SocialSignIn(
+        googleIosClientId: environment.googleIosClientId,
+        appleClientId: environment.appleClientId,
+      ),
     );
     final courses = CourseStore(CourseService(api));
     final vocabulary = VocabularyStore(VocabularyService(api));

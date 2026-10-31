@@ -1,4 +1,5 @@
 import java.io.ByteArrayOutputStream
+import java.util.Properties
 import javax.inject.Inject
 import org.gradle.process.ExecOperations
 
@@ -6,6 +7,11 @@ plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+val keyProperties = Properties().apply {
+    val file = rootProject.file("key.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
 }
 
 android {
@@ -19,8 +25,6 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.tagarela.tagarela"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26
@@ -29,11 +33,42 @@ android {
         versionName = flutter.versionName
     }
 
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dsv") {
+            dimension = "environment"
+            applicationId = "com.tagarela.dsv"
+            manifestPlaceholders["appName"] = "Tagarela DSV"
+        }
+        create("prd") {
+            dimension = "environment"
+            applicationId = "com.tagarela.app"
+            manifestPlaceholders["appName"] = "Tagarela"
+        }
+    }
+
+    signingConfigs {
+        if (keyProperties.isNotEmpty()) {
+            create("release") {
+                storeFile = rootProject.file(keyProperties.getProperty("storeFile"))
+                storePassword = keyProperties.getProperty("storePassword")
+                keyAlias = keyProperties.getProperty("keyAlias")
+                keyPassword = keyProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
+        }
+    }
+}
+
+androidComponents {
+    beforeVariants { variant ->
+        if (variant.flavorName == "dsv" && variant.buildType == "release") {
+            variant.enable = false
         }
     }
 }
@@ -86,6 +121,6 @@ val adbReverse = tasks.register<AdbReverse>("adbReverse") {
     port.set(8000)
 }
 
-tasks.matching { it.name == "preDebugBuild" }.configureEach {
+tasks.matching { it.name == "preDsvDebugBuild" }.configureEach {
     dependsOn(adbReverse)
 }

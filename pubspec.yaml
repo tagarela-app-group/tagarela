@@ -44,9 +44,16 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  default-flavor: dsv
 
   assets:
     - assets/images/
+    - path: env/dsv.json
+      flavors:
+        - dsv
+    - path: env/prd.json
+      flavors:
+        - prd
 
   fonts:
     - family: Bricolage
