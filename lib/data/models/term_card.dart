@@ -82,8 +82,6 @@ class TermCard {
           headline: (json['learning']! as Json)['definition'] as String?,
           inContext: (json['learning']! as Json)['in_context'] as String?,
           explanation: (json['learning']! as Json)['explanation'] as String?,
-          pitfall: (json['learning']! as Json)['pitfall'] as String?,
-          imagine: (json['learning']! as Json)['imagine'] as String?,
         ),
         base: CardSide(
           headline: (json['base']! as Json)['translation'] as String?,

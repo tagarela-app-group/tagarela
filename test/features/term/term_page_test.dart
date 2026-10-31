@@ -646,13 +646,11 @@ void main() {
       find.text('Imagine: Uma faixa amarela piscando na beira da plataforma.'),
       findsOneWidget,
     );
-    expect(find.textContaining('A yellow line'), findsNothing);
     expect(find.text('Pegadinha'), findsOneWidget);
     expect(find.text('Não diga'), findsOneWidget);
     expect(find.text('mind the hole'), findsOneWidget);
     expect(find.text('Diga'), findsOneWidget);
     expect(find.text('Não é "mente o buraco".'), findsOneWidget);
-    expect(find.text('It is not "mind the hole".'), findsNothing);
   });
 
   testWidgets('pegadinha nasce desfocada menos os títulos', (tester) async {

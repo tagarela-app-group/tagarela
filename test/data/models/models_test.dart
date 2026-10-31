@@ -428,7 +428,6 @@ void main() {
       expect(card.phonetic, '/maɪnd ðə ɡæp/');
       expect(card.learning.headline, 'be careful of the space');
       expect(card.base.headline, 'cuidado com o vão');
-      expect(card.learning.pitfall, 'It is not "mind the hole".');
       expect(card.base.pitfall, 'Não é "mente o buraco".');
       expect(
         card.examples.single.translation,
@@ -441,7 +440,6 @@ void main() {
       expect(card.hasWords, isTrue);
       expect(card.hasUsage, isTrue);
       expect(card.base.literal, 'repare no vão');
-      expect(card.learning.imagine, startsWith('A yellow line'));
       expect(card.base.imagine, startsWith('Uma faixa amarela'));
       expect(card.mistake!.wrong, 'mind the hole');
       expect(card.mistake!.right, 'mind the gap');
