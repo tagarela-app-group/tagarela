@@ -4,6 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
+import 'package:tagarela/features/vocabulary/logic/group_controller.dart';
 import 'package:tagarela/features/vocabulary/modals/delete_group_modal.dart';
 import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
 import 'package:tagarela/features/vocabulary/modals/move_modal.dart';
@@ -23,21 +24,20 @@ class GroupPage extends StatefulWidget {
 }
 
 class _GroupPageState extends State<GroupPage> {
-  static const _filters = [null, TermStatus.learning, TermStatus.mastered];
-
-  int _filter = 0;
-  Set<String>? _selected;
+  late final GroupController _controller;
   TermGroup? _group;
-  bool _moving = false;
-  bool _deleting = false;
 
-  void _select(Set<String>? selected) => setState(() => _selected = selected);
+  @override
+  void initState() {
+    super.initState();
+    _controller = GroupController(AppScope.of(context).vocabulary);
+  }
 
-  void _toggle(String id) => _select(
-    _selected!.contains(id)
-        ? ({..._selected!}..remove(id))
-        : {..._selected!, id},
-  );
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   Future<void> _openMenu(TermGroup group) async {
     final action = await AppModal.show<_MenuAction>(
@@ -52,7 +52,7 @@ class _GroupPageState extends State<GroupPage> {
           (_) => GroupModal(group: group),
         );
       case _MenuAction.select:
-        _select({});
+        _controller.select({});
       case _MenuAction.delete:
         final deleted = await AppModal.show<bool>(
           context,
@@ -63,17 +63,12 @@ class _GroupPageState extends State<GroupPage> {
     }
   }
 
-  List<String> _selectedIn(List<Term> terms) => [
-    for (final t in terms)
-      if (_selected!.contains(t.id)) t.id,
-  ];
-
   Future<void> _pickTarget(
     Vocabulary data,
     TermGroup? from,
     List<Term> terms,
   ) async {
-    final ids = _selectedIn(terms);
+    final ids = _controller.selectedIn(terms);
     final target = await AppModal.show<MoveTarget>(
       context,
       (_) => MoveModal(
@@ -99,60 +94,49 @@ class _GroupPageState extends State<GroupPage> {
     required TermGroup to,
   }) async {
     final vocabulary = AppScope.of(context).vocabulary;
-    setState(() => _moving = true);
-    try {
-      await vocabulary.move(ids, to.id);
-    } on Exception {
-      if (!mounted) return;
-      setState(() => _moving = false);
-      AppToast.notice(context, context.l10n.moveFailed);
-      return;
-    }
+    final done = await _controller.move(ids, to.id);
     if (!mounted) return;
-    setState(() {
-      _moving = false;
-      _selected = null;
-    });
-    AppToast.show(
-      context,
-      title: context.l10n.termsMoved(ids.length),
-      message: context.l10n.termsMovedTo(ids.length, to.name),
-      actionLabel: context.l10n.undo,
-      onAction: () async {
-        try {
-          await vocabulary.move(ids, from?.id);
-        } on Exception {
-          if (mounted) AppToast.notice(context, context.l10n.undoFailed);
-        }
-      },
+    final l10n = context.l10n;
+    _report(
+      done,
+      failure: l10n.moveFailed,
+      title: l10n.termsMoved(ids.length),
+      message: l10n.termsMovedTo(ids.length, to.name),
+      undo: () => vocabulary.move(ids, from?.id),
     );
   }
 
   Future<void> _delete(List<Term> terms) async {
-    final ids = _selectedIn(terms);
+    final ids = _controller.selectedIn(terms);
     final vocabulary = AppScope.of(context).vocabulary;
-    setState(() => _deleting = true);
-    try {
-      await vocabulary.deleteTerms(ids);
-    } on Exception {
-      if (!mounted) return;
-      setState(() => _deleting = false);
-      AppToast.notice(context, context.l10n.deleteFailed);
-      return;
-    }
+    final done = await _controller.delete(ids);
     if (!mounted) return;
-    setState(() {
-      _deleting = false;
-      _selected = null;
-    });
+    final l10n = context.l10n;
+    _report(
+      done,
+      failure: l10n.deleteFailed,
+      title: l10n.termsDeleted(ids.length),
+      message: l10n.termsDeletedMessage(ids.length),
+      undo: () => vocabulary.restoreTerms(ids),
+    );
+  }
+
+  void _report(
+    bool done, {
+    required String failure,
+    required String title,
+    required String message,
+    required Future<void> Function() undo,
+  }) {
+    if (!done) return AppToast.notice(context, failure);
     AppToast.show(
       context,
-      title: context.l10n.termsDeleted(ids.length),
-      message: context.l10n.termsDeletedMessage(ids.length),
+      title: title,
+      message: message,
       actionLabel: context.l10n.undo,
       onAction: () async {
         try {
-          await vocabulary.restoreTerms(ids);
+          await undo();
         } on Exception {
           if (mounted) AppToast.notice(context, context.l10n.undoFailed);
         }
@@ -165,7 +149,7 @@ class _GroupPageState extends State<GroupPage> {
     final vocabulary = AppScope.of(context).vocabulary;
 
     return ListenableBuilder(
-      listenable: vocabulary,
+      listenable: Listenable.merge([vocabulary, _controller]),
       builder: (context, _) {
         final data = vocabulary.data ?? const Vocabulary();
         final id = widget.groupId;
@@ -173,13 +157,14 @@ class _GroupPageState extends State<GroupPage> {
         final group = _group;
         final terms = id == null ? data.ungrouped : group?.terms ?? const [];
         final filtered = group != null && terms.isNotEmpty;
-        final visible = filtered ? group.termsWith(_filters[_filter]) : terms;
-        final selected = _selected;
+        final visible = filtered ? group.termsWith(_controller.status) : terms;
+        final selected = _controller.selected;
+        final change = _controller.change;
 
         return PopScope(
           canPop: selected == null,
           onPopInvokedWithResult: (didPop, _) {
-            if (!didPop) return _select(null);
+            if (!didPop) return _controller.select(null);
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },
           child: AppPage(
@@ -198,7 +183,7 @@ class _GroupPageState extends State<GroupPage> {
                   : AppIconButton(
                       icon: AppIcons.close,
                       tooltip: context.l10n.cancelSelection,
-                      onPressed: () => _select(null),
+                      onPressed: () => _controller.select(null),
                       variant: AppIconButtonVariant.onHeader,
                     ),
               trailing: switch ((selected, group)) {
@@ -213,14 +198,13 @@ class _GroupPageState extends State<GroupPage> {
                   label: context.l10n.select,
                   variant: AppButtonVariant.onHeader,
                   size: AppButtonSize.small,
-                  onPressed: () => _select({}),
+                  onPressed: () => _controller.select({}),
                 ),
                 _ => AppButton(
                   label: context.l10n.selectAll,
                   variant: AppButtonVariant.onHeader,
                   size: AppButtonSize.small,
-                  onPressed: () =>
-                      _select({...?selected, for (final t in visible) t.id}),
+                  onPressed: () => _controller.selectAll(visible),
                 ),
               },
             ),
@@ -236,8 +220,9 @@ class _GroupPageState extends State<GroupPage> {
                         leading: const Icon(AppIcons.delete, size: 20),
                         variant: AppButtonVariant.outline,
                         size: AppButtonSize.large,
-                        loading: _deleting,
-                        onPressed: selected.isEmpty || _moving
+                        loading: change == GroupChange.deleting,
+                        onPressed:
+                            selected.isEmpty || change == GroupChange.moving
                             ? null
                             : () => _delete(terms),
                       ),
@@ -246,8 +231,9 @@ class _GroupPageState extends State<GroupPage> {
                           label: context.l10n.moveTerms(selected.length),
                           size: AppButtonSize.large,
                           expand: true,
-                          loading: _moving,
-                          onPressed: selected.isEmpty || _deleting
+                          loading: change == GroupChange.moving,
+                          onPressed:
+                              selected.isEmpty || change == GroupChange.deleting
                               ? null
                               : () => _pickTarget(data, group, terms),
                         ),
@@ -279,14 +265,14 @@ class _GroupPageState extends State<GroupPage> {
                 if (filtered)
                   SegmentedControl(
                     options: [
-                      for (final status in _filters)
+                      for (final status in GroupController.filters)
                         switch (status) {
                           final status? => context.l10n.termStatus(status.name),
                           null => context.l10n.allCount(terms.length),
                         },
                     ],
-                    selected: _filter,
-                    onChanged: (i) => setState(() => _filter = i),
+                    selected: _controller.filter,
+                    onChanged: _controller.showFilter,
                   ),
                 for (final term in visible)
                   TermTile(
@@ -295,9 +281,9 @@ class _GroupPageState extends State<GroupPage> {
                     selected: selected?.contains(term.id) ?? false,
                     onTap: selected == null
                         ? () => TermPage.open(context, term)
-                        : () => _toggle(term.id),
+                        : () => _controller.toggle(term.id),
                     onLongPress: selected == null
-                        ? () => _select({term.id})
+                        ? () => _controller.select({term.id})
                         : null,
                   ),
               ],
