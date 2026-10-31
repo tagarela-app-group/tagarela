@@ -1,0 +1,81 @@
+{
+  "id": "c3e5a7b9-2d4f-4b6c-9e8a-0f1b2c3d4e5f",
+  "text": "mind the gap",
+  "kind": "expression",
+  "level": 2,
+  "group": {
+    "id": "b2d4f6a8-1c3e-4a5b-8d7f-9e0a1b2c3d4e",
+    "name": "Viagem",
+    "icon": "travel",
+    "accent": "sky"
+  },
+  "revealed": false,
+  "pitfall_revealed": false,
+  "formality_revealed": false,
+  "card": {
+    "phonetic": "/maɪnd ðə ɡæp/",
+    "learning": {
+      "definition": "be careful of the space",
+      "in_context": "A warning on the train platform.",
+      "explanation": "Used on the London Underground.",
+      "pitfall": "It is not \"mind the hole\".",
+      "imagine": "A yellow line flashing at the edge of the platform."
+    },
+    "base": {
+      "translation": "cuidado com o vão",
+      "in_context": "Aviso na plataforma do trem.",
+      "explanation": "Frase famosa do metrô de Londres.",
+      "pitfall": "Não é \"mente o buraco\".",
+      "literal": "repare no vão",
+      "imagine": "Uma faixa amarela piscando na beira da plataforma.",
+      "formality_note": "Serve em qualquer lugar.",
+      "fits": [
+        { "context": "Aviso público", "fits": true, "alternative": null },
+        {
+          "context": "Conversa com amigos",
+          "fits": false,
+          "alternative": "careful"
+        }
+      ]
+    },
+    "mistake": { "wrong": "mind the hole", "right": "mind the gap" },
+    "examples": [
+      {
+        "text": "Please mind the gap when leaving the train.",
+        "translation": "Cuidado com o vão ao sair do trem."
+      }
+    ],
+    "collocations": ["mind the step"],
+    "synonyms": ["watch out"],
+    "antonyms": [],
+    "formality": "neutral",
+    "dialogue": [
+      {
+        "speaker": "A",
+        "text": "Hurry up, the train is here!",
+        "translation": "Corre, o trem chegou!"
+      },
+      {
+        "speaker": "B",
+        "text": "Coming! I always forget to mind the gap.",
+        "translation": "Já vou! Sempre esqueço de tomar cuidado com o vão."
+      }
+    ]
+  },
+  "captures": [
+    {
+      "id": "1f0c2a54-9d7e-4b1a-8c3e-2d6f5a7b9c10",
+      "source": "text",
+      "text": "Please mind the gap between the train and the platform.",
+      "captured_at": "2026-10-30T12:00:00Z",
+      "terms": [
+        {
+          "text": "mind the gap",
+          "start": 7,
+          "end": 19,
+          "term": null
+        }
+      ]
+    }
+  ]
+}

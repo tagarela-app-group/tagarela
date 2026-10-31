@@ -1,0 +1,6 @@
+{
+  "capture_source": ["photo", "audio", "text"],
+  "capture_status": ["processing", "failed", "ready", "analyzed"],
+  "course_language": ["en", "es", "pt"],
+  "term_kind": ["word", "expression"]
+}
