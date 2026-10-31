@@ -120,7 +120,7 @@ jobs:
   ios:
     name: Build iOS
     needs: check
-    if: github.base_ref == 'main' || github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' || github.base_ref == 'main'
     runs-on: macos-latest
     timeout-minutes: 45
     steps:
