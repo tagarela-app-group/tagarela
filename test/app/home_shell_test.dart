@@ -9,6 +9,7 @@ import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/inbox/inbox_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
+import 'package:tagarela/shared/widgets/user_avatar.dart';
 
 import '../helpers/fake_practice_api.dart';
 import '../helpers/fake_vocabulary_api.dart';
@@ -21,7 +22,6 @@ int _currentTab(WidgetTester tester) => const [
   HomePage,
   VocabularyPage,
   InboxPage,
-  ProfilePage,
 ].indexWhere((page) => tester.any(find.byType(page)));
 
 Finder _tab(String label) =>
@@ -43,13 +43,39 @@ void main() {
     for (final (label, index) in const [
       ('Vocabulário', 1),
       ('Inbox', 2),
-      ('Perfil', 3),
       ('Início', 0),
     ]) {
       await tester.tap(_tab(label));
       await tester.pumpAndSettle();
       expect(_currentTab(tester), index, reason: label);
     }
+  });
+
+  testWidgets('Comunidades aparece desligada e não troca de aba', (
+    tester,
+  ) async {
+    await tester.pumpPage(const HomeShell());
+
+    await tester.tap(_tab('Comunidades'));
+    await tester.pumpAndSettle();
+
+    expect(_currentTab(tester), 0);
+  });
+
+  testWidgets('a foto na Início abre o Perfil e voltar retorna', (
+    tester,
+  ) async {
+    await tester.pumpPage(const HomeShell());
+
+    await tester.tap(find.byType(UserAvatar));
+    await tester.pumpAndSettle();
+    expect(find.byType(ProfilePage), findsOneWidget);
+    expect(find.byType(AppTabBar), findsNothing);
+
+    await tester.tap(find.byTooltip('Voltar'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ProfilePage), findsNothing);
+    expect(_currentTab(tester), 0);
   });
 
   testWidgets('aba nova entra com fade por cima da antiga', (tester) async {
@@ -211,7 +237,24 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(_currentTab(tester), 2);
-    expect(find.text('mind the gap'), findsOneWidget);
+    expect(find.text('“mind the gap”'), findsOneWidget);
+  });
+
+  testWidgets('capturar já no Inbox não avisa: a captura aparece na lista', (
+    tester,
+  ) async {
+    await tester.pumpPage(const HomeShell());
+    await tester.tap(_tab('Inbox'));
+    await tester.pumpAndSettle();
+
+    await openFromMenu(tester, AppIcons.text);
+    await tester.enterText(find.byType(TextField), 'mind the gap');
+    await tester.pump();
+    await tester.tap(find.text('Salvar no Inbox'));
+    await tester.pumpUntilFound(find.text('“mind the gap”'));
+
+    expect(find.text('“mind the gap”'), findsOneWidget);
+    expect(find.text('Salvo no Inbox'), findsNothing);
   });
 
   testWidgets('curso sem áudio esconde a gravação no +', (tester) async {

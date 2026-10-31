@@ -142,27 +142,23 @@ void main() {
     expect(find.text('Grave de novo ou descarte este áudio.'), findsOneWidget);
   });
 
-  testWidgets('pronta sem termos: Escolher termos só com destino', (
-    tester,
-  ) async {
+  testWidgets('pronta sem termos: Escolher só com destino', (tester) async {
     await pumpCard(tester, sampleCapture('t1'));
 
     expect(find.text('Pronta'), findsOneWidget);
     expect(find.text('Seu texto'), findsOneWidget);
-    expect(find.text('Escolher termos'), findsNothing);
+    expect(find.text('Escolher'), findsNothing);
     expect(find.text('Descartar'), findsOneWidget);
   });
 
-  testWidgets('pronta sem termos com destino: Escolher termos', (tester) async {
+  testWidgets('pronta sem termos com destino: Escolher', (tester) async {
     final taps = await pumpCard(tester, sampleCapture('t1'), canPick: true);
 
-    await tester.tap(find.text('Escolher termos'));
+    await tester.tap(find.text('Escolher'));
     expect(taps, ['escolher']);
   });
 
-  testWidgets('pronta com termos: chips, Editar e Confirmar análise', (
-    tester,
-  ) async {
+  testWidgets('pronta com termos: chips, Editar e Analisar', (tester) async {
     final taps = await pumpCard(
       tester,
       sampleCapture('t1', terms: terms),
@@ -174,8 +170,18 @@ void main() {
     expect(find.text('Descartar'), findsNothing);
 
     await tester.tap(find.text('Editar'));
-    await tester.tap(find.text('Confirmar análise'));
+    await tester.tap(find.text('Analisar'));
     expect(taps, ['escolher', 'confirmar']);
+  });
+
+  testWidgets('texto aparece em minúsculas e entre aspas, sem mudar o dado', (
+    tester,
+  ) async {
+    final capture = sampleCapture('t1', text: 'Mind The GAP');
+    await pumpCard(tester, capture);
+
+    expect(find.text('“mind the gap”'), findsOneWidget);
+    expect(capture.text, 'Mind The GAP');
   });
 
   testWidgets('pronta de foto que sumiu do celular avisa', (tester) async {

@@ -8,6 +8,7 @@ import 'package:tagarela/features/course/modals/course_modal.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
+import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/shared/widgets/user_avatar.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -107,7 +108,15 @@ class _HomeHeader extends StatelessWidget {
     return Row(
       spacing: AppSpacing.s3,
       children: [
-        UserAvatar(user: user),
+        Semantics(
+          button: true,
+          label: context.l10n.tabProfile,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ProfilePage.open(context),
+            child: UserAvatar(user: user),
+          ),
+        ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

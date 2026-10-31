@@ -15,6 +15,10 @@ import 'package:tagarela/l10n/l10n.dart';
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
+  static Future<void> open(BuildContext context) => Navigator.of(
+    context,
+  ).push(MaterialPageRoute<void>(builder: (_) => const ProfilePage()));
+
   @override
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
@@ -36,9 +40,12 @@ class ProfilePage extends StatelessWidget {
         );
         final l10n = context.l10n;
         return AppPage(
-          header: user == null
-              ? PageHeader(title: l10n.tabProfile)
-              : PageHeader(
+          header: Stack(
+            children: [
+              if (user == null)
+                PageHeader(title: l10n.tabProfile, centered: true)
+              else
+                PageHeader(
                   title: user.displayName,
                   subtitle: user.email,
                   centered: true,
@@ -48,6 +55,18 @@ class ProfilePage extends StatelessWidget {
                     ring: context.colors.headerChip,
                   ),
                 ),
+              Positioned(
+                top: 0,
+                left: 0,
+                child: AppIconButton(
+                  icon: AppIcons.back,
+                  tooltip: l10n.back,
+                  onPressed: () => Navigator.maybePop(context),
+                  variant: AppIconButtonVariant.onHeader,
+                ),
+              ),
+            ],
+          ),
           gap: AppSpacing.s3,
           children: [
             if (course == null)

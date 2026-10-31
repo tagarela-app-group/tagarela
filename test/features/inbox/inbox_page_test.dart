@@ -113,7 +113,7 @@ void main() {
     expect(find.text('Inbox zerado'), findsOneWidget);
   });
 
-  testWidgets('Confirmar análise tira o card do Inbox', (tester) async {
+  testWidgets('Analisar tira o card do Inbox', (tester) async {
     await seed([
       sampleCapture(
         'pronta',
@@ -122,18 +122,18 @@ void main() {
     ]);
     await pumpInbox(tester);
 
-    await tester.tap(find.text('Confirmar análise'));
+    await tester.tap(find.text('Analisar'));
     await tester.pumpAndSettle();
 
     expect(find.byType(CaptureCard), findsNothing);
     expect(find.text('Inbox zerado'), findsOneWidget);
   });
 
-  testWidgets('Escolher termos abre a tela da captura', (tester) async {
+  testWidgets('Escolher abre a tela da captura', (tester) async {
     await seed([sampleCapture('pronta', text: 'Pronta pra escolher')]);
     await pumpInbox(tester);
 
-    await tester.tap(find.text('Escolher termos'));
+    await tester.tap(find.text('Escolher'));
     await tester.pumpAndSettle();
 
     expect(find.byType(PickTermsPage), findsOneWidget);
@@ -152,7 +152,7 @@ void main() {
     await tester.fling(find.byType(Scrollable), const Offset(0, 400), 1000);
     await tester.pumpAndSettle();
 
-    expect(find.text('Vinda de outro aparelho'), findsOneWidget);
+    expect(find.text('“vinda de outro aparelho”'), findsOneWidget);
   });
 
   test('resumo do topo', () {

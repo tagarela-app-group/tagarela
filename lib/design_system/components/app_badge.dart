@@ -20,8 +20,7 @@ class AppBadge extends StatelessWidget {
       AppBadgeTone.primary => (c.primary, c.onPrimary),
     };
     return Container(
-      height: 18,
-      constraints: const BoxConstraints(minWidth: 18),
+      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
       padding: const EdgeInsets.symmetric(horizontal: 5),
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -31,7 +30,13 @@ class AppBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: AppText.tag.copyWith(letterSpacing: 0, color: fg),
+        textScaler: TextScaler.noScaling,
+        style: AppText.tag.copyWith(
+          letterSpacing: 0,
+          height: 1,
+          leadingDistribution: TextLeadingDistribution.even,
+          color: fg,
+        ),
       ),
     );
   }

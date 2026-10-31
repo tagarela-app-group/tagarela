@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
+import 'package:tagarela/shared/logic/capture_text.dart';
 
 class CaptureContent extends StatelessWidget {
   const CaptureContent({super.key, required this.capture});
@@ -21,7 +22,7 @@ class CaptureContent extends StatelessWidget {
           style: AppText.pill.copyWith(color: context.colors.inkSoft),
         ),
         Text(
-          capture.text,
+          quotedCapture(capture.text),
           style: AppText.bodyLg,
           maxLines: clamp ? 3 : null,
           overflow: clamp ? TextOverflow.ellipsis : null,

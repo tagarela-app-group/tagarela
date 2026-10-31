@@ -118,7 +118,7 @@ class _CaptureCardState extends State<CaptureCard> {
             secondary: (context.l10n.discard, widget.onDiscard),
             primary: widget.onPick == null
                 ? null
-                : (context.l10n.pickTerms, widget.onPick),
+                : (context.l10n.pick, widget.onPick),
           )
         else
           CaptureActions(

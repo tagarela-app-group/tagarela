@@ -5,6 +5,7 @@ abstract final class AppIcons {
   static const vocabulary = Icons.style_outlined;
   static const inbox = Icons.inbox_outlined;
   static const profile = Icons.person_outline_rounded;
+  static const community = Icons.groups_outlined;
   static const back = Icons.chevron_left_rounded;
   static const forward = Icons.chevron_right_rounded;
   static const expand = Icons.expand_more_rounded;
