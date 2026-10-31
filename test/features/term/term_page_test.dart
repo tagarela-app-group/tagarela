@@ -160,32 +160,32 @@ void main() {
     expect(card(), side());
   });
 
-  testWidgets('pra lembrar nasce desfocado; revelar salva e embaçar volta', (
-    tester,
-  ) async {
-    await open(tester);
+  testWidgets(
+    'pra lembrar nasce desfocado; revelar e embaçar trocam o desfoque',
+    (tester) async {
+      await open(tester);
 
-    expect(_fog(tester), [true, true]);
-    expect(find.bySemanticsLabel(RegExp('repare no vão')), findsNothing);
-    expect(find.text('Embaçar de novo'), findsNothing);
+      expect(_fog(tester), [true, true]);
+      expect(find.bySemanticsLabel(RegExp('repare no vão')), findsNothing);
+      expect(find.text('Embaçar de novo'), findsNothing);
 
-    await tester.tap(find.text('Revelar'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Revelar'));
+      await tester.pumpAndSettle();
 
-    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {'revealed': true});
-    expect(_fog(tester), [false, false]);
-    expect(find.bySemanticsLabel(RegExp('repare no vão')), findsOneWidget);
-    expect(find.bySemanticsLabel(RegExp('cuidado com o vão')), findsOneWidget);
+      expect(_fog(tester), [false, false]);
+      expect(find.bySemanticsLabel(RegExp('repare no vão')), findsOneWidget);
+      expect(
+        find.bySemanticsLabel(RegExp('cuidado com o vão')),
+        findsOneWidget,
+      );
 
-    await tester.tap(find.text('Embaçar de novo'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Embaçar de novo'));
+      await tester.pumpAndSettle();
 
-    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
-      'revealed': false,
-    });
-    expect(_fog(tester), [true, true]);
-    expect(find.text('Revelar'), findsOneWidget);
-  });
+      expect(_fog(tester), [true, true]);
+      expect(find.text('Revelar'), findsOneWidget);
+    },
+  );
 
   testWidgets('o que já foi revelado abre revelado, sem perguntar nem festa', (
     tester,
@@ -198,16 +198,6 @@ void main() {
     expect(find.text('Embaçar de novo'), findsOneWidget);
     expect(find.byType(GotItCheck), findsNothing);
     expect(find.byType(BubbleBurst), findsNothing);
-  });
-
-  testWidgets('salvar sem rede não impede de revelar', (tester) async {
-    await open(tester);
-    vocabulary.api.offline = true;
-
-    await tester.tap(find.text('Revelar'));
-    await tester.pumpAndSettle();
-
-    expect(_fog(tester), [false, false]);
   });
 
   testWidgets('abas: contexto, palavras e uso', (tester) async {
@@ -279,7 +269,7 @@ void main() {
     expect(find.text('Public notice'), findsNothing);
   });
 
-  testWidgets('nota de formalidade nasce embaçada; toque revela e salva', (
+  testWidgets('nota de formalidade nasce embaçada; toque revela', (
     tester,
   ) async {
     final note = await openFormalityNote(tester);
@@ -288,25 +278,13 @@ void main() {
     await tester.tap(find.text('Serve em qualquer lugar.'));
     await tester.pumpAndSettle();
 
-    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
-      'formality_revealed': true,
-    });
     expect(tester.widget<Obscured>(note).obscured, isFalse);
     expect(find.byType(BubbleBurst), findsNothing);
 
     await tester.tap(find.byTooltip('Embaçar de novo'));
     await tester.pumpAndSettle();
 
-    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
-      'formality_revealed': false,
-    });
     expect(tester.widget<Obscured>(note).obscured, isTrue);
-  });
-
-  testWidgets('nota de formalidade revelada abre revelada', (tester) async {
-    vocabulary.api.formalityRevealed.add('u1');
-    final note = await openFormalityNote(tester);
-    expect(tester.widget<Obscured>(note).obscured, isFalse);
   });
 
   testWidgets('idioma aprendido em itálico dentro do texto no idioma base', (
@@ -571,15 +549,12 @@ void main() {
     expect(find.text('SIGNIFICADO'), findsOneWidget);
   });
 
-  testWidgets('tocar no desfocado revela, salva e solta os balões', (
-    tester,
-  ) async {
+  testWidgets('tocar no desfocado revela e solta os balões', (tester) async {
     await open(tester);
 
     await tester.tap(find.text('QUER DIZER'));
     await tester.pump();
 
-    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {'revealed': true});
     expect(_fog(tester), [false, false]);
     expect(find.byType(BubbleBurst), findsOneWidget);
     expect(find.text('Tinha sacado pelo contexto?'), findsOneWidget);
@@ -664,7 +639,7 @@ void main() {
     expect(find.bySemanticsLabel(RegExp('mente o buraco')), findsNothing);
   });
 
-  testWidgets('tocar na pegadinha revela, salva só ela e solta os balões', (
+  testWidgets('tocar na pegadinha revela só ela e solta os balões', (
     tester,
   ) async {
     await open(tester);
@@ -672,9 +647,6 @@ void main() {
     await tester.tap(find.text('Diga'));
     await tester.pump();
 
-    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
-      'pitfall_revealed': true,
-    });
     expect(_pitfallFog(tester), [false, false, false]);
     expect(_fog(tester), [true, true]);
     expect(
@@ -701,9 +673,6 @@ void main() {
     await tester.tap(find.byTooltip('Embaçar de novo'));
     await tester.pumpAndSettle();
 
-    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {
-      'pitfall_revealed': false,
-    });
     expect(_pitfallFog(tester), [true, true, true]);
 
     await tester.tap(find.byTooltip('Revelar'));
