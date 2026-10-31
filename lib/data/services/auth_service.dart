@@ -109,23 +109,6 @@ class AuthService {
     return _user(response.body as Json?)!;
   }
 
-  Future<User> updateAccount(
-    String accessToken, {
-    required String country,
-  }) async {
-    const path = '/api/v1/account';
-    final response = await _api.send(
-      'PATCH',
-      path,
-      body: {'country': country},
-      headers: {'Authorization': 'Bearer $accessToken'},
-    );
-    if (response.statusCode != 200) {
-      throw ApiException(response.statusCode, 'PATCH $path', response.body);
-    }
-    return User.fromJson(response.body! as Json);
-  }
-
   Future<void> logout(String accessToken) => _call(
     'DELETE',
     '/auth/session',

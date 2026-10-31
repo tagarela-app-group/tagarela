@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:tagarela/data/device/social_sign_in.dart';
 import 'package:tagarela/data/models/models.dart';
+import 'package:tagarela/data/services/account_service.dart';
 import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/storage/token_storage.dart';
@@ -134,8 +135,13 @@ class FakeAuthApi implements ApiClient {
       throw UnimplementedError();
 
   @override
-  Future<Object?> patch(String path, Map<String, Object?> body) =>
-      throw UnimplementedError();
+  Future<Object?> patch(String path, Map<String, Object?> body) async {
+    final response = await send('PATCH', path, body: body);
+    if (response.statusCode >= 400) {
+      throw ApiException(response.statusCode, 'PATCH $path', response.body);
+    }
+    return response.body;
+  }
 
   @override
   Future<Object?> delete(String path) => throw UnimplementedError();
@@ -198,11 +204,15 @@ AuthStore fakeAuthStore({
   FakeAuthApi? api,
   FakeTokenStorage? storage,
   FakeSocialSignIn? social,
-}) => AuthStore(
-  AuthService(api ?? FakeAuthApi()),
-  storage ?? FakeTokenStorage(),
-  social ?? FakeSocialSignIn(),
-);
+}) {
+  final client = api ?? FakeAuthApi();
+  return AuthStore(
+    AuthService(client),
+    AccountService(client),
+    storage ?? FakeTokenStorage(),
+    social ?? FakeSocialSignIn(),
+  );
+}
 
 Future<AuthStore> signedInAuthStore({
   FakeAuthApi? api,
