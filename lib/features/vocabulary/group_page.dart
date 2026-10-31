@@ -6,8 +6,10 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
 import 'package:tagarela/features/vocabulary/logic/group_controller.dart';
 import 'package:tagarela/features/vocabulary/modals/delete_group_modal.dart';
+import 'package:tagarela/features/vocabulary/modals/group_menu_modal.dart';
 import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
 import 'package:tagarela/features/vocabulary/modals/move_modal.dart';
+import 'package:tagarela/features/vocabulary/widgets/group_header.dart';
 import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 import 'package:tagarela/l10n/l10n.dart';
 import 'package:tagarela/shared/logic/group_style.dart';
@@ -40,20 +42,20 @@ class _GroupPageState extends State<GroupPage> {
   }
 
   Future<void> _openMenu(TermGroup group) async {
-    final action = await AppModal.show<_MenuAction>(
+    final action = await AppModal.show<GroupMenuAction>(
       context,
-      (_) => _GroupMenu(group: group),
+      (_) => GroupMenuModal(group: group),
     );
     if (!mounted) return;
     switch (action) {
-      case _MenuAction.edit:
+      case GroupMenuAction.edit:
         await AppModal.show<TermGroup>(
           context,
           (_) => GroupModal(group: group),
         );
-      case _MenuAction.select:
+      case GroupMenuAction.select:
         _controller.select({});
-      case _MenuAction.delete:
+      case GroupMenuAction.delete:
         final deleted = await AppModal.show<bool>(
           context,
           (_) => DeleteGroupModal(group: group),
@@ -168,7 +170,7 @@ class _GroupPageState extends State<GroupPage> {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },
           child: AppPage(
-            header: _GroupHeader(
+            header: GroupHeader(
               icon: group?.glyph ?? AppIcons.ungrouped,
               name: group?.name ?? context.l10n.ungrouped,
               meta: _meta(context.l10n, group, terms, selected),
@@ -306,108 +308,4 @@ class _GroupPageState extends State<GroupPage> {
     null when terms.isEmpty => l10n.noTermsYet,
     null => l10n.termCountMastered(terms.length, group.masteredCount),
   };
-}
-
-class _GroupHeader extends StatelessWidget {
-  const _GroupHeader({
-    required this.icon,
-    required this.name,
-    required this.meta,
-    required this.bar,
-    required this.leading,
-    required this.trailing,
-  });
-
-  final IconData icon;
-  final String name;
-  final String meta;
-  final TermGroup? bar;
-  final Widget leading;
-  final Widget? trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-
-    return Column(
-      spacing: 14,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [leading, ?trailing],
-        ),
-        PageHeader(
-          title: name,
-          subtitle: meta,
-          leading: AppBubble(
-            size: 52,
-            color: AppPalette.white,
-            foreground: c.header,
-            child: Icon(icon),
-          ),
-        ),
-        if (bar case final group?)
-          SegmentBar(
-            gap: 3,
-            semanticLabel: context.l10n.learningMastered(
-              group.terms.length - group.masteredCount,
-              group.masteredCount,
-            ),
-            segments: [
-              Segment(
-                group.terms.length - group.masteredCount,
-                AppPalette.mango,
-              ),
-              Segment(group.masteredCount, AppPalette.mint),
-            ],
-          ),
-      ],
-    );
-  }
-}
-
-enum _MenuAction { edit, select, delete }
-
-class _GroupMenu extends StatelessWidget {
-  const _GroupMenu({required this.group});
-
-  final TermGroup group;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppModal(
-      icon: group.glyph,
-      accent: group.accent,
-      title: group.name,
-      subtitle: context.l10n.termCount(group.terms.length),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: AppSpacing.s3,
-        children: [
-          OptionRow(
-            icon: AppIcons.edit,
-            accent: AppAccent.violet,
-            title: context.l10n.editGroup,
-            subtitle: context.l10n.editGroupHint,
-            onTap: () => Navigator.pop(context, _MenuAction.edit),
-          ),
-          if (group.terms.isNotEmpty)
-            OptionRow(
-              icon: AppIcons.move,
-              accent: AppAccent.violet,
-              title: context.l10n.selectTerms,
-              subtitle: context.l10n.selectTermsHint,
-              onTap: () => Navigator.pop(context, _MenuAction.select),
-            ),
-          OptionRow(
-            icon: AppIcons.delete,
-            accent: AppAccent.coral,
-            title: context.l10n.deleteGroup,
-            subtitle: context.l10n.deleteGroupHint,
-            onTap: () => Navigator.pop(context, _MenuAction.delete),
-          ),
-        ],
-      ),
-    );
-  }
 }
