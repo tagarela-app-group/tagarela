@@ -44,6 +44,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 - Vocabulário é online: nasce na API ao confirmar.
 - Minigames em `lib/features/practice/`: `practice_page.dart` (modo jogo, serve revisão e treino da ficha), `logic/practice_session.dart` (rodadas, busca com a próxima já pedida, resultados, gravação) e `games/<tipo>/` (um jogo por pasta, com `logic/` e `widgets/`). `games/games.dart` liga cada `Exercise` (sealed) ao jogo num `switch` exaustivo; o ícone fica em `shared/logic/exercise_style.dart`. Minigame novo: valor em `ExerciseKind` com a chave da API, subclasse de `Exercise` com `fromPayload`, pasta em `games/`, case em `games.dart` e no `exercise_style.dart` e textos no `select` de `exerciseKind`/`exerciseKindHint`; o compilador cobra o resto. O app pede ao `/reviews` só os tipos que conhece.
 - Extração (OCR, transcrição) roda no aparelho, em plugin próprio (`packages/`), fora da thread principal.
+- Ambientes: só dois flavors, `dsv` (`com.tagarela.dsv`) e `prd` (`com.tagarela.app`). `default-flavor: dsv` no `pubspec`, pra `flutter run` não precisar de argumento. Config em `env/<flavor>.json`, só valor público, lida em `AppEnvironment` e entregue pelo `AppDependencies.live`; cada build leva só o seu arquivo. dsv não tem build de release. iOS: `Podfile` versionado e um xcconfig por configuração (`Flutter/<modo>-<flavor>.xcconfig`), porque o Pods gera um arquivo por configuração.
 
 ## Estilo
 

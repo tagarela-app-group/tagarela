@@ -115,13 +115,35 @@ jobs:
       - name: Dependências (lockfile travado)
         run: flutter pub get --enforce-lockfile
 
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Build APK de dsv
+        run: flutter build apk --debug
+
+      - name: Build APK de prd
+        run: flutter build apk --release --flavor prd
+
+      - name: Cada APK com o seu pacote, nome e env
+        run: |
+          aapt2="$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | tail -n 1)"
+          confere() {
+            apk="build/app/outputs/flutter-apk/app-$1.apk"
+            "$aapt2" dump badging "$apk" > "$RUNNER_TEMP/badging.txt"
+            grep "package: name='$2'" "$RUNNER_TEMP/badging.txt"
+            grep "application-label:'$3'" "$RUNNER_TEMP/badging.txt"
+            unzip -l "$apk" > "$RUNNER_TEMP/files.txt"
+            grep "flutter_assets/env/$4.json" "$RUNNER_TEMP/files.txt"
+            test "$(grep -c 'flutter_assets/env/' "$RUNNER_TEMP/files.txt")" = 1
+          }
+          confere dsv-debug com.tagarela.dsv "Tagarela DSV" dsv
+          confere prd-release com.tagarela.app Tagarela prd
+
+      - name: adb reverse no dsv
+        working-directory: android
+        run: ./gradlew :app:preDsvDebugBuild --dry-run | grep ':app:adbReverse'
 
       - uses: actions/upload-artifact@v7
         with:
           name: apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-prd-release.apk
           retention-days: 7
 
   ios:
@@ -142,5 +164,14 @@ jobs:
       - name: Dependências (lockfile travado)
         run: flutter pub get --enforce-lockfile
 
-      - name: Build iOS (sem assinatura)
-        run: flutter build ios --release --no-codesign
+      - name: Build iOS de dsv (sem assinatura)
+        run: flutter build ios --debug --no-codesign
+
+      - name: Build iOS de prd (sem assinatura)
+        run: flutter build ios --release --no-codesign --flavor prd
+
+      - name: Build de prd com o env de prd
+        run: |
+          assets=build/ios/iphoneos/Runner.app/Frameworks/App.framework/flutter_assets/env
+          test -f "$assets/prd.json"
+          test ! -e "$assets/dsv.json"

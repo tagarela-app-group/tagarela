@@ -6,12 +6,7 @@ import 'package:tagarela/data/models/errors.dart';
 typedef AccessToken = Future<String?> Function({bool renew});
 
 class ApiClient {
-  ApiClient({this.baseUrl = defaultBaseUrl, this.accessToken});
-
-  static const defaultBaseUrl = String.fromEnvironment(
-    'API_URL',
-    defaultValue: 'http://localhost:8000',
-  );
+  ApiClient({required this.baseUrl, this.accessToken});
 
   static const _timeout = Duration(seconds: 10);
   static const aiTimeout = Duration(seconds: 45);
