@@ -102,7 +102,10 @@ class _CaptureCardState extends State<CaptureCard> {
         withMedia(captureFailure(context.l10n, capture)),
         CaptureActions(
           secondary: (context.l10n.discard, widget.onDiscard),
-          primary: (context.l10n.processNow, widget.onProcess),
+          primary: (
+            capture.refused ? context.l10n.tryAgain : context.l10n.processNow,
+            widget.onProcess,
+          ),
         ),
       ],
       CaptureStatus.ready => [

@@ -623,6 +623,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get processFailedHint => 'Tap Process now to try again.';
 
   @override
+  String get syncRefusedTitle => 'Couldn\'t send this';
+
+  @override
+  String get syncRefusedHint =>
+      'This capture wasn\'t accepted. Tap Try again to review it, or discard it.';
+
+  @override
   String get timeNow => 'now';
 
   @override

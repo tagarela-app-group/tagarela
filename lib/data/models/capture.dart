@@ -91,6 +91,7 @@ class Capture {
 
   static const mediaRetention = Duration(days: 30);
   static const maxTextLength = 2000;
+  static const refusedError = 'refused';
 
   final String id;
   final String? course;
@@ -116,6 +117,8 @@ class Capture {
   bool get needsAction =>
       status == CaptureStatus.ready || status == CaptureStatus.failed;
 
+  bool get refused => error == refusedError;
+
   bool get waitsExtraction =>
       status == CaptureStatus.processing &&
       pending.contains(CaptureSync.extract);
@@ -134,10 +137,10 @@ class Capture {
       id: id,
       course: server.course ?? course,
       source: source,
-      status: confirming ? status : server.status,
+      status: confirming || refused ? status : server.status,
       text: editing ? text : server.text,
       terms: editing ? terms : server.terms,
-      error: server.error,
+      error: refused ? error : server.error,
       capturedAt: server.capturedAt,
       analyzedAt: confirming ? analyzedAt : server.analyzedAt,
       discardedAt: pending.contains(CaptureSync.discard)
@@ -154,7 +157,7 @@ class Capture {
     String? text,
     List<CaptureTerm>? terms,
     ValueGetter<String?>? error,
-    DateTime? analyzedAt,
+    ValueGetter<DateTime?>? analyzedAt,
     DateTime? discardedAt,
     ValueGetter<String?>? mediaPath,
     Set<CaptureSync>? pending,
@@ -167,7 +170,7 @@ class Capture {
     terms: terms ?? this.terms,
     error: error == null ? this.error : error(),
     capturedAt: capturedAt,
-    analyzedAt: analyzedAt ?? this.analyzedAt,
+    analyzedAt: analyzedAt == null ? this.analyzedAt : analyzedAt(),
     discardedAt: discardedAt ?? this.discardedAt,
     updatedAt: updatedAt,
     mediaPath: mediaPath == null ? this.mediaPath : mediaPath(),

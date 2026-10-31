@@ -298,7 +298,7 @@ void main() {
       expect(base.mediaExpired(now), isFalse);
       expect(
         base
-            .copyWith(analyzedAt: now.subtract(const Duration(days: 31)))
+            .copyWith(analyzedAt: () => now.subtract(const Duration(days: 31)))
             .mediaExpired(now),
         isTrue,
       );
