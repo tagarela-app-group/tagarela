@@ -74,14 +74,7 @@ class _CourseModalState extends State<CourseModal> {
               ].join(' · '),
               selected: course.active,
               trailing: _switching == course.id
-                  ? SizedBox.square(
-                      dimension: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: context.colors.primary,
-                        semanticsLabel: l10n.loading,
-                      ),
-                    )
+                  ? const AppSpinner(size: 22)
                   : null,
               onTap: _switching == null ? () => _pick(course) : null,
             ),

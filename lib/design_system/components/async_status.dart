@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:tagarela/design_system/components/app_spinner.dart';
 import 'package:tagarela/design_system/components/state_message.dart';
-import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_colors.dart';
 import 'package:tagarela/design_system/tokens/app_icons.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
@@ -27,12 +27,7 @@ class AsyncStatus extends StatelessWidget {
     }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.s10),
-      child: Center(
-        child: CircularProgressIndicator(
-          color: context.colors.primary,
-          semanticsLabel: context.l10n.loading,
-        ),
-      ),
+      child: const Center(child: AppSpinner()),
     );
   }
 }
