@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:drift/native.dart';
+
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/exercise_service.dart';
 import 'package:tagarela/data/services/review_service.dart';
+import 'package:tagarela/data/storage/database.dart';
 import 'package:tagarela/data/stores/practice_store.dart';
 
 import 'fake_api.dart';
@@ -114,7 +117,12 @@ typedef FakePractice = ({PracticeStore store, FakePracticeApi api});
 FakePractice fakePractice([FakePracticeApi? api]) {
   final fake = api ?? FakePracticeApi();
   return (
-    store: PracticeStore(ReviewService(fake), ExerciseService(fake)),
+    store: PracticeStore(
+      ReviewService(fake),
+      ExerciseService(fake),
+      AppDatabase(NativeDatabase.memory()),
+      owner: () => 'ana@example.com',
+    ),
     api: fake,
   );
 }

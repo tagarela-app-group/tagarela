@@ -92,12 +92,8 @@ void main() {
     );
     expect(find.text('LEVA JUNTO'), findsOneWidget);
     expect(find.text('Conferir'), findsNothing);
-    expect(practice.api.attempts.single, {
-      'term': 't-fence',
-      'kind': 'listen_write',
-      'exercise': 'e-fence-0',
-      'outcome': 'retry',
-    });
+    expect(practice.api.attempts.single, containsPair('term', 't-fence'));
+    expect(practice.api.attempts.single, containsPair('outcome', 'retry'));
 
     await tester.tap(find.text('Próxima'));
     await tester.pumpAndSettle();

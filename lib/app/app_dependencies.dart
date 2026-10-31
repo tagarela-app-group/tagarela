@@ -53,14 +53,16 @@ class AppDependencies {
     );
     final courses = CourseStore(CourseService(api));
     final vocabulary = VocabularyStore(VocabularyService(api));
+    final db = AppDatabase();
+    String? owner() => auth.user?.email;
     return AppDependencies(
       auth: auth,
       courses: courses,
       captures: CaptureStore(
         CaptureService(api),
-        AppDatabase(),
+        db,
         MediaStorage(),
-        owner: () => auth.user?.email,
+        owner: owner,
         course: () => courses.active?.id,
         extractor: TextExtractor(models),
         onConfirmed: vocabulary.load,
@@ -69,7 +71,12 @@ class AppDependencies {
       device: CaptureDevice(),
       speech: SpeechModelStore(models),
       vocabulary: vocabulary,
-      practice: PracticeStore(ReviewService(api), ExerciseService(api)),
+      practice: PracticeStore(
+        ReviewService(api),
+        ExerciseService(api),
+        db,
+        owner: owner,
+      ),
       language: LanguageStore(Preferences(), courses),
       voice: Voice(),
     );

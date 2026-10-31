@@ -55,7 +55,7 @@ class CaptureStore extends Store<List<Capture>> {
 
   Future<Capture> createText(String text) => _create(
     Capture(
-      id: Capture.newId(),
+      id: newUuid(),
       course: _course(),
       source: CaptureSource.text,
       status: CaptureStatus.ready,
@@ -66,7 +66,7 @@ class CaptureStore extends Store<List<Capture>> {
   );
 
   Future<Capture> createMedia(CaptureSource source, File file) async {
-    final id = Capture.newId();
+    final id = newUuid();
     final capture = await _create(
       Capture(
         id: id,
