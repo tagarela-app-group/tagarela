@@ -13,20 +13,12 @@ class ReviewService {
     );
   }
 
-  Future<Term> record({
-    required String termId,
-    required ExerciseKind kind,
-    required String? exerciseId,
-    required Outcome outcome,
-  }) async {
-    final json =
-        await _api.post('/api/v1/reviews/attempts', {
-              'term': termId,
-              'kind': kind.key,
-              'exercise': exerciseId,
-              'outcome': outcome.name,
-            })
-            as Json;
-    return Term.fromJson(json['term']! as Json);
-  }
+  Future<void> record(ReviewAttempt attempt) =>
+      _api.post('/api/v1/reviews/attempts', {
+        'id': attempt.id,
+        'term': attempt.term,
+        'kind': attempt.kind.key,
+        'exercise': attempt.exercise,
+        'outcome': attempt.outcome.name,
+      });
 }

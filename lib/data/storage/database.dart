@@ -38,13 +38,28 @@ class CaptureCursors extends Table {
   Set<Column> get primaryKey => {owner};
 }
 
-@DriftDatabase(tables: [CaptureRows, CaptureCursors])
+class ReviewAttemptRows extends Table {
+  @override
+  String get tableName => 'review_attempts';
+
+  TextColumn get id => text()();
+  TextColumn get owner => text()();
+  TextColumn get term => text()();
+  TextColumn get kind => textEnum<ExerciseKind>()();
+  TextColumn get exercise => text().nullable()();
+  TextColumn get outcome => textEnum<Outcome>()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DriftDatabase(tables: [CaptureRows, CaptureCursors, ReviewAttemptRows])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
     : super(executor ?? driftDatabase(name: 'tagarela'));
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -55,6 +70,7 @@ class AppDatabase extends _$AppDatabase {
         await pullEverything();
       }
       if (from < 4) await m.alterTable(TableMigration(captureRows));
+      if (from < 5) await m.createTable(reviewAttemptRows);
     },
   );
 
@@ -135,6 +151,36 @@ class AppDatabase extends _$AppDatabase {
           updatedSince: updatedSince,
         ),
       );
+
+  Future<void> saveAttempt(String owner, ReviewAttempt attempt) =>
+      into(reviewAttemptRows).insert(
+        ReviewAttemptRowsCompanion.insert(
+          id: attempt.id,
+          owner: owner,
+          term: attempt.term,
+          kind: attempt.kind,
+          exercise: Value(attempt.exercise),
+          outcome: attempt.outcome,
+        ),
+      );
+
+  Future<List<ReviewAttempt>> attemptsOf(String owner) async {
+    final query = select(reviewAttemptRows)
+      ..where((a) => a.owner.equals(owner));
+    return [
+      for (final row in await query.get())
+        ReviewAttempt(
+          id: row.id,
+          term: row.term,
+          kind: row.kind,
+          exercise: row.exercise,
+          outcome: row.outcome,
+        ),
+    ];
+  }
+
+  Future<void> deleteAttempt(String id) =>
+      (delete(reviewAttemptRows)..where((a) => a.id.equals(id))).go();
 
   static Capture _toCapture(CaptureRow row) => Capture(
     id: row.id,

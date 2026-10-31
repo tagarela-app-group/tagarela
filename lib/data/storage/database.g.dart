@@ -1042,11 +1042,429 @@ class CaptureCursorsCompanion extends UpdateCompanion<CaptureCursor> {
   }
 }
 
+class $ReviewAttemptRowsTable extends ReviewAttemptRows
+    with TableInfo<$ReviewAttemptRowsTable, ReviewAttemptRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReviewAttemptRowsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ownerMeta = const VerificationMeta('owner');
+  @override
+  late final GeneratedColumn<String> owner = GeneratedColumn<String>(
+    'owner',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _termMeta = const VerificationMeta('term');
+  @override
+  late final GeneratedColumn<String> term = GeneratedColumn<String>(
+    'term',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<ExerciseKind, String> kind =
+      GeneratedColumn<String>(
+        'kind',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<ExerciseKind>($ReviewAttemptRowsTable.$converterkind);
+  static const VerificationMeta _exerciseMeta = const VerificationMeta(
+    'exercise',
+  );
+  @override
+  late final GeneratedColumn<String> exercise = GeneratedColumn<String>(
+    'exercise',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<Outcome, String> outcome =
+      GeneratedColumn<String>(
+        'outcome',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<Outcome>($ReviewAttemptRowsTable.$converteroutcome);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    owner,
+    term,
+    kind,
+    exercise,
+    outcome,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'review_attempts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReviewAttemptRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('owner')) {
+      context.handle(
+        _ownerMeta,
+        owner.isAcceptableOrUnknown(data['owner']!, _ownerMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ownerMeta);
+    }
+    if (data.containsKey('term')) {
+      context.handle(
+        _termMeta,
+        term.isAcceptableOrUnknown(data['term']!, _termMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_termMeta);
+    }
+    if (data.containsKey('exercise')) {
+      context.handle(
+        _exerciseMeta,
+        exercise.isAcceptableOrUnknown(data['exercise']!, _exerciseMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ReviewAttemptRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReviewAttemptRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      owner: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}owner'],
+      )!,
+      term: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}term'],
+      )!,
+      kind: $ReviewAttemptRowsTable.$converterkind.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}kind'],
+        )!,
+      ),
+      exercise: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exercise'],
+      ),
+      outcome: $ReviewAttemptRowsTable.$converteroutcome.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}outcome'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $ReviewAttemptRowsTable createAlias(String alias) {
+    return $ReviewAttemptRowsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ExerciseKind, String, String> $converterkind =
+      const EnumNameConverter<ExerciseKind>(ExerciseKind.values);
+  static JsonTypeConverter2<Outcome, String, String> $converteroutcome =
+      const EnumNameConverter<Outcome>(Outcome.values);
+}
+
+class ReviewAttemptRow extends DataClass
+    implements Insertable<ReviewAttemptRow> {
+  final String id;
+  final String owner;
+  final String term;
+  final ExerciseKind kind;
+  final String? exercise;
+  final Outcome outcome;
+  const ReviewAttemptRow({
+    required this.id,
+    required this.owner,
+    required this.term,
+    required this.kind,
+    this.exercise,
+    required this.outcome,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['owner'] = Variable<String>(owner);
+    map['term'] = Variable<String>(term);
+    {
+      map['kind'] = Variable<String>(
+        $ReviewAttemptRowsTable.$converterkind.toSql(kind),
+      );
+    }
+    if (!nullToAbsent || exercise != null) {
+      map['exercise'] = Variable<String>(exercise);
+    }
+    {
+      map['outcome'] = Variable<String>(
+        $ReviewAttemptRowsTable.$converteroutcome.toSql(outcome),
+      );
+    }
+    return map;
+  }
+
+  ReviewAttemptRowsCompanion toCompanion(bool nullToAbsent) {
+    return ReviewAttemptRowsCompanion(
+      id: Value(id),
+      owner: Value(owner),
+      term: Value(term),
+      kind: Value(kind),
+      exercise: exercise == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exercise),
+      outcome: Value(outcome),
+    );
+  }
+
+  factory ReviewAttemptRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReviewAttemptRow(
+      id: serializer.fromJson<String>(json['id']),
+      owner: serializer.fromJson<String>(json['owner']),
+      term: serializer.fromJson<String>(json['term']),
+      kind: $ReviewAttemptRowsTable.$converterkind.fromJson(
+        serializer.fromJson<String>(json['kind']),
+      ),
+      exercise: serializer.fromJson<String?>(json['exercise']),
+      outcome: $ReviewAttemptRowsTable.$converteroutcome.fromJson(
+        serializer.fromJson<String>(json['outcome']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'owner': serializer.toJson<String>(owner),
+      'term': serializer.toJson<String>(term),
+      'kind': serializer.toJson<String>(
+        $ReviewAttemptRowsTable.$converterkind.toJson(kind),
+      ),
+      'exercise': serializer.toJson<String?>(exercise),
+      'outcome': serializer.toJson<String>(
+        $ReviewAttemptRowsTable.$converteroutcome.toJson(outcome),
+      ),
+    };
+  }
+
+  ReviewAttemptRow copyWith({
+    String? id,
+    String? owner,
+    String? term,
+    ExerciseKind? kind,
+    Value<String?> exercise = const Value.absent(),
+    Outcome? outcome,
+  }) => ReviewAttemptRow(
+    id: id ?? this.id,
+    owner: owner ?? this.owner,
+    term: term ?? this.term,
+    kind: kind ?? this.kind,
+    exercise: exercise.present ? exercise.value : this.exercise,
+    outcome: outcome ?? this.outcome,
+  );
+  ReviewAttemptRow copyWithCompanion(ReviewAttemptRowsCompanion data) {
+    return ReviewAttemptRow(
+      id: data.id.present ? data.id.value : this.id,
+      owner: data.owner.present ? data.owner.value : this.owner,
+      term: data.term.present ? data.term.value : this.term,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      exercise: data.exercise.present ? data.exercise.value : this.exercise,
+      outcome: data.outcome.present ? data.outcome.value : this.outcome,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReviewAttemptRow(')
+          ..write('id: $id, ')
+          ..write('owner: $owner, ')
+          ..write('term: $term, ')
+          ..write('kind: $kind, ')
+          ..write('exercise: $exercise, ')
+          ..write('outcome: $outcome')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, owner, term, kind, exercise, outcome);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReviewAttemptRow &&
+          other.id == this.id &&
+          other.owner == this.owner &&
+          other.term == this.term &&
+          other.kind == this.kind &&
+          other.exercise == this.exercise &&
+          other.outcome == this.outcome);
+}
+
+class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
+  final Value<String> id;
+  final Value<String> owner;
+  final Value<String> term;
+  final Value<ExerciseKind> kind;
+  final Value<String?> exercise;
+  final Value<Outcome> outcome;
+  final Value<int> rowid;
+  const ReviewAttemptRowsCompanion({
+    this.id = const Value.absent(),
+    this.owner = const Value.absent(),
+    this.term = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.exercise = const Value.absent(),
+    this.outcome = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ReviewAttemptRowsCompanion.insert({
+    required String id,
+    required String owner,
+    required String term,
+    required ExerciseKind kind,
+    this.exercise = const Value.absent(),
+    required Outcome outcome,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       owner = Value(owner),
+       term = Value(term),
+       kind = Value(kind),
+       outcome = Value(outcome);
+  static Insertable<ReviewAttemptRow> custom({
+    Expression<String>? id,
+    Expression<String>? owner,
+    Expression<String>? term,
+    Expression<String>? kind,
+    Expression<String>? exercise,
+    Expression<String>? outcome,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (owner != null) 'owner': owner,
+      if (term != null) 'term': term,
+      if (kind != null) 'kind': kind,
+      if (exercise != null) 'exercise': exercise,
+      if (outcome != null) 'outcome': outcome,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ReviewAttemptRowsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? owner,
+    Value<String>? term,
+    Value<ExerciseKind>? kind,
+    Value<String?>? exercise,
+    Value<Outcome>? outcome,
+    Value<int>? rowid,
+  }) {
+    return ReviewAttemptRowsCompanion(
+      id: id ?? this.id,
+      owner: owner ?? this.owner,
+      term: term ?? this.term,
+      kind: kind ?? this.kind,
+      exercise: exercise ?? this.exercise,
+      outcome: outcome ?? this.outcome,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (owner.present) {
+      map['owner'] = Variable<String>(owner.value);
+    }
+    if (term.present) {
+      map['term'] = Variable<String>(term.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(
+        $ReviewAttemptRowsTable.$converterkind.toSql(kind.value),
+      );
+    }
+    if (exercise.present) {
+      map['exercise'] = Variable<String>(exercise.value);
+    }
+    if (outcome.present) {
+      map['outcome'] = Variable<String>(
+        $ReviewAttemptRowsTable.$converteroutcome.toSql(outcome.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReviewAttemptRowsCompanion(')
+          ..write('id: $id, ')
+          ..write('owner: $owner, ')
+          ..write('term: $term, ')
+          ..write('kind: $kind, ')
+          ..write('exercise: $exercise, ')
+          ..write('outcome: $outcome, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $CaptureRowsTable captureRows = $CaptureRowsTable(this);
   late final $CaptureCursorsTable captureCursors = $CaptureCursorsTable(this);
+  late final $ReviewAttemptRowsTable reviewAttemptRows =
+      $ReviewAttemptRowsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1054,6 +1472,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     captureRows,
     captureCursors,
+    reviewAttemptRows,
   ];
   @override
   DriftDatabaseOptions get options =>
@@ -1606,6 +2025,249 @@ typedef $$CaptureCursorsTableProcessedTableManager =
       CaptureCursor,
       PrefetchHooks Function()
     >;
+typedef $$ReviewAttemptRowsTableCreateCompanionBuilder =
+    ReviewAttemptRowsCompanion Function({
+      required String id,
+      required String owner,
+      required String term,
+      required ExerciseKind kind,
+      Value<String?> exercise,
+      required Outcome outcome,
+      Value<int> rowid,
+    });
+typedef $$ReviewAttemptRowsTableUpdateCompanionBuilder =
+    ReviewAttemptRowsCompanion Function({
+      Value<String> id,
+      Value<String> owner,
+      Value<String> term,
+      Value<ExerciseKind> kind,
+      Value<String?> exercise,
+      Value<Outcome> outcome,
+      Value<int> rowid,
+    });
+
+class $$ReviewAttemptRowsTableFilterComposer
+    extends Composer<_$AppDatabase, $ReviewAttemptRowsTable> {
+  $$ReviewAttemptRowsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get owner => $composableBuilder(
+    column: $table.owner,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get term => $composableBuilder(
+    column: $table.term,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ExerciseKind, ExerciseKind, String> get kind =>
+      $composableBuilder(
+        column: $table.kind,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<String> get exercise => $composableBuilder(
+    column: $table.exercise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<Outcome, Outcome, String> get outcome =>
+      $composableBuilder(
+        column: $table.outcome,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$ReviewAttemptRowsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReviewAttemptRowsTable> {
+  $$ReviewAttemptRowsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get owner => $composableBuilder(
+    column: $table.owner,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get term => $composableBuilder(
+    column: $table.term,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exercise => $composableBuilder(
+    column: $table.exercise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get outcome => $composableBuilder(
+    column: $table.outcome,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ReviewAttemptRowsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReviewAttemptRowsTable> {
+  $$ReviewAttemptRowsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get owner =>
+      $composableBuilder(column: $table.owner, builder: (column) => column);
+
+  GeneratedColumn<String> get term =>
+      $composableBuilder(column: $table.term, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ExerciseKind, String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get exercise =>
+      $composableBuilder(column: $table.exercise, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Outcome, String> get outcome =>
+      $composableBuilder(column: $table.outcome, builder: (column) => column);
+}
+
+class $$ReviewAttemptRowsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ReviewAttemptRowsTable,
+          ReviewAttemptRow,
+          $$ReviewAttemptRowsTableFilterComposer,
+          $$ReviewAttemptRowsTableOrderingComposer,
+          $$ReviewAttemptRowsTableAnnotationComposer,
+          $$ReviewAttemptRowsTableCreateCompanionBuilder,
+          $$ReviewAttemptRowsTableUpdateCompanionBuilder,
+          (
+            ReviewAttemptRow,
+            BaseReferences<
+              _$AppDatabase,
+              $ReviewAttemptRowsTable,
+              ReviewAttemptRow
+            >,
+          ),
+          ReviewAttemptRow,
+          PrefetchHooks Function()
+        > {
+  $$ReviewAttemptRowsTableTableManager(
+    _$AppDatabase db,
+    $ReviewAttemptRowsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReviewAttemptRowsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ReviewAttemptRowsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ReviewAttemptRowsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> owner = const Value.absent(),
+                Value<String> term = const Value.absent(),
+                Value<ExerciseKind> kind = const Value.absent(),
+                Value<String?> exercise = const Value.absent(),
+                Value<Outcome> outcome = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ReviewAttemptRowsCompanion(
+                id: id,
+                owner: owner,
+                term: term,
+                kind: kind,
+                exercise: exercise,
+                outcome: outcome,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String owner,
+                required String term,
+                required ExerciseKind kind,
+                Value<String?> exercise = const Value.absent(),
+                required Outcome outcome,
+                Value<int> rowid = const Value.absent(),
+              }) => ReviewAttemptRowsCompanion.insert(
+                id: id,
+                owner: owner,
+                term: term,
+                kind: kind,
+                exercise: exercise,
+                outcome: outcome,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ReviewAttemptRowsTable, ReviewAttemptRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $ReviewAttemptRowsTable,
+                    ReviewAttemptRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ReviewAttemptRowsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ReviewAttemptRowsTable,
+      ReviewAttemptRow,
+      $$ReviewAttemptRowsTableFilterComposer,
+      $$ReviewAttemptRowsTableOrderingComposer,
+      $$ReviewAttemptRowsTableAnnotationComposer,
+      $$ReviewAttemptRowsTableCreateCompanionBuilder,
+      $$ReviewAttemptRowsTableUpdateCompanionBuilder,
+      (
+        ReviewAttemptRow,
+        BaseReferences<
+          _$AppDatabase,
+          $ReviewAttemptRowsTable,
+          ReviewAttemptRow
+        >,
+      ),
+      ReviewAttemptRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1614,4 +2276,6 @@ class $AppDatabaseManager {
       $$CaptureRowsTableTableManager(_db, _db.captureRows);
   $$CaptureCursorsTableTableManager get captureCursors =>
       $$CaptureCursorsTableTableManager(_db, _db.captureCursors);
+  $$ReviewAttemptRowsTableTableManager get reviewAttemptRows =>
+      $$ReviewAttemptRowsTableTableManager(_db, _db.reviewAttemptRows);
 }

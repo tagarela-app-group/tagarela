@@ -4,6 +4,22 @@ import 'package:tagarela/data/models/term.dart';
 
 enum Outcome { first, retry, hint, missed }
 
+class ReviewAttempt {
+  const ReviewAttempt({
+    required this.id,
+    required this.term,
+    required this.kind,
+    required this.exercise,
+    required this.outcome,
+  });
+
+  final String id;
+  final String term;
+  final ExerciseKind kind;
+  final String? exercise;
+  final Outcome outcome;
+}
+
 class ReviewRound {
   const ReviewRound(this.term, this.kind);
 

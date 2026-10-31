@@ -210,12 +210,12 @@ void main() {
   });
 
   group('Capture', () {
-    test('newId gera UUID v4 diferente a cada vez', () {
+    test('newUuid gera UUID v4 diferente a cada vez', () {
       final uuid = RegExp(
         r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
       );
 
-      final ids = {for (var i = 0; i < 50; i++) Capture.newId()};
+      final ids = {for (var i = 0; i < 50; i++) newUuid()};
 
       expect(ids, hasLength(50));
       expect(ids, everyElement(matches(uuid)));
