@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/data/services/vocabulary_service.dart';
+import 'package:tagarela/data/services/api_client.dart';
 
 import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/fixtures.dart';
@@ -106,10 +106,7 @@ void main() {
     expect(api.calls, ['GET /api/v1/terms/u1']);
     expect(detail.term.text, 'mind the gap');
     expect(detail.card.base.headline, 'cuidado com o vão');
-    expect(
-      VocabularyService.cardTimeout,
-      greaterThan(const Duration(seconds: 30)),
-    );
+    expect(ApiClient.aiTimeout, greaterThan(const Duration(seconds: 30)));
   });
 
   test('revelar manda o estado e devolve a ficha', () async {

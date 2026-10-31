@@ -4,12 +4,10 @@ import 'package:tagarela/data/services/api_client.dart';
 class VocabularyService {
   const VocabularyService(this._api);
 
-  static const cardTimeout = Duration(seconds: 45);
-
   final ApiClient _api;
 
   Future<TermDetail> term(String id) async => TermDetail.fromJson(
-    await _api.get('/api/v1/terms/$id', timeout: cardTimeout) as Json,
+    await _api.get('/api/v1/terms/$id', timeout: ApiClient.aiTimeout) as Json,
   );
 
   Future<TermDetail> reveal(

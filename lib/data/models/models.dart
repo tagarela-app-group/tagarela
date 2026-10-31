@@ -7,5 +7,6 @@ export 'package:tagarela/data/models/json.dart';
 export 'package:tagarela/data/models/review.dart';
 export 'package:tagarela/data/models/term.dart';
 export 'package:tagarela/data/models/term_card.dart';
+export 'package:tagarela/data/models/text_offsets.dart';
 export 'package:tagarela/data/models/user.dart';
 export 'package:tagarela/data/models/vocabulary.dart';

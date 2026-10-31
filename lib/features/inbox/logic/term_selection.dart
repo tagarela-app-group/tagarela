@@ -24,8 +24,8 @@ class TermSelection {
   factory TermSelection.of(Capture capture) => TermSelection(capture.text, [
     for (final term in capture.terms)
       (
-        start: _codeUnits(capture.text, term.start),
-        end: _codeUnits(capture.text, term.end),
+        start: codeUnitOffset(capture.text, term.start),
+        end: codeUnitOffset(capture.text, term.end),
       ),
   ]);
 
@@ -113,22 +113,8 @@ class TermSelection {
     for (final span in spans)
       CaptureTerm(
         text: termText(span),
-        start: _codePoints(text, span.start),
-        end: _codePoints(text, span.end),
+        start: codePointOffset(text, span.start),
+        end: codePointOffset(text, span.end),
       ),
   ];
-
-  static int _codePoints(String text, int codeUnits) =>
-      text.substring(0, codeUnits).runes.length;
-
-  static int _codeUnits(String text, int codePoints) {
-    var units = 0;
-    var count = 0;
-    for (final rune in text.runes) {
-      if (count == codePoints) break;
-      units += rune > 0xFFFF ? 2 : 1;
-      count++;
-    }
-    return units;
-  }
 }

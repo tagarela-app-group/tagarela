@@ -14,6 +14,7 @@ class ApiClient {
   );
 
   static const _timeout = Duration(seconds: 10);
+  static const aiTimeout = Duration(seconds: 45);
 
   final String baseUrl;
   final AccessToken? accessToken;
