@@ -45,8 +45,9 @@ mixin AuthForm<T extends StatefulWidget> on State<T> {
       }
     } on Exception catch (e) {
       debugPrint('Falha no login: $e');
-      if (mounted)
+      if (mounted) {
         AppToast.notice(context, failure ?? context.l10n.authOffline);
+      }
     } finally {
       if (mounted) setState(() => loading = null);
     }
