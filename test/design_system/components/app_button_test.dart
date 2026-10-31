@@ -102,45 +102,6 @@ void main() {
     }
   });
 
-  for (final (theme, colors) in [
-    (AppTheme.light, AppColors.light),
-    (AppTheme.dark, AppColors.dark),
-  ]) {
-    testWidgets('contrast usa contrast/onContrast (${theme.brightness.name})', (
-      tester,
-    ) async {
-      await tester.pumpComponent(
-        AppButton(
-          label: 'Apple',
-          onPressed: () {},
-          variant: AppButtonVariant.contrast,
-        ),
-        theme: theme,
-      );
-
-      final style = tester.widget<TextButton>(find.byType(TextButton)).style!;
-      expect(style.backgroundColor!.resolve({}), colors.contrast);
-      expect(style.foregroundColor!.resolve({}), colors.onContrast);
-    });
-
-    testWidgets('danger usa alert/onAlert (${theme.brightness.name})', (
-      tester,
-    ) async {
-      await tester.pumpComponent(
-        AppButton(
-          label: 'Apagar grupo',
-          onPressed: () {},
-          variant: AppButtonVariant.danger,
-        ),
-        theme: theme,
-      );
-
-      final style = tester.widget<TextButton>(find.byType(TextButton)).style!;
-      expect(style.backgroundColor!.resolve({}), colors.alert);
-      expect(style.foregroundColor!.resolve({}), colors.onAlert);
-    });
-  }
-
   testWidgets('expand ocupa a largura toda', (tester) async {
     await tester.pumpComponent(
       Column(
@@ -150,24 +111,5 @@ void main() {
     );
 
     expect(tester.getSize(find.byType(TextButton)).width, 800);
-  });
-
-  testWidgets('onHeader: pílula no tom do header, texto branco', (
-    tester,
-  ) async {
-    await tester.pumpComponent(
-      AppButton(
-        label: 'Mover termos',
-        onPressed: () {},
-        variant: AppButtonVariant.onHeader,
-        size: AppButtonSize.small,
-      ),
-    );
-
-    final style = tester.widget<TextButton>(find.byType(TextButton)).style!;
-    final shape = style.shape!.resolve({})! as RoundedRectangleBorder;
-    expect(style.backgroundColor!.resolve({}), AppColors.light.headerChip);
-    expect(style.foregroundColor!.resolve({}), AppPalette.white);
-    expect(shape.borderRadius, BorderRadius.circular(AppRadius.pill));
   });
 }

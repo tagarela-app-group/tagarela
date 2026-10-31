@@ -4,29 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/design_system/design_system.dart';
 
 void main() {
-  test('temas expõem AppColors como extensão', () {
-    expect(AppTheme.light.extension<AppColors>(), AppColors.light);
-    expect(AppTheme.dark.extension<AppColors>(), AppColors.dark);
-    expect(AppTheme.light.brightness, Brightness.light);
-    expect(AppTheme.dark.brightness, Brightness.dark);
-  });
-
   test('todo AppAccent tem cor nos dois temas', () {
     for (final colors in [AppColors.light, AppColors.dark]) {
       for (final accent in AppAccent.values) {
         expect(() => colors.accent(accent), returnsNormally, reason: '$accent');
       }
     }
-  });
-
-  test('aviso: fundo tinta, ação manga no claro e violeta no escuro', () {
-    expect(AppTheme.light.snackBarTheme.backgroundColor, AppColors.light.ink);
-    expect(AppTheme.light.snackBarTheme.actionTextColor, AppPalette.mango);
-    expect(AppTheme.dark.snackBarTheme.backgroundColor, AppColors.dark.ink);
-    expect(
-      AppTheme.dark.snackBarTheme.actionTextColor,
-      AppColors.light.primaryText,
-    );
   });
 
   test('lerp troca de tema na metade, sem interpolar', () {

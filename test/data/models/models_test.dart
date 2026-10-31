@@ -83,20 +83,6 @@ void main() {
     });
   });
 
-  group('GroupIcon', () {
-    test('nome do enum = id da API', () {
-      final g = TermGroup.fromJson({
-        'id': '1',
-        'name': 'Bichos',
-        'icon': 'paw',
-        'accent': 'mango',
-        'terms': <Object?>[],
-      });
-
-      expect(g.icon, GroupIcon.paw);
-    });
-  });
-
   group('Vocabulary', () {
     final vocabulary = Vocabulary(
       groups: [

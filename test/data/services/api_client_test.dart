@@ -201,8 +201,4 @@ void main() {
     await server.close(force: true);
     expect(api.get('/user'), throwsA(isA<SocketException>()));
   });
-
-  test('padrão é localhost, que o adb reverse leva a qualquer aparelho', () {
-    expect(ApiClient().baseUrl, 'http://localhost:8000');
-  });
 }

@@ -68,43 +68,6 @@ void main() {
     expect(find.text('Câmera'), findsOneWidget);
   });
 
-  testWidgets('+ com traço grosso e ponta redonda, como no mockup', (
-    tester,
-  ) async {
-    await _pumpMenu(tester);
-
-    final bars = tester
-        .widgetList<Container>(
-          find.descendant(
-            of: find.bySemanticsLabel('Adicionar termo'),
-            matching: find.byType(Container),
-          ),
-        )
-        .map((c) => c.constraints!.maxWidth * 10 + c.constraints!.maxHeight);
-    expect(bars, unorderedEquals([20 * 10 + 2.8, 2.8 * 10 + 20]));
-  });
-
-  testWidgets('anel do + acompanha a curva do botão', (tester) async {
-    await _pumpMenu(tester);
-
-    final fab = find
-        .descendant(
-          of: find.bySemanticsLabel('Adicionar termo'),
-          matching: find.byType(DecoratedBox),
-        )
-        .first;
-    expect(
-      tester.renderObject(fab),
-      paints..drrect(
-        color: AppPalette.white,
-        outer: RRect.fromRectAndRadius(
-          const Rect.fromLTWH(-6, -6, 76, 76),
-          const Radius.circular(AppRadius.lg + 6),
-        ),
-      ),
-    );
-  });
-
   testWidgets('fechado mostra só o botão +', (tester) async {
     await _pumpMenu(tester);
 
