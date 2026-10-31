@@ -1,0 +1,3 @@
+NSCameraUsageDescription = "Pra fotografar o texto que você quer aprender.";
+NSMicrophoneUsageDescription = "Pra gravar a frase que você ouviu.";
+NSPhotoLibraryUsageDescription = "Pra escolher uma foto com o texto que você quer aprender.";
