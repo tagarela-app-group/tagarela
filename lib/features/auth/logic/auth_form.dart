@@ -4,6 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/app/home_shell.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
+import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/auth/reset_code_page.dart';
 import 'package:tagarela/features/auth/verify_email_page.dart';
 import 'package:tagarela/l10n/l10n.dart';
@@ -38,13 +39,14 @@ mixin AuthForm<T extends StatefulWidget> on State<T> {
       setState(() => errors = e.errors);
       final general = e.errors.entries.where((e) => !fields.contains(e.key));
       if (e.failure case final failure?) {
-        _show(context.l10n.authFailure(failure.name));
+        AppToast.notice(context, context.l10n.authFailure(failure.name));
       } else if (general.isNotEmpty) {
-        _show(general.first.value);
+        AppToast.notice(context, general.first.value);
       }
     } on Exception catch (e) {
       debugPrint('Falha no login: $e');
-      if (mounted) _show(failure ?? context.l10n.authOffline);
+      if (mounted)
+        AppToast.notice(context, failure ?? context.l10n.authOffline);
     } finally {
       if (mounted) setState(() => loading = null);
     }
@@ -83,8 +85,4 @@ mixin AuthForm<T extends StatefulWidget> on State<T> {
 
   void push(Widget page) =>
       Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
-
-  void _show(String message) => ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(SnackBar(content: Text(message)));
 }

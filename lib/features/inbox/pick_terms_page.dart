@@ -34,11 +34,7 @@ class _PickTermsPageState extends State<PickTermsPage> {
     final span = _selection.spanOf(first, last);
     final limit = _selection.limit(span);
     if (limit != null) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(_limitMessage(context.l10n, limit))),
-        );
+      AppToast.notice(context, _limitMessage(context.l10n, limit));
       return;
     }
     setState(() => _selection = _selection.toggle(span));

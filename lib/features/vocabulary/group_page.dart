@@ -105,7 +105,7 @@ class _GroupPageState extends State<GroupPage> {
     } on Exception {
       if (!mounted) return;
       setState(() => _moving = false);
-      _warn(context.l10n.moveFailed);
+      AppToast.notice(context, context.l10n.moveFailed);
       return;
     }
     if (!mounted) return;
@@ -122,7 +122,7 @@ class _GroupPageState extends State<GroupPage> {
         try {
           await vocabulary.move(ids, from?.id);
         } on Exception {
-          if (mounted) _warn(context.l10n.undoFailed);
+          if (mounted) AppToast.notice(context, context.l10n.undoFailed);
         }
       },
     );
@@ -137,7 +137,7 @@ class _GroupPageState extends State<GroupPage> {
     } on Exception {
       if (!mounted) return;
       setState(() => _deleting = false);
-      _warn(context.l10n.deleteFailed);
+      AppToast.notice(context, context.l10n.deleteFailed);
       return;
     }
     if (!mounted) return;
@@ -154,15 +154,11 @@ class _GroupPageState extends State<GroupPage> {
         try {
           await vocabulary.restoreTerms(ids);
         } on Exception {
-          if (mounted) _warn(context.l10n.undoFailed);
+          if (mounted) AppToast.notice(context, context.l10n.undoFailed);
         }
       },
     );
   }
-
-  void _warn(String message) => ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(message)));
 
   @override
   Widget build(BuildContext context) {

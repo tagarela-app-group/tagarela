@@ -41,14 +41,13 @@ class _CoursePickerPageState extends State<CoursePickerPage> {
   Future<void> _start(String failed) async {
     final scope = AppScope.of(context);
     final navigator = Navigator.of(context);
-    final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     try {
       await scope.courses.start(_learning!, _base);
     } on Exception {
       if (!mounted) return;
       setState(() => _busy = false);
-      messenger.showSnackBar(SnackBar(content: Text(failed)));
+      AppToast.notice(context, failed);
       return;
     }
     if (widget.closable) {

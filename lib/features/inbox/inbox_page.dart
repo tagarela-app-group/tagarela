@@ -28,12 +28,10 @@ class _InboxPageState extends State<InboxPage> {
   InboxTab _tab = InboxTab.all;
 
   Future<void> _run(Future<void> Function() action) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final offline = context.l10n.noConnectionRetry;
     try {
       await action();
     } on Exception {
-      messenger.showSnackBar(SnackBar(content: Text(offline)));
+      if (mounted) AppToast.notice(context, context.l10n.noConnectionRetry);
     }
   }
 
