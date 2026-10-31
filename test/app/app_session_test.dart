@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/data/device/text_extractor.dart';
 import 'package:tagarela/data/models/models.dart';
-import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
 import 'package:tagarela/data/stores/store.dart';
 
@@ -23,7 +22,6 @@ void main() {
     await scope.session.loadAll();
 
     for (final store in <Store>[
-      scope.home,
       scope.vocabulary,
       scope.practice,
       scope.captures,
@@ -36,14 +34,12 @@ void main() {
     final captures = fakeCaptures();
     final scope = fakeDependencies(
       captures: captures.store,
-      home: HomeStore(),
       vocabulary: emptyVocabulary(),
       practice: emptyPractice(),
     );
 
     await scope.session.loadAll();
 
-    expect(scope.home.data!.wordOfDay, isNull);
     expect(scope.practice.data!.due, 0);
     expect(scope.vocabulary.data!.isEmpty, isTrue);
   });
@@ -202,7 +198,6 @@ void main() {
     expect(app.auth.user, isNull);
     for (final store in <Store>[
       app.courses,
-      app.home,
       app.vocabulary,
       app.practice,
       app.captures,

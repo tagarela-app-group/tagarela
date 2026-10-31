@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
-import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
-
-import 'package:tagarela/data/stores/home_store.dart';
 
 import '../../helpers/fake_practice_api.dart';
 import '../../helpers/fake_vocabulary_api.dart';
@@ -65,7 +61,7 @@ void main() {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
       deps: fakeDependencies(
-        home: FailingHomeStore(),
+        vocabulary: FailingVocabularyStore(),
         auth: await signedInAuthStore(),
       ),
     );
@@ -74,16 +70,11 @@ void main() {
     expect(find.text('Não deu pra carregar'), findsOneWidget);
   });
 
-  testWidgets('mostra palavra do dia, resumo e revisão', (tester) async {
+  testWidgets('mostra a revisão pendente', (tester) async {
     final scope = await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
     );
 
-    final home = scope.home.data!;
-    expect(
-      tester.widget<WordOfDayCard>(find.byType(WordOfDayCard)).word,
-      same(home.wordOfDay),
-    );
     expect(
       tester.widget<ReviewCard>(find.byType(ReviewCard)).count,
       scope.practice.data!.due,
@@ -101,7 +92,6 @@ void main() {
     );
     expect(summary.mastered, groups.masteredCount);
     expect(summary.learning, groups.learningCount);
-    expect(summary.weekGain, scope.home.data!.stats.weekGain);
   });
 
   testWidgets('"Ver tudo" chama onSeeVocabulary', (tester) async {
@@ -121,13 +111,11 @@ void main() {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () => captures++),
       deps: fakeDependencies(
-        home: HomeStore(),
         vocabulary: emptyVocabulary(),
         practice: emptyPractice(),
       ),
     );
 
-    expect(find.byType(WordOfDayCard), findsNothing);
     expect(find.byType(ReviewCard), findsNothing);
     expect(find.byType(VocabularySummary), findsNothing);
     expect(find.text('Seu inglês começa aqui'), findsOneWidget);
@@ -144,7 +132,6 @@ void main() {
     await tester.pumpPage(
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
       deps: fakeDependencies(
-        home: HomeStore((stats: const Stats(weekGain: 0), wordOfDay: null)),
         vocabulary: emptyVocabulary(),
         practice: fakePractice(FakePracticeApi(due: 3)).store,
       ),
@@ -161,14 +148,14 @@ void main() {
       HomePage(onSeeVocabulary: () {}, onCapture: () {}),
       deps: fakeDependencies(vocabulary: vocabulary),
     );
-    expect(find.byType(WordOfDayCard), findsNothing);
+    expect(find.byType(VocabularySummary), findsNothing);
     expect(find.text('Não deu pra carregar'), findsOneWidget);
 
     vocabulary.failing = false;
     await tester.tap(find.text('Tentar de novo'));
     await tester.pump();
 
-    expect(find.byType(WordOfDayCard), findsOneWidget);
+    expect(find.byType(VocabularySummary), findsOneWidget);
     expect(find.byType(StateMessage), findsNothing);
   });
 

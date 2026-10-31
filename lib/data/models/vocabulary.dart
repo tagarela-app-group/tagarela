@@ -144,31 +144,3 @@ class Vocabulary {
   static String groupNameKey(String name) =>
       name.trim().split(RegExp(r'\s+')).join(' ').toLowerCase();
 }
-
-class WordOfDay {
-  const WordOfDay({
-    required this.text,
-    required this.phonetic,
-    required this.partOfSpeech,
-    required this.translation,
-    required this.example,
-    required this.dateLabel,
-  });
-
-  WordOfDay.fromJson(Json json)
-    : this(
-        text: json['text']! as String,
-        phonetic: json['phonetic']! as String,
-        partOfSpeech: json['partOfSpeech']! as String,
-        translation: json['translation']! as String,
-        example: json['example']! as String,
-        dateLabel: json['dateLabel']! as String,
-      );
-
-  final String text;
-  final String phonetic;
-  final String partOfSpeech;
-  final String translation;
-  final String example;
-  final String dateLabel;
-}

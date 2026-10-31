@@ -33,7 +33,6 @@ class AppSession {
   }
 
   List<Store<Object>> get _study => [
-    _app.home,
     _app.vocabulary,
     _app.practice,
     _app.captures,

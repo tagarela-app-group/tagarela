@@ -40,7 +40,6 @@ export 'package:tagarela/design_system/components/section_label.dart';
 export 'package:tagarela/design_system/components/segment_bar.dart';
 export 'package:tagarela/design_system/components/segmented_control.dart';
 export 'package:tagarela/design_system/components/shuffling_tiles.dart';
-export 'package:tagarela/design_system/components/skeleton.dart';
 export 'package:tagarela/design_system/components/speech_balloon.dart';
 export 'package:tagarela/design_system/components/state_message.dart';
 export 'package:tagarela/design_system/components/status_pill.dart';

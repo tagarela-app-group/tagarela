@@ -9,13 +9,11 @@ class VocabularySummary extends StatelessWidget {
     super.key,
     required this.learning,
     required this.mastered,
-    required this.weekGain,
     required this.onSeeAll,
   });
 
   final int learning;
   final int mastered;
-  final int weekGain;
   final VoidCallback onSeeAll;
 
   @override
@@ -36,28 +34,17 @@ class VocabularySummary extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: AppSpacing.s4,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.l10n.totalTerms,
-                          style: AppText.label.copyWith(
-                            color: c.inkSoft,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text('${learning + mastered}', style: AppText.statLg),
-                      ],
+                  Text(
+                    context.l10n.totalTerms,
+                    style: AppText.label.copyWith(
+                      color: c.inkSoft,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  StatusPill(
-                    label: context.l10n.thisWeek(weekGain),
-                    tone: StatusTone.mastered,
-                  ),
+                  Text('${learning + mastered}', style: AppText.statLg),
                 ],
               ),
               SegmentBar(

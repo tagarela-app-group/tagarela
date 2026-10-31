@@ -19,7 +19,6 @@ import 'package:tagarela/data/storage/token_storage.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/course_store.dart';
-import 'package:tagarela/data/stores/home_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/practice_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
@@ -33,7 +32,6 @@ class AppDependencies {
     required this.playback,
     required this.device,
     required this.speech,
-    required this.home,
     required this.vocabulary,
     required this.practice,
     required this.language,
@@ -65,7 +63,6 @@ class AppDependencies {
       playback: AudioPlayback(),
       device: CaptureDevice(),
       speech: SpeechModelStore(models),
-      home: HomeStore(),
       vocabulary: vocabulary,
       practice: PracticeStore(ReviewService(api), ExerciseService(api)),
       language: LanguageStore(Preferences(), courses),
@@ -79,7 +76,6 @@ class AppDependencies {
   final AudioPlayback playback;
   final CaptureDevice device;
   final SpeechModelStore speech;
-  final HomeStore home;
   final VocabularyStore vocabulary;
   final PracticeStore practice;
   final LanguageStore language;

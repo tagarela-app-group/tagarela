@@ -7,7 +7,6 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/course/modals/course_modal.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
-import 'package:tagarela/features/home/widgets/word_of_day_card.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
 import 'package:tagarela/shared/widgets/user_avatar.dart';
 import 'package:tagarela/l10n/l10n.dart';
@@ -25,7 +24,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
-    final stores = <Store>[scope.home, scope.vocabulary, scope.practice];
+    final stores = <Store>[scope.vocabulary, scope.practice];
 
     return ListenableBuilder(
       listenable: Listenable.merge([...stores, scope.auth, scope.courses]),
@@ -42,12 +41,9 @@ class HomePage extends StatelessWidget {
             children: [AsyncStatus(error: stores.error, onRetry: stores.retry)],
           );
         }
-        final home = scope.home.data!;
         final vocabulary = scope.vocabulary.data!;
         final review = scope.practice.data!;
-        if (vocabulary.termCount == 0 &&
-            home.wordOfDay == null &&
-            review.due == 0) {
+        if (vocabulary.termCount == 0 && review.due == 0) {
           return AppPage(
             header: header,
             centerLast: true,
@@ -66,11 +62,9 @@ class HomePage extends StatelessWidget {
         return AppPage(
           header: header,
           children: [
-            if (home.wordOfDay case final word?) WordOfDayCard(word: word),
             VocabularySummary(
               learning: vocabulary.learningCount,
               mastered: vocabulary.masteredCount,
-              weekGain: home.stats.weekGain,
               onSeeAll: onSeeVocabulary,
             ),
             if (review.due > 0)

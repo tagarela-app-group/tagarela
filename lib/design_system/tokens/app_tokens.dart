@@ -49,7 +49,6 @@ abstract final class AppMotion {
   static const toast = Duration(seconds: 5);
   static const reveal = Duration(milliseconds: 700);
   static const flip = Duration(milliseconds: 650);
-  static const pulse = Duration(milliseconds: 900);
   static const burst = Duration(milliseconds: 1000);
   static const shuffle = Duration(milliseconds: 480);
   static const shuffleStep = Duration(milliseconds: 640);
