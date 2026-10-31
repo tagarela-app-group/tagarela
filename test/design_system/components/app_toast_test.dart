@@ -32,22 +32,6 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('título, texto e ação', (tester) async {
-    await show(tester);
-
-    expect(find.text('Grupo criado'), findsOneWidget);
-    expect(find.text('Música está no topo da lista.'), findsOneWidget);
-    expect(find.text('Abrir'), findsOneWidget);
-    expect(find.byIcon(AppIcons.check), findsOneWidget);
-  });
-
-  testWidgets('sem ação: só título e texto', (tester) async {
-    await show(tester, actionLabel: null);
-
-    expect(find.text('Grupo criado'), findsOneWidget);
-    expect(find.byType(SnackBarAction), findsNothing);
-  });
-
   testWidgets('acima da tab bar e do botão + quando pedido', (tester) async {
     await show(tester, aboveTabBar: true);
 

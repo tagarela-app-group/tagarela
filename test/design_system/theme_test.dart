@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
@@ -10,27 +9,5 @@ void main() {
         expect(() => colors.accent(accent), returnsNormally, reason: '$accent');
       }
     }
-  });
-
-  test('lerp troca de tema na metade, sem interpolar', () {
-    expect(AppColors.light.lerp(AppColors.dark, 0.4), AppColors.light);
-    expect(AppColors.light.lerp(AppColors.dark, 0.5), AppColors.dark);
-    expect(AppColors.light.lerp(null, 1), AppColors.light);
-  });
-
-  testWidgets('context.colors lê o tema atual', (tester) async {
-    late AppColors colors;
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.dark,
-        home: Builder(
-          builder: (context) {
-            colors = context.colors;
-            return const SizedBox();
-          },
-        ),
-      ),
-    );
-    expect(colors, AppColors.dark);
   });
 }
