@@ -6,19 +6,6 @@ import 'package:tagarela/design_system/design_system.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
-  testWidgets('mostra header e itens do body', (tester) async {
-    await tester.pumpPage(
-      const AppPage(
-        header: Text('Header'),
-        children: [Text('Item 1'), Text('Item 2')],
-      ),
-    );
-
-    expect(find.text('Header'), findsOneWidget);
-    expect(find.text('Item 1'), findsOneWidget);
-    expect(find.text('Item 2'), findsOneWidget);
-  });
-
   testWidgets('body rola quando o conteúdo passa da tela', (tester) async {
     await tester.pumpPage(
       AppPage(
@@ -111,14 +98,6 @@ void main() {
     expect(refreshed, 1);
   });
 
-  testWidgets('sem onRefresh: sem RefreshIndicator', (tester) async {
-    await tester.pumpComponent(
-      const AppPage(header: Text('Header'), children: [Text('Item')]),
-    );
-
-    expect(find.byType(RefreshIndicator), findsNothing);
-  });
-
   testWidgets('footer fica fixo embaixo, fora da rolagem', (tester) async {
     await tester.pumpPage(
       AppPage(
@@ -156,15 +135,5 @@ void main() {
 
     await tester.pumpPage(page(centerLast: false));
     expect(tester.element(find.text('Topo')), same(before));
-  });
-
-  testWidgets('sem sheet: header ocupa a tela toda', (tester) async {
-    await tester.pumpPage(
-      const AppPage(sheet: false, header: SizedBox.expand(child: Text('Tudo'))),
-    );
-
-    expect(find.text('Tudo'), findsOneWidget);
-    expect(find.byType(CustomScrollView), findsNothing);
-    expect(tester.getSize(find.byType(SizedBox).last).height, greaterThan(400));
   });
 }

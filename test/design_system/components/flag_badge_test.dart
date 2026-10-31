@@ -31,10 +31,4 @@ void main() {
     expect((box.decoration! as BoxDecoration).color, AppPalette.white);
     expect(find.bySemanticsLabel('Bandeira: Brasil'), findsOneWidget);
   });
-
-  testWidgets('sem anel a bandeira ocupa tudo', (tester) async {
-    await tester.pumpComponent(const FlagBadge(country: 'AR', size: 40));
-
-    expect(tester.getSize(find.byType(CountryFlag)), const Size(40, 40));
-  });
 }

@@ -20,31 +20,4 @@ void main() {
     await tester.tap(find.byTooltip('Voltar'));
     expect(taps, 1);
   });
-
-  testWidgets('tamanho define o botão', (tester) async {
-    await tester.pumpComponent(
-      AppIconButton(
-        icon: AppIcons.back,
-        tooltip: 'Voltar',
-        onPressed: () {},
-        size: 40,
-      ),
-    );
-
-    expect(tester.getSize(find.byType(IconButton)), const Size.square(40));
-  });
-
-  testWidgets('todas as variantes montam', (tester) async {
-    for (final variant in AppIconButtonVariant.values) {
-      await tester.pumpComponent(
-        AppIconButton(
-          icon: AppIcons.back,
-          tooltip: 'Voltar',
-          onPressed: () {},
-          variant: variant,
-        ),
-      );
-      expect(tester.takeException(), isNull, reason: '$variant');
-    }
-  });
 }

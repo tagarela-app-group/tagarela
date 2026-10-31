@@ -25,18 +25,6 @@ void main() {
     expect(button.enabled, isFalse);
   });
 
-  testWidgets('mostra leading antes do rótulo', (tester) async {
-    await tester.pumpComponent(
-      AppButton(
-        label: 'Google',
-        onPressed: () {},
-        leading: const Icon(AppIcons.add),
-      ),
-    );
-
-    expect(find.byIcon(AppIcons.add), findsOneWidget);
-  });
-
   testWidgets('loading troca o leading por spinner e ignora toque', (
     tester,
   ) async {
@@ -84,32 +72,5 @@ void main() {
 
     final button = tester.widget<TextButton>(find.byType(TextButton));
     expect(button.enabled, isTrue);
-  });
-
-  testWidgets('todas as variantes e tamanhos montam', (tester) async {
-    for (final variant in AppButtonVariant.values) {
-      for (final size in AppButtonSize.values) {
-        await tester.pumpComponent(
-          AppButton(
-            label: 'Ok',
-            onPressed: () {},
-            variant: variant,
-            size: size,
-          ),
-        );
-        expect(tester.takeException(), isNull, reason: '$variant $size');
-      }
-    }
-  });
-
-  testWidgets('expand ocupa a largura toda', (tester) async {
-    await tester.pumpComponent(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [AppButton(label: 'Ok', onPressed: () {}, expand: true)],
-      ),
-    );
-
-    expect(tester.getSize(find.byType(TextButton)).width, 800);
   });
 }

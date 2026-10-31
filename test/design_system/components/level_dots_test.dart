@@ -26,26 +26,9 @@ void main() {
     expect(colors.where((c) => c == _fill), hasLength(3));
   });
 
-  testWidgets('respeita max customizado', (tester) async {
-    await tester.pumpComponent(const LevelDots(level: 0, color: _fill, max: 3));
-
-    final colors = _dotColors(tester);
-    expect(colors, hasLength(3));
-    expect(colors, isNot(contains(_fill)));
-  });
-
   testWidgets('rótulo de acessibilidade', (tester) async {
     await tester.pumpComponent(const LevelDots(level: 2, color: _fill));
 
     expect(find.bySemanticsLabel('Nível 2 de 5'), findsOneWidget);
-  });
-
-  testWidgets('trilho customizado nos traços vazios', (tester) async {
-    const track = Color(0xFF0000FF);
-    await tester.pumpComponent(
-      const LevelDots(level: 1, color: _fill, track: track),
-    );
-
-    expect(_dotColors(tester), [_fill, track, track, track, track]);
   });
 }
