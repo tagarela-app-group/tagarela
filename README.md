@@ -1,6 +1,6 @@
 # Tagarela
 
-App mobile (Flutter) para aprender inglês com termos do dia a dia.
+App mobile (Flutter) para aprender inglês, espanhol e português com termos do dia a dia.
 
 Comece por [CLAUDE.md](CLAUDE.md).
 

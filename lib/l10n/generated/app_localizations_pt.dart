@@ -167,7 +167,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get createAccount => 'Criar conta';
 
   @override
-  String get tagline => 'Inglês de verdade, tirado das conversas do seu dia.';
+  String get tagline => 'Idiomas de verdade, tirados das conversas do seu dia.';
 
   @override
   String get forgotTitle => 'Esqueceu a senha?';
@@ -378,7 +378,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get openSettings => 'Abrir configurações';
 
   @override
-  String get homeEmptyTitle => 'Seu inglês começa aqui';
+  String get homeEmptyTitle => 'Seu vocabulário começa aqui';
 
   @override
   String get homeEmptyMessage =>

@@ -224,11 +224,6 @@ class CaptureStore extends Store<List<Capture>> {
     }
   }
 
-  Future<Capture?> _ownCapture(String? owner, String id) async {
-    if (owner == null) return null;
-    for (final capture in await _db.capturesOf(owner)) {
-      if (capture.id == id) return capture;
-    }
-    return null;
-  }
+  Future<Capture?> _ownCapture(String? owner, String id) async =>
+      owner == null ? null : _db.captureOf(owner, id);
 }

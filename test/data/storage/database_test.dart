@@ -57,6 +57,20 @@ void main() {
     expect(captures['pronta']!.pending, {CaptureSync.update});
   });
 
+  test('captureOf só acha a captura do próprio dono', () async {
+    final capture = Capture(
+      id: 'c1',
+      source: CaptureSource.text,
+      status: CaptureStatus.ready,
+      capturedAt: DateTime(2026, 10, 23),
+    );
+    await db.saveCapture('ana', capture);
+
+    expect((await db.captureOf('ana', 'c1'))?.id, 'c1');
+    expect(await db.captureOf('bia', 'c1'), isNull);
+    expect(await db.captureOf('ana', 'outra'), isNull);
+  });
+
   test('pullEverything esquece o cursor pra trazer o curso de tudo', () async {
     await db.saveCursor('ana', DateTime.utc(2026, 10, 23));
 
