@@ -9,6 +9,25 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
+  String termsAnalyzed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count termos no vocabulário',
+      one: '1 termo no vocabulário',
+      zero: 'Nenhum termo novo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get termsAnalyzedMessage =>
+      'Os novos ficam em Sem grupo. A ficha sai no primeiro toque.';
+
+  @override
+  String get analysisQueued => 'Análise guardada';
+
+  @override
   String get sessionExpired => 'Sua sessão expirou. Entre de novo.';
 
   @override

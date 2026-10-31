@@ -29,6 +29,14 @@ class TermSelection {
       ),
   ]);
 
+  factory TermSelection.forPicking(Capture capture) {
+    final selection = TermSelection.of(capture);
+    final words = selection.words.where((w) => w.selectable).toList();
+    if (selection.spans.isNotEmpty || words.length != 1) return selection;
+    final span = (start: words.single.start, end: words.single.end);
+    return selection.limit(span) == null ? selection.toggle(span) : selection;
+  }
+
   static const maxTextLength = Capture.maxTextLength;
   static const maxTerms = 50;
   static const maxTermLength = 100;

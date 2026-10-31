@@ -174,6 +174,23 @@ void main() {
     expect(taps, ['escolher', 'confirmar']);
   });
 
+  testWidgets('uma palavra só: Editar e Analisar, sem passar pela escolha', (
+    tester,
+  ) async {
+    final taps = await pumpCard(
+      tester,
+      sampleCapture('t1', text: 'gotcha'),
+      canPick: true,
+    );
+
+    expect(find.text('Escolher'), findsNothing);
+    expect(find.text('Descartar'), findsNothing);
+
+    await tester.tap(find.text('Editar'));
+    await tester.tap(find.text('Analisar'));
+    expect(taps, ['escolher', 'confirmar']);
+  });
+
   testWidgets('texto aparece em minúsculas e entre aspas, sem mudar o dado', (
     tester,
   ) async {

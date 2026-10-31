@@ -1,5 +1,15 @@
 {
   "@@locale": "pt",
+  "termsAnalyzed": "{count, plural, =0{Nenhum termo novo} =1{1 termo no vocabulário} other{{count} termos no vocabulário}}",
+  "@termsAnalyzed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "termsAnalyzedMessage": "Os novos ficam em Sem grupo. A ficha sai no primeiro toque.",
+  "analysisQueued": "Análise guardada",
   "sessionExpired": "Sua sessão expirou. Entre de novo.",
   "tabHome": "Início",
   "tabVocabulary": "Vocabulário",

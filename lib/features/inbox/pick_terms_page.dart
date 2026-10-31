@@ -18,7 +18,7 @@ class PickTermsPage extends StatefulWidget {
 }
 
 class _PickTermsPageState extends State<PickTermsPage> {
-  late TermSelection _selection = TermSelection.of(widget.capture);
+  late TermSelection _selection = TermSelection.forPicking(widget.capture);
   late final _text = TextEditingController(text: widget.capture.text);
   bool _editing = false;
   bool _saving = false;
@@ -55,12 +55,12 @@ class _PickTermsPageState extends State<PickTermsPage> {
   Future<void> _confirm() async {
     if (_editing) _finishEditing();
     setState(() => _saving = true);
-    await AppScope.of(context).captures.confirm(
+    final saved = await AppScope.of(context).captures.confirm(
       widget.capture,
       text: _selection.text,
       terms: _selection.toTerms(),
     );
-    if (mounted) Navigator.pop(context);
+    if (mounted) Navigator.pop(context, saved);
   }
 
   Future<void> _discard() async {

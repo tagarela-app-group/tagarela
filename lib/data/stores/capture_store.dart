@@ -53,7 +53,7 @@ class CaptureStore extends Store<List<Capture>> {
     return path == null ? null : _media.find(path);
   }
 
-  Future<Capture> createText(String text) => _create(
+  Future<Capture> createText(String text) => _save(
     Capture(
       id: newUuid(),
       course: _course(),
@@ -67,7 +67,7 @@ class CaptureStore extends Store<List<Capture>> {
 
   Future<Capture> createMedia(CaptureSource source, File file) async {
     final id = newUuid();
-    final capture = await _create(
+    final capture = await _save(
       Capture(
         id: id,
         course: _course(),
@@ -82,11 +82,11 @@ class CaptureStore extends Store<List<Capture>> {
     return capture;
   }
 
-  Future<void> confirm(
+  Future<Capture> confirm(
     Capture capture, {
     String? text,
     List<CaptureTerm>? terms,
-  }) => _change(
+  }) => _save(
     capture.copyWith(
       status: CaptureStatus.analyzed,
       text: text,
@@ -165,7 +165,7 @@ class CaptureStore extends Store<List<Capture>> {
     }
   }
 
-  Future<Capture> _create(Capture capture) async {
+  Future<Capture> _save(Capture capture) async {
     await _change(capture);
     return await _db.capture(capture.id) ?? capture;
   }

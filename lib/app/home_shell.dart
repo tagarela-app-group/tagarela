@@ -99,7 +99,7 @@ class _HomeShellState extends State<HomeShell> {
                         onCapture: () => _menu.currentState?.open(),
                       ),
                       const VocabularyPage(),
-                      const InboxPage(),
+                      InboxPage(onSeeTerms: () => _goTo(_vocabularyTab)),
                     ],
                   ),
                 ),
