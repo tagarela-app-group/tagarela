@@ -156,7 +156,7 @@ void main() {
     await seed([
       sampleCapture(
         'pronta',
-        pending: const {CaptureSync.create},
+        pending: const {CaptureSync.create, CaptureSync.update},
         terms: const [CaptureTerm(text: 'mind the gap', start: 7, end: 19)],
       ),
     ]);
@@ -204,7 +204,8 @@ void main() {
     );
 
     await tester.tap(find.text('Editar'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
     expect(find.byType(TermChip), findsOneWidget);
     await tester.tap(find.textContaining('Confirmar análise'));
     await tester.pumpUntilFound(find.text('1 termo no vocabulário'));

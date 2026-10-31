@@ -158,6 +158,16 @@ void main() {
     expect(taps, ['escolher']);
   });
 
+  Future<void> expectEditAndAnalyze(
+    WidgetTester tester,
+    List<String> taps,
+  ) async {
+    expect(find.text('Descartar'), findsNothing);
+    await tester.tap(find.text('Editar'));
+    await tester.tap(find.text('Analisar'));
+    expect(taps, ['escolher', 'confirmar']);
+  }
+
   testWidgets('pronta com termos: chips, Editar e Analisar', (tester) async {
     final taps = await pumpCard(
       tester,
@@ -167,11 +177,7 @@ void main() {
 
     expect(find.text('2 termos escolhidos'), findsOneWidget);
     expect(find.text('mind the gap'), findsOneWidget);
-    expect(find.text('Descartar'), findsNothing);
-
-    await tester.tap(find.text('Editar'));
-    await tester.tap(find.text('Analisar'));
-    expect(taps, ['escolher', 'confirmar']);
+    await expectEditAndAnalyze(tester, taps);
   });
 
   testWidgets('uma palavra só: Editar e Analisar, sem passar pela escolha', (
@@ -184,11 +190,7 @@ void main() {
     );
 
     expect(find.text('Escolher'), findsNothing);
-    expect(find.text('Descartar'), findsNothing);
-
-    await tester.tap(find.text('Editar'));
-    await tester.tap(find.text('Analisar'));
-    expect(taps, ['escolher', 'confirmar']);
+    await expectEditAndAnalyze(tester, taps);
   });
 
   testWidgets('texto aparece em minúsculas e entre aspas, sem mudar o dado', (
