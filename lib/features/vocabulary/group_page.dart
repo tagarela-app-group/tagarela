@@ -219,7 +219,10 @@ class _GroupPageState extends State<GroupPage> {
                     children: [
                       AppButton(
                         label: context.l10n.delete,
-                        leading: const Icon(AppIcons.delete, size: 20),
+                        leading: const Icon(
+                          AppIcons.delete,
+                          size: AppIconSize.lg,
+                        ),
                         variant: AppButtonVariant.outline,
                         size: AppButtonSize.large,
                         loading: change == GroupChange.deleting,

@@ -32,7 +32,7 @@ class SeenCaptures extends StatelessWidget {
     final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 10,
+      spacing: AppSpacing.s25,
       children: [
         Row(
           children: [
@@ -62,7 +62,7 @@ class SeenCaptures extends StatelessWidget {
             clipBehavior: Clip.none,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 10,
+              spacing: AppSpacing.s25,
               children: [
                 for (final capture in captures)
                   SizedBox(width: cardWidth, child: _card(capture)),
@@ -105,13 +105,13 @@ class _SeenCard extends StatelessWidget {
     return AppCard(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.s4,
-        14,
+        AppSpacing.s35,
         AppSpacing.s4,
         AppSpacing.s4,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 10,
+        spacing: AppSpacing.s25,
         children: [
           Row(
             spacing: AppSpacing.s2,
@@ -119,7 +119,7 @@ class _SeenCard extends StatelessWidget {
               IconTile(
                 icon: capture.source.glyph,
                 accent: capture.source.accent,
-                size: 28,
+                size: AppBubbleSize.xs,
               ),
               Expanded(
                 child: Text.rich(
@@ -222,7 +222,7 @@ class _RecordingState extends State<_Recording> {
                 ? playback.position.inMilliseconds / total
                 : 0.0;
             return Row(
-              spacing: 10,
+              spacing: AppSpacing.s25,
               children: [
                 AppIconButton(
                   icon: playing ? AppIcons.stop : AppIcons.play,

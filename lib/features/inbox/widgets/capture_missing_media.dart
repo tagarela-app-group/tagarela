@@ -13,7 +13,10 @@ class CaptureMissingMedia extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s3,
+        vertical: AppSpacing.s25,
+      ),
       decoration: BoxDecoration(
         color: c.surfaceAlt,
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -22,7 +25,7 @@ class CaptureMissingMedia extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: AppSpacing.s2,
         children: [
-          Icon(AppIcons.info, size: 18, color: c.inkSoft),
+          Icon(AppIcons.info, size: AppIconSize.md, color: c.inkSoft),
           Expanded(
             child: Text(
               source == CaptureSource.photo

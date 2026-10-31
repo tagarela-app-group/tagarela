@@ -24,7 +24,7 @@ class TermExamples extends StatelessWidget {
     final c = context.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 10,
+      spacing: AppSpacing.s25,
       children: [
         Semantics(
           header: true,
@@ -37,7 +37,7 @@ class TermExamples extends StatelessWidget {
           AppCard(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.s4,
-              vertical: 14,
+              vertical: AppSpacing.s35,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

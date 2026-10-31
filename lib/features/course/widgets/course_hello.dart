@@ -21,13 +21,16 @@ class CourseHello extends StatelessWidget {
     final language = this.language;
     final flag = language == null
         ? null
-        : FlagBadge(country: language.country, size: 16);
+        : FlagBadge(country: language.country, size: AppIconSize.sm);
     final Widget balloon = switch (language) {
       null => SpeechBalloon(
         color: c.headerChip,
         mirrored: true,
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 22),
-        child: const TypingDots(color: AppPalette.white, size: 7),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s45,
+          vertical: AppSpacing.s55,
+        ),
+        child: const TypingDots(color: AppPalette.white, size: AppIconSize.dot),
       ),
       final language => SpeechBalloon(
         color: mine ? c.headerChip : c.surface,
@@ -59,11 +62,11 @@ class CourseHello extends StatelessWidget {
           crossAxisAlignment: mine
               ? CrossAxisAlignment.end
               : CrossAxisAlignment.start,
-          spacing: 6,
+          spacing: AppSpacing.s15,
           children: [
             Row(
               mainAxisSize: MainAxisSize.min,
-              spacing: 6,
+              spacing: AppSpacing.s15,
               children: [
                 if (!mine) ?flag,
                 Text(

@@ -47,7 +47,7 @@ class _CountryModalState extends State<CountryModal> with BusyAction {
         ),
       for (final country in countries)
         OptionRow(
-          leading: FlagBadge(country: country.code, size: 40),
+          leading: FlagBadge(country: country.code, size: AppBubbleSize.md),
           title: country.name,
           selected: current == country.code,
           onTap: busy ? null : () => _pick(country.code),

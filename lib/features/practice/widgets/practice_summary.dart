@@ -48,7 +48,11 @@ class PracticeSummary extends StatelessWidget {
                       color: c.surface,
                       borderRadius: AppRadius.bubble(AppRadius.xl),
                     ),
-                    child: Icon(AppIcons.check, size: 36, color: c.primary),
+                    child: Icon(
+                      AppIcons.check,
+                      size: AppIconSize.xxl,
+                      color: c.primary,
+                    ),
                   ),
                   const Positioned.fill(child: BubbleBurst()),
                 ],
@@ -115,7 +119,7 @@ class PracticeSummary extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 2,
+              spacing: AppSpacing.s05,
               children: [
                 Text(
                   result.term.text,

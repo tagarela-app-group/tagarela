@@ -50,7 +50,7 @@ class MeaningCard extends StatelessWidget {
             excludeSemantics: true,
             child: AppButton(
               label: other.code,
-              leading: const Icon(AppIcons.language, size: 18),
+              leading: const Icon(AppIcons.language, size: AppIconSize.md),
               variant: AppButtonVariant.tonal,
               size: AppButtonSize.small,
               onPressed: onFlip,
@@ -74,21 +74,21 @@ class _Side extends StatelessWidget {
     final c = context.colors;
     final l10n = context.l10n;
     return AppCard(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(AppSpacing.s45),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.s4,
         children: [
           Padding(
-            padding: const EdgeInsets.only(right: 76),
+            padding: const EdgeInsets.only(right: AppSpacing.s19),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 2,
+              spacing: AppSpacing.s05,
               children: [
                 Text(
                   label.toUpperCase(),
                   style: AppText.overline.copyWith(
-                    fontSize: 11,
+                    fontSize: AppFontSize.caption,
                     color: c.inkSoft,
                   ),
                 ),
@@ -97,7 +97,7 @@ class _Side extends StatelessWidget {
                     headline,
                     locale: locale,
                     style: AppText.titleMd.copyWith(
-                      fontSize: 22,
+                      fontSize: AppFontSize.title,
                       color: c.primaryText,
                     ),
                   ),
@@ -134,7 +134,10 @@ class _Field extends StatelessWidget {
         Text(
           text,
           locale: locale,
-          style: AppText.bodyLg.copyWith(fontSize: 15, height: 22 / 15),
+          style: AppText.bodyLg.copyWith(
+            fontSize: AppFontSize.body,
+            height: 22 / 15,
+          ),
         ),
       ],
     );

@@ -13,12 +13,12 @@ class ReviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCard(
       child: Row(
-        spacing: 14,
+        spacing: AppSpacing.s35,
         children: [
           const IconTile(
             icon: AppIcons.review,
             accent: AppAccent.violet,
-            size: 48,
+            size: AppBubbleSize.lg,
           ),
           Expanded(
             child: Column(

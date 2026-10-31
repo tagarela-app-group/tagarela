@@ -44,7 +44,7 @@ class ProfilePage extends StatelessWidget {
                   centered: true,
                   leading: UserAvatar(
                     user: user,
-                    size: 84,
+                    size: AppBubbleSize.avatar,
                     ring: context.colors.headerChip,
                   ),
                 ),

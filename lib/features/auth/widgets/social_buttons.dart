@@ -47,7 +47,7 @@ class SocialButtons extends StatelessWidget {
           AppButton(
             label: context.l10n.continueWithApple,
             onPressed: onApple,
-            leading: const Icon(AppIcons.apple, size: 20),
+            leading: const Icon(AppIcons.apple, size: AppIconSize.lg),
             variant: AppButtonVariant.contrast,
             size: AppButtonSize.large,
             expand: true,

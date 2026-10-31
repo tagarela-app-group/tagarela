@@ -108,15 +108,15 @@ class _LoginHeader extends StatelessWidget {
           children: [
             const SizedBox(height: AppSpacing.s6),
             const AppBubble(
-              size: 64,
-              child: Text('t', style: TextStyle(fontSize: 38)),
+              size: AppBubbleSize.hero,
+              child: Text('t', style: TextStyle(fontSize: AppFontSize.mark)),
             ),
             const SizedBox(height: AppSpacing.s4),
             Text(
               'tagarela',
               style: AppText.statLg.copyWith(color: AppPalette.white),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.s15),
             SizedBox(
               width: 230,
               child: Text(
@@ -161,7 +161,10 @@ class _TalkChip extends StatelessWidget {
       child: RotationTransition(
         turns: AlwaysStoppedAnimation(turns),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s35,
+            vertical: AppSpacing.s2,
+          ),
           decoration: BoxDecoration(
             color: filled ? AppPalette.mango : context.colors.headerChip,
             borderRadius: AppRadius.bubble(16),
@@ -169,7 +172,7 @@ class _TalkChip extends StatelessWidget {
           child: Text(
             text,
             style: AppText.label.copyWith(
-              fontSize: 14,
+              fontSize: AppFontSize.label,
               color: filled ? AppPalette.ink : AppPalette.white,
             ),
           ),

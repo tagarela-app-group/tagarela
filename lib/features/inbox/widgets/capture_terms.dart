@@ -20,8 +20,8 @@ class CaptureTerms extends StatelessWidget {
           style: AppText.pill.copyWith(color: context.colors.inkSoft),
         ),
         Wrap(
-          spacing: 6,
-          runSpacing: 6,
+          spacing: AppSpacing.s15,
+          runSpacing: AppSpacing.s15,
           children: [for (final term in terms) TermChip(label: term.text)],
         ),
       ],

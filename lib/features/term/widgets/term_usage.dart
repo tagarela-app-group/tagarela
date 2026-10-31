@@ -72,11 +72,11 @@ class TermUsage extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(right: inset),
                     child: Row(
-                      spacing: 10,
+                      spacing: AppSpacing.s25,
                       children: [
                         DrawnIcon(
                           DrawnGlyph.sandal,
-                          size: 26,
+                          size: AppIconSize.xl,
                           color: c.inkSoft,
                         ),
                         Expanded(
@@ -99,13 +99,20 @@ class TermUsage extends StatelessWidget {
                             ],
                           ),
                         ),
-                        DrawnIcon(DrawnGlyph.tie, size: 26, color: c.inkSoft),
+                        DrawnIcon(
+                          DrawnGlyph.tie,
+                          size: AppIconSize.xl,
+                          color: c.inkSoft,
+                        ),
                       ],
                     ),
                   ),
                   ExcludeSemantics(
                     child: Padding(
-                      padding: EdgeInsets.only(left: 36, right: 36 + inset),
+                      padding: EdgeInsets.only(
+                        left: AppSpacing.s9,
+                        right: AppSpacing.s9 + inset,
+                      ),
                       child: Row(
                         spacing: AppSpacing.s1,
                         children: [
@@ -152,7 +159,7 @@ class TermUsage extends StatelessWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: 14,
+              spacing: AppSpacing.s35,
               children: [
                 Semantics(
                   header: true,
@@ -160,7 +167,7 @@ class TermUsage extends StatelessWidget {
                 ),
                 Wrap(
                   spacing: AppSpacing.s2,
-                  runSpacing: 10,
+                  runSpacing: AppSpacing.s25,
                   children: [
                     for (final (i, fit) in card.fits.indexed)
                       Transform.rotate(
@@ -202,7 +209,12 @@ class _Sticker extends StatelessWidget {
       label: '${fit.fits ? l10n.fitsYes : l10n.fitsNo}: ${fit.context}',
       excludeSemantics: instead == null,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(10, 10, 14, 10),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.s25,
+          AppSpacing.s25,
+          AppSpacing.s35,
+          AppSpacing.s25,
+        ),
         decoration: BoxDecoration(
           color: fit.fits ? c.primarySoft : null,
           border: fit.fits ? null : Border.all(color: c.line, width: 1.5),
@@ -214,7 +226,7 @@ class _Sticker extends StatelessWidget {
           children: [
             Icon(
               fit.fits ? AppIcons.check : AppIcons.wrong,
-              size: 20,
+              size: AppIconSize.lg,
               color: fit.fits ? c.primaryText : c.alert,
             ),
             Flexible(
@@ -227,7 +239,7 @@ class _Sticker extends StatelessWidget {
                       fit.context,
                       locale: locale,
                       style: AppText.bodyLg.copyWith(
-                        fontSize: 15,
+                        fontSize: AppFontSize.body,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

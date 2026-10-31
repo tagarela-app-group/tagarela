@@ -38,7 +38,7 @@ class TermPitfall extends StatelessWidget {
             AppSpacing.s4,
             AppSpacing.s2,
             AppSpacing.s2,
-            18,
+            AppSpacing.s45,
           ),
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
@@ -50,7 +50,11 @@ class TermPitfall extends StatelessWidget {
                 Row(
                   spacing: AppSpacing.s2,
                   children: [
-                    Icon(AppIcons.warning, size: 18, color: c.alert),
+                    Icon(
+                      AppIcons.warning,
+                      size: AppIconSize.md,
+                      color: c.alert,
+                    ),
                     Expanded(
                       child: Text(l10n.pitfallTitle, style: AppText.titleSm),
                     ),
@@ -139,14 +143,14 @@ class _Say extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 6,
+        spacing: AppSpacing.s15,
         children: [
           Row(
-            spacing: 6,
+            spacing: AppSpacing.s15,
             children: [
               Icon(
                 wrong ? AppIcons.wrong : AppIcons.check,
-                size: 16,
+                size: AppIconSize.sm,
                 color: tone,
               ),
               Text(label, style: AppText.pill.copyWith(color: tone)),
@@ -158,7 +162,7 @@ class _Say extends StatelessWidget {
               text,
               locale: locale,
               style: AppText.bodyLg.copyWith(
-                fontSize: 17,
+                fontSize: AppFontSize.lead,
                 fontWeight: FontWeight.w700,
                 color: wrong ? c.inkSoft : c.primaryText,
                 decoration: wrong ? TextDecoration.lineThrough : null,

@@ -129,13 +129,16 @@ class _HomeHeader extends StatelessWidget {
             semanticLabel: context.l10n.courseBadge(
               context.l10n.coursePair(course.base.name, course.learning.name),
             ),
-            padding: const EdgeInsets.only(left: 6, right: 10),
+            padding: const EdgeInsets.only(
+              left: AppSpacing.s15,
+              right: AppSpacing.s25,
+            ),
             child: Row(
               spacing: AppSpacing.s1,
               children: [
                 FlagBadge(
                   country: course.learning.country,
-                  size: 32,
+                  size: AppBubbleSize.sm,
                   ring: AppPalette.white,
                 ),
                 const Icon(AppIcons.expand),

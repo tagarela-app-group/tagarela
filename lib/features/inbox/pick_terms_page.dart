@@ -155,7 +155,7 @@ class _PickTermsPageState extends State<PickTermsPage> {
                     label: _editing ? context.l10n.done : context.l10n.editText,
                     leading: Icon(
                       _editing ? AppIcons.check : AppIcons.edit,
-                      size: 16,
+                      size: AppIconSize.sm,
                     ),
                     variant: AppButtonVariant.text,
                     size: AppButtonSize.small,

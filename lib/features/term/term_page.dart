@@ -142,7 +142,7 @@ class _TermPageState extends State<TermPage> {
                       label: revealed ? l10n.coverAgain : l10n.reveal,
                       leading: Icon(
                         revealed ? AppIcons.cover : AppIcons.reveal,
-                        size: 16,
+                        size: AppIconSize.sm,
                       ),
                       variant: AppButtonVariant.text,
                       size: AppButtonSize.small,
@@ -179,7 +179,7 @@ class _TermPageState extends State<TermPage> {
       if (tab != null)
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 14,
+          spacing: AppSpacing.s35,
           children: [
             if (tabs.length > 1)
               SegmentedControl(

@@ -36,7 +36,8 @@ class HighlightedText extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final base =
-        style ?? AppText.bodyLg.copyWith(fontSize: 15, height: 22 / 15);
+        style ??
+        AppText.bodyLg.copyWith(fontSize: AppFontSize.body, height: 22 / 15);
     final mark = base.copyWith(
       color: c.primaryText,
       backgroundColor: c.primarySoft,

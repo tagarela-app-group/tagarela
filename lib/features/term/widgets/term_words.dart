@@ -35,7 +35,7 @@ class TermWords extends StatelessWidget {
               AppSpacing.s4,
               AppSpacing.s4,
               AppSpacing.s4,
-              10,
+              AppSpacing.s25,
             ),
             child: ListenableBuilder(
               listenable: voice,
@@ -160,7 +160,7 @@ class _Combo extends StatelessWidget {
                               piece.text,
                               locale: locale,
                               style: AppText.bodyLg.copyWith(
-                                fontSize: 15,
+                                fontSize: AppFontSize.body,
                                 fontWeight: FontWeight.w700,
                                 color: piece.marked ? c.onPrimary : c.ink,
                               ),

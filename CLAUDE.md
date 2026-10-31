@@ -6,7 +6,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 
 0. Início de sessão: ativar skill `caveman` nível `full`.
 1. Antes de alterar algo (código, doc, config, mockup): propor (o quê, onde, opções, recomendação) e esperar ok. Pedido fere regra/boa prática: avisar e propor alternativa.
-2. UI: reusar o design system; nada serve, criar lá. Valor visual sempre token.
+2. UI: reusar o design system; nada serve, criar lá. Valor visual sempre token: `test/design_tokens_test.dart` cobra espaçamento, raio, fonte e tamanho nas telas, e cor também nos componentes.
    - Antes de criar UI: procurar peça parecida em todo `lib/`, inclusive widget privado (`_X`) e de feature. Achou: extrair pro design system. Nome pelo que é, não por onde é usado. API genérica: conteúdo + papel de cor, sem regra de uso embutida.
 3. Código novo/alterado: com teste. Bug: teste que reproduz. Teste existe pra pegar bug: cobra regra de produto, toque, estado, acessibilidade, animação e layout que não pode quebrar (estourar, pular de altura). Não testa cópia do código: cor, raio, tamanho ou pixel igual ao token ou ao mockup (cor só quando ela é a informação, tipo estado do jogo ou régua de formalidade), constante, repasse pro Flutter ou pra lib, nem o que outro teste já cobre (página confere a ligação com o store; widget, o desenho; store, a regra). Antes de escrever, dizer que bug ele pegaria; nenhum, não escreve.
 4. Sem comentário em código/config. Porquê vai aqui ou no PR.

@@ -36,7 +36,7 @@ class _StatusLine extends StatelessWidget {
     return Row(
       spacing: AppSpacing.s2,
       children: [
-        Icon(AppIcons.review, size: 18, color: soft),
+        Icon(AppIcons.review, size: AppIconSize.md, color: soft),
         Expanded(
           child: Text(text, style: AppText.bodyMd.copyWith(color: soft)),
         ),

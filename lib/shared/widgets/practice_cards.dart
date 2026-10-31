@@ -22,13 +22,13 @@ class PracticeCards extends StatelessWidget {
           AppCard(
             onTap: () => onOpen(kind),
             child: Row(
-              spacing: 14,
+              spacing: AppSpacing.s35,
               children: [
                 IconTile(icon: kind.glyph, accent: AppAccent.violet),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 2,
+                    spacing: AppSpacing.s05,
                     children: [
                       Text(
                         l10n.exerciseKind(kind.name),

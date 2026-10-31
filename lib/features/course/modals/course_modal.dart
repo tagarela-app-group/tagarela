@@ -73,7 +73,7 @@ class _CourseModalState extends State<CourseModal> {
               ].join(' · '),
               selected: course.active,
               trailing: _switching == course.id
-                  ? const AppSpinner(size: 22)
+                  ? const AppSpinner(size: AppIconSize.spinner)
                   : null,
               onTap: _switching == null ? () => _pick(course) : null,
             ),

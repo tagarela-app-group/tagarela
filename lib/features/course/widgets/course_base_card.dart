@@ -28,7 +28,7 @@ class CourseBaseCard extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 2,
+              spacing: AppSpacing.s05,
               children: [
                 Text(
                   language.nativeName,

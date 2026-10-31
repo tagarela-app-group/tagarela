@@ -14,7 +14,7 @@ class CaptureContent extends StatelessWidget {
     final clamp = capture.source == CaptureSource.photo;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 2,
+      spacing: AppSpacing.s05,
       children: [
         Text(
           context.l10n.captureContent(capture.source.name),

@@ -13,7 +13,7 @@ class AuthHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 14,
+      spacing: AppSpacing.s35,
       children: [
         AppIconButton(
           icon: AppIcons.back,
