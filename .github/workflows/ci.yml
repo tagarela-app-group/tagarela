@@ -43,6 +43,13 @@ jobs:
       - name: Código sem uso
         run: dart run dart_code_linter:metrics check-unused-code lib packages test --analyze-private-members --analyze-public-members
 
+      - name: Código que só teste usa
+        run: |
+          achados=$(dart run dart_code_linter:metrics check-unused-code lib packages --analyze-private-members --analyze-public-members || true)
+          printf '%s\n' "$achados" | grep -q 'unused getter extractions'
+          sobra=$(printf '%s\n' "$achados" | grep '⚠ unused' | grep -v 'unused getter extractions' || true)
+          if [ -n "$sobra" ]; then printf '%s\n' "$sobra"; exit 1; fi
+
       - name: Arquivo sem uso
         run: dart run dart_code_linter:metrics check-unused-files lib test
 
