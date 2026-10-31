@@ -6,12 +6,18 @@ import 'package:tagarela/design_system/tokens/app_tokens.dart';
 import 'package:tagarela/design_system/tokens/app_typography.dart';
 
 class AppTabItem {
-  const AppTabItem({required this.icon, required this.label, this.badge = 0});
+  const AppTabItem({
+    required this.icon,
+    required this.label,
+    this.badge = 0,
+    this.enabled = true,
+  });
 
   final IconData icon;
   final String label;
 
   final int badge;
+  final bool enabled;
 }
 
 class AppTabBar extends StatelessWidget {
@@ -39,7 +45,7 @@ class AppTabBar extends StatelessWidget {
           child: _Tab(
             item: item,
             selected: i == currentIndex,
-            onTap: () => onTap(i),
+            onTap: item.enabled ? () => onTap(i) : null,
           ),
         ),
     ];
@@ -68,7 +74,7 @@ class _Tab extends StatelessWidget {
 
   final AppTabItem item;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -78,46 +84,63 @@ class _Tab extends StatelessWidget {
     return Semantics(
       selected: selected,
       button: true,
+      enabled: onTap != null,
       child: InkResponse(
         onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: AppSpacing.s1,
-          children: [
-            AnimatedContainer(
-              duration: AppMotion.base,
-              curve: AppMotion.standard,
-              width: 56,
-              height: 30,
-              decoration: BoxDecoration(
-                color: selected ? c.primarySoft : Colors.transparent,
-                borderRadius: BorderRadius.circular(AppRadius.pill),
+        child: Opacity(
+          opacity: onTap == null ? AppOpacity.obscured : 1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: AppSpacing.s1,
+            children: [
+              AnimatedContainer(
+                duration: AppMotion.base,
+                curve: AppMotion.standard,
+                width: 56,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: selected ? c.primarySoft : Colors.transparent,
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                ),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(item.icon, size: 22, color: fg),
+                    if (item.badge > 0)
+                      Positioned(
+                        top: -3,
+                        right: 8,
+                        child: AppBadge(
+                          label: '${item.badge}',
+                          tone: AppBadgeTone.alert,
+                        ),
+                      ),
+                  ],
+                ),
               ),
-              child: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  Icon(item.icon, size: 22, color: fg),
-                  if (item.badge > 0)
-                    Positioned(
-                      top: -3,
-                      right: 8,
-                      child: AppBadge(
-                        label: '${item.badge}',
-                        tone: AppBadgeTone.alert,
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.s05,
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      item.label,
+                      maxLines: 1,
+                      style: AppText.caption.copyWith(
+                        color: fg,
+                        fontWeight: selected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                       ),
                     ),
-                ],
+                  ),
+                ),
               ),
-            ),
-            Text(
-              item.label,
-              style: AppText.caption.copyWith(
-                color: fg,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

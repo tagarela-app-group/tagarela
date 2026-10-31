@@ -12,7 +12,6 @@ import 'package:tagarela/features/capture/modals/text_capture_modal.dart';
 import 'package:tagarela/features/capture/widgets/capture_saved_toast.dart';
 import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/inbox/inbox_page.dart';
-import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -50,7 +49,7 @@ class _HomeShellState extends State<HomeShell> {
         CaptureSource.audio => const AudioCaptureModal(),
       },
     );
-    if (saved == null || !mounted) return;
+    if (saved == null || !mounted || _tab == _inboxTab) return;
     showCaptureSaved(context, saved, onSee: () => _goTo(_inboxTab));
   }
 
@@ -101,7 +100,6 @@ class _HomeShellState extends State<HomeShell> {
                       ),
                       const VocabularyPage(),
                       const InboxPage(),
-                      const ProfilePage(),
                     ],
                   ),
                 ),
@@ -129,8 +127,9 @@ class _HomeShellState extends State<HomeShell> {
                           0,
                     ),
                     AppTabItem(
-                      icon: AppIcons.profile,
-                      label: context.l10n.tabProfile,
+                      icon: AppIcons.community,
+                      label: context.l10n.tabCommunities,
+                      enabled: false,
                     ),
                   ],
                 ),

@@ -61,6 +61,69 @@ void main() {
     );
   });
 
+  testWidgets('aba desligada não responde e avisa a acessibilidade', (
+    tester,
+  ) async {
+    int? tapped;
+    await tester.pumpComponent(
+      AppTabBar(
+        items: const [
+          AppTabItem(icon: AppIcons.home, label: 'Início'),
+          AppTabItem(
+            icon: AppIcons.community,
+            label: 'Comunidades',
+            enabled: false,
+          ),
+        ],
+        currentIndex: 0,
+        onTap: (i) => tapped = i,
+      ),
+    );
+
+    await tester.tap(find.text('Comunidades'));
+
+    expect(tapped, isNull);
+    expect(
+      tester.getSemantics(find.text('Comunidades')),
+      isSemantics(hasEnabledState: true, isEnabled: false),
+    );
+  });
+
+  testWidgets('rótulo longo com fonte grande encolhe em uma linha', (
+    tester,
+  ) async {
+    await tester.pumpComponent(
+      MediaQuery(
+        data: const MediaQueryData(textScaler: TextScaler.linear(1.5)),
+        child: SizedBox(
+          width: 320,
+          child: AppTabBar(
+            items: const [
+              AppTabItem(icon: AppIcons.home, label: 'Início'),
+              AppTabItem(icon: AppIcons.vocabulary, label: 'Vocabulário'),
+              AppTabItem(icon: AppIcons.inbox, label: 'Inbox'),
+              AppTabItem(icon: AppIcons.community, label: 'Comunidades'),
+            ],
+            currentIndex: 0,
+            onTap: (_) {},
+            centerGap: 72,
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    for (final label in ['Vocabulário', 'Comunidades']) {
+      final tab = find.ancestor(
+        of: find.text(label),
+        matching: find.byType(Expanded),
+      );
+      final rect = tester.getRect(find.text(label));
+      expect(rect.width, lessThanOrEqualTo(tester.getSize(tab).width));
+      expect(rect.height, lessThan(AppTabBar.height));
+    }
+  });
+
   testWidgets('centerGap abre espaço no meio', (tester) async {
     await tester.pumpComponent(
       AppTabBar(items: _items, currentIndex: 0, onTap: (_) {}, centerGap: 72),

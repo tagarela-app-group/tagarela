@@ -24,6 +24,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tabProfile => 'Perfil';
 
   @override
+  String get tabCommunities => 'Comunidades';
+
+  @override
   String get captureMenuTitle => 'O que você ouviu hoje?';
 
   @override
@@ -598,7 +601,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get edit => 'Editar';
 
   @override
-  String get confirmAnalysis => 'Confirmar análise';
+  String get confirmAnalysis => 'Analisar';
+
+  @override
+  String get pick => 'Escolher';
 
   @override
   String get readingPhoto => 'Lendo o texto da foto…';

@@ -130,6 +130,12 @@ abstract class AppLocalizations {
   /// **'Perfil'**
   String get tabProfile;
 
+  /// No description provided for @tabCommunities.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comunidades'**
+  String get tabCommunities;
+
   /// No description provided for @captureMenuTitle.
   ///
   /// In pt, this message translates to:
@@ -1009,8 +1015,14 @@ abstract class AppLocalizations {
   /// No description provided for @confirmAnalysis.
   ///
   /// In pt, this message translates to:
-  /// **'Confirmar análise'**
+  /// **'Analisar'**
   String get confirmAnalysis;
+
+  /// No description provided for @pick.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolher'**
+  String get pick;
 
   /// No description provided for @readingPhoto.
   ///

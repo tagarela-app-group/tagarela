@@ -399,7 +399,7 @@ void main() {
     );
     expect(
       tester.getSize(find.byType(SeenCaptures)).width,
-      tester.getSize(seenCard('Please mind the gap and stand clear.')).width,
+      tester.getSize(seenCard('please mind the gap and stand clear.')).width,
     );
     final chips = tester.widgetList<AppChip>(find.byType(AppChip));
     expect(chips.map((c) => c.label), ['stand clear']);
@@ -432,7 +432,7 @@ void main() {
 
     expect(find.text('2 capturas'), findsOneWidget);
     expect(
-      tester.getSize(seenCard('Please mind the gap.')).width,
+      tester.getSize(seenCard('please mind the gap.')).width,
       SeenCaptures.cardWidth,
     );
   });
