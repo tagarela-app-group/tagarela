@@ -34,7 +34,7 @@ class CourseLanguageOption extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 2,
+                spacing: AppSpacing.s05,
                 children: [
                   Text(
                     l10n.courseLanguage(language.name),

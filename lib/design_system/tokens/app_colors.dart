@@ -8,7 +8,9 @@ abstract final class AppPalette {
   static const coral = Color(0xFFFF5D5D);
   static const ink = Color(0xFF17152B);
   static const white = Color(0xFFFFFFFF);
+  static const whiteSoft = Color(0xDBFFFFFF);
   static const black = Color(0xFF000000);
+  static const shadow = Color(0x4D000000);
 }
 
 enum AppAccent {

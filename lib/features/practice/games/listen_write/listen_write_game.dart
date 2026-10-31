@@ -87,7 +87,7 @@ class _ListenWriteGameState extends State<ListenWriteGame> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: 14,
+                    spacing: AppSpacing.s35,
                     children: [
                       _controls(context),
                       _balloon(context),
@@ -120,16 +120,20 @@ class _ListenWriteGameState extends State<ListenWriteGame> {
               : l10n.listenSentence,
           onPressed: () => _listen(VoiceSpeed.normal),
           variant: AppIconButtonVariant.onHeaderSolid,
-          size: 64,
+          size: AppBubbleSize.hero,
         ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                spacing: 6,
+                spacing: AppSpacing.s15,
                 children: [
-                  Icon(AppIcons.headphones, size: 14, color: c.onHeaderSoft),
+                  Icon(
+                    AppIcons.headphones,
+                    size: AppIconSize.xs,
+                    color: c.onHeaderSoft,
+                  ),
                   Flexible(
                     child: Text(
                       l10n

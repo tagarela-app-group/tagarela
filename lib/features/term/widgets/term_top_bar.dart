@@ -28,9 +28,9 @@ class TermTopBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s3),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              spacing: 6,
+              spacing: AppSpacing.s15,
               children: [
-                Icon(group?.glyph ?? AppIcons.ungrouped, size: 14),
+                Icon(group?.glyph ?? AppIcons.ungrouped, size: AppIconSize.xs),
                 Flexible(
                   child: Text(
                     group?.name ?? l10n.ungrouped,

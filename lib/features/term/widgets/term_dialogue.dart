@@ -45,7 +45,7 @@ class _TermDialogueState extends State<TermDialogue> {
         final talking = voice.speaking != null && voice.line != null;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 10,
+          spacing: AppSpacing.s25,
           children: [
             Row(
               children: [
@@ -62,7 +62,7 @@ class _TermDialogueState extends State<TermDialogue> {
                   label: talking ? l10n.stop : l10n.listen,
                   leading: Icon(
                     talking ? AppIcons.stop : AppIcons.listen,
-                    size: 18,
+                    size: AppIconSize.md,
                   ),
                   variant: AppButtonVariant.tonal,
                   size: AppButtonSize.small,
@@ -121,7 +121,10 @@ class _Line extends StatelessWidget {
     final c = context.colors;
     final mine = line.speaker == DialogueSpeaker.b;
     return Padding(
-      padding: EdgeInsets.only(left: mine ? 48 : 0, right: mine ? 0 : 48),
+      padding: EdgeInsets.only(
+        left: mine ? AppSpacing.s12 : 0,
+        right: mine ? 0 : AppSpacing.s12,
+      ),
       child: Align(
         alignment: mine
             ? AlignmentDirectional.centerEnd

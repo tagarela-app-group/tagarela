@@ -45,13 +45,13 @@ class TermReminders extends StatelessWidget {
     final pitfall = card.base.pitfall;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 10,
+      spacing: AppSpacing.s25,
       children: [
         if (card.hasReveal || imagine != null)
           Stack(
             children: [
               AppCard(
-                padding: const EdgeInsets.all(18),
+                padding: const EdgeInsets.all(AppSpacing.s45),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: AppSpacing.s3,
@@ -102,7 +102,7 @@ class TermReminders extends StatelessWidget {
                     if (imagine != null)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
+                          horizontal: AppSpacing.s35,
                           vertical: AppSpacing.s3,
                         ),
                         decoration: BoxDecoration(
@@ -111,11 +111,11 @@ class TermReminders extends StatelessWidget {
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 10,
+                          spacing: AppSpacing.s25,
                           children: [
                             Icon(
                               AppIcons.reveal,
-                              size: 20,
+                              size: AppIconSize.lg,
                               color: c.primaryText,
                             ),
                             Expanded(
@@ -125,7 +125,7 @@ class TermReminders extends StatelessWidget {
                                 locale: baseLocale,
                                 markLocale: learningLocale,
                                 style: AppText.bodyLg.copyWith(
-                                  fontSize: 15,
+                                  fontSize: AppFontSize.body,
                                   height: 22 / 15,
                                 ),
                               ),
@@ -176,12 +176,12 @@ class _Labeled extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.end,
-      spacing: 2,
+      spacing: AppSpacing.s05,
       children: [
         Text(
           label.toUpperCase(),
           style: AppText.overline.copyWith(
-            fontSize: 11,
+            fontSize: AppFontSize.caption,
             color: context.colors.inkSoft,
           ),
         ),

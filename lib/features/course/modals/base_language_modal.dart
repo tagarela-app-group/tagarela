@@ -35,7 +35,10 @@ class BaseLanguageModal extends StatelessWidget {
           for (final language in CourseLanguage.values)
             if (AppLocalizations.supportedLocales.contains(language.locale))
               OptionRow(
-                leading: CourseBubble(language: language, size: 40),
+                leading: CourseBubble(
+                  language: language,
+                  size: AppBubbleSize.md,
+                ),
                 title: language.nativeName,
                 subtitle: language == selected
                     ? l10n.courseBaseHint

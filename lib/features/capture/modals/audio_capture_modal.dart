@@ -206,7 +206,7 @@ class _AudioCaptureModalState extends State<AudioCaptureModal> {
                       height: h.toDouble(),
                       decoration: BoxDecoration(
                         color: accent.fg,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(AppRadius.xxs),
                       ),
                     ),
                 ],
@@ -231,7 +231,7 @@ class _AudioCaptureModalState extends State<AudioCaptureModal> {
               onPressed: _phase == _Phase.recording ? _stop : null,
               tooltip: context.l10n.stopRecording,
               icon: const Icon(AppIcons.stop),
-              iconSize: 26,
+              iconSize: AppIconSize.xl,
               style: IconButton.styleFrom(
                 backgroundColor: AppPalette.coral,
                 foregroundColor: AppPalette.ink,

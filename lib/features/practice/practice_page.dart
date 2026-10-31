@@ -179,7 +179,7 @@ class _TopBar extends StatelessWidget {
         AppSpacing.s1,
       ),
       child: Row(
-        spacing: 14,
+        spacing: AppSpacing.s35,
         children: [
           AppIconButton(
             icon: AppIcons.close,

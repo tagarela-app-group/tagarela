@@ -51,13 +51,13 @@ class RoundResult extends StatelessWidget {
           Semantics(
             liveRegion: true,
             child: Row(
-              spacing: 10,
+              spacing: AppSpacing.s25,
               children: [
                 Container(
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
-                  child: Icon(icon, size: 20, color: fg),
+                  child: Icon(icon, size: AppIconSize.lg, color: fg),
                 ),
                 Expanded(
                   child: Text(

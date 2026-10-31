@@ -29,7 +29,10 @@ class TermTile extends StatelessWidget {
     return Semantics(
       checked: selecting ? selected : null,
       child: AppCard(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s4,
+          vertical: AppSpacing.s35,
+        ),
         selected: selected,
         onTap: onTap,
         onLongPress: onLongPress,

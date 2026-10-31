@@ -170,7 +170,7 @@ class ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
           Text(
             widget.subtitle!,
             textAlign: TextAlign.center,
-            style: AppText.bodyLg.copyWith(color: const Color(0xDBFFFFFF)),
+            style: AppText.bodyLg.copyWith(color: AppPalette.whiteSoft),
           ),
       ],
     );
@@ -246,7 +246,7 @@ class ArcMenuState extends State<ArcMenu> with SingleTickerProviderStateMixin {
           boxShadow: open
               ? const [
                   BoxShadow(
-                    color: Color(0x4D000000),
+                    color: AppPalette.shadow,
                     offset: Offset(0, 12),
                     blurRadius: 24,
                   ),

@@ -154,7 +154,7 @@ class _Header extends StatelessWidget {
         IconTile(
           icon: capture.source.glyph,
           accent: capture.source.accent,
-          size: 28,
+          size: AppBubbleSize.xs,
         ),
         Expanded(
           child: Text(

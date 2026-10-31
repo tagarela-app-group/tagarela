@@ -27,7 +27,7 @@ class GroupHeader extends StatelessWidget {
     final c = context.colors;
 
     return Column(
-      spacing: 14,
+      spacing: AppSpacing.s35,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,7 +37,7 @@ class GroupHeader extends StatelessWidget {
           title: name,
           subtitle: meta,
           leading: AppBubble(
-            size: 52,
+            size: AppBubbleSize.xl,
             color: AppPalette.white,
             foreground: c.header,
             child: Icon(icon),
@@ -45,7 +45,7 @@ class GroupHeader extends StatelessWidget {
         ),
         if (bar case final group?)
           SegmentBar(
-            gap: 3,
+            gap: AppSpacing.s075,
             semanticLabel: context.l10n.learningMastered(
               group.terms.length - group.masteredCount,
               group.masteredCount,

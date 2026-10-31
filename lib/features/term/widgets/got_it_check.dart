@@ -45,7 +45,7 @@ class _GotItCheckState extends State<GotItCheck> {
                 style: AppText.bodyLg.copyWith(fontWeight: FontWeight.w700),
               ),
               Row(
-                spacing: 6,
+                spacing: AppSpacing.s15,
                 children: [
                   AppButton(
                     label: l10n.gotItYes,
@@ -69,7 +69,7 @@ class _GotItCheckState extends State<GotItCheck> {
             child: SizedBox(
               height: AppButtonSize.small.height,
               child: Row(
-                spacing: 10,
+                spacing: AppSpacing.s25,
                 children: [
                   Container(
                     width: 32,
@@ -81,7 +81,7 @@ class _GotItCheckState extends State<GotItCheck> {
                     ),
                     child: DrawnIcon(
                       DrawnGlyph.bubble,
-                      size: 18,
+                      size: AppIconSize.md,
                       color: c.primaryText,
                     ),
                   ),

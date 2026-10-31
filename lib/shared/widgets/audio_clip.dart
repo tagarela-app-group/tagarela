@@ -51,7 +51,12 @@ class _AudioClipState extends State<AudioClip> {
   Widget build(BuildContext context) {
     final c = context.colors;
     return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 14, 10),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.s25,
+        AppSpacing.s25,
+        AppSpacing.s35,
+        AppSpacing.s25,
+      ),
       decoration: BoxDecoration(
         color: c.surfaceAlt,
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -74,7 +79,7 @@ class _AudioClipState extends State<AudioClip> {
                     : context.l10n.listenRecording,
                 onPressed: () => _playback.toggle(widget.file),
                 variant: AppIconButtonVariant.primary,
-                size: 40,
+                size: AppBubbleSize.md,
               ),
               Expanded(
                 child: ExcludeSemantics(
@@ -82,7 +87,7 @@ class _AudioClipState extends State<AudioClip> {
                     height: 32,
                     child: ClipRect(
                       child: Row(
-                        spacing: 3,
+                        spacing: AppSpacing.s075,
                         children: [
                           for (final (i, h) in _bars.indexed)
                             Container(
@@ -92,7 +97,9 @@ class _AudioClipState extends State<AudioClip> {
                                 color: !playing || i / _bars.length < progress
                                     ? c.primaryText
                                     : c.line,
-                                borderRadius: BorderRadius.circular(2),
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.xxs,
+                                ),
                               ),
                             ),
                         ],

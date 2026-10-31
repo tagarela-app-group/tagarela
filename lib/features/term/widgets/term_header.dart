@@ -48,14 +48,14 @@ class TermHeader extends StatelessWidget {
                 AppSpacing.s5,
                 AppSpacing.s4,
                 AppSpacing.s5,
-                18,
+                AppSpacing.s45,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 2,
+                spacing: AppSpacing.s05,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 6),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.s15),
                     child: AppTag(label: l10n.termKind(term.kind.name)),
                   ),
                   Semantics(
@@ -89,7 +89,7 @@ class TermHeader extends StatelessWidget {
               ),
             ),
             Row(
-              spacing: 10,
+              spacing: AppSpacing.s25,
               children: [
                 AppIconButton(
                   icon: saying == VoiceSpeed.normal
@@ -100,7 +100,7 @@ class TermHeader extends StatelessWidget {
                       : l10n.listenPronunciation,
                   onPressed: () => speak(VoiceSpeed.normal),
                   variant: AppIconButtonVariant.onHeaderSolid,
-                  size: 56,
+                  size: AppBubbleSize.xxl,
                 ),
                 ListenSlowButton(
                   playing: saying == VoiceSpeed.slow,
@@ -109,7 +109,7 @@ class TermHeader extends StatelessWidget {
                 const Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  spacing: 6,
+                  spacing: AppSpacing.s15,
                   children: [
                     StatusPill(
                       label: l10n.termStatus(term.status.name),

@@ -79,14 +79,19 @@ class ProfileRow extends StatelessWidget {
       child: Row(
         spacing: AppSpacing.s3,
         children: [
-          leading ?? IconTile(icon: icon, accent: accent, size: 40),
+          leading ??
+              IconTile(icon: icon, accent: accent, size: AppBubbleSize.md),
           Expanded(
             child: TitledText(title: title, text: text),
           ),
           ?(trailing ??
               (onTap == null
                   ? null
-                  : Icon(AppIcons.forward, size: 20, color: c.inkSoft))),
+                  : Icon(
+                      AppIcons.forward,
+                      size: AppIconSize.lg,
+                      color: c.inkSoft,
+                    ))),
         ],
       ),
     );

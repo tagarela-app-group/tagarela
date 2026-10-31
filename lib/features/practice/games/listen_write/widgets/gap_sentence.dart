@@ -32,7 +32,7 @@ class GapSentence extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final style = AppText.bodyLg.copyWith(
-      fontSize: 22,
+      fontSize: AppFontSize.title,
       height: 1.3,
       fontWeight: FontWeight.w500,
       color: c.ink,

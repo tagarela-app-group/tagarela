@@ -14,7 +14,7 @@ class PrivacyNote extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: AppSpacing.s2,
       children: [
-        Icon(AppIcons.info, size: 18, color: c.inkSoft),
+        Icon(AppIcons.info, size: AppIconSize.md, color: c.inkSoft),
         Expanded(
           child: Text(
             text,
