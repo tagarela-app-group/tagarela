@@ -261,7 +261,7 @@ void main() {
     expect(find.text('Nenhum grupo ainda'), findsOneWidget);
     await tester.tap(find.text('Criar grupo'));
     await tester.pumpAndSettle();
-    expect(find.text('Junte termos do mesmo assunto'), findsOneWidget);
+    expect(find.text('Agrupar termos em categorias'), findsOneWidget);
   });
 
   testWidgets('"Novo grupo" cria, vai pra aba Grupos e avisa com "Abrir"', (
