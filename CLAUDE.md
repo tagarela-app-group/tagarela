@@ -11,8 +11,8 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 3. Código novo/alterado: com teste. Bug: teste que reproduz. Teste existe pra pegar bug: cobra regra de produto, toque, estado, acessibilidade, animação e layout que não pode quebrar (estourar, pular de altura). Não testa cópia do código: cor, raio, tamanho ou pixel igual ao token ou ao mockup (cor só quando ela é a informação, tipo estado do jogo ou régua de formalidade), constante, repasse pro Flutter ou pra lib, nem o que outro teste já cobre (página confere a ligação com o store; widget, o desenho; store, a regra). Antes de escrever, dizer que bug ele pegaria; nenhum, não escreve.
 4. Sem comentário em código/config. Porquê vai aqui ou no PR.
 5. Mudou regra ou decisão: atualizar aqui. Guia, não inventário: só o que o código não mostra.
-6. Fim de task: skill `entregar` (checagem, PR, esteira, merge, mockup, volta pra `develop`), sem perguntar.
-7. Nunca commitar direto em `develop`/`main`. `develop` → `main` só o usuário.
+6. Git é do usuário: no máximo um commit local, em branch da `develop` (`feat/ fix/ docs/ ci/ chore/`), nunca direto em `develop`/`main`. Conventional Commits pt-BR, enxuto, sem assinatura de IA. Push, PR, merge e erro da esteira: ele cuida.
+7. Validar é do usuário: não rodar teste, análise, lint nem build. A entrega é o código e os testes escritos; ao terminar, dizer o que mudou, sem afirmar que funciona.
 8. Teste em aparelho é do usuário. Print só se pedir, ~400 px.
 9. Dependência nova: checar manutenção e contar ao usuário; nativa ou mal mantida: perguntar. Versões com 2+ semanas.
 10. Tipagem estrita: sem `dynamic` nem tipo implícito; parâmetros, retornos e coleções tipados. JSON entra como `Json`/`Object?` e vira model no `fromJson`, com cast explícito.
@@ -63,8 +63,8 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 
 ## Mockup
 
-https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR (via Artifact tool). Registro fiel do app; ideia não aprovada vai na aba Propostas. Atualizar em todo PR que muda UI (skill `entregar`).
+https://claude.ai/artifact/36zen91FwEpmPP1UFrEFrR (via Artifact tool). Registro fiel do app; ideia não aprovada vai na aba Propostas. Atualizar só quando o usuário pedir.
 
 ## Comandos
 
-`dart format lib test packages` · `flutter analyze --no-pub` · `flutter test --no-pub -r failures-only` · repetição: `npx jscpd@5.4.1 lib test packages --format dart --ignore "**/*.g.dart,**/generated/**,**/country_names.dart" --threshold 0` · sem uso: `dart run dart_code_linter:metrics check-unused-code lib packages test --analyze-private-members --analyze-public-members` e `check-unused-files lib test` · drift mudou: `dart run build_runner build` · ARB mudou: `flutter gen-l10n`.
+Só rodar o que gera arquivo: `dart format lib test packages` · drift mudou: `dart run build_runner build` · ARB mudou: `flutter gen-l10n`.
