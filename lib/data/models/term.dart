@@ -5,7 +5,7 @@ enum TermKind { word, expression }
 enum TermStatus { learning, mastered }
 
 class Term {
-  const Term(this.id, this.text, this.kind, this.level);
+  const Term(this.id, this.text, this.kind, this.level, {this.createdAt});
 
   Term.fromJson(Json json)
     : this(
@@ -13,6 +13,10 @@ class Term {
         json['text']! as String,
         TermKind.values.byName(json['kind']! as String),
         json['level']! as int,
+        createdAt: switch (json['created_at']) {
+          final String at => DateTime.parse(at),
+          _ => null,
+        },
       );
 
   final String id;
@@ -22,6 +26,7 @@ class Term {
   static const maxLevel = 5;
 
   final int level;
+  final DateTime? createdAt;
 
   TermStatus get status =>
       level >= maxLevel ? TermStatus.mastered : TermStatus.learning;

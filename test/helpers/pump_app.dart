@@ -111,6 +111,15 @@ AppBubble avatarBubble(WidgetTester tester) => tester.widget<AppBubble>(
 Finder drawnIcon(DrawnGlyph glyph) =>
     find.byWidgetPredicate((w) => w is DrawnIcon && w.glyph == glyph);
 
+bool chipSelected(WidgetTester tester, String label) => tester
+    .widget<AppChip>(
+      find.ancestor(
+        of: find.textContaining(label),
+        matching: find.byType(AppChip),
+      ),
+    )
+    .selected;
+
 Finder textField(String label) => find.descendant(
   of: find.widgetWithText(AppTextField, label),
   matching: find.byType(TextField),

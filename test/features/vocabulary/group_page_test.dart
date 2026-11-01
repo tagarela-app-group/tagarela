@@ -133,34 +133,6 @@ void main() {
     expect(find.text('Selecionar termos'), findsNothing);
   });
 
-  testWidgets('Sem grupo: dica, sem filtro, "Selecionar" no topo', (
-    tester,
-  ) async {
-    await _open(tester, const GroupPage.ungrouped());
-
-    expect(find.text('Sem grupo'), findsOneWidget);
-    expect(find.text('2 termos pra pôr num grupo'), findsOneWidget);
-    expect(find.textContaining('Mova cada um pro grupo dele.'), findsOneWidget);
-    expect(find.byType(SegmentedControl), findsNothing);
-    expect(_shownTerms(tester), ['mind the gap', 'stand clear']);
-
-    await tester.tap(find.text('Selecionar'));
-    await tester.pump();
-
-    expect(find.text('Toque nos termos pra escolher'), findsOneWidget);
-  });
-
-  testWidgets('Sem grupo vazio: tudo organizado', (tester) async {
-    await _open(
-      tester,
-      const GroupPage.ungrouped(),
-      seed: {'groups': <Object?>[], 'ungrouped': <Object?>[]},
-    );
-
-    expect(find.text('Tudo organizado'), findsOneWidget);
-    expect(find.text('Selecionar'), findsNothing);
-  });
-
   testWidgets('seleção: marca, conta e libera o botão de mover', (
     tester,
   ) async {
@@ -240,10 +212,12 @@ void main() {
   });
 
   testWidgets('mover pra grupo novo: cria e já move', (tester) async {
-    final (:store, :api) = await _open(tester, const GroupPage.ungrouped());
-    await tester.tap(find.text('Selecionar'));
-    await tester.pump();
-    await tester.tap(find.text('mind the gap'));
+    final (:store, :api) = await _open(
+      tester,
+      const GroupPage(groupId: 'viagem'),
+    );
+    await _startSelection(tester);
+    await tester.tap(find.text('jet lag'));
     await tester.pump();
 
     await tester.tap(find.text('Mover 1 termo'));
@@ -259,8 +233,8 @@ void main() {
 
     final metro = store.data!.groups.first;
     expect(metro.name, 'Metrô');
-    expect(api.termsOf(metro.id), ['mind the gap']);
-    expect(_shownTerms(tester), ['stand clear']);
+    expect(api.termsOf(metro.id), ['jet lag']);
+    expect(_shownTerms(tester), ['layover', 'carry-on']);
     expect(find.text('1 termo movido'), findsOneWidget);
     expect(find.text('Agora está em Metrô.'), findsOneWidget);
 

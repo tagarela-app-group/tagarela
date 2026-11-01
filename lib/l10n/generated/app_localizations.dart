@@ -136,6 +136,24 @@ abstract class AppLocalizations {
   /// **'Sua sessão expirou. Entre de novo.'**
   String get sessionExpired;
 
+  /// No description provided for @vocabularyView.
+  ///
+  /// In pt, this message translates to:
+  /// **'{view, select, terms{Termos} groups{Grupos} other{}}'**
+  String vocabularyView(String view);
+
+  /// No description provided for @addToGroup.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pôr num grupo'**
+  String get addToGroup;
+
+  /// No description provided for @noTermsInFilter.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum termo neste filtro.'**
+  String get noTermsInFilter;
+
   /// No description provided for @tabHome.
   ///
   /// In pt, this message translates to:
@@ -1348,12 +1366,6 @@ abstract class AppLocalizations {
   /// **'Mais opções'**
   String get moreOptions;
 
-  /// No description provided for @select.
-  ///
-  /// In pt, this message translates to:
-  /// **'Selecionar'**
-  String get select;
-
   /// No description provided for @selectAll.
   ///
   /// In pt, this message translates to:
@@ -1396,12 +1408,6 @@ abstract class AppLocalizations {
   /// **'Termos novos chegam em Sem grupo. De lá, mova os que forem daqui.'**
   String get groupEmptyMessage;
 
-  /// No description provided for @ungroupedHelp.
-  ///
-  /// In pt, this message translates to:
-  /// **'Os termos que você confirma nas capturas chegam aqui. Mova cada um pro grupo dele.'**
-  String get ungroupedHelp;
-
   /// No description provided for @allCount.
   ///
   /// In pt, this message translates to:
@@ -1413,18 +1419,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{count, plural, =0{Toque nos termos pra escolher} =1{1 selecionado} other{{count} selecionados}}'**
   String selectionMeta(int count);
-
-  /// No description provided for @nothingToOrganize.
-  ///
-  /// In pt, this message translates to:
-  /// **'Nenhum termo pra organizar'**
-  String get nothingToOrganize;
-
-  /// No description provided for @termsToGroup.
-  ///
-  /// In pt, this message translates to:
-  /// **'{count, plural, =0{{count} termos pra pôr num grupo} =1{1 termo pra pôr num grupo} other{{count} termos pra pôr num grupo}}'**
-  String termsToGroup(int count);
 
   /// No description provided for @noTermsYet.
   ///
@@ -1552,12 +1546,6 @@ abstract class AppLocalizations {
   /// **'Capture e confirme a análise pra começar.'**
   String get vocabularyEmptyMessage;
 
-  /// No description provided for @organize.
-  ///
-  /// In pt, this message translates to:
-  /// **'Organizar'**
-  String get organize;
-
   /// No description provided for @noGroupsYet.
   ///
   /// In pt, this message translates to:
@@ -1575,12 +1563,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Criar grupo'**
   String get createGroup;
-
-  /// No description provided for @yourGroups.
-  ///
-  /// In pt, this message translates to:
-  /// **'Seus grupos'**
-  String get yourGroups;
 
   /// No description provided for @noTermsInGroupYet.
   ///

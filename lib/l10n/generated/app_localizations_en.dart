@@ -37,6 +37,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionExpired => 'Your session expired. Sign in again.';
 
   @override
+  String vocabularyView(String view) {
+    String _temp0 = intl.Intl.selectLogic(view, {
+      'terms': 'Terms',
+      'groups': 'Groups',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get addToGroup => 'Add to a group';
+
+  @override
+  String get noTermsInFilter => 'No terms in this filter.';
+
+  @override
   String get tabHome => 'Home';
 
   @override
@@ -858,9 +874,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moreOptions => 'More options';
 
   @override
-  String get select => 'Select';
-
-  @override
   String get selectAll => 'Select all';
 
   @override
@@ -893,10 +906,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'New terms land in No group. From there, move the ones that belong here.';
 
   @override
-  String get ungroupedHelp =>
-      'Terms you confirm in your captures land here. Move each one to its group.';
-
-  @override
   String allCount(int count) {
     return 'All · $count';
   }
@@ -909,21 +918,6 @@ class AppLocalizationsEn extends AppLocalizations {
       other: '$count selected',
       one: '1 selected',
       zero: 'Tap terms to choose',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get nothingToOrganize => 'No terms to organize';
-
-  @override
-  String termsToGroup(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count terms to put in a group',
-      one: '1 term to put in a group',
-      zero: '$count terms to put in a group',
     );
     return '$_temp0';
   }
@@ -1044,9 +1038,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Capture and confirm the analysis to get started.';
 
   @override
-  String get organize => 'Organize';
-
-  @override
   String get noGroupsYet => 'No groups yet';
 
   @override
@@ -1054,9 +1045,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createGroup => 'Create group';
-
-  @override
-  String get yourGroups => 'Your groups';
 
   @override
   String get noTermsInGroupYet => 'No terms yet';

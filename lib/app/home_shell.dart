@@ -35,10 +35,19 @@ class _HomeShellState extends State<HomeShell> {
   static const _inboxTab = 2;
 
   final _menu = GlobalKey<ArcMenuState>();
+  final _vocabulary = GlobalKey<VocabularyPageState>();
   int _tab = 0;
   AuthStore? _auth;
 
-  void _goTo(int tab) => setState(() => _tab = tab);
+  void _goTo(int tab) {
+    if (tab != _vocabularyTab) _vocabulary.currentState?.cancelSelection();
+    setState(() => _tab = tab);
+  }
+
+  void _seeNewTerms() {
+    _goTo(_vocabularyTab);
+    _vocabulary.currentState?.showUngrouped();
+  }
 
   Future<void> _capture(CaptureSource source) async {
     final saved = await AppModal.show<Capture>(
@@ -98,8 +107,8 @@ class _HomeShellState extends State<HomeShell> {
                         onSeeVocabulary: () => _goTo(_vocabularyTab),
                         onCapture: () => _menu.currentState?.open(),
                       ),
-                      const VocabularyPage(),
-                      InboxPage(onSeeTerms: () => _goTo(_vocabularyTab)),
+                      VocabularyPage(key: _vocabulary),
+                      InboxPage(onSeeTerms: _seeNewTerms),
                     ],
                   ),
                 ),

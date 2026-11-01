@@ -102,6 +102,8 @@ List<Term> _terms(Object? json) => [
   for (final t in json! as List<Object?>) Term.fromJson(t! as Json),
 ];
 
+typedef TermEntry = ({Term term, TermGroup? group});
+
 class Vocabulary {
   const Vocabulary({this.groups = const [], this.ungrouped = const []});
 
@@ -126,6 +128,22 @@ class Vocabulary {
       groups.fold(ungrouped.masteredCount, (sum, g) => sum + g.masteredCount);
 
   int get learningCount => termCount - masteredCount;
+
+  List<TermEntry> get entries {
+    final all = <TermEntry>[
+      for (final term in ungrouped) (term: term, group: null),
+      for (final group in groups)
+        for (final term in group.terms) (term: term, group: group),
+    ].indexed.toList();
+    final oldest = DateTime.fromMillisecondsSinceEpoch(0);
+    all.sort((a, b) {
+      final newer = (b.$2.term.createdAt ?? oldest).compareTo(
+        a.$2.term.createdAt ?? oldest,
+      );
+      return newer != 0 ? newer : a.$1 - b.$1;
+    });
+    return [for (final (_, entry) in all) entry];
+  }
 
   TermGroup? group(String id) => groups.where((g) => g.id == id).firstOrNull;
 

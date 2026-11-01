@@ -17,7 +17,7 @@ class MoveModal extends StatelessWidget {
 
   final List<TermGroup> groups;
   final int count;
-  final String from;
+  final String? from;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +26,13 @@ class MoveModal extends StatelessWidget {
 
     return AppModal(
       title: context.l10n.moveModalTitle,
-      subtitle: context.l10n.moveModalSubtitle(
-        context.l10n.termCount(count),
-        from,
-      ),
+      subtitle: switch (from) {
+        final from? => context.l10n.moveModalSubtitle(
+          context.l10n.termCount(count),
+          from,
+        ),
+        null => context.l10n.termCount(count),
+      },
       child: groups.isEmpty
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

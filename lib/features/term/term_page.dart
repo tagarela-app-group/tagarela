@@ -45,11 +45,8 @@ class _TermPageState extends State<TermPage> {
 
   void _openTerm(String id) {
     final vocabulary = AppScope.of(context).vocabulary.data;
-    final term = [
-      ...?vocabulary?.ungrouped,
-      for (final g in vocabulary?.groups ?? const <TermGroup>[]) ...g.terms,
-    ].where((t) => t.id == id).firstOrNull;
-    if (term != null) TermPage.open(context, term);
+    final entry = vocabulary?.entries.where((e) => e.term.id == id).firstOrNull;
+    if (entry != null) TermPage.open(context, entry.term);
   }
 
   @override

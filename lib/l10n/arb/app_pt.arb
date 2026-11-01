@@ -13,6 +13,16 @@
   "termsAnalyzedMessage": "Os novos ficam em Sem grupo. A ficha sai no primeiro toque.",
   "analysisQueued": "Análise guardada",
   "sessionExpired": "Sua sessão expirou. Entre de novo.",
+  "vocabularyView": "{view, select, terms{Termos} groups{Grupos} other{}}",
+  "@vocabularyView": {
+    "placeholders": {
+      "view": {
+        "type": "String"
+      }
+    }
+  },
+  "addToGroup": "Pôr num grupo",
+  "noTermsInFilter": "Nenhum termo neste filtro.",
   "tabHome": "Início",
   "tabVocabulary": "Vocabulário",
   "tabInbox": "Inbox",
@@ -475,7 +485,6 @@
   },
   "cancelSelection": "Cancelar seleção",
   "moreOptions": "Mais opções",
-  "select": "Selecionar",
   "selectAll": "Selecionar todos",
   "delete": "Apagar",
   "moveTerms": "{count, plural, =0{Selecione os termos} =1{Mover 1 termo} other{Mover {count} termos}}",
@@ -490,7 +499,6 @@
   "allOrganizedMessage": "Os termos que você confirmar nas capturas chegam aqui.",
   "groupEmptyTitle": "Nenhum termo aqui ainda",
   "groupEmptyMessage": "Termos novos chegam em Sem grupo. De lá, mova os que forem daqui.",
-  "ungroupedHelp": "Os termos que você confirma nas capturas chegam aqui. Mova cada um pro grupo dele.",
   "allCount": "Todos · {count}",
   "@allCount": {
     "placeholders": {
@@ -501,15 +509,6 @@
   },
   "selectionMeta": "{count, plural, =0{Toque nos termos pra escolher} =1{1 selecionado} other{{count} selecionados}}",
   "@selectionMeta": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "nothingToOrganize": "Nenhum termo pra organizar",
-  "termsToGroup": "{count, plural, =0{{count} termos pra pôr num grupo} =1{1 termo pra pôr num grupo} other{{count} termos pra pôr num grupo}}",
-  "@termsToGroup": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -602,11 +601,9 @@
   "open": "Abrir",
   "newGroup": "Novo grupo",
   "vocabularyEmptyMessage": "Capture e confirme a análise pra começar.",
-  "organize": "Organizar",
   "noGroupsYet": "Nenhum grupo ainda",
   "noGroupsYetMessage": "Crie um grupo pra organizar seus termos.",
   "createGroup": "Criar grupo",
-  "yourGroups": "Seus grupos",
   "noTermsInGroupYet": "Sem termos ainda",
   "percentMastered": "{percent}% dominado",
   "@percentMastered": {
