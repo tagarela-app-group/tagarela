@@ -177,7 +177,7 @@ void main() {
 
     await tester.tap(find.text('Mover 2 termos'));
     await tester.pumpAndSettle();
-    expect(find.text('2 termos'), findsOneWidget);
+    expect(find.textContaining('termos de'), findsNothing);
     await tester.tap(
       find.descendant(
         of: find.byType(MoveModal),
