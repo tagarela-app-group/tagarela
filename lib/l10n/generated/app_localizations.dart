@@ -100,6 +100,18 @@ abstract class AppLocalizations {
     Locale('pt'),
   ];
 
+  /// No description provided for @cropHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Arraste os cantos pra deixar só o texto.'**
+  String get cropHint;
+
+  /// No description provided for @cropUndo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar a foto inteira'**
+  String get cropUndo;
+
   /// No description provided for @termsAnalyzed.
   ///
   /// In pt, this message translates to:

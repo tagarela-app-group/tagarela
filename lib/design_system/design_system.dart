@@ -20,6 +20,7 @@ export 'package:tagarela/design_system/components/arc_menu.dart';
 export 'package:tagarela/design_system/components/async_status.dart';
 export 'package:tagarela/design_system/components/bottom_panel.dart';
 export 'package:tagarela/design_system/components/bubble_burst.dart';
+export 'package:tagarela/design_system/components/crop_frame.dart';
 export 'package:tagarela/design_system/components/dot_label.dart';
 export 'package:tagarela/design_system/components/drawn_icon.dart';
 export 'package:tagarela/design_system/components/flag_badge.dart';

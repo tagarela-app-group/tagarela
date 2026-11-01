@@ -46,7 +46,10 @@ void main() {
     await tester.pump();
 
     expect(device.origins, [PhotoOrigin.gallery]);
-    expect(find.text('Confira antes de salvar'), findsOneWidget);
+    expect(
+      find.text('Arraste os cantos pra deixar só o texto.'),
+      findsOneWidget,
+    );
     expect(find.bySemanticsLabel('Foto escolhida'), findsOneWidget);
 
     await tester.tap(find.text('Trocar foto'));
@@ -65,6 +68,93 @@ void main() {
     await tester.pump();
 
     expect(tester.takeException(), isNull);
+  });
+
+  Future<void> takePhoto(WidgetTester tester) async {
+    await tester.tap(find.text('Tirar foto'));
+    await tester.pump();
+    await tester.pump(AppMotion.slow);
+  }
+
+  Future<void> cropOnce(WidgetTester tester) async {
+    final frame = tester.getRect(find.byType(CropFrame));
+    final gesture = await tester.startGesture(
+      frame.bottomCenter - const Offset(0, CropFrame.gutter),
+    );
+    await gesture.moveBy(const Offset(0, -100));
+    await tester.pump();
+    await gesture.up();
+    await tester.pump();
+    await tester.pump(AppMotion.slow);
+  }
+
+  testWidgets('sem cortar: salva a foto original, sem gerar outra', (
+    tester,
+  ) async {
+    await open(tester);
+    await takePhoto(tester);
+
+    await tester.tap(find.text('Salvar no Inbox'));
+    await tester.pumpAndSettle();
+
+    expect(device.crops, isEmpty);
+  });
+
+  testWidgets('cortou: salva o recorte e apaga os dois temporários', (
+    tester,
+  ) async {
+    final results = await open(tester);
+    await takePhoto(tester);
+    await cropOnce(tester);
+
+    await tester.tap(find.text('Salvar no Inbox'));
+    await tester.pumpAndSettle();
+
+    final saved = results.single!;
+    expect(device.crops.single.bottom, lessThan(1));
+    expect(captures.media.files.keys, ['captures/photo/${saved.id}.png']);
+    expect(
+      device.discarded,
+      unorderedEquals(['cache/recorte.png', 'cache/foto.jpg']),
+    );
+  });
+
+  testWidgets('Usar a foto inteira desfaz o corte', (tester) async {
+    await open(tester);
+    await takePhoto(tester);
+    await cropOnce(tester);
+
+    await tester.tap(find.text('Usar a foto inteira'));
+    await tester.pump();
+    await tester.tap(find.text('Salvar no Inbox'));
+    await tester.pumpAndSettle();
+
+    expect(device.crops, isEmpty);
+  });
+
+  testWidgets('recorte falhou: salva a foto inteira, sem perder a captura', (
+    tester,
+  ) async {
+    device.cropFails = true;
+    final results = await open(tester);
+    await takePhoto(tester);
+    await cropOnce(tester);
+
+    await tester.tap(find.text('Salvar no Inbox'));
+    await tester.pumpAndSettle();
+
+    final saved = results.single!;
+    expect(captures.media.files.keys, ['captures/photo/${saved.id}.jpg']);
+  });
+
+  testWidgets('foto que não abre: prévia simples, sem moldura', (tester) async {
+    device.nextPhotoSize = null;
+    await open(tester);
+
+    await takePhoto(tester);
+
+    expect(find.byType(CropFrame), findsNothing);
+    expect(find.text('Confira antes de salvar'), findsOneWidget);
   });
 
   testWidgets('desistir na câmera continua nas opções', (tester) async {

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,6 +30,52 @@ class CaptureDevice {
       imageQuality: 85,
     );
     return picked == null ? null : File(picked.path);
+  }
+
+  Future<ui.Size?> imageSize(File file) async {
+    try {
+      final image = await _decode(file);
+      final size = ui.Size(image.width.toDouble(), image.height.toDouble());
+      image.dispose();
+      return size;
+    } on Exception {
+      return null;
+    }
+  }
+
+  Future<File> crop(File file, ui.Rect area) async {
+    final image = await _decode(file);
+    final source = ui.Rect.fromLTRB(
+      (area.left * image.width).floorToDouble(),
+      (area.top * image.height).floorToDouble(),
+      (area.right * image.width).ceilToDouble(),
+      (area.bottom * image.height).ceilToDouble(),
+    );
+    final recorder = ui.PictureRecorder();
+    ui.Canvas(
+      recorder,
+    ).drawImageRect(image, source, ui.Offset.zero & source.size, ui.Paint());
+    final picture = recorder.endRecording();
+    final cropped = await picture.toImage(
+      source.width.toInt(),
+      source.height.toInt(),
+    );
+    final bytes = await cropped.toByteData(format: ui.ImageByteFormat.png);
+    image.dispose();
+    picture.dispose();
+    cropped.dispose();
+    final dir = await getTemporaryDirectory();
+    final target = File(
+      '${dir.path}/recorte-${DateTime.now().millisecondsSinceEpoch}.png',
+    );
+    return target.writeAsBytes(bytes!.buffer.asUint8List());
+  }
+
+  Future<ui.Image> _decode(File file) async {
+    final codec = await ui.instantiateImageCodec(await file.readAsBytes());
+    final frame = await codec.getNextFrame();
+    codec.dispose();
+    return frame.image;
   }
 
   Future<void> startRecording() async {

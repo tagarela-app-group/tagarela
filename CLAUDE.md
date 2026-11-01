@@ -33,6 +33,7 @@ App Flutter (Android/iOS): idioma (en, es, pt) a partir do que a pessoa vê e ou
 - Ouvir e escrever: frase nova da IA com o termo, num balão; ouve sozinho ao abrir, Devagar com a tartaruga, a palavra falada acende. A lacuna é uma peça por letra (`LetterTile`, 24 px fixos); apóstrofo e espaço já vêm. Palavra que não cabe na linha desce inteira; maior que a linha quebra na sílaba (vem da API) com hífen no fim. Teclado do jogo (`LetterKeyboard`), não o do celular, pra não sugerir a resposta: QWERTY, es com ñ e pt com ç e uma fileira de acentos; letra da resposta que falta entra em cima. Dica põe a próxima letra em âmbar; Conferir só com tudo preenchido; erro marca as letras em vermelho, a próxima tecla limpa só elas, e aparece "Mostrar resposta". Acertou: peças violeta e balões.
 - Perfil abre pela foto na Início, em tela cheia. A 4ª tab é Comunidades, desligada até existir.
 - Texto de captura aparece em minúsculas e entre aspas (`quotedCapture`), só na tela: o dado fica como a pessoa escreveu, e a tela de escolha mostra o original pra corrigir.
+- Foto: corte no próprio painel, sem etapa nova. A moldura nasce na foto inteira (quem não quer cortar só salva) e o recorte é só o que vai pro Inbox e pro OCR. Falhou ao recortar: salva a foto inteira. `CropFrame` toma o toque na hora, senão o arrasto do painel ganha.
 - País de origem: opcional, fica na conta, vira bandeira no canto inferior direito de todo avatar (o esquerdo é a cauda do balão). Nomes em `lib/l10n/countries/country_names.dart`, gerados do CLDR, mesma lista da API.
 
 ## Arquitetura

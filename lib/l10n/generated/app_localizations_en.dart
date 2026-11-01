@@ -9,6 +9,12 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get cropHint => 'Drag the corners to keep only the text.';
+
+  @override
+  String get cropUndo => 'Use the whole photo';
+
+  @override
   String termsAnalyzed(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
