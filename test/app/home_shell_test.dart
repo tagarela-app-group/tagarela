@@ -258,6 +258,50 @@ void main() {
     expect(find.text('Salvo no Inbox'), findsNothing);
   });
 
+  testWidgets('analisar no Inbox: Ver abre Vocabulário em Sem grupo', (
+    tester,
+  ) async {
+    final captures = fakeCaptures();
+    await captures.db.saveCapture(
+      'ana@example.com',
+      sampleCapture(
+        'a',
+        pending: const {CaptureSync.create},
+        terms: const [CaptureTerm(text: 'mind the gap', start: 7, end: 19)],
+      ),
+    );
+    await tester.pumpPage(
+      const HomeShell(),
+      deps: fakeDependencies(captures: captures.store),
+    );
+    await tester.tap(_tab('Inbox'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Analisar'));
+    await tester.pumpUntilFound(find.text('1 termo no vocabulário'));
+    await tester.tap(find.text('Ver'));
+    await tester.pumpAndSettle();
+
+    expect(_currentTab(tester), 1);
+    expect(chipSelected(tester, 'Sem grupo ·'), isTrue);
+  });
+
+  testWidgets('sair da aba cancela a seleção do Vocabulário', (tester) async {
+    await tester.pumpPage(const HomeShell());
+    await tester.tap(_tab('Vocabulário'));
+    await tester.pumpAndSettle();
+    await tester.longPress(find.text('mind the gap'));
+    await tester.pump();
+    expect(find.text('1 selecionado'), findsOneWidget);
+
+    await tester.tap(_tab('Inbox'));
+    await tester.pumpAndSettle();
+    await tester.tap(_tab('Vocabulário'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('1 selecionado'), findsNothing);
+  });
+
   testWidgets('curso sem áudio esconde a gravação no +', (tester) async {
     await tester.pumpPage(
       const HomeShell(),

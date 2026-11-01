@@ -5,29 +5,31 @@ import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
 import 'package:tagarela/features/vocabulary/logic/group_controller.dart';
+import 'package:tagarela/features/vocabulary/logic/term_actions.dart';
 import 'package:tagarela/features/vocabulary/modals/delete_group_modal.dart';
 import 'package:tagarela/features/vocabulary/modals/group_menu_modal.dart';
 import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
-import 'package:tagarela/features/vocabulary/modals/move_modal.dart';
 import 'package:tagarela/features/vocabulary/widgets/group_header.dart';
+import 'package:tagarela/features/vocabulary/widgets/selection_bar.dart';
 import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 import 'package:tagarela/l10n/l10n.dart';
 import 'package:tagarela/shared/logic/group_style.dart';
 
 class GroupPage extends StatefulWidget {
-  const GroupPage({super.key, required String this.groupId});
+  const GroupPage({super.key, required this.groupId});
 
-  const GroupPage.ungrouped({super.key}) : groupId = null;
-
-  final String? groupId;
+  final String groupId;
 
   @override
   State<GroupPage> createState() => _GroupPageState();
 }
 
-class _GroupPageState extends State<GroupPage> {
+class _GroupPageState extends State<GroupPage> with TermActions {
   late final GroupController _controller;
   TermGroup? _group;
+
+  @override
+  GroupController get controller => _controller;
 
   @override
   void initState() {
@@ -65,87 +67,6 @@ class _GroupPageState extends State<GroupPage> {
     }
   }
 
-  Future<void> _pickTarget(
-    Vocabulary data,
-    TermGroup? from,
-    List<Term> terms,
-  ) async {
-    final ids = _controller.selectedIn(terms);
-    final target = await AppModal.show<MoveTarget>(
-      context,
-      (_) => MoveModal(
-        groups: [
-          for (final g in data.groups)
-            if (g.id != from?.id) g,
-        ],
-        count: ids.length,
-        from: from?.name ?? context.l10n.ungrouped,
-      ),
-    );
-    if (target == null || !mounted) return;
-    final to =
-        target.group ??
-        await AppModal.show<TermGroup>(context, (_) => const GroupModal());
-    if (to == null || !mounted) return;
-    await _move(ids, from: from, to: to);
-  }
-
-  Future<void> _move(
-    List<String> ids, {
-    required TermGroup? from,
-    required TermGroup to,
-  }) async {
-    final vocabulary = AppScope.of(context).vocabulary;
-    final done = await _controller.move(ids, to.id);
-    if (!mounted) return;
-    final l10n = context.l10n;
-    _report(
-      done,
-      failure: l10n.moveFailed,
-      title: l10n.termsMoved(ids.length),
-      message: l10n.termsMovedTo(ids.length, to.name),
-      undo: () => vocabulary.move(ids, from?.id),
-    );
-  }
-
-  Future<void> _delete(List<Term> terms) async {
-    final ids = _controller.selectedIn(terms);
-    final vocabulary = AppScope.of(context).vocabulary;
-    final done = await _controller.delete(ids);
-    if (!mounted) return;
-    final l10n = context.l10n;
-    _report(
-      done,
-      failure: l10n.deleteFailed,
-      title: l10n.termsDeleted(ids.length),
-      message: l10n.termsDeletedMessage(ids.length),
-      undo: () => vocabulary.restoreTerms(ids),
-    );
-  }
-
-  void _report(
-    bool done, {
-    required String failure,
-    required String title,
-    required String message,
-    required Future<void> Function() undo,
-  }) {
-    if (!done) return AppToast.notice(context, failure);
-    AppToast.show(
-      context,
-      title: title,
-      message: message,
-      actionLabel: context.l10n.undo,
-      onAction: () async {
-        try {
-          await undo();
-        } on Exception {
-          if (mounted) AppToast.notice(context, context.l10n.undoFailed);
-        }
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final vocabulary = AppScope.of(context).vocabulary;
@@ -154,14 +75,12 @@ class _GroupPageState extends State<GroupPage> {
       listenable: Listenable.merge([vocabulary, _controller]),
       builder: (context, _) {
         final data = vocabulary.data ?? const Vocabulary();
-        final id = widget.groupId;
-        if (id != null) _group = data.group(id) ?? _group;
+        _group = data.group(widget.groupId) ?? _group;
         final group = _group;
-        final terms = id == null ? data.ungrouped : group?.terms ?? const [];
+        final terms = group?.terms ?? const <Term>[];
         final filtered = group != null && terms.isNotEmpty;
         final visible = filtered ? group.termsWith(_controller.status) : terms;
         final selected = _controller.selected;
-        final change = _controller.change;
 
         return PopScope(
           canPop: selected == null,
@@ -171,9 +90,9 @@ class _GroupPageState extends State<GroupPage> {
           },
           child: AppPage(
             header: GroupHeader(
-              icon: group?.glyph ?? AppIcons.ungrouped,
-              name: group?.name ?? context.l10n.ungrouped,
-              meta: _meta(context.l10n, group, terms, selected),
+              icon: group?.glyph ?? AppIcons.vocabulary,
+              name: group?.name ?? '',
+              meta: _meta(context.l10n, terms, group, selected),
               bar: filtered ? group : null,
               leading: selected == null
                   ? AppIconButton(
@@ -182,12 +101,7 @@ class _GroupPageState extends State<GroupPage> {
                       onPressed: () => Navigator.of(context).pop(),
                       variant: AppIconButtonVariant.onHeader,
                     )
-                  : AppIconButton(
-                      icon: AppIcons.close,
-                      tooltip: context.l10n.cancelSelection,
-                      onPressed: () => _controller.select(null),
-                      variant: AppIconButtonVariant.onHeader,
-                    ),
+                  : cancelSelectionButton(),
               trailing: switch ((selected, group)) {
                 (null, final group?) => AppIconButton(
                   icon: AppIcons.more,
@@ -196,77 +110,32 @@ class _GroupPageState extends State<GroupPage> {
                   variant: AppIconButtonVariant.onHeader,
                 ),
                 _ when terms.isEmpty => null,
-                (null, null) => AppButton(
-                  label: context.l10n.select,
-                  variant: AppButtonVariant.onHeader,
-                  size: AppButtonSize.small,
-                  onPressed: () => _controller.select({}),
-                ),
-                _ => AppButton(
-                  label: context.l10n.selectAll,
-                  variant: AppButtonVariant.onHeader,
-                  size: AppButtonSize.small,
-                  onPressed: () => _controller.selectAll(visible),
-                ),
+                _ => selectAllButton(visible),
               },
             ),
             gap: AppSpacing.s3,
             centerLast: terms.isEmpty,
             footer: selected == null
                 ? null
-                : Row(
-                    spacing: AppSpacing.s3,
-                    children: [
-                      AppButton(
-                        label: context.l10n.delete,
-                        leading: const Icon(
-                          AppIcons.delete,
-                          size: AppIconSize.lg,
-                        ),
-                        variant: AppButtonVariant.outline,
-                        size: AppButtonSize.large,
-                        loading: change == GroupChange.deleting,
-                        onPressed:
-                            selected.isEmpty || change == GroupChange.moving
-                            ? null
-                            : () => _delete(terms),
-                      ),
-                      Expanded(
-                        child: AppButton(
-                          label: context.l10n.moveTerms(selected.length),
-                          size: AppButtonSize.large,
-                          expand: true,
-                          loading: change == GroupChange.moving,
-                          onPressed:
-                              selected.isEmpty || change == GroupChange.deleting
-                              ? null
-                              : () => _pickTarget(data, group, terms),
-                        ),
-                      ),
-                    ],
+                : SelectionBar(
+                    count: selected.length,
+                    change: _controller.change,
+                    onDelete: () => deleteTerms(_controller.selectedIn(terms)),
+                    onMove: () => pickTarget(data, [
+                      for (final term in terms)
+                        if (selected.contains(term.id))
+                          (term: term, group: group),
+                    ]),
                   ),
             children: [
               if (terms.isEmpty)
-                id == null
-                    ? StateMessage(
-                        icon: AppIcons.ungrouped,
-                        title: context.l10n.allOrganized,
-                        message: context.l10n.allOrganizedMessage,
-                      )
-                    : StateMessage(
-                        icon: group?.glyph ?? AppIcons.vocabulary,
-                        accent: group?.accent ?? AppAccent.violet,
-                        title: context.l10n.groupEmptyTitle,
-                        message: context.l10n.groupEmptyMessage,
-                      )
+                StateMessage(
+                  icon: group?.glyph ?? AppIcons.vocabulary,
+                  accent: group?.accent ?? AppAccent.violet,
+                  title: context.l10n.groupEmptyTitle,
+                  message: context.l10n.groupEmptyMessage,
+                )
               else ...[
-                if (id == null)
-                  Text(
-                    context.l10n.ungroupedHelp,
-                    style: AppText.bodyMd.copyWith(
-                      color: context.colors.inkSoft,
-                    ),
-                  ),
                 if (filtered)
                   SegmentedControl(
                     options: [
@@ -301,14 +170,12 @@ class _GroupPageState extends State<GroupPage> {
 
   static String _meta(
     AppLocalizations l10n,
-    TermGroup? group,
     List<Term> terms,
+    TermGroup? group,
     Set<String>? selected,
   ) => switch (selected?.length) {
     final int n => l10n.selectionMeta(n),
-    null when group == null =>
-      terms.isEmpty ? l10n.nothingToOrganize : l10n.termsToGroup(terms.length),
-    null when terms.isEmpty => l10n.noTermsYet,
-    null => l10n.termCountMastered(terms.length, group.masteredCount),
+    null when group == null || terms.isEmpty => l10n.noTermsYet,
+    null => l10n.termCountMastered(terms.length, group!.masteredCount),
   };
 }
