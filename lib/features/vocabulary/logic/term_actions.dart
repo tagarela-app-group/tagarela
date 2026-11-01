@@ -9,7 +9,24 @@ import 'package:tagarela/features/vocabulary/modals/move_modal.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 mixin TermActions<T extends StatefulWidget> on State<T> {
-  GroupController get controller;
+  late final GroupController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = GroupController(AppScope.of(context).vocabulary);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  Widget listening(WidgetBuilder builder) => ListenableBuilder(
+    listenable: Listenable.merge([AppScope.of(context).vocabulary, controller]),
+    builder: (context, _) => builder(context),
+  );
 
   Widget cancelSelectionButton() => AppIconButton(
     icon: AppIcons.close,
