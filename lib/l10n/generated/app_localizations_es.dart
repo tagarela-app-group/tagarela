@@ -1687,5 +1687,37 @@ class AppLocalizationsEs extends AppLocalizations {
   String get finish => 'Terminar';
 
   @override
+  String dailyWordLabel(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'word': 'Palabra del día',
+      'expression': 'Expresión del día',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String dailyWordSay(String act) {
+    String _temp0 = intl.Intl.selectLogic(act, {
+      'hop': '¡psst!',
+      'shuffle': '¡uy, se mezcló!',
+      'chat': '¡repite conmigo!',
+      'reveal': '¿pillaste?',
+      'saved': '¡guardada!',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get dailyWordReveal => 'Revelar qué significa';
+
+  @override
+  String get dailyWordSave => 'Guardar en el vocabulario';
+
+  @override
+  String get dailyWordOpen => 'Abrir la ficha';
+
+  @override
   String get practiceFree => 'Práctica libre: no cuenta para el repaso.';
 }

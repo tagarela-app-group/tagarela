@@ -16,7 +16,7 @@ Detalhe de cada feature, minigames e ambientes: `docs/produto.md`. Antes de mexe
 8. Teste em aparelho é do usuário. Print só se pedir, ~400 px.
 9. Dependência nova: checar manutenção e contar ao usuário; nativa ou mal mantida: perguntar. Versões com 2+ semanas.
 10. Tipagem estrita: sem `dynamic` nem tipo implícito. JSON entra como `Json`/`Object?` e vira model no `fromJson`, com cast explícito.
-11. Sem repetição: antes de escrever, procurar em `lib/` e `test/`. Igual em 2 lugares vira uma peça só (`logic/`, design system, `test/helpers/`). Igual por acaso, com regra diferente, fica separado. A esteira falha com qualquer trecho repetido (`jscpd`).
+11. DRY: antes de escrever, procurar em `lib/` e `test/` o que já faz isso e reusar; se quase serve, generalizar em vez de copiar. A mesma regra ou comportamento em 2 lugares vira uma peça só (`logic/`, design system, `test/helpers/`), mesmo com código diferente, que o `jscpd` não pega. Igual por acaso, com regra diferente, fica separado. A esteira falha com qualquer trecho repetido (`jscpd`).
 12. Sem código morto: a esteira falha com classe, função, membro ou arquivo sem uso. Membro que só teste usa: tirar, salvo gancho listado no `ci.yml`.
 13. Fim de task ou troca de assunto: sugerir `/compact manter: ...` ou `/clear`.
 
@@ -46,7 +46,7 @@ Detalhe de cada feature, minigames e ambientes: `docs/produto.md`. Antes de mexe
 - Texto da UI só nos ARB (`lib/l10n/arb/`, modelo `app_pt.arb`), via `context.l10n`; chave nova nos três idiomas. Rótulo de enum é `select`. Plural sempre com `=0`.
 - Testes: só `flutter_test` com fakes manuais; helpers em `test/helpers/`. Monta com `fakeDependencies(...)` e `pumpPage(page, deps: ...)`, que abre em pt. Fake de API herda `FakeApi` e só declara `respond`. Função pura recebe `AppLocalizations` (`test/helpers/l10n.dart`).
 - App passou a ler campo da API: entra no exemplo em `test/contract/*.json`.
-- Animação de enfeite roda uma vez, nunca em loop. Em loop: `WordPicker` selecionado, `ShufflingTiles`, `RollingText`, `TypingDots`; teste com eles usa `pump` com duração. Depois de toast: `pumpUntilFound`.
+- Animação de enfeite roda uma vez, nunca em loop. Em loop: `WordPicker` selecionado, `ShufflingTiles`, `RollingText`, `TypingDots`, boca do `BubbleMascot` falando; `DailyWordCard` repete um número por timer (`AppMotion.wordEvery`), sem frame entre eles; teste com eles usa `pump` com duração. Depois de toast: `pumpUntilFound`.
 
 ## Mockup
 

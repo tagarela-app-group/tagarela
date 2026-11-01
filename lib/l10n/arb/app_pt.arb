@@ -987,5 +987,24 @@
   },
   "takenAway": "O que você levou",
   "finish": "Concluir",
+  "dailyWordLabel": "{kind, select, word{Palavra do dia} expression{Expressão do dia} other{}}",
+  "@dailyWordLabel": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyWordSay": "{act, select, hop{psiu!} shuffle{opa, embaralhou!} chat{repete comigo!} reveal{sacou?} saved{guardei!} other{}}",
+  "@dailyWordSay": {
+    "placeholders": {
+      "act": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyWordReveal": "Revelar o que quer dizer",
+  "dailyWordSave": "Guardar no vocabulário",
+  "dailyWordOpen": "Abrir a ficha",
   "practiceFree": "Treino livre: não conta pra revisão."
 }

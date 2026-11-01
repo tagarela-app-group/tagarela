@@ -2302,6 +2302,36 @@ abstract class AppLocalizations {
   /// **'Concluir'**
   String get finish;
 
+  /// No description provided for @dailyWordLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{kind, select, word{Palavra do dia} expression{Expressão do dia} other{}}'**
+  String dailyWordLabel(String kind);
+
+  /// No description provided for @dailyWordSay.
+  ///
+  /// In pt, this message translates to:
+  /// **'{act, select, hop{psiu!} shuffle{opa, embaralhou!} chat{repete comigo!} reveal{sacou?} saved{guardei!} other{}}'**
+  String dailyWordSay(String act);
+
+  /// No description provided for @dailyWordReveal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Revelar o que quer dizer'**
+  String get dailyWordReveal;
+
+  /// No description provided for @dailyWordSave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Guardar no vocabulário'**
+  String get dailyWordSave;
+
+  /// No description provided for @dailyWordOpen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir a ficha'**
+  String get dailyWordOpen;
+
   /// No description provided for @practiceFree.
   ///
   /// In pt, this message translates to:

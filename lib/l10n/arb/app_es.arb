@@ -367,5 +367,10 @@
   "firstTries": "{count} de {total} a la primera",
   "takenAway": "Lo que te llevas",
   "finish": "Terminar",
+  "dailyWordLabel": "{kind, select, word{Palabra del día} expression{Expresión del día} other{}}",
+  "dailyWordSay": "{act, select, hop{¡psst!} shuffle{¡uy, se mezcló!} chat{¡repite conmigo!} reveal{¿pillaste?} saved{¡guardada!} other{}}",
+  "dailyWordReveal": "Revelar qué significa",
+  "dailyWordSave": "Guardar en el vocabulario",
+  "dailyWordOpen": "Abrir la ficha",
   "practiceFree": "Práctica libre: no cuenta para el repaso."
 }

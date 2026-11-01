@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/term/logic/card_text.dart';
+import 'package:tagarela/shared/widgets/phonetic_text.dart';
 import 'package:tagarela/features/term/widgets/term_top_bar.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -68,22 +68,10 @@ class TermHeader extends StatelessWidget {
                     ),
                   ),
                   if (phonetic case final phonetic?)
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          for (final part in stressedParts(phonetic))
-                            TextSpan(
-                              text: part.text,
-                              style: part.marked
-                                  ? TextStyle(
-                                      color: c.ink,
-                                      fontWeight: FontWeight.w700,
-                                    )
-                                  : null,
-                            ),
-                        ],
-                      ),
+                    PhoneticText(
+                      phonetic,
                       style: AppText.bodyLg.copyWith(color: c.inkSoft),
+                      stressColor: c.ink,
                     ),
                 ],
               ),

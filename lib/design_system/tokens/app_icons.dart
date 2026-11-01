@@ -28,6 +28,8 @@ abstract final class AppIcons {
   static const review = Icons.autorenew_rounded;
   static const showPassword = Icons.visibility_outlined;
   static const hidePassword = Icons.visibility_off_outlined;
+  static const save = Icons.bookmark_border_rounded;
+  static const saved = Icons.bookmark_rounded;
   static const reveal = Icons.visibility_outlined;
   static const cover = Icons.visibility_off_outlined;
   static const warning = Icons.warning_amber_rounded;

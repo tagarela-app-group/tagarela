@@ -63,6 +63,8 @@ abstract final class AppBubbleSize {
   static const xxl = 56.0;
   static const hero = 64.0;
   static const avatar = 84.0;
+  static const touch = 44.0;
+  static const backdrop = 190.0;
 }
 
 abstract final class AppFontSize {
@@ -97,6 +99,14 @@ abstract final class AppMotion {
   static const roll = Duration(milliseconds: 520);
   static const rollEvery = Duration(milliseconds: 2200);
   static const typing = Duration(milliseconds: 1200);
+  static const wordFirst = Duration(milliseconds: 1200);
+  static const wordEvery = Duration(seconds: 30);
+  static const wordHop = Duration(milliseconds: 1500);
+  static const wordShuffle = Duration(milliseconds: 1700);
+  static const wordChat = Duration(milliseconds: 1900);
+  static const wordSay = Duration(milliseconds: 1500);
+  static const mascotHop = Duration(milliseconds: 760);
+  static const mascotTalk = Duration(milliseconds: 240);
   static const standard = Cubic(0.2, 0.8, 0.2, 1);
   static const smooth = Curves.easeInOutCubic;
   static const spring = Curves.easeOutBack;

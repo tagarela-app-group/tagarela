@@ -27,7 +27,11 @@ class AppSession {
 
   Future<void> signOut() async {
     await _app.auth.logout();
-    for (final store in [_app.courses, ..._study]) {
+    for (final store in <Store<Object>>[
+      _app.courses,
+      _app.dailyWord,
+      ..._study,
+    ]) {
       store.clear();
     }
   }
@@ -38,8 +42,11 @@ class AppSession {
     _app.captures,
   ];
 
-  Future<void> _loadStores() =>
-      Future.wait([for (final store in _study) store.load()]);
+  Future<void> _loadStores() {
+    _app.dailyWord.clear();
+    unawaited(_app.dailyWord.load());
+    return Future.wait([for (final store in _study) store.load()]);
+  }
 
   void _ensureSpeech() {
     if (_app.courses.active?.learning.hasAudio ?? true) {

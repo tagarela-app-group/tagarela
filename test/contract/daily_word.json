@@ -1,0 +1,13 @@
+{
+  "text": "hangry",
+  "kind": "word",
+  "phonetic": "/ˈhæŋ.ɡri/",
+  "example": "Feed me, I'm getting hangry!",
+  "meaning": "com fome e de mau humor",
+  "term": {
+    "id": "c3e5a7b9-2d4f-4b6c-9e8a-0f1b2c3d4e5f",
+    "text": "hangry",
+    "kind": "word",
+    "level": 0
+  }
+}
