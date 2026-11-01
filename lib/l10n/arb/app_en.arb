@@ -7,7 +7,7 @@
   "analysisQueued": "Analysis saved",
   "sessionExpired": "Your session expired. Sign in again.",
   "vocabularyView": "{view, select, terms{Terms} groups{Groups} other{}}",
-  "addToGroup": "Add to a group",
+  "addToGroup": "Group",
   "noTermsInFilter": "No terms in this filter.",
   "tabHome": "Home",
   "tabVocabulary": "Vocabulary",

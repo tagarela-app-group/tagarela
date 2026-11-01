@@ -83,13 +83,13 @@ void main() {
     expect(find.byType(GroupCard), findsNothing);
   });
 
-  testWidgets('termo de grupo mostra o grupo; solto oferece Pôr num grupo', (
+  testWidgets('termo de grupo mostra o grupo; solto oferece Agrupar', (
     tester,
   ) async {
     await _pump(tester);
 
     expect(find.text('Viagem'), findsNWidgets(2));
-    expect(find.text('Pôr num grupo'), findsOneWidget);
+    expect(find.text('Agrupar'), findsOneWidget);
   });
 
   testWidgets('filtros trocam os termos', (tester) async {
@@ -143,10 +143,10 @@ void main() {
     expect(find.byType(TermPage), findsOneWidget);
   });
 
-  testWidgets('Pôr num grupo move só aquele termo e desfaz', (tester) async {
+  testWidgets('Agrupar move só aquele termo e desfaz', (tester) async {
     final (:store, :api) = await _pump(tester);
 
-    await tester.tap(find.text('Pôr num grupo'));
+    await tester.tap(find.text('Agrupar'));
     await tester.pumpAndSettle();
     expect(find.text('1 termo de Sem grupo'), findsOneWidget);
     await tester.tap(
@@ -158,7 +158,7 @@ void main() {
     await tester.pumpUntilFound(find.text('1 termo movido'));
 
     expect(api.termsOf('musica'), ['mind the gap']);
-    expect(find.text('Pôr num grupo'), findsNothing);
+    expect(find.text('Agrupar'), findsNothing);
 
     await tester.tap(find.text('Desfazer'));
     await tester.pumpAndSettle();
