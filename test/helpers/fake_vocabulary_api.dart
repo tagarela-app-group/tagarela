@@ -194,9 +194,18 @@ class FakeVocabularyApi extends FakeApi {
 
 typedef FakeVocabulary = ({VocabularyStore store, FakeVocabularyApi api});
 
-FakeVocabulary fakeVocabulary([Json seed = sampleVocabularyJson]) {
+FakeVocabulary fakeVocabulary([
+  Json seed = sampleVocabularyJson,
+  Future<void> Function()? onTermsChanged,
+]) {
   final api = FakeVocabularyApi(seed);
-  return (store: VocabularyStore(VocabularyService(api)), api: api);
+  return (
+    store: VocabularyStore(
+      VocabularyService(api),
+      onTermsChanged: onTermsChanged,
+    ),
+    api: api,
+  );
 }
 
 VocabularyStore emptyVocabulary() => fakeVocabulary(const {

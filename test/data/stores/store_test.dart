@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +20,17 @@ class _NumberStore extends Store<int> {
   void set(int value) => emit(value);
 
   Future<int> fail(Object error) => guard(() async => throw error);
+}
+
+class _ManualStore extends Store<int> {
+  final responses = <Completer<int>>[];
+
+  @override
+  Future<int> fetch() {
+    final response = Completer<int>();
+    responses.add(response);
+    return response.future;
+  }
 }
 
 void main() {
@@ -120,6 +132,56 @@ void main() {
 
     expect(store.data, 3);
     expect(notified, 1);
+  });
+
+  group('dois load ao mesmo tempo', () {
+    late _ManualStore store;
+    late Future<void> first;
+    late Future<void> second;
+
+    setUp(() {
+      store = _ManualStore();
+      first = store.load();
+      second = store.load();
+    });
+
+    test('resposta antiga que chega depois não troca a nova', () async {
+      store.responses[1].complete(2);
+      await second;
+      store.responses[0].complete(1);
+      await first;
+
+      expect(store.data, 2);
+    });
+
+    test('erro antigo que chega depois não entra', () async {
+      store.responses[1].complete(2);
+      await second;
+      store.responses[0].completeError(Exception('rede'));
+      await first;
+
+      expect((store.data, store.error), (2, null));
+    });
+
+    test('a primeira resposta aparece sem esperar a segunda', () async {
+      store.responses[0].complete(1);
+      await first;
+      expect(store.data, 1);
+
+      store.responses[1].complete(2);
+      await second;
+      expect(store.data, 2);
+    });
+
+    test('resposta nova limpa o erro da antiga', () async {
+      store.responses[0].completeError(Exception('rede'));
+      await first;
+      expect(store.error, isA<Exception>());
+
+      store.responses[1].complete(2);
+      await second;
+      expect((store.data, store.error), (2, null));
+    });
   });
 
   group('StoreGroup', () {

@@ -27,6 +27,7 @@ import 'fake_practice_api.dart';
 import 'fake_preferences.dart';
 import 'fake_vocabulary_api.dart';
 import 'fake_voice.dart';
+import 'fixtures.dart';
 
 AppDependencies fakeDependencies({
   AuthStore? auth,
@@ -42,6 +43,7 @@ AppDependencies fakeDependencies({
   Voice? voice,
 }) {
   final courseStore = courses ?? fakeCourses().store;
+  final practiceStore = practice ?? fakePractice().store;
   return AppDependencies(
     auth: auth ?? fakeAuthStore(),
     courses: courseStore,
@@ -49,8 +51,10 @@ AppDependencies fakeDependencies({
     playback: playback ?? FakeAudioPlayback(),
     device: device ?? FakeCaptureDevice(),
     speech: speech ?? fakeSpeechModel().store,
-    vocabulary: vocabulary ?? fakeVocabulary().store,
-    practice: practice ?? fakePractice().store,
+    vocabulary:
+        vocabulary ??
+        fakeVocabulary(sampleVocabularyJson, practiceStore.load).store,
+    practice: practiceStore,
     dailyWord: dailyWord ?? fakeDailyWord().store,
     language: language ?? fakeLanguage(courseStore),
     voice: voice ?? FakeVoice(),
