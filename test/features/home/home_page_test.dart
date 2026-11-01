@@ -3,10 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/home/home_page.dart';
+import 'package:tagarela/features/home/widgets/daily_word_card.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
 
+import '../../helpers/fake_daily_word_api.dart';
 import '../../helpers/fake_practice_api.dart';
 import '../../helpers/fake_vocabulary_api.dart';
 import '../../helpers/failing_stores.dart';
@@ -79,6 +81,65 @@ void main() {
       tester.widget<ReviewCard>(find.byType(ReviewCard)).count,
       scope.practice.data!.due,
     );
+  });
+
+  testWidgets('com palavra do dia o card aparece acima da revisão', (
+    tester,
+  ) async {
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+      deps: fakeDependencies(
+        dailyWord: fakeDailyWord(FakeDailyWordApi(word: hangryJson)).store,
+      ),
+    );
+    await tester.pump();
+
+    final page = tester.widget<AppPage>(find.byType(AppPage));
+    expect(page.children.first, isA<DailyWordCard>());
+    expect(find.byType(ReviewCard), findsOneWidget);
+  });
+
+  testWidgets('sem palavra da API o card some e a Início segue', (
+    tester,
+  ) async {
+    await tester.pumpPage(HomePage(onSeeVocabulary: () {}, onCapture: () {}));
+    await tester.pump();
+
+    expect(find.byType(DailyWordCard), findsNothing);
+    expect(find.byType(ReviewCard), findsOneWidget);
+  });
+
+  testWidgets('Início vazia não mostra a palavra do dia', (tester) async {
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+      deps: fakeDependencies(
+        vocabulary: emptyVocabulary(),
+        practice: emptyPractice(),
+        dailyWord: fakeDailyWord(FakeDailyWordApi(word: hangryJson)).store,
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(DailyWordCard), findsNothing);
+  });
+
+  testWidgets('guardar a palavra pela Início troca o botão por abrir a ficha', (
+    tester,
+  ) async {
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+      deps: fakeDependencies(
+        dailyWord: fakeDailyWord(FakeDailyWordApi(word: hangryJson)).store,
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.byTooltip('Guardar no vocabulário'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.byTooltip('Abrir a ficha'), findsOneWidget);
+    await tester.pump(AppMotion.wordSay);
   });
 
   testWidgets('resumo usa totais do vocabulário', (tester) async {

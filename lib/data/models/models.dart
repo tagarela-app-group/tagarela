@@ -1,6 +1,7 @@
 export 'package:tagarela/data/models/auth.dart';
 export 'package:tagarela/data/models/capture.dart';
 export 'package:tagarela/data/models/course.dart';
+export 'package:tagarela/data/models/daily_word.dart';
 export 'package:tagarela/data/models/errors.dart';
 export 'package:tagarela/data/models/exercise.dart';
 export 'package:tagarela/data/models/json.dart';

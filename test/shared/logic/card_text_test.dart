@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tagarela/features/term/logic/card_text.dart';
+import 'package:tagarela/shared/logic/card_text.dart';
 
 void main() {
   group('stressedParts', () {

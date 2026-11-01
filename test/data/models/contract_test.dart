@@ -27,6 +27,14 @@ void main() {
     expect(vocabulary.ungrouped.single.text, 'awkward');
   });
 
+  test('palavra do dia', () {
+    final word = DailyWord.fromJson(contractExample('daily_word'));
+
+    expect(word.text, 'hangry');
+    expect(word.kind, TermKind.word);
+    expect(word.term?.text, 'hangry');
+  });
+
   test('ficha do termo', () {
     final detail = TermDetail.fromJson(contractExample('term_detail'));
 

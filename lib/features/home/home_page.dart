@@ -5,10 +5,12 @@ import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/stores/store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/course/modals/course_modal.dart';
+import 'package:tagarela/features/home/widgets/daily_word_card.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
 import 'package:tagarela/features/profile/profile_page.dart';
+import 'package:tagarela/features/term/term_page.dart';
 import 'package:tagarela/shared/widgets/user_avatar.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -28,7 +30,12 @@ class HomePage extends StatelessWidget {
     final stores = <Store>[scope.vocabulary, scope.practice];
 
     return ListenableBuilder(
-      listenable: Listenable.merge([...stores, scope.auth, scope.courses]),
+      listenable: Listenable.merge([
+        ...stores,
+        scope.dailyWord,
+        scope.auth,
+        scope.courses,
+      ]),
       builder: (context, _) {
         final header = _HomeHeader(
           user: scope.auth.user,
@@ -63,6 +70,18 @@ class HomePage extends StatelessWidget {
         return AppPage(
           header: header,
           children: [
+            if ((scope.dailyWord.data, scope.courses.active) case (
+              final word?,
+              final course?,
+            ))
+              DailyWordCard(
+                key: ValueKey(word.text),
+                word: word,
+                language: course.learning,
+                voice: scope.voice,
+                onSave: scope.dailyWord.save,
+                onOpen: (term) => TermPage.open(context, term),
+              ),
             if (review.due > 0)
               ReviewCard(
                 count: review.due,

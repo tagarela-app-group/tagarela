@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
-import 'package:tagarela/features/term/logic/card_text.dart';
+import 'package:tagarela/shared/logic/card_text.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class TermWords extends StatelessWidget {

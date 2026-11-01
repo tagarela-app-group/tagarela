@@ -9,6 +9,7 @@ import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/course_store.dart';
+import 'package:tagarela/data/stores/daily_word_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/practice_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
@@ -20,6 +21,7 @@ import 'package:tagarela/shared/widgets/user_avatar.dart';
 import 'fake_auth.dart';
 import 'fake_capture_store.dart';
 import 'fake_course_api.dart';
+import 'fake_daily_word_api.dart';
 import 'fake_extraction.dart';
 import 'fake_practice_api.dart';
 import 'fake_preferences.dart';
@@ -35,6 +37,7 @@ AppDependencies fakeDependencies({
   SpeechModelStore? speech,
   VocabularyStore? vocabulary,
   PracticeStore? practice,
+  DailyWordStore? dailyWord,
   LanguageStore? language,
   Voice? voice,
 }) {
@@ -48,6 +51,7 @@ AppDependencies fakeDependencies({
     speech: speech ?? fakeSpeechModel().store,
     vocabulary: vocabulary ?? fakeVocabulary().store,
     practice: practice ?? fakePractice().store,
+    dailyWord: dailyWord ?? fakeDailyWord().store,
     language: language ?? fakeLanguage(courseStore),
     voice: voice ?? FakeVoice(),
   );

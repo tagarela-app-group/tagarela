@@ -7,10 +7,18 @@ import 'package:tagarela/design_system/theme.dart';
 import 'package:tagarela/design_system/tokens/app_tokens.dart';
 
 class BubbleBurst extends StatefulWidget {
-  const BubbleBurst({super.key, this.count = 8, this.distance = 100});
+  const BubbleBurst({
+    super.key,
+    this.count = 8,
+    this.distance = 100,
+    this.color,
+    this.accent,
+  });
 
   final int count;
   final double distance;
+  final Color? color;
+  final Color? accent;
 
   @override
   State<BubbleBurst> createState() => _BubbleBurstState();
@@ -56,7 +64,13 @@ class _BubbleBurstState extends State<BubbleBurst>
                   clipBehavior: Clip.none,
                   children: [
                     for (var i = 0; i < widget.count; i++)
-                      _piece(i, travel, opacity, c.primary, c.primaryText),
+                      _piece(
+                        i,
+                        travel,
+                        opacity,
+                        widget.color ?? c.primary,
+                        widget.accent ?? c.primaryText,
+                      ),
                   ],
                 ),
               ),

@@ -367,5 +367,10 @@
   "firstTries": "{count} of {total} on the first try",
   "takenAway": "What you're taking away",
   "finish": "Done",
+  "dailyWordLabel": "{kind, select, word{Word of the day} expression{Phrase of the day} other{}}",
+  "dailyWordSay": "{act, select, hop{psst!} shuffle{oops, all mixed up!} chat{say it with me!} reveal{got it?} saved{saved!} other{}}",
+  "dailyWordReveal": "Reveal what it means",
+  "dailyWordSave": "Save to vocabulary",
+  "dailyWordOpen": "Open the card",
   "practiceFree": "Free practice: it doesn't count for reviews."
 }

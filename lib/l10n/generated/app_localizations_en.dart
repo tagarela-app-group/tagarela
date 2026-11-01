@@ -1680,5 +1680,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get finish => 'Done';
 
   @override
+  String dailyWordLabel(String kind) {
+    String _temp0 = intl.Intl.selectLogic(kind, {
+      'word': 'Word of the day',
+      'expression': 'Phrase of the day',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String dailyWordSay(String act) {
+    String _temp0 = intl.Intl.selectLogic(act, {
+      'hop': 'psst!',
+      'shuffle': 'oops, all mixed up!',
+      'chat': 'say it with me!',
+      'reveal': 'got it?',
+      'saved': 'saved!',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get dailyWordReveal => 'Reveal what it means';
+
+  @override
+  String get dailyWordSave => 'Save to vocabulary';
+
+  @override
+  String get dailyWordOpen => 'Open the card';
+
+  @override
   String get practiceFree => 'Free practice: it doesn\'t count for reviews.';
 }

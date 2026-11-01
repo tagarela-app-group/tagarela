@@ -46,7 +46,7 @@ Detalhe de cada feature, minigames e ambientes: `docs/produto.md`. Antes de mexe
 - Texto da UI só nos ARB (`lib/l10n/arb/`, modelo `app_pt.arb`), via `context.l10n`; chave nova nos três idiomas. Rótulo de enum é `select`. Plural sempre com `=0`.
 - Testes: só `flutter_test` com fakes manuais; helpers em `test/helpers/`. Monta com `fakeDependencies(...)` e `pumpPage(page, deps: ...)`, que abre em pt. Fake de API herda `FakeApi` e só declara `respond`. Função pura recebe `AppLocalizations` (`test/helpers/l10n.dart`).
 - App passou a ler campo da API: entra no exemplo em `test/contract/*.json`.
-- Animação de enfeite roda uma vez, nunca em loop. Em loop: `WordPicker` selecionado, `ShufflingTiles`, `RollingText`, `TypingDots`; teste com eles usa `pump` com duração. Depois de toast: `pumpUntilFound`.
+- Animação de enfeite roda uma vez, nunca em loop. Em loop: `WordPicker` selecionado, `ShufflingTiles`, `RollingText`, `TypingDots`, boca do `BubbleMascot` falando; `DailyWordCard` repete um número por timer (`AppMotion.wordEvery`), sem frame entre eles; teste com eles usa `pump` com duração. Depois de toast: `pumpUntilFound`.
 
 ## Mockup
 

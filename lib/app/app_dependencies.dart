@@ -10,6 +10,7 @@ import 'package:tagarela/data/services/api_client.dart';
 import 'package:tagarela/data/services/auth_service.dart';
 import 'package:tagarela/data/services/capture_service.dart';
 import 'package:tagarela/data/services/course_service.dart';
+import 'package:tagarela/data/services/daily_word_service.dart';
 import 'package:tagarela/data/services/exercise_service.dart';
 import 'package:tagarela/data/services/review_service.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
@@ -21,6 +22,7 @@ import 'package:tagarela/data/storage/token_storage.dart';
 import 'package:tagarela/data/stores/auth_store.dart';
 import 'package:tagarela/data/stores/capture_store.dart';
 import 'package:tagarela/data/stores/course_store.dart';
+import 'package:tagarela/data/stores/daily_word_store.dart';
 import 'package:tagarela/data/stores/language_store.dart';
 import 'package:tagarela/data/stores/practice_store.dart';
 import 'package:tagarela/data/stores/speech_model_store.dart';
@@ -36,6 +38,7 @@ class AppDependencies {
     required this.speech,
     required this.vocabulary,
     required this.practice,
+    required this.dailyWord,
     required this.language,
     required this.voice,
   });
@@ -82,6 +85,10 @@ class AppDependencies {
         db,
         owner: owner,
       ),
+      dailyWord: DailyWordStore(
+        DailyWordService(api),
+        onSaved: vocabulary.load,
+      ),
       language: LanguageStore(Preferences(), courses),
       voice: Voice(),
     );
@@ -95,6 +102,7 @@ class AppDependencies {
   final SpeechModelStore speech;
   final VocabularyStore vocabulary;
   final PracticeStore practice;
+  final DailyWordStore dailyWord;
   final LanguageStore language;
   final Voice voice;
 
