@@ -81,32 +81,23 @@ void main() {
     expectArea(area.value, const Rect.fromLTRB(0.25, 0, 1, 1));
   });
 
-  testWidgets('arrastar por dentro move sem mudar o tamanho', (tester) async {
+  Future<ValueNotifier<Rect>> moveMiddle(WidgetTester tester, Offset by) async {
     final area = await pump(
       tester,
       area: const Rect.fromLTRB(0.25, 0.25, 0.75, 0.75),
     );
+    await drag(tester, const Offset(photo / 2, photo / 2), by);
+    return area;
+  }
 
-    await drag(
-      tester,
-      const Offset(photo / 2, photo / 2),
-      const Offset(photo / 8, 0),
-    );
+  testWidgets('arrastar por dentro move sem mudar o tamanho', (tester) async {
+    final area = await moveMiddle(tester, const Offset(photo / 8, 0));
 
     expectArea(area.value, const Rect.fromLTRB(0.375, 0.25, 0.875, 0.75));
   });
 
   testWidgets('mover não deixa a moldura sair da foto', (tester) async {
-    final area = await pump(
-      tester,
-      area: const Rect.fromLTRB(0.25, 0.25, 0.75, 0.75),
-    );
-
-    await drag(
-      tester,
-      const Offset(photo / 2, photo / 2),
-      const Offset(photo, -photo),
-    );
+    final area = await moveMiddle(tester, const Offset(photo, -photo));
 
     expectArea(area.value, const Rect.fromLTRB(0.5, 0, 1, 0.5));
   });

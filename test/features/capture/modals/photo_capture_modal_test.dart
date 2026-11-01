@@ -88,6 +88,15 @@ void main() {
     await tester.pump(AppMotion.slow);
   }
 
+  Future<Capture> saveCropped(WidgetTester tester) async {
+    final results = await open(tester);
+    await takePhoto(tester);
+    await cropOnce(tester);
+    await tester.tap(find.text('Salvar no Inbox'));
+    await tester.pumpAndSettle();
+    return results.single!;
+  }
+
   testWidgets('sem cortar: salva a foto original, sem gerar outra', (
     tester,
   ) async {
@@ -103,14 +112,8 @@ void main() {
   testWidgets('cortou: salva o recorte e apaga os dois temporários', (
     tester,
   ) async {
-    final results = await open(tester);
-    await takePhoto(tester);
-    await cropOnce(tester);
+    final saved = await saveCropped(tester);
 
-    await tester.tap(find.text('Salvar no Inbox'));
-    await tester.pumpAndSettle();
-
-    final saved = results.single!;
     expect(device.crops.single.bottom, lessThan(1));
     expect(captures.media.files.keys, ['captures/photo/${saved.id}.png']);
     expect(
@@ -136,14 +139,8 @@ void main() {
     tester,
   ) async {
     device.cropFails = true;
-    final results = await open(tester);
-    await takePhoto(tester);
-    await cropOnce(tester);
+    final saved = await saveCropped(tester);
 
-    await tester.tap(find.text('Salvar no Inbox'));
-    await tester.pumpAndSettle();
-
-    final saved = results.single!;
     expect(captures.media.files.keys, ['captures/photo/${saved.id}.jpg']);
   });
 
