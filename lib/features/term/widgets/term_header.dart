@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/device/voice.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/shared/logic/review_time.dart';
 import 'package:tagarela/shared/widgets/phonetic_text.dart';
 import 'package:tagarela/features/term/widgets/term_top_bar.dart';
 import 'package:tagarela/l10n/l10n.dart';
@@ -114,6 +115,15 @@ class TermHeader extends StatelessWidget {
                 ),
               ],
             ),
+            if ((term.dueAt, term.intervalDays) case (
+              final due?,
+              final interval?,
+            ))
+              Text(
+                '${returnsIn(l10n, due, DateTime.now())} · '
+                '${l10n.termMemory(interval.round())}',
+                style: AppText.bodyMd.copyWith(color: c.onHeaderSoft),
+              ),
           ],
         );
       },

@@ -36,6 +36,7 @@ class GapFill extends ChangeNotifier {
   int get letters => _slots.length;
   int get left => _slots.where((i) => _typed[i] == null).length;
   int get wrongCount => _wrong.where((w) => w).length;
+  int get hintsUsed => _hints.where((h) => h).length;
   bool get complete => left == 0;
 
   int? get cursor =>

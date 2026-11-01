@@ -61,8 +61,8 @@ void main() {
     session.next();
     expect(session.index, 0);
 
-    session.solve(Outcome.hint);
-    session.solve(Outcome.first);
+    session.solve(const RoundPlay(Outcome.hint));
+    session.solve(const RoundPlay(Outcome.first));
     expect(session.outcome, Outcome.hint);
 
     session.next();
@@ -70,7 +70,7 @@ void main() {
     expect(session.exercise!.id, 'a0');
 
     session
-      ..solve(Outcome.missed)
+      ..solve(const RoundPlay(Outcome.missed))
       ..next();
     await pumpEventQueue();
 
@@ -96,7 +96,7 @@ void main() {
     expect(session.total, 2);
 
     session
-      ..solve(Outcome.first)
+      ..solve(const RoundPlay(Outcome.first))
       ..next();
     await pumpEventQueue();
 
@@ -105,19 +105,41 @@ void main() {
   });
 
   test('só grava a tentativa quando tem gravador', () async {
-    final recorded = <(String, String, Outcome)>[];
+    final recorded = <(String, String, RoundPlay)>[];
     final session = PracticeSession(
       [PracticeRound(fence, ExerciseKind.listenWrite)],
       load: loader.call,
-      record: (term, exercise, outcome) async =>
-          recorded.add((term.id, exercise.id, outcome)),
+      record: (term, exercise, play) async {
+        recorded.add((term.id, exercise.id, play));
+        return null;
+      },
     );
     await session.start();
 
-    session.solve(Outcome.retry);
+    const play = RoundPlay(Outcome.retry, usedSlow: true);
+    session.solve(play);
     await pumpEventQueue();
 
-    expect(recorded, [(fence.id, 'f0', Outcome.retry)]);
+    expect(recorded, [(fence.id, 'f0', play)]);
+  });
+
+  test('o efeito que a API devolve entra no resultado da rodada', () async {
+    final effect = ReviewEffect.fromJson(attemptEffectJson);
+    final session = PracticeSession(
+      [PracticeRound(fence, ExerciseKind.listenWrite)],
+      load: loader.call,
+      record: (_, _, _) async => effect,
+    );
+    await session.start();
+
+    session.solve(const RoundPlay(Outcome.first, usedSlow: true));
+    expect(session.current!.effect, isNull);
+    expect(session.current!.usedSlow, isTrue);
+
+    await pumpEventQueue();
+
+    expect(session.current!.effect, effect);
+    expect(session.results.single.effect, effect);
   });
 
   test('falha ao gravar não atrapalha a rodada', () async {
@@ -128,7 +150,7 @@ void main() {
     );
     await session.start();
 
-    session.solve(Outcome.first);
+    session.solve(const RoundPlay(Outcome.first));
     await pumpEventQueue();
 
     expect(session.outcome, Outcome.first);

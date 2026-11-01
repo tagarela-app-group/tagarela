@@ -27,11 +27,13 @@ class VocabularyStore extends Store<Vocabulary> {
     bool? revealed,
     bool? pitfallRevealed,
     bool? formalityRevealed,
+    bool? gotIt,
   }) => _service.reveal(
     id,
     revealed: revealed,
     pitfallRevealed: pitfallRevealed,
     formalityRevealed: formalityRevealed,
+    gotIt: gotIt,
   );
 
   Future<TermGroup> createGroup({

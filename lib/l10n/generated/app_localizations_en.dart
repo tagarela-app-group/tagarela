@@ -1713,4 +1713,189 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get practiceFree => 'Free practice: it doesn\'t count for reviews.';
+
+  @override
+  String reviewProgress(int done, int total) {
+    return '$done of $total';
+  }
+
+  @override
+  String reviewMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'About $count min',
+      one: 'About 1 min',
+      zero: 'Under 1 min',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewEnough => 'That\'s it for today';
+
+  @override
+  String reviewWaiting(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count terms waiting',
+      one: '1 term waiting',
+      zero: 'No terms waiting',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewAskMore => 'Ask for more';
+
+  @override
+  String get reviewAllDone => 'All caught up';
+
+  @override
+  String nextReviewInDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Next one comes in $count days',
+      one: 'Next one comes in 1 day',
+      zero: 'Next one comes today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nextReviewInHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Next one comes in $count hours',
+      one: 'Next one comes in 1 hour',
+      zero: 'Next one comes soon',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get returnsNow => 'Ready to come back to review';
+
+  @override
+  String returnsInDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Back in $count days',
+      one: 'Back in 1 day',
+      zero: 'Back today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String returnsInHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Back in $count hours',
+      one: 'Back in 1 hour',
+      zero: 'Back soon',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String termMemory(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'memory of $count days',
+      one: 'memory of 1 day',
+      zero: 'memory under 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String newTerms(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new terms to meet',
+      one: '1 new term to meet',
+      zero: 'No new terms',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get newTermsHint => 'Open the card and they join your review.';
+
+  @override
+  String get retestLabel => 'This one came back for you';
+
+  @override
+  String roundRating(String rating) {
+    String _temp0 = intl.Intl.selectLogic(rating, {
+      'poor': 'Poor',
+      'fair': 'Fair',
+      'good': 'Good',
+      'great': 'Great',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get feedbackClean => 'First try, no slow mode!';
+
+  @override
+  String get feedbackSlow => 'First try, with a little help from slow mode.';
+
+  @override
+  String get feedbackPoor => 'No worries, this one\'s back soon.';
+
+  @override
+  String get feedbackMastered => 'Mastered!';
+
+  @override
+  String get feedbackEscaped => 'It slipped a little, no problem.';
+
+  @override
+  String get feedbackRetest => 'Noted! It\'s back tomorrow.';
+
+  @override
+  String recapStronger(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count got stronger',
+      one: '1 got stronger',
+      zero: 'none got stronger',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recapMastered(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mastered',
+      one: '1 mastered',
+      zero: 'none mastered',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recapBackToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count back today',
+      one: '1 back today',
+      zero: 'none back today',
+    );
+    return '$_temp0';
+  }
 }

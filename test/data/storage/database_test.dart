@@ -57,6 +57,37 @@ void main() {
     expect(captures['pronta']!.pending, {CaptureSync.update});
   });
 
+  test(
+    'tentativa na fila da versão anterior continua e sobe sem hora',
+    () async {
+      final old = AppDatabase(
+        NativeDatabase.memory(
+          setup: (raw) {
+            raw
+              ..execute(
+                'CREATE TABLE review_attempts (id TEXT NOT NULL PRIMARY KEY, '
+                'owner TEXT NOT NULL, term TEXT NOT NULL, kind TEXT NOT NULL, '
+                'exercise TEXT NULL, outcome TEXT NOT NULL)',
+              )
+              ..execute(
+                "INSERT INTO review_attempts VALUES ('a1', 'ana', 't1', "
+                "'listenWrite', NULL, 'hint')",
+              )
+              ..userVersion = 5;
+          },
+        ),
+      );
+      addTearDown(old.close);
+
+      final attempt = (await old.attemptsOf('ana')).single;
+
+      expect(attempt.id, 'a1');
+      expect(attempt.play.outcome, Outcome.hint);
+      expect(attempt.play.usedSlow, isFalse);
+      expect(attempt.playedAt, isNull);
+    },
+  );
+
   test('captureOf só acha a captura do próprio dono', () async {
     final capture = Capture(
       id: 'c1',

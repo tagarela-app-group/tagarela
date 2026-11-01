@@ -100,6 +100,7 @@ void main() {
     typeAll(fill, 'nce');
     expect(fill.check(), isTrue);
     expect(fill.outcome, Outcome.hint);
+    expect(fill.hintsUsed, 1);
   });
 
   test('mostrar a resposta termina como vista', () {

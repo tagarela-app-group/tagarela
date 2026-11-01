@@ -48,6 +48,13 @@ class ReviewAttemptRows extends Table {
   TextColumn get kind => textEnum<ExerciseKind>()();
   TextColumn get exercise => text().nullable()();
   TextColumn get outcome => textEnum<Outcome>()();
+  DateTimeColumn get playedAt => dateTime().nullable()();
+  TextColumn get localDate => text().nullable()();
+  BoolColumn get usedSlow => boolean().withDefault(const Constant(false))();
+  IntColumn get errors => integer().withDefault(const Constant(0))();
+  IntColumn get hints => integer().withDefault(const Constant(0))();
+  IntColumn get audioReplays => integer().withDefault(const Constant(0))();
+  IntColumn get responseMs => integer().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -59,7 +66,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'tagarela'));
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -71,6 +78,19 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 4) await m.alterTable(TableMigration(captureRows));
       if (from < 5) await m.createTable(reviewAttemptRows);
+      if (from == 5) {
+        for (final column in [
+          reviewAttemptRows.playedAt,
+          reviewAttemptRows.localDate,
+          reviewAttemptRows.usedSlow,
+          reviewAttemptRows.errors,
+          reviewAttemptRows.hints,
+          reviewAttemptRows.audioReplays,
+          reviewAttemptRows.responseMs,
+        ]) {
+          await m.addColumn(reviewAttemptRows, column);
+        }
+      }
     },
   );
 
@@ -160,13 +180,21 @@ class AppDatabase extends _$AppDatabase {
           term: attempt.term,
           kind: attempt.kind,
           exercise: Value(attempt.exercise),
-          outcome: attempt.outcome,
+          outcome: attempt.play.outcome,
+          playedAt: Value(attempt.playedAt),
+          localDate: Value(attempt.localDate),
+          usedSlow: Value(attempt.play.usedSlow),
+          errors: Value(attempt.play.errors),
+          hints: Value(attempt.play.hints),
+          audioReplays: Value(attempt.play.audioReplays),
+          responseMs: Value(attempt.play.responseMs),
         ),
       );
 
   Future<List<ReviewAttempt>> attemptsOf(String owner) async {
     final query = select(reviewAttemptRows)
-      ..where((a) => a.owner.equals(owner));
+      ..where((a) => a.owner.equals(owner))
+      ..orderBy([(a) => OrderingTerm.asc(a.playedAt)]);
     return [
       for (final row in await query.get())
         ReviewAttempt(
@@ -174,7 +202,16 @@ class AppDatabase extends _$AppDatabase {
           term: row.term,
           kind: row.kind,
           exercise: row.exercise,
-          outcome: row.outcome,
+          play: RoundPlay(
+            row.outcome,
+            usedSlow: row.usedSlow,
+            errors: row.errors,
+            hints: row.hints,
+            audioReplays: row.audioReplays,
+            responseMs: row.responseMs,
+          ),
+          playedAt: row.playedAt,
+          localDate: row.localDate,
         ),
     ];
   }

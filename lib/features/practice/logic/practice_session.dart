@@ -5,20 +5,36 @@ import 'package:flutter/foundation.dart';
 import 'package:tagarela/data/models/models.dart';
 
 class PracticeRound {
-  const PracticeRound(this.term, this.kind, {this.variant = 0});
+  const PracticeRound(
+    this.term,
+    this.kind, {
+    this.variant = 0,
+    this.retest = false,
+  });
 
   final Term term;
   final ExerciseKind kind;
   final int variant;
+  final bool retest;
 }
 
-typedef PracticeResult = ({Term term, Exercise exercise, Outcome outcome});
+typedef PracticeResult = ({
+  Term term,
+  Exercise exercise,
+  Outcome outcome,
+  bool usedSlow,
+  ReviewEffect? effect,
+});
 
 typedef ExerciseLoader =
     Future<List<Exercise>> Function(Term term, ExerciseKind kind);
 
 typedef AttemptRecorder =
-    Future<void> Function(Term term, Exercise exercise, Outcome outcome);
+    Future<ReviewEffect?> Function(
+      Term term,
+      Exercise exercise,
+      RoundPlay play,
+    );
 
 class PracticeSession extends ChangeNotifier {
   PracticeSession(List<PracticeRound> rounds, {required this.load, this.record})
@@ -43,24 +59,48 @@ class PracticeSession extends ChangeNotifier {
   Object? get error => _error;
   Outcome? get outcome => _outcome;
   List<PracticeResult> get results => List.unmodifiable(_results);
+  PracticeResult? get current => _outcome == null ? null : _results.last;
 
   Future<void> start() => _open();
 
   Future<void> retry() => _open();
 
-  void solve(Outcome outcome) {
+  void solve(RoundPlay play) {
     final exercise = _exercise;
     final round = this.round;
     if (exercise == null || round == null || _outcome != null) return;
-    _outcome = outcome;
-    _results.add((term: round.term, exercise: exercise, outcome: outcome));
+    _outcome = play.outcome;
+    final index = _results.length;
+    _results.add((
+      term: round.term,
+      exercise: exercise,
+      outcome: play.outcome,
+      usedSlow: play.usedSlow,
+      effect: null,
+    ));
     _notify();
     final record = this.record;
     if (record != null) {
       unawaited(
-        record(round.term, exercise, outcome).then((_) {}, onError: (_) {}),
+        record(
+          round.term,
+          exercise,
+          play,
+        ).then((effect) => _applyEffect(index, effect), onError: (_) {}),
       );
     }
+  }
+
+  void _applyEffect(int index, ReviewEffect? effect) {
+    final result = _results[index];
+    _results[index] = (
+      term: result.term,
+      exercise: result.exercise,
+      outcome: result.outcome,
+      usedSlow: result.usedSlow,
+      effect: effect,
+    );
+    _notify();
   }
 
   void next() {

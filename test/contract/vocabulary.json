@@ -11,7 +11,9 @@
           "text": "mind the gap",
           "kind": "expression",
           "level": 2,
-          "created_at": "2026-10-20T12:00:00Z"
+          "created_at": "2026-10-20T12:00:00Z",
+          "interval_days": 8.0,
+          "due_at": null
         }
       ]
     }
@@ -22,7 +24,9 @@
       "text": "awkward",
       "kind": "word",
       "level": 0,
-      "created_at": "2026-10-21T12:00:00Z"
+      "created_at": "2026-10-21T12:00:00Z",
+      "interval_days": 8.0,
+      "due_at": null
     }
   ]
 }

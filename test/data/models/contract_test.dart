@@ -64,13 +64,24 @@ void main() {
     final session = ReviewSession.fromJson(contractExample('review_session'));
 
     expect(session.due, 1);
+    expect(session.done, 2);
+    expect(session.waiting, 3);
+    expect(session.unread, 4);
+    expect(session.nextDueAt, isNull);
     expect(session.rounds.single.kind, ExerciseKind.listenWrite);
+    expect(session.rounds.single.retest, isFalse);
+    expect(session.rounds.single.term.intervalDays, 8);
   });
 
   test('tentativa de revisão', () {
     final json = contractExample('review_attempt');
 
     expect(Term.fromJson(json['term']! as Json).level, 3);
+
+    final effect = ReviewEffect.fromJson(json['effect']! as Json);
+    expect(effect.role, EffectRole.session);
+    expect(effect.rating, RoundRating.great);
+    expect(effect.stronger, isTrue);
   });
 
   test('conta', () {

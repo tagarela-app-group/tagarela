@@ -3,6 +3,17 @@
     "id": "c3e5a7b9-2d4f-4b6c-9e8a-0f1b2c3d4e5f",
     "text": "mind the gap",
     "kind": "expression",
-    "level": 3
+    "level": 3,
+    "interval_days": 8.0,
+    "due_at": null
+  },
+  "effect": {
+    "role": "session",
+    "rating": "great",
+    "level_before": 2,
+    "level": 3,
+    "interval_before": 8.0,
+    "interval_days": 20.0,
+    "due_at": null
   }
 }

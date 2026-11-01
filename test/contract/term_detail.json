@@ -28,7 +28,11 @@
       "imagine": "Uma faixa amarela piscando na beira da plataforma.",
       "formality_note": "Serve em qualquer lugar.",
       "fits": [
-        { "context": "Aviso público", "fits": true, "alternative": null },
+        {
+          "context": "Aviso público",
+          "fits": true,
+          "alternative": null
+        },
         {
           "context": "Conversa com amigos",
           "fits": false,
@@ -36,15 +40,22 @@
         }
       ]
     },
-    "mistake": { "wrong": "mind the hole", "right": "mind the gap" },
+    "mistake": {
+      "wrong": "mind the hole",
+      "right": "mind the gap"
+    },
     "examples": [
       {
         "text": "Please mind the gap when leaving the train.",
         "translation": "Cuidado com o vão ao sair do trem."
       }
     ],
-    "collocations": ["mind the step"],
-    "synonyms": ["watch out"],
+    "collocations": [
+      "mind the step"
+    ],
+    "synonyms": [
+      "watch out"
+    ],
     "antonyms": [],
     "formality": "neutral",
     "dialogue": [
@@ -75,5 +86,7 @@
         }
       ]
     }
-  ]
+  ],
+  "interval_days": 8.0,
+  "due_at": null
 }

@@ -622,6 +622,53 @@ void main() {
     expect(find.text('Revelar'), findsOneWidget);
   });
 
+  testWidgets('abrir a ficha e ouvir avisam a revisão, uma vez cada', (
+    tester,
+  ) async {
+    final practice = fakePractice();
+    final voice = FakeVoice();
+    await tester.pumpPage(
+      const TermPage(term: _mind),
+      deps: fakeDependencies(
+        practice: practice.store,
+        voice: voice,
+        vocabulary: fakeVocabulary(sampleVocabularyJson).store,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(practice.api.studied, [('u1', 'read')]);
+
+    await tester.tap(find.byTooltip('Ouvir pronúncia'));
+    await tester.pump();
+    await voice.stop();
+    await tester.pump();
+    await tester.tap(find.byTooltip('Ouvir pronúncia'));
+    await tester.pumpAndSettle();
+
+    expect(practice.api.studied, [('u1', 'read'), ('u1', 'listened')]);
+  });
+
+  testWidgets('ficha mostra quando o termo volta e a memória dele', (
+    tester,
+  ) async {
+    final vocabulary = fakeVocabulary(sampleVocabularyJson);
+    vocabulary.api.termFields['u1'] = {
+      'interval_days': 12.0,
+      'due_at': DateTime.now()
+          .add(const Duration(days: 12, hours: 1))
+          .toUtc()
+          .toIso8601String(),
+    };
+    await tester.pumpPage(
+      const TermPage(term: _mind),
+      deps: fakeDependencies(vocabulary: vocabulary.store),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Volta em 12 dias · memória de 12 dias'), findsOneWidget);
+  });
+
   testWidgets('tinha sacado: responde como amigo e some ao embaçar', (
     tester,
   ) async {

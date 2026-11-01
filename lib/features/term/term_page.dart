@@ -40,7 +40,16 @@ class _TermPageState extends State<TermPage> {
     super.initState();
     final scope = AppScope.of(context);
     _voice = scope.voice;
-    _term = TermController(scope.vocabulary, widget.term.id)..load();
+    _term = TermController(
+      scope.vocabulary,
+      widget.term.id,
+      onStudy: (event) => scope.practice.study(widget.term.id, event),
+    )..load();
+    _voice.addListener(_onVoice);
+  }
+
+  void _onVoice() {
+    if (_voice.speaking != null) _term.heard();
   }
 
   void _openTerm(String id) {
@@ -52,7 +61,9 @@ class _TermPageState extends State<TermPage> {
   @override
   void dispose() {
     _term.dispose();
-    _voice.stop();
+    _voice
+      ..removeListener(_onVoice)
+      ..stop();
     super.dispose();
   }
 
@@ -157,6 +168,7 @@ class _TermPageState extends State<TermPage> {
               asked: revealed && _term.asked,
               bursts: _term.bursts(TermNote.remember),
               onReveal: () => _term.reveal(TermNote.remember, revealed: true),
+              onGotIt: (yes) => _term.gotIt(yes: yes),
               pitfallRevealed: _term.revealed(TermNote.pitfall),
               pitfallBursts: _term.bursts(TermNote.pitfall),
               onPitfallReveal: (revealed) =>

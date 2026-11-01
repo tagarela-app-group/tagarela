@@ -9,6 +9,7 @@ import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/practice/games/games.dart';
 import 'package:tagarela/features/practice/logic/practice_session.dart';
+import 'package:tagarela/features/practice/logic/review_feedback.dart';
 import 'package:tagarela/features/practice/widgets/practice_summary.dart';
 import 'package:tagarela/features/practice/widgets/round_result.dart';
 import 'package:tagarela/l10n/l10n.dart';
@@ -30,7 +31,10 @@ class PracticePage extends StatefulWidget {
       MaterialPageRoute<void>(
         builder: (_) => PracticePage(
           review: true,
-          rounds: [for (final r in rounds) PracticeRound(r.term, r.kind)],
+          rounds: [
+            for (final r in rounds)
+              PracticeRound(r.term, r.kind, retest: r.retest),
+          ],
         ),
       ),
     );
@@ -103,6 +107,14 @@ class _PracticePageState extends State<PracticePage> {
             builder: (context, _) => Column(
               children: [
                 _TopBar(session: _session),
+                if (_session.round?.retest ?? false)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.s2),
+                    child: StatusPill(
+                      label: context.l10n.retestLabel,
+                      tone: StatusTone.learning,
+                    ),
+                  ),
                 Expanded(child: _body(context, learning, base)),
               ],
             ),
@@ -139,6 +151,8 @@ class _PracticePageState extends State<PracticePage> {
     final exercise = session.exercise;
     if (exercise == null) return const _Loading();
     final outcome = session.outcome;
+    final current = session.current;
+    final effect = current?.effect;
     return gameFor(
       exercise,
       language: learning,
@@ -152,6 +166,10 @@ class _PracticePageState extends State<PracticePage> {
               learning: learning,
               base: base,
               voice: _voice,
+              feedback: current == null
+                  ? null
+                  : roundFeedback(context.l10n, current, DateTime.now()),
+              rating: (effect?.isSession ?? false) ? effect?.rating : null,
               last: session.index == session.total - 1,
               onNext: _next,
             ),

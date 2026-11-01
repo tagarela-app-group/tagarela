@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/practice/logic/practice_session.dart';
+import 'package:tagarela/features/practice/logic/review_feedback.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class PracticeSummary extends StatelessWidget {
@@ -24,6 +25,7 @@ class PracticeSummary extends StatelessWidget {
     final c = context.colors;
     final l10n = context.l10n;
     final firsts = results.where((r) => r.outcome == Outcome.first).length;
+    final recap = sessionRecap(l10n, results);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -67,6 +69,12 @@ class PracticeSummary extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: AppText.bodyLg.copyWith(color: c.onHeaderSoft),
               ),
+              if (recap != null)
+                Text(
+                  recap,
+                  textAlign: TextAlign.center,
+                  style: AppText.bodyLg.copyWith(color: c.onHeaderSoft),
+                ),
             ],
           ),
         ),

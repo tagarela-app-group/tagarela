@@ -8,7 +8,7 @@ Widget gameFor(
   Exercise exercise, {
   required CourseLanguage language,
   required Voice voice,
-  required ValueChanged<Outcome> onSolved,
+  required ValueChanged<RoundPlay> onSolved,
   Widget? result,
 }) => switch (exercise) {
   ListenWriteExercise() => ListenWriteGame(

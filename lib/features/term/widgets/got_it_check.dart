@@ -4,7 +4,9 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class GotItCheck extends StatefulWidget {
-  const GotItCheck({super.key});
+  const GotItCheck({super.key, required this.onAnswer});
+
+  final ValueChanged<bool> onAnswer;
 
   @override
   State<GotItCheck> createState() => _GotItCheckState();
@@ -12,6 +14,11 @@ class GotItCheck extends StatefulWidget {
 
 class _GotItCheckState extends State<GotItCheck> {
   bool? _gotIt;
+
+  void _answer(bool yes) {
+    setState(() => _gotIt = yes);
+    widget.onAnswer(yes);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +58,13 @@ class _GotItCheckState extends State<GotItCheck> {
                     label: l10n.gotItYes,
                     variant: AppButtonVariant.tonal,
                     size: AppButtonSize.small,
-                    onPressed: () => setState(() => _gotIt = true),
+                    onPressed: () => _answer(true),
                   ),
                   AppButton(
                     label: l10n.gotItNo,
                     variant: AppButtonVariant.outline,
                     size: AppButtonSize.small,
-                    onPressed: () => setState(() => _gotIt = false),
+                    onPressed: () => _answer(false),
                   ),
                 ],
               ),
