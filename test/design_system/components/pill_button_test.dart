@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:tagarela/design_system/design_system.dart';
 
 import '../../helpers/pump_app.dart';
@@ -22,7 +21,7 @@ void main() {
     expect(taps, 1);
     expect(
       tester.getSemantics(find.byType(PillButton)),
-      containsSemantics(label: 'Agrupar', isButton: true, hasTapAction: true),
+      isSemantics(label: 'Agrupar', isButton: true, hasTapAction: true),
     );
   });
 }
