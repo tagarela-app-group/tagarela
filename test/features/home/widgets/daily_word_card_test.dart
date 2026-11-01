@@ -132,6 +132,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpComponent(card());
+    await tester.pump();
     expect(tester.binding.hasScheduledFrame, isFalse);
 
     await tester.pump(AppMotion.wordFirst);

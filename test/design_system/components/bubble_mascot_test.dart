@@ -16,6 +16,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpComponent(mascot());
+    await tester.pump();
     expect(tester.binding.hasScheduledFrame, isFalse);
 
     await tester.pumpComponent(mascot(cue: 1));

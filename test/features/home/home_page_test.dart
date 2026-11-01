@@ -86,13 +86,7 @@ void main() {
   testWidgets('com palavra do dia o card aparece acima da revisão', (
     tester,
   ) async {
-    await tester.pumpPage(
-      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      deps: fakeDependencies(
-        dailyWord: fakeDailyWord(FakeDailyWordApi(word: hangryJson)).store,
-      ),
-    );
-    await tester.pump();
+    await pumpHomeWithDailyWord(tester);
 
     final page = tester.widget<AppPage>(find.byType(AppPage));
     expect(page.children.first, isA<DailyWordCard>());
@@ -126,13 +120,7 @@ void main() {
   testWidgets('guardar a palavra pela Início troca o botão por abrir a ficha', (
     tester,
   ) async {
-    await tester.pumpPage(
-      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
-      deps: fakeDependencies(
-        dailyWord: fakeDailyWord(FakeDailyWordApi(word: hangryJson)).store,
-      ),
-    );
-    await tester.pump();
+    await pumpHomeWithDailyWord(tester);
 
     await tester.tap(find.byTooltip('Guardar no vocabulário'));
     await tester.pump();
@@ -290,4 +278,14 @@ void main() {
     expect(card.count, 4);
     expect(card.onStart, isNull);
   });
+}
+
+Future<void> pumpHomeWithDailyWord(WidgetTester tester) async {
+  await tester.pumpPage(
+    HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+    deps: fakeDependencies(
+      dailyWord: fakeDailyWord(FakeDailyWordApi(word: hangryJson)).store,
+    ),
+  );
+  await tester.pump();
 }

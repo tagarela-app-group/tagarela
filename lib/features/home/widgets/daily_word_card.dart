@@ -61,7 +61,7 @@ class _DailyWordCardState extends State<DailyWordCard>
 
   void _tick() {
     if (!mounted) return;
-    if (TickerMode.getNotifier(context).value &&
+    if (TickerMode.getValuesNotifier(context).value.enabled &&
         widget.voice.speaking == null) {
       _perform(actOfRound(_round++));
     }
@@ -414,6 +414,7 @@ class _Meaning extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     return Semantics(
+      container: true,
       button: !revealed,
       label: revealed ? meaning : context.l10n.dailyWordReveal,
       child: GestureDetector(
