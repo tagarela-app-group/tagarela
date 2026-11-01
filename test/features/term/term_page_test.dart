@@ -10,6 +10,8 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
 import 'package:tagarela/features/term/term_page.dart';
 import 'package:tagarela/features/term/widgets/got_it_check.dart';
+import 'package:tagarela/features/term/widgets/highlighted_text.dart';
+import 'package:tagarela/features/term/widgets/meaning_card.dart';
 import 'package:tagarela/features/term/widgets/seen_captures.dart';
 import 'package:tagarela/features/term/widgets/term_pitfall.dart';
 import 'package:tagarela/features/term/widgets/term_usage.dart';
@@ -116,7 +118,10 @@ void main() {
     await open(tester);
 
     expect(find.text('EM INGLÊS'), findsOneWidget);
-    expect(find.text('be careful of the space'), findsOneWidget);
+    expect(
+      find.text('be careful of the space', findRichText: true),
+      findsOneWidget,
+    );
     expect(find.text('EM PORTUGUÊS'), findsNothing);
 
     await tester.tap(find.bySemanticsLabel('Ver em português'));
@@ -125,9 +130,40 @@ void main() {
     final flip = tester.widget<FlipCard>(find.byType(FlipCard));
     expect(flip.flipped, isTrue);
     expect(find.text('EM PORTUGUÊS'), findsOneWidget);
-    expect(find.text('Aviso na plataforma do trem.'), findsOneWidget);
+    expect(
+      find.text('Aviso na plataforma do trem.', findRichText: true),
+      findsOneWidget,
+    );
     expect(find.bySemanticsLabel('Ver em inglês'), findsOneWidget);
     expect(vocabulary.api.bodies, isNot(contains('PATCH /api/v1/terms/u1')));
+  });
+
+  testWidgets('termo citado no significado fica marcado nos dois lados', (
+    tester,
+  ) async {
+    const cited = '"Mind the gap" é o aviso do metrô.';
+    vocabulary.api.cards['u1'] = {
+      ...sampleCardJson,
+      'learning': {
+        ...sampleCardJson['learning']! as Map,
+        'explanation': 'People say mind the gap on trains.',
+      },
+      'base': {...sampleCardJson['base']! as Map, 'explanation': cited},
+    };
+    await open(tester);
+
+    final marks = {
+      for (final text in tester.widgetList<HighlightedText>(
+        find.descendant(
+          of: find.byType(MeaningCard),
+          matching: find.byType(HighlightedText),
+        ),
+      ))
+        text.text: text.ranges,
+    };
+
+    expect(marks['People say mind the gap on trains.'], [(11, 23)]);
+    expect(marks[cited], [(1, 13)]);
   });
 
   testWidgets('o card tem a altura do lado à mostra', (tester) async {

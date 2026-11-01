@@ -123,6 +123,7 @@ class _TermPageState extends State<TermPage> {
           SectionLabel(label: l10n.meaning),
           MeaningCard(
             card: card,
+            term: detail.term.text,
             learning: learning,
             base: base,
             flipped: _term.flipped,
