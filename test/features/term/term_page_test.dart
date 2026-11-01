@@ -151,8 +151,7 @@ void main() {
       'base': {...sampleCardJson['base']! as Map, 'explanation': cited},
     };
     await open(tester);
-
-    final marks = {
+    Map<String, List<(int, int)>> marks() => {
       for (final text in tester.widgetList<HighlightedText>(
         find.descendant(
           of: find.byType(MeaningCard),
@@ -162,8 +161,12 @@ void main() {
         text.text: text.ranges,
     };
 
-    expect(marks['People say mind the gap on trains.'], [(11, 23)]);
-    expect(marks[cited], [(1, 13)]);
+    expect(marks()['People say mind the gap on trains.'], [(11, 23)]);
+
+    await tester.tap(find.bySemanticsLabel('Ver em português'));
+    await tester.pumpAndSettle();
+
+    expect(marks()[cited], [(1, 13)]);
   });
 
   testWidgets('o card tem a altura do lado à mostra', (tester) async {
