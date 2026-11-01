@@ -220,14 +220,6 @@
   },
   "homeTagline": "Vamos tagarelar?",
   "reviewToday": "Revisão de hoje",
-  "termsWaiting": "{count, plural, =0{{count} termos esperando} =1{1 termo esperando} other{{count} termos esperando}}",
-  "@termsWaiting": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "start": "Começar",
   "yourVocabulary": "Seu vocabulário",
   "seeAll": "Ver tudo",

@@ -15,23 +15,18 @@ class ReviewCard extends StatelessWidget {
       child: Row(
         spacing: AppSpacing.s35,
         children: [
-          const IconTile(
-            icon: AppIcons.review,
-            accent: AppAccent.violet,
-            size: AppBubbleSize.lg,
-          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   context.l10n.reviewToday,
-                  style: AppText.bodyLg.copyWith(fontWeight: FontWeight.w700),
+                  style: AppText.label.copyWith(
+                    color: context.colors.inkSoft,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                Text(
-                  context.l10n.termsWaiting(count),
-                  style: AppText.bodyMd.copyWith(color: context.colors.inkSoft),
-                ),
+                Text(context.l10n.termCount(count), style: AppText.titleMd),
               ],
             ),
           ),

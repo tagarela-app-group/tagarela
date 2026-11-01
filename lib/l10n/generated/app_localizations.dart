@@ -838,12 +838,6 @@ abstract class AppLocalizations {
   /// **'Revisão de hoje'**
   String get reviewToday;
 
-  /// No description provided for @termsWaiting.
-  ///
-  /// In pt, this message translates to:
-  /// **'{count, plural, =0{{count} termos esperando} =1{1 termo esperando} other{{count} termos esperando}}'**
-  String termsWaiting(int count);
-
   /// No description provided for @start.
   ///
   /// In pt, this message translates to:
