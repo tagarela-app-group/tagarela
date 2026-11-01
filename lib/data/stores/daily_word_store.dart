@@ -6,8 +6,8 @@ class DailyWordStore extends Store<DailyWord> {
   DailyWordStore(
     this._service, {
     required this.onSaved,
-    DateTime Function() now = DateTime.now,
-  }) : _now = now;
+    this._now = DateTime.now,
+  });
 
   final DailyWordService _service;
   final Future<void> Function() onSaved;
