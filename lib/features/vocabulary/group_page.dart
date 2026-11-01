@@ -4,7 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
-import 'package:tagarela/features/vocabulary/logic/groupcontroller.dart';
+import 'package:tagarela/features/vocabulary/logic/group_controller.dart';
 import 'package:tagarela/features/vocabulary/logic/term_actions.dart';
 import 'package:tagarela/features/vocabulary/modals/delete_group_modal.dart';
 import 'package:tagarela/features/vocabulary/modals/group_menu_modal.dart';
