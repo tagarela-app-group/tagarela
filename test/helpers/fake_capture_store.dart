@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
@@ -69,6 +70,9 @@ class FakeCaptureDevice implements CaptureDevice {
   bool camera = true;
   bool microphone = true;
   File? nextPhoto = File('cache/foto.jpg');
+  Size? nextPhotoSize = const Size(1000, 1000);
+  bool cropFails = false;
+  final crops = <Rect>[];
   bool recording = false;
   int recordings = 0;
   int cancelled = 0;
@@ -89,6 +93,16 @@ class FakeCaptureDevice implements CaptureDevice {
   Future<File?> photo(PhotoOrigin origin) async {
     origins.add(origin);
     return nextPhoto;
+  }
+
+  @override
+  Future<Size?> imageSize(File file) async => nextPhotoSize;
+
+  @override
+  Future<File> crop(File file, Rect area) async {
+    if (cropFails) throw const FileSystemException('sem espaço');
+    crops.add(area);
+    return File('cache/recorte.png');
   }
 
   @override

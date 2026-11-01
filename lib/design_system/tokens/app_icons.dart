@@ -12,6 +12,7 @@ abstract final class AppIcons {
   static const close = Icons.close_rounded;
   static const edit = Icons.edit_outlined;
   static const delete = Icons.delete_outline_rounded;
+  static const undo = Icons.undo_rounded;
   static const more = Icons.more_vert_rounded;
 
   static const add = Icons.add_rounded;

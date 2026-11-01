@@ -1,5 +1,7 @@
 {
   "@@locale": "es",
+  "cropHint": "Arrastra las esquinas para dejar solo el texto.",
+  "cropUndo": "Usar la foto entera",
   "termsAnalyzed": "{count, plural, =0{Ningún término nuevo} =1{1 término en tu vocabulario} other{{count} términos en tu vocabulario}}",
   "termsAnalyzedMessage": "Los nuevos quedan en Sin grupo. La ficha se arma al primer toque.",
   "analysisQueued": "Análisis guardado",

@@ -1,5 +1,7 @@
 {
   "@@locale": "pt",
+  "cropHint": "Arraste os cantos pra deixar só o texto.",
+  "cropUndo": "Usar a foto inteira",
   "termsAnalyzed": "{count, plural, =0{Nenhum termo novo} =1{1 termo no vocabulário} other{{count} termos no vocabulário}}",
   "@termsAnalyzed": {
     "placeholders": {

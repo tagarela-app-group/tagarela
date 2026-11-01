@@ -1,5 +1,7 @@
 {
   "@@locale": "en",
+  "cropHint": "Drag the corners to keep only the text.",
+  "cropUndo": "Use the whole photo",
   "termsAnalyzed": "{count, plural, =0{No new terms} =1{1 term in your vocabulary} other{{count} terms in your vocabulary}}",
   "termsAnalyzedMessage": "New ones land in No group. The card is built on the first tap.",
   "analysisQueued": "Analysis saved",
