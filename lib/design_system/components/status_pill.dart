@@ -22,14 +22,26 @@ enum StatusTone {
 }
 
 class StatusPill extends StatelessWidget {
-  const StatusPill({super.key, required this.label, required this.tone});
+  const StatusPill({super.key, required this.label, required this.tone})
+    : accent = null;
+
+  const StatusPill.accent({
+    super.key,
+    required this.label,
+    required AppAccent this.accent,
+  }) : tone = StatusTone.neutral;
 
   final String label;
   final StatusTone tone;
+  final AppAccent? accent;
 
   @override
   Widget build(BuildContext context) {
-    final (bg, fg) = tone.colors(context.colors);
+    final c = context.colors;
+    final (bg, fg) = switch (accent) {
+      final accent? => (c.accent(accent).soft, c.accent(accent).fg),
+      null => tone.colors(c),
+    };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -37,7 +49,12 @@ class StatusPill extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
-      child: Text(label, style: AppText.pill.copyWith(color: fg)),
+      child: Text(
+        label,
+        style: AppText.pill.copyWith(color: fg),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }

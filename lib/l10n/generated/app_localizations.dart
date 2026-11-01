@@ -145,7 +145,7 @@ abstract class AppLocalizations {
   /// No description provided for @addToGroup.
   ///
   /// In pt, this message translates to:
-  /// **'Pôr num grupo'**
+  /// **'Agrupar'**
   String get addToGroup;
 
   /// No description provided for @noTermsInFilter.

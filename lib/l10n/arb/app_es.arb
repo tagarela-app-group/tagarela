@@ -7,7 +7,7 @@
   "analysisQueued": "Análisis guardado",
   "sessionExpired": "Tu sesión expiró. Vuelve a entrar.",
   "vocabularyView": "{view, select, terms{Términos} groups{Grupos} other{}}",
-  "addToGroup": "Poner en un grupo",
+  "addToGroup": "Agrupar",
   "noTermsInFilter": "Ningún término en este filtro.",
   "tabHome": "Inicio",
   "tabVocabulary": "Vocabulario",

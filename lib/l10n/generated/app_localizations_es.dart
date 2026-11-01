@@ -47,7 +47,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get addToGroup => 'Poner en un grupo';
+  String get addToGroup => 'Agrupar';
 
   @override
   String get noTermsInFilter => 'Ningún término en este filtro.';

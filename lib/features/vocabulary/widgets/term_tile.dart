@@ -18,6 +18,8 @@ class TermTile extends StatelessWidget {
     this.onLongPress,
   });
 
+  static const _groupMaxWidth = 120.0;
+
   final Term term;
   final bool showGroup;
   final TermGroup? group;
@@ -28,9 +30,26 @@ class TermTile extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
 
+  Widget? _groupSlot(BuildContext context) {
+    if (!showGroup) return null;
+    if (group case final group?) {
+      return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _groupMaxWidth),
+        child: StatusPill.accent(label: group.name, accent: group.accent),
+      );
+    }
+    if (selecting) return null;
+    return PillButton(
+      label: context.l10n.addToGroup,
+      icon: AppIcons.newGroup,
+      onPressed: onAddToGroup,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = context.l10n;
     final mastered = term.status == TermStatus.mastered;
 
     return Semantics(
@@ -46,58 +65,47 @@ class TermTile extends StatelessWidget {
         child: Row(
           spacing: AppSpacing.s3,
           children: [
-            if (selecting) AppCheckbox(checked: selected),
+            if (selecting)
+              AppCheckbox(checked: selected)
+            else
+              LevelRing(
+                level: term.level,
+                color: mastered ? c.mastered : c.learning,
+              ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: AppSpacing.s1,
                 children: [
-                  Row(
-                    spacing: AppSpacing.s2,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          term.text,
-                          style: AppText.term,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      AppTag(label: context.l10n.termKind(term.kind.name)),
-                    ],
+                  Text(
+                    term.text,
+                    style: AppText.term,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  if (showGroup)
-                    switch (group) {
-                      final group? => DotLabel(
-                        label: group.name,
-                        dot: c.accent(group.accent).fg,
-                        color: c.inkSoft,
-                      ),
-                      null when selecting => const SizedBox.shrink(),
-                      null => AppButton(
-                        label: context.l10n.addToGroup,
-                        leading: const Icon(AppIcons.add, size: AppIconSize.sm),
-                        variant: AppButtonVariant.text,
-                        size: AppButtonSize.small,
-                        onPressed: onAddToGroup,
-                      ),
-                    },
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: '${l10n.termKind(term.kind.name)} · '),
+                        TextSpan(
+                          text: l10n.termStatus(term.status.name),
+                          style: TextStyle(
+                            color: mastered ? c.masteredText : c.learningText,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    style: AppText.label.copyWith(
+                      color: c.inkSoft,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              spacing: AppSpacing.s2,
-              children: [
-                StatusPill(
-                  label: context.l10n.termStatus(term.status.name),
-                  tone: mastered ? StatusTone.mastered : StatusTone.learning,
-                ),
-                LevelDots(
-                  level: term.level,
-                  color: mastered ? c.mastered : c.learning,
-                ),
-              ],
-            ),
+            ?_groupSlot(context),
           ],
         ),
       ),
