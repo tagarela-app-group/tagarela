@@ -137,4 +137,43 @@ void main() {
     expect(detail.formalityRevealed, isTrue);
     expect(detail.pitfallRevealed, isFalse);
   });
+
+  group('termos mudaram', () {
+    late int changes;
+    late FakeVocabulary vocabulary;
+
+    setUp(() {
+      changes = 0;
+      vocabulary = fakeVocabulary(sampleVocabularyJson, () async => changes++);
+    });
+
+    test('apagar e desfazer avisam', () async {
+      await vocabulary.store.deleteTerms(['u1']);
+      expect(changes, 1);
+
+      await vocabulary.store.restoreTerms(['u1']);
+      expect(changes, 2);
+    });
+
+    test('sem rede: apagar falha e não avisa', () async {
+      vocabulary.api.offline = true;
+
+      await expectLater(vocabulary.store.deleteTerms(['u1']), throwsException);
+
+      expect(changes, 0);
+    });
+
+    test('mover não avisa', () async {
+      await vocabulary.store.move(['u1'], '1');
+
+      expect(changes, 0);
+    });
+
+    test('refresh recarrega o vocabulário e avisa', () async {
+      await vocabulary.store.refresh();
+
+      expect(vocabulary.api.calls, ['GET /api/v1/vocabulary']);
+      expect(changes, 1);
+    });
+  });
 }

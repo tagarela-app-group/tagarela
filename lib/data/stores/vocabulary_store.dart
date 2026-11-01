@@ -1,14 +1,24 @@
+import 'dart:async';
+
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/data/services/vocabulary_service.dart';
 import 'package:tagarela/data/stores/store.dart';
 
 class VocabularyStore extends Store<Vocabulary> {
-  VocabularyStore(this._service);
+  VocabularyStore(this._service, {this._onTermsChanged});
 
   final VocabularyService _service;
+  final Future<void> Function()? _onTermsChanged;
 
   @override
   Future<Vocabulary> fetch() => _service.fetch();
+
+  Future<void> refresh() async {
+    await Future.wait([
+      load(),
+      if (_onTermsChanged case final reload?) reload(),
+    ]);
+  }
 
   Future<TermDetail> term(String id) => _service.term(id);
 
@@ -55,9 +65,17 @@ class VocabularyStore extends Store<Vocabulary> {
   Future<void> move(List<String> termIds, String? groupId) async =>
       emit(await _service.move(termIds, groupId));
 
-  Future<void> deleteTerms(List<String> termIds) async =>
-      emit(await _service.deleteTerms(termIds));
+  Future<void> deleteTerms(List<String> termIds) async {
+    emit(await _service.deleteTerms(termIds));
+    _notifyTermsChanged();
+  }
 
-  Future<void> restoreTerms(List<String> termIds) async =>
-      emit(await _service.restoreTerms(termIds));
+  Future<void> restoreTerms(List<String> termIds) async {
+    emit(await _service.restoreTerms(termIds));
+    _notifyTermsChanged();
+  }
+
+  void _notifyTermsChanged() {
+    if (_onTermsChanged case final reload?) unawaited(reload());
+  }
 }

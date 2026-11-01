@@ -115,7 +115,7 @@ class VocabularyPageState extends State<VocabularyPage> with TermActions {
                   ],
                 ),
           gap: AppSpacing.s3,
-          onRefresh: vocabulary.load,
+          onRefresh: vocabulary.refresh,
           centerLast: empty || blank,
           footer: selected == null || data == null
               ? null

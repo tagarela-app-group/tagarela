@@ -34,7 +34,7 @@ class PracticePage extends StatefulWidget {
         ),
       ),
     );
-    await Future.wait([scope.practice.load(), scope.vocabulary.load()]);
+    await scope.vocabulary.refresh();
   }
 
   static Future<void> openTerm(

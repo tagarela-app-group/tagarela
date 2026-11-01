@@ -11,6 +11,7 @@ import 'package:tagarela/features/vocabulary/widgets/term_tile.dart';
 
 import '../../helpers/failing_stores.dart';
 import '../../helpers/fake_vocabulary_api.dart';
+import '../../helpers/fixtures.dart';
 import '../../helpers/pump_app.dart';
 
 Json _term(String id, String text, int level, String day) => {
@@ -318,8 +319,12 @@ void main() {
     expect(chipSelected(tester, 'Sem grupo ·'), isTrue);
   });
 
-  testWidgets('puxar a lista recarrega', (tester) async {
-    final vocabulary = fakeVocabulary();
+  testWidgets('puxar a lista recarrega vocabulário e revisão', (tester) async {
+    var reviews = 0;
+    final vocabulary = fakeVocabulary(
+      sampleVocabularyJson,
+      () async => reviews++,
+    );
     await tester.pumpPage(
       const VocabularyPage(),
       deps: fakeDependencies(vocabulary: vocabulary.store),
@@ -334,6 +339,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(vocabulary.api.calls, ['GET /api/v1/vocabulary']);
+    expect(reviews, 1);
   });
 
   testWidgets('carregando: sem abas e sem contagem', (tester) async {
