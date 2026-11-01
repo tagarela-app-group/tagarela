@@ -1066,7 +1066,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get offlineRetry => 'Sem conexão. Tente de novo.';
 
   @override
-  String get groupModalNewHint => 'Junte termos do mesmo assunto';
+  String get groupModalNewHint => 'Agrupar termos em categorias';
 
   @override
   String get groupModalEditHint => 'Mude o nome, o ícone ou a cor';

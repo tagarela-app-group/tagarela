@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:tagarela/app/app_scope.dart';
@@ -31,16 +33,22 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
+  static const _homeTab = 0;
   static const _vocabularyTab = 1;
   static const _inboxTab = 2;
 
   final _menu = GlobalKey<ArcMenuState>();
   final _vocabulary = GlobalKey<VocabularyPageState>();
-  int _tab = 0;
+  int _tab = _homeTab;
   AuthStore? _auth;
+  late final AppLifecycleListener _lifecycle;
+
+  void _refreshDailyWord() =>
+      unawaited(AppScope.of(context).dailyWord.refreshDay());
 
   void _goTo(int tab) {
     if (tab != _vocabularyTab) _vocabulary.currentState?.cancelSelection();
+    if (tab == _homeTab) _refreshDailyWord();
     setState(() => _tab = tab);
   }
 
@@ -63,6 +71,12 @@ class _HomeShellState extends State<HomeShell> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(onResume: _refreshDailyWord);
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _auth ??= AppScope.of(context).auth..addListener(_onAuthChanged);
@@ -70,6 +84,7 @@ class _HomeShellState extends State<HomeShell> {
 
   @override
   void dispose() {
+    _lifecycle.dispose();
     _auth?.removeListener(_onAuthChanged);
     super.dispose();
   }

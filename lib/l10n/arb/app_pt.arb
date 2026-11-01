@@ -622,7 +622,7 @@
     }
   },
   "offlineRetry": "Sem conexão. Tente de novo.",
-  "groupModalNewHint": "Junte termos do mesmo assunto",
+  "groupModalNewHint": "Agrupar termos em categorias",
   "groupModalEditHint": "Mude o nome, o ícone ou a cor",
   "groupNameHint": "Ex.: Música, Faculdade",
   "groupNameTaken": "Você já tem um grupo com esse nome.",

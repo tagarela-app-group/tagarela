@@ -10,6 +10,7 @@ class HighlightedText extends StatelessWidget {
     this.style,
     this.maxLines,
     this.locale,
+    this.filled = true,
   });
 
   final String text;
@@ -17,6 +18,7 @@ class HighlightedText extends StatelessWidget {
   final TextStyle? style;
   final int? maxLines;
   final Locale? locale;
+  final bool filled;
 
   static List<(int, int)> find(String text, String term) {
     if (term.isEmpty) return const [];
@@ -42,7 +44,7 @@ class HighlightedText extends StatelessWidget {
         );
     final mark = base.copyWith(
       color: c.primaryText,
-      backgroundColor: c.primarySoft,
+      backgroundColor: filled ? c.primarySoft : null,
       fontWeight: FontWeight.w700,
     );
     final sorted = [...ranges]..sort((a, b) => a.$1.compareTo(b.$1));

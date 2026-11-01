@@ -124,6 +124,7 @@ class TermReminders extends StatelessWidget {
                                 lead: l10n.imagine,
                                 locale: baseLocale,
                                 markLocale: learningLocale,
+                                highlighted: true,
                                 style: AppText.bodyLg.copyWith(
                                   fontSize: AppFontSize.body,
                                   height: 22 / 15,

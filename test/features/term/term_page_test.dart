@@ -43,6 +43,12 @@ Iterable<bool> _fog(WidgetTester tester) {
 Iterable<bool> _pitfallFog(WidgetTester tester) =>
     tester.widgetList<Obscured>(_inPitfall).map((o) => o.obscured);
 
+Iterable<TextSpan> _spansOf(WidgetTester tester, Finder text) =>
+    (tester.widget<RichText>(text).text as TextSpan).children!
+        .whereType<TextSpan>()
+        .expand((span) => span.children ?? [span])
+        .whereType<TextSpan>();
+
 Finder seenCard(String text) => find
     .ancestor(
       of: find.textContaining(text, findRichText: true),
@@ -665,6 +671,54 @@ void main() {
     expect(find.text('mind the hole'), findsOneWidget);
     expect(find.text('Diga'), findsOneWidget);
     expect(find.text('Não é "mente o buraco".'), findsOneWidget);
+  });
+
+  testWidgets('imagine: termo citado ganha fundo, o resto não', (tester) async {
+    vocabulary.api.cards['u1'] = {
+      ...sampleCardJson,
+      'base': {
+        ...sampleCardJson['base']! as Map,
+        'imagine': 'Alguém grita *mind the gap* na plataforma.',
+      },
+    };
+
+    await open(tester);
+
+    final filled = _spansOf(
+      tester,
+      find.textContaining('Alguém grita', findRichText: true),
+    ).where((span) => span.style?.backgroundColor != null);
+    expect(filled.map((span) => span.text), ['mind the gap']);
+  });
+
+  testWidgets('onde você viu: sem aspas e termo marcado sem fundo', (
+    tester,
+  ) async {
+    vocabulary.api.seen['u1'] = [
+      {
+        'id': 'c1',
+        'source': 'text',
+        'text': 'Please mind the gap now.',
+        'captured_at': DateTime.now().toIso8601String(),
+        'terms': [
+          {'text': 'mind the gap', 'start': 7, 'end': 19, 'term': 'u1'},
+        ],
+      },
+    ];
+
+    await open(tester);
+
+    final spans = _spansOf(
+      tester,
+      find.text('please mind the gap now.', findRichText: true),
+    );
+    expect(spans.map((span) => span.text), [
+      'please ',
+      'mind the gap',
+      ' now.',
+    ]);
+    expect(spans.elementAt(1).style?.fontWeight, FontWeight.w700);
+    expect(spans.elementAt(1).style?.backgroundColor, isNull);
   });
 
   testWidgets('pegadinha nasce desfocada menos os títulos', (tester) async {

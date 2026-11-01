@@ -248,7 +248,7 @@
   "groupSaveRejected": "{action, select, create{Couldn't create the group.} save{Couldn't save the group.} other{}}",
   "groupSaveFailed": "{action, select, create{Couldn't create the group right now. Try again.} save{Couldn't save the group right now. Try again.} other{}}",
   "offlineRetry": "No connection. Try again.",
-  "groupModalNewHint": "Group terms on the same topic",
+  "groupModalNewHint": "Group terms into categories",
   "groupModalEditHint": "Change the name, icon or color",
   "groupNameHint": "E.g.: Music, College",
   "groupNameTaken": "You already have a group with that name.",
