@@ -19,16 +19,14 @@ class HighlightedText extends StatelessWidget {
   final Locale? locale;
 
   static List<(int, int)> find(String text, String term) {
-    final haystack = text.toLowerCase();
-    final needle = term.toLowerCase();
-    if (needle.isEmpty) return const [];
+    if (term.isEmpty) return const [];
     return [
-      for (
-        var i = haystack.indexOf(needle);
-        i >= 0;
-        i = haystack.indexOf(needle, i + needle.length)
-      )
-        (i, i + needle.length),
+      for (final match in RegExp(
+        r'(?<![\p{L}\p{N}])' + RegExp.escape(term) + r'(?![\p{L}\p{N}])',
+        caseSensitive: false,
+        unicode: true,
+      ).allMatches(text))
+        (match.start, match.end),
     ];
   }
 
@@ -37,7 +35,11 @@ class HighlightedText extends StatelessWidget {
     final c = context.colors;
     final base =
         style ??
-        AppText.bodyLg.copyWith(fontSize: AppFontSize.body, height: 22 / 15);
+        AppText.bodyLg.copyWith(
+          fontSize: AppFontSize.body,
+          height: 22 / 15,
+          color: c.ink,
+        );
     final mark = base.copyWith(
       color: c.primaryText,
       backgroundColor: c.primarySoft,
@@ -54,10 +56,7 @@ class HighlightedText extends StatelessWidget {
     }
     if (at < text.length) spans.add(TextSpan(text: text.substring(at)));
     return Text.rich(
-      TextSpan(
-        style: base.copyWith(color: c.ink),
-        children: spans,
-      ),
+      TextSpan(style: base, children: spans),
       maxLines: maxLines,
       overflow: maxLines == null ? null : TextOverflow.ellipsis,
       locale: locale,

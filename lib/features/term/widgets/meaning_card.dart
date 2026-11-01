@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/term/widgets/highlighted_text.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class MeaningCard extends StatelessWidget {
   const MeaningCard({
     super.key,
     required this.card,
+    required this.term,
     required this.learning,
     required this.base,
     required this.flipped,
@@ -15,6 +17,7 @@ class MeaningCard extends StatelessWidget {
   });
 
   final TermCard card;
+  final String term;
   final CourseLanguage learning;
   final CourseLanguage base;
   final bool flipped;
@@ -31,11 +34,13 @@ class MeaningCard extends StatelessWidget {
           front: _Side(
             label: l10n.cardSide(learning.name),
             side: card.learning,
+            term: term,
             locale: Locale(learning.name),
           ),
           back: _Side(
             label: l10n.cardSide(base.name),
             side: card.base,
+            term: term,
             locale: Locale(base.name),
           ),
         ),
@@ -63,10 +68,16 @@ class MeaningCard extends StatelessWidget {
 }
 
 class _Side extends StatelessWidget {
-  const _Side({required this.label, required this.side, required this.locale});
+  const _Side({
+    required this.label,
+    required this.side,
+    required this.term,
+    required this.locale,
+  });
 
   final String label;
   final CardSide side;
+  final String term;
   final Locale locale;
 
   @override
@@ -93,8 +104,9 @@ class _Side extends StatelessWidget {
                   ),
                 ),
                 if (side.headline case final headline?)
-                  Text(
-                    headline,
+                  HighlightedText(
+                    text: headline,
+                    ranges: HighlightedText.find(headline, term),
                     locale: locale,
                     style: AppText.titleMd.copyWith(
                       fontSize: AppFontSize.title,
@@ -105,9 +117,19 @@ class _Side extends StatelessWidget {
             ),
           ),
           if (side.inContext case final text?)
-            _Field(title: l10n.inYourContext, text: text, locale: locale),
+            _Field(
+              title: l10n.inYourContext,
+              text: text,
+              term: term,
+              locale: locale,
+            ),
           if (side.explanation case final text?)
-            _Field(title: l10n.explanation, text: text, locale: locale),
+            _Field(
+              title: l10n.explanation,
+              text: text,
+              term: term,
+              locale: locale,
+            ),
         ],
       ),
     );
@@ -115,10 +137,16 @@ class _Side extends StatelessWidget {
 }
 
 class _Field extends StatelessWidget {
-  const _Field({required this.title, required this.text, required this.locale});
+  const _Field({
+    required this.title,
+    required this.text,
+    required this.term,
+    required this.locale,
+  });
 
   final String title;
   final String text;
+  final String term;
   final Locale locale;
 
   @override
@@ -131,13 +159,10 @@ class _Field extends StatelessWidget {
           title,
           style: AppText.pill.copyWith(color: context.colors.inkSoft),
         ),
-        Text(
-          text,
+        HighlightedText(
+          text: text,
+          ranges: HighlightedText.find(text, term),
           locale: locale,
-          style: AppText.bodyLg.copyWith(
-            fontSize: AppFontSize.body,
-            height: 22 / 15,
-          ),
         ),
       ],
     );
