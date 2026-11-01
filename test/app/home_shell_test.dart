@@ -11,6 +11,7 @@ import 'package:tagarela/features/profile/profile_page.dart';
 import 'package:tagarela/features/vocabulary/vocabulary_page.dart';
 import 'package:tagarela/shared/widgets/user_avatar.dart';
 
+import '../helpers/fake_daily_word_api.dart';
 import '../helpers/fake_practice_api.dart';
 import '../helpers/fake_vocabulary_api.dart';
 import '../helpers/fake_auth.dart';
@@ -49,6 +50,45 @@ void main() {
       await tester.pumpAndSettle();
       expect(_currentTab(tester), index, reason: label);
     }
+  });
+
+  group('palavra do dia no dia seguinte', () {
+    late DateTime now;
+    late FakeDailyWord fake;
+
+    Future<void> pumpOvernight(WidgetTester tester) async {
+      now = DateTime(2026, 11, 1, 23);
+      fake = fakeDailyWord(FakeDailyWordApi(word: hangryJson), () => now);
+      await tester.pumpPage(
+        const HomeShell(),
+        deps: fakeDependencies(dailyWord: fake.store),
+      );
+      fake.api.word = {...hangryJson, 'text': 'snack'};
+      now = DateTime(2026, 11, 2, 8);
+    }
+
+    testWidgets('voltar pro app traz a palavra nova', (tester) async {
+      await pumpOvernight(tester);
+
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+
+      expect(fake.store.data?.text, 'snack');
+    });
+
+    testWidgets('entrar na aba Início traz a palavra nova', (tester) async {
+      await pumpOvernight(tester);
+
+      await tester.tap(_tab('Vocabulário'));
+      await tester.pump();
+      expect(fake.store.data?.text, 'hangry');
+
+      await tester.tap(_tab('Início'));
+      await tester.pump();
+
+      expect(fake.store.data?.text, 'snack');
+    });
   });
 
   testWidgets('Comunidades aparece desligada e não troca de aba', (

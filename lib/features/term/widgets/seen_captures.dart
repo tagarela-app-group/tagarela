@@ -8,7 +8,6 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/widgets/highlighted_text.dart';
 import 'package:tagarela/l10n/l10n.dart';
 import 'package:tagarela/shared/logic/capture_style.dart';
-import 'package:tagarela/shared/logic/capture_text.dart';
 import 'package:tagarela/shared/logic/time_ago.dart';
 
 class SeenCaptures extends StatelessWidget {
@@ -150,13 +149,13 @@ class _SeenCard extends StatelessWidget {
           if (capture.source == CaptureSource.audio)
             _Recording(captureId: capture.id),
           HighlightedText(
-            text: quotedCapture(capture.text),
+            text: capture.text.toLowerCase(),
             ranges: [
               for (final span in capture.spans)
-                if (span.termId == termId)
-                  (span.start + quoteLength, span.end + quoteLength),
+                if (span.termId == termId) (span.start, span.end),
             ],
             maxLines: 3,
+            filled: false,
             locale: locale,
           ),
           if (also.isNotEmpty)

@@ -42,13 +42,17 @@ typedef FakeDailyWord = ({
   List<String> saved,
 });
 
-FakeDailyWord fakeDailyWord([FakeDailyWordApi? api]) {
+FakeDailyWord fakeDailyWord([
+  FakeDailyWordApi? api,
+  DateTime Function() now = DateTime.now,
+]) {
   final fake = api ?? FakeDailyWordApi();
   final saved = <String>[];
   return (
     store: DailyWordStore(
       DailyWordService(fake),
       onSaved: () async => saved.add('recarregou'),
+      now: now,
     ),
     api: fake,
     saved: saved,

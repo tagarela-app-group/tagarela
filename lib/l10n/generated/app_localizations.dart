@@ -1591,7 +1591,7 @@ abstract class AppLocalizations {
   /// No description provided for @groupModalNewHint.
   ///
   /// In pt, this message translates to:
-  /// **'Junte termos do mesmo assunto'**
+  /// **'Agrupar termos em categorias'**
   String get groupModalNewHint;
 
   /// No description provided for @groupModalEditHint.

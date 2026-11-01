@@ -10,6 +10,7 @@ class MarkedText extends StatelessWidget {
     required this.locale,
     required this.markLocale,
     this.lead,
+    this.highlighted = false,
   });
 
   final String text;
@@ -17,13 +18,16 @@ class MarkedText extends StatelessWidget {
   final Locale locale;
   final Locale markLocale;
   final String? lead;
+  final bool highlighted;
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     final mark = TextStyle(
       fontStyle: FontStyle.italic,
       fontWeight: FontWeight.w700,
-      color: context.colors.ink,
+      color: highlighted ? c.primaryText : c.ink,
+      backgroundColor: highlighted ? c.primarySoft : null,
     );
     return Text.rich(
       TextSpan(
