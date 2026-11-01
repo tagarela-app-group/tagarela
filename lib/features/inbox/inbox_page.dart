@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/inbox/logic/term_selection.dart';
 import 'package:tagarela/features/inbox/pick_terms_page.dart';
+import 'package:tagarela/features/inbox/widgets/analyzed_toast.dart';
 import 'package:tagarela/features/inbox/widgets/capture_card.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
@@ -18,7 +20,9 @@ enum InboxTab {
 }
 
 class InboxPage extends StatefulWidget {
-  const InboxPage({super.key});
+  const InboxPage({super.key, this.onSeeTerms});
+
+  final VoidCallback? onSeeTerms;
 
   @override
   State<InboxPage> createState() => _InboxPageState();
@@ -34,6 +38,26 @@ class _InboxPageState extends State<InboxPage> {
       if (mounted) AppToast.notice(context, context.l10n.noConnectionRetry);
     }
   }
+
+  void _announce(Capture? saved) {
+    if (saved == null || !mounted) return;
+    showAnalyzed(context, saved, onSee: widget.onSeeTerms);
+  }
+
+  Future<void> _pick(Capture capture) async => _announce(
+    await Navigator.of(context).push<Capture>(
+      MaterialPageRoute(builder: (_) => PickTermsPage(capture: capture)),
+    ),
+  );
+
+  Future<void> _confirm(Capture capture) async => _announce(
+    await AppScope.of(context).captures.confirm(
+      capture,
+      terms: capture.terms.isEmpty
+          ? TermSelection.forPicking(capture).toTerms()
+          : null,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -110,12 +134,8 @@ class _InboxPageState extends State<InboxPage> {
             now: now,
             onDiscard: () => captures.discard(capture),
             onProcess: () => _run(() => captures.processNow(capture)),
-            onPick: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => PickTermsPage(capture: capture),
-              ),
-            ),
-            onConfirm: () => captures.confirm(capture),
+            onPick: () => _pick(capture),
+            onConfirm: () => _confirm(capture),
           ),
       ],
     ];

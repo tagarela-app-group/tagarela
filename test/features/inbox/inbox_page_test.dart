@@ -129,6 +129,90 @@ void main() {
     expect(find.text('Inbox zerado'), findsOneWidget);
   });
 
+  testWidgets('Analisar com uma palavra só manda ela como termo', (
+    tester,
+  ) async {
+    await seed([
+      sampleCapture(
+        'pronta',
+        text: 'Gotcha!',
+        pending: const {CaptureSync.create},
+      ),
+    ]);
+    await pumpInbox(tester);
+
+    await tester.tap(find.text('Analisar'));
+    await tester.pumpAndSettle();
+
+    final saved = await captures.db.capture('pronta');
+    expect(saved!.terms.single.text, 'Gotcha');
+    expect(saved.status, CaptureStatus.analyzed);
+  });
+
+  Future<void> pumpAnalyzable(
+    WidgetTester tester,
+    VoidCallback onSeeTerms,
+  ) async {
+    await seed([
+      sampleCapture(
+        'pronta',
+        pending: const {CaptureSync.create, CaptureSync.update},
+        terms: const [CaptureTerm(text: 'mind the gap', start: 7, end: 19)],
+      ),
+    ]);
+    await tester.pumpPage(
+      Scaffold(body: InboxPage(onSeeTerms: onSeeTerms)),
+      deps: fakeDependencies(captures: captures.store),
+    );
+    await tester.tap(find.text('Analisar'));
+  }
+
+  testWidgets('analisar avisa e Ver leva pros termos', (tester) async {
+    var seen = 0;
+    await pumpAnalyzable(tester, () => seen++);
+    await tester.pumpUntilFound(find.text('1 termo no vocabulário'));
+
+    expect(find.text('1 termo no vocabulário'), findsOneWidget);
+    await tester.tap(find.text('Ver'));
+    expect(seen, 1);
+  });
+
+  testWidgets('analisar sem internet avisa que sobe depois, sem Ver', (
+    tester,
+  ) async {
+    captures.api.offline = true;
+    await pumpAnalyzable(tester, () {});
+    await tester.pumpUntilFound(find.text('Análise guardada'));
+
+    expect(find.text('Análise guardada'), findsOneWidget);
+    expect(find.text('Ver'), findsNothing);
+  });
+
+  testWidgets('escolher e confirmar na outra tela também avisa', (
+    tester,
+  ) async {
+    await seed([
+      sampleCapture(
+        'pronta',
+        text: 'gotcha',
+        pending: const {CaptureSync.create},
+      ),
+    ]);
+    await tester.pumpPage(
+      const Scaffold(body: InboxPage()),
+      deps: fakeDependencies(captures: captures.store),
+    );
+
+    await tester.tap(find.text('Editar'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byType(TermChip), findsOneWidget);
+    await tester.tap(find.textContaining('Confirmar análise'));
+    await tester.pumpUntilFound(find.text('1 termo no vocabulário'));
+
+    expect(find.text('1 termo no vocabulário'), findsOneWidget);
+  });
+
   testWidgets('Escolher abre a tela da captura', (tester) async {
     await seed([sampleCapture('pronta', text: 'Pronta pra escolher')]);
     await pumpInbox(tester);

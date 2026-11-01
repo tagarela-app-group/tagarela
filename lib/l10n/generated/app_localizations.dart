@@ -100,6 +100,24 @@ abstract class AppLocalizations {
     Locale('pt'),
   ];
 
+  /// No description provided for @termsAnalyzed.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Nenhum termo novo} =1{1 termo no vocabulário} other{{count} termos no vocabulário}}'**
+  String termsAnalyzed(int count);
+
+  /// No description provided for @termsAnalyzedMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os novos ficam em Sem grupo. A ficha sai no primeiro toque.'**
+  String get termsAnalyzedMessage;
+
+  /// No description provided for @analysisQueued.
+  ///
+  /// In pt, this message translates to:
+  /// **'Análise guardada'**
+  String get analysisQueued;
+
   /// No description provided for @sessionExpired.
   ///
   /// In pt, this message translates to:

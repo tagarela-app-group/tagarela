@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
+import 'package:tagarela/features/inbox/logic/term_selection.dart';
 import 'package:tagarela/features/inbox/widgets/capture_actions.dart';
 import 'package:tagarela/features/inbox/widgets/capture_content.dart';
 import 'package:tagarela/features/inbox/widgets/capture_failure.dart';
@@ -113,7 +114,7 @@ class _CaptureCardState extends State<CaptureCard> {
         if (capture.source != CaptureSource.text && loaded && media == null)
           CaptureMissingMedia(capture.source),
         if (capture.terms.isNotEmpty) CaptureTerms(terms: capture.terms),
-        if (capture.terms.isEmpty)
+        if (TermSelection.forPicking(capture).spans.isEmpty)
           CaptureActions(
             secondary: (context.l10n.discard, widget.onDiscard),
             primary: widget.onPick == null

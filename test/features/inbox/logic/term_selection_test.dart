@@ -27,6 +27,45 @@ void main() {
     );
   });
 
+  test('captura de uma palavra já vem marcada, sem a pontuação', () {
+    final selection = TermSelection.forPicking(
+      sampleCapture('a', text: 'Gotcha!'),
+    );
+
+    expect(terms(selection), ['Gotcha']);
+  });
+
+  test(
+    'duas palavras ou termo já escolhido: forPicking não marca nada novo',
+    () {
+      expect(
+        TermSelection.forPicking(sampleCapture('a', text: 'oi — tudo')).spans,
+        hasLength(0),
+      );
+      expect(
+        terms(
+          TermSelection.forPicking(
+            sampleCapture(
+              'a',
+              text: 'gotcha',
+              terms: const [CaptureTerm(text: 'got', start: 0, end: 3)],
+            ),
+          ),
+        ),
+        ['got'],
+      );
+    },
+  );
+
+  test('palavra maior que o limite de termo não vem marcada', () {
+    expect(
+      TermSelection.forPicking(
+        sampleCapture('a', text: 'x' * (TermSelection.maxTermLength + 1)),
+      ).spans,
+      isEmpty,
+    );
+  });
+
   test('palavra com acento combinado continua inteira', () {
     final word = TermSelection.wordsOf('café!').single;
 

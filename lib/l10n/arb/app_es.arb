@@ -1,5 +1,8 @@
 {
   "@@locale": "es",
+  "termsAnalyzed": "{count, plural, =0{Ningún término nuevo} =1{1 término en tu vocabulario} other{{count} términos en tu vocabulario}}",
+  "termsAnalyzedMessage": "Los nuevos quedan en Sin grupo. La ficha se arma al primer toque.",
+  "analysisQueued": "Análisis guardado",
   "sessionExpired": "Tu sesión expiró. Vuelve a entrar.",
   "tabHome": "Inicio",
   "tabVocabulary": "Vocabulario",
