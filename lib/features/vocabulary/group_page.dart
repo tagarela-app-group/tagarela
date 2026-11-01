@@ -4,7 +4,7 @@ import 'package:tagarela/app/app_scope.dart';
 import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
-import 'package:tagarela/features/vocabulary/logic/group_controller.dart';
+import 'package:tagarela/features/vocabulary/logic/groupcontroller.dart';
 import 'package:tagarela/features/vocabulary/logic/term_actions.dart';
 import 'package:tagarela/features/vocabulary/modals/delete_group_modal.dart';
 import 'package:tagarela/features/vocabulary/modals/group_menu_modal.dart';
@@ -25,23 +25,7 @@ class GroupPage extends StatefulWidget {
 }
 
 class _GroupPageState extends State<GroupPage> with TermActions {
-  late final GroupController _controller;
   TermGroup? _group;
-
-  @override
-  GroupController get controller => _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = GroupController(AppScope.of(context).vocabulary);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   Future<void> _openMenu(TermGroup group) async {
     final action = await AppModal.show<GroupMenuAction>(
@@ -56,7 +40,7 @@ class _GroupPageState extends State<GroupPage> with TermActions {
           (_) => GroupModal(group: group),
         );
       case GroupMenuAction.select:
-        _controller.select({});
+        controller.select({});
       case GroupMenuAction.delete:
         final deleted = await AppModal.show<bool>(
           context,
@@ -71,101 +55,98 @@ class _GroupPageState extends State<GroupPage> with TermActions {
   Widget build(BuildContext context) {
     final vocabulary = AppScope.of(context).vocabulary;
 
-    return ListenableBuilder(
-      listenable: Listenable.merge([vocabulary, _controller]),
-      builder: (context, _) {
-        final data = vocabulary.data ?? const Vocabulary();
-        _group = data.group(widget.groupId) ?? _group;
-        final group = _group;
-        final terms = group?.terms ?? const <Term>[];
-        final filtered = group != null && terms.isNotEmpty;
-        final visible = filtered ? group.termsWith(_controller.status) : terms;
-        final selected = _controller.selected;
+    return listening((context) {
+      final data = vocabulary.data ?? const Vocabulary();
+      _group = data.group(widget.groupId) ?? _group;
+      final group = _group;
+      final terms = group?.terms ?? const <Term>[];
+      final filtered = group != null && terms.isNotEmpty;
+      final visible = filtered ? group.termsWith(controller.status) : terms;
+      final selected = controller.selected;
 
-        return PopScope(
-          canPop: selected == null,
-          onPopInvokedWithResult: (didPop, _) {
-            if (!didPop) return _controller.select(null);
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-          child: AppPage(
-            header: GroupHeader(
-              icon: group?.glyph ?? AppIcons.vocabulary,
-              name: group?.name ?? '',
-              meta: _meta(context.l10n, terms, group, selected),
-              bar: filtered ? group : null,
-              leading: selected == null
-                  ? AppIconButton(
-                      icon: AppIcons.back,
-                      tooltip: context.l10n.back,
-                      onPressed: () => Navigator.of(context).pop(),
-                      variant: AppIconButtonVariant.onHeader,
-                    )
-                  : cancelSelectionButton(),
-              trailing: switch ((selected, group)) {
-                (null, final group?) => AppIconButton(
-                  icon: AppIcons.more,
-                  tooltip: context.l10n.moreOptions,
-                  onPressed: () => _openMenu(group),
-                  variant: AppIconButtonVariant.onHeader,
-                ),
-                _ when terms.isEmpty => null,
-                _ => selectAllButton(visible),
-              },
-            ),
-            gap: AppSpacing.s3,
-            centerLast: terms.isEmpty,
-            footer: selected == null
-                ? null
-                : SelectionBar(
-                    count: selected.length,
-                    change: _controller.change,
-                    onDelete: () => deleteTerms(_controller.selectedIn(terms)),
-                    onMove: () => pickTarget(data, [
-                      for (final term in terms)
-                        if (selected.contains(term.id))
-                          (term: term, group: group),
-                    ]),
-                  ),
-            children: [
-              if (terms.isEmpty)
-                StateMessage(
-                  icon: group?.glyph ?? AppIcons.vocabulary,
-                  accent: group?.accent ?? AppAccent.violet,
-                  title: context.l10n.groupEmptyTitle,
-                  message: context.l10n.groupEmptyMessage,
-                )
-              else ...[
-                if (filtered)
-                  SegmentedControl(
-                    options: [
-                      for (final status in GroupController.filters)
-                        switch (status) {
-                          final status? => context.l10n.termStatus(status.name),
-                          null => context.l10n.allCount(terms.length),
-                        },
-                    ],
-                    selected: _controller.filter,
-                    onChanged: _controller.showFilter,
-                  ),
-                for (final term in visible)
-                  TermTile(
-                    term: term,
-                    selecting: selected != null,
-                    selected: selected?.contains(term.id) ?? false,
-                    onTap: selected == null
-                        ? () => TermPage.open(context, term)
-                        : () => _controller.toggle(term.id),
-                    onLongPress: selected == null
-                        ? () => _controller.select({term.id})
-                        : null,
-                  ),
-              ],
-            ],
+      return PopScope(
+        canPop: selected == null,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop) return controller.select(null);
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+        child: AppPage(
+          header: GroupHeader(
+            icon: group?.glyph ?? AppIcons.vocabulary,
+            name: group?.name ?? '',
+            meta: _meta(context.l10n, terms, group, selected),
+            bar: filtered ? group : null,
+            leading: selected == null
+                ? AppIconButton(
+                    icon: AppIcons.back,
+                    tooltip: context.l10n.back,
+                    onPressed: () => Navigator.of(context).pop(),
+                    variant: AppIconButtonVariant.onHeader,
+                  )
+                : cancelSelectionButton(),
+            trailing: switch ((selected, group)) {
+              (null, final group?) => AppIconButton(
+                icon: AppIcons.more,
+                tooltip: context.l10n.moreOptions,
+                onPressed: () => _openMenu(group),
+                variant: AppIconButtonVariant.onHeader,
+              ),
+              _ when terms.isEmpty => null,
+              _ => selectAllButton(visible),
+            },
           ),
-        );
-      },
-    );
+          gap: AppSpacing.s3,
+          centerLast: terms.isEmpty,
+          footer: selected == null
+              ? null
+              : SelectionBar(
+                  count: selected.length,
+                  change: controller.change,
+                  onDelete: () => deleteTerms(controller.selectedIn(terms)),
+                  onMove: () => pickTarget(data, [
+                    for (final term in terms)
+                      if (selected.contains(term.id))
+                        (term: term, group: group),
+                  ]),
+                ),
+          children: [
+            if (terms.isEmpty)
+              StateMessage(
+                icon: group?.glyph ?? AppIcons.vocabulary,
+                accent: group?.accent ?? AppAccent.violet,
+                title: context.l10n.groupEmptyTitle,
+                message: context.l10n.groupEmptyMessage,
+              )
+            else ...[
+              if (filtered)
+                SegmentedControl(
+                  options: [
+                    for (final status in GroupController.filters)
+                      switch (status) {
+                        final status? => context.l10n.termStatus(status.name),
+                        null => context.l10n.allCount(terms.length),
+                      },
+                  ],
+                  selected: controller.filter,
+                  onChanged: controller.showFilter,
+                ),
+              for (final term in visible)
+                TermTile(
+                  term: term,
+                  selecting: selected != null,
+                  selected: selected?.contains(term.id) ?? false,
+                  onTap: selected == null
+                      ? () => TermPage.open(context, term)
+                      : () => controller.toggle(term.id),
+                  onLongPress: selected == null
+                      ? () => controller.select({term.id})
+                      : null,
+                ),
+            ],
+          ],
+        ),
+      );
+    });
   }
 
   static String _meta(
@@ -176,6 +157,6 @@ class _GroupPageState extends State<GroupPage> with TermActions {
   ) => switch (selected?.length) {
     final int n => l10n.selectionMeta(n),
     null when group == null || terms.isEmpty => l10n.noTermsYet,
-    null => l10n.termCountMastered(terms.length, group!.masteredCount),
+    null => l10n.termCountMastered(terms.length, group.masteredCount),
   };
 }

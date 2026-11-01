@@ -5,7 +5,6 @@ import 'package:tagarela/data/models/models.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/term/term_page.dart';
 import 'package:tagarela/features/vocabulary/group_page.dart';
-import 'package:tagarela/features/vocabulary/logic/group_controller.dart';
 import 'package:tagarela/features/vocabulary/logic/term_actions.dart';
 import 'package:tagarela/features/vocabulary/logic/term_filter.dart';
 import 'package:tagarela/features/vocabulary/modals/group_modal.dart';
@@ -24,31 +23,15 @@ class VocabularyPage extends StatefulWidget {
 }
 
 class VocabularyPageState extends State<VocabularyPage> with TermActions {
-  late final GroupController _controller;
   VocabularyView _view = VocabularyView.terms;
   TermFilter _filter = TermFilter.all;
-
-  @override
-  GroupController get controller => _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = GroupController(AppScope.of(context).vocabulary);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   void showUngrouped() => setState(() {
     _view = VocabularyView.terms;
     _filter = TermFilter.ungrouped;
   });
 
-  void cancelSelection() => _controller.select(null);
+  void cancelSelection() => controller.select(null);
 
   Future<void> _open(GroupPage page) async {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -88,101 +71,98 @@ class VocabularyPageState extends State<VocabularyPage> with TermActions {
   Widget build(BuildContext context) {
     final vocabulary = AppScope.of(context).vocabulary;
 
-    return ListenableBuilder(
-      listenable: Listenable.merge([vocabulary, _controller]),
-      builder: (context, _) {
-        final data = vocabulary.data;
-        final empty = data == null || data.isEmpty;
-        final selected = _controller.selected;
-        final entries = data?.entries ?? const <TermEntry>[];
-        final visible = entries.where(_filter.accepts).toList();
-        final blank = _view == VocabularyView.terms
-            ? visible.isEmpty
-            : data?.groups.isEmpty ?? true;
+    return listening((context) {
+      final data = vocabulary.data;
+      final empty = data == null || data.isEmpty;
+      final selected = controller.selected;
+      final entries = data?.entries ?? const <TermEntry>[];
+      final visible = entries.where(_filter.accepts).toList();
+      final blank = _view == VocabularyView.terms
+          ? visible.isEmpty
+          : data?.groups.isEmpty ?? true;
 
-        return PopScope(
-          canPop: selected == null,
-          onPopInvokedWithResult: (didPop, _) {
-            if (!didPop) _controller.select(null);
-          },
-          child: AppPage(
-            header: selected == null
-                ? PageHeader(
-                    title: context.l10n.tabVocabulary,
-                    subtitle: empty ? null : _subtitle(context.l10n, data),
-                    trailing: AppIconButton(
-                      icon: AppIcons.newGroup,
-                      tooltip: context.l10n.newGroup,
-                      onPressed: _newGroup,
-                      variant: AppIconButtonVariant.onHeader,
-                    ),
-                  )
-                : Column(
-                    spacing: AppSpacing.s35,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          cancelSelectionButton(),
-                          selectAllButton(visible.map((e) => e.term)),
-                        ],
-                      ),
-                      PageHeader(
-                        title: context.l10n.tabVocabulary,
-                        subtitle: context.l10n.selectionMeta(selected.length),
-                      ),
-                    ],
+      return PopScope(
+        canPop: selected == null,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop) controller.select(null);
+        },
+        child: AppPage(
+          header: selected == null
+              ? PageHeader(
+                  title: context.l10n.tabVocabulary,
+                  subtitle: empty ? null : _subtitle(context.l10n, data),
+                  trailing: AppIconButton(
+                    icon: AppIcons.newGroup,
+                    tooltip: context.l10n.newGroup,
+                    onPressed: _newGroup,
+                    variant: AppIconButtonVariant.onHeader,
                   ),
-            gap: AppSpacing.s3,
-            onRefresh: vocabulary.load,
-            centerLast: empty || blank,
-            footer: selected == null || data == null
-                ? null
-                : SelectionBar(
-                    count: selected.length,
-                    change: _controller.change,
-                    onDelete: () => deleteTerms(
-                      _controller.selectedIn([
-                        for (final entry in entries) entry.term,
-                      ]),
+                )
+              : Column(
+                  spacing: AppSpacing.s35,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        cancelSelectionButton(),
+                        selectAllButton(visible.map((e) => e.term)),
+                      ],
                     ),
-                    onMove: () => pickTarget(data, [
-                      for (final entry in entries)
-                        if (selected.contains(entry.term.id)) entry,
+                    PageHeader(
+                      title: context.l10n.tabVocabulary,
+                      subtitle: context.l10n.selectionMeta(selected.length),
+                    ),
+                  ],
+                ),
+          gap: AppSpacing.s3,
+          onRefresh: vocabulary.load,
+          centerLast: empty || blank,
+          footer: selected == null || data == null
+              ? null
+              : SelectionBar(
+                  count: selected.length,
+                  change: controller.change,
+                  onDelete: () => deleteTerms(
+                    controller.selectedIn([
+                      for (final entry in entries) entry.term,
                     ]),
                   ),
-            children: switch (data) {
-              null => [
-                AsyncStatus(error: vocabulary.error, onRetry: vocabulary.load),
-              ],
-              Vocabulary(isEmpty: true) => [
-                StateMessage(
-                  icon: AppIcons.vocabulary,
-                  title: context.l10n.noTermsYet,
-                  message: context.l10n.vocabularyEmptyMessage,
+                  onMove: () => pickTarget(data, [
+                    for (final entry in entries)
+                      if (selected.contains(entry.term.id)) entry,
+                  ]),
                 ),
-              ],
-              _ => [
-                if (selected == null)
-                  SegmentedControl(
-                    options: [
-                      for (final view in VocabularyView.values)
-                        context.l10n.vocabularyView(view.name),
-                    ],
-                    selected: _view.index,
-                    onChanged: (i) =>
-                        setState(() => _view = VocabularyView.values[i]),
-                  ),
-                ...switch (_view) {
-                  VocabularyView.terms => _terms(data, entries, visible),
-                  VocabularyView.groups => _groups(data),
-                },
-              ],
-            },
-          ),
-        );
-      },
-    );
+          children: switch (data) {
+            null => [
+              AsyncStatus(error: vocabulary.error, onRetry: vocabulary.load),
+            ],
+            Vocabulary(isEmpty: true) => [
+              StateMessage(
+                icon: AppIcons.vocabulary,
+                title: context.l10n.noTermsYet,
+                message: context.l10n.vocabularyEmptyMessage,
+              ),
+            ],
+            _ => [
+              if (selected == null)
+                SegmentedControl(
+                  options: [
+                    for (final view in VocabularyView.values)
+                      context.l10n.vocabularyView(view.name),
+                  ],
+                  selected: _view.index,
+                  onChanged: (i) =>
+                      setState(() => _view = VocabularyView.values[i]),
+                ),
+              ...switch (_view) {
+                VocabularyView.terms => _terms(data, entries, visible),
+                VocabularyView.groups => _groups(data),
+              },
+            ],
+          },
+        ),
+      );
+    });
   }
 
   List<Widget> _terms(
@@ -190,7 +170,7 @@ class VocabularyPageState extends State<VocabularyPage> with TermActions {
     List<TermEntry> entries,
     List<TermEntry> visible,
   ) {
-    final selected = _controller.selected;
+    final selected = controller.selected;
     return [
       SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -236,9 +216,9 @@ class VocabularyPageState extends State<VocabularyPage> with TermActions {
             selected: selected?.contains(entry.term.id) ?? false,
             onTap: selected == null
                 ? () => TermPage.open(context, entry.term)
-                : () => _controller.toggle(entry.term.id),
+                : () => controller.toggle(entry.term.id),
             onLongPress: selected == null
-                ? () => _controller.select({entry.term.id})
+                ? () => controller.select({entry.term.id})
                 : null,
           ),
     ];
