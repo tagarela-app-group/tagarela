@@ -9,7 +9,7 @@ void main() {
     var taps = 0;
     await tester.pumpComponent(ReviewCard(count: 7, onStart: () => taps++));
 
-    expect(find.text('7 termos esperando'), findsOneWidget);
+    expect(find.text('7 termos'), findsOneWidget);
     await tester.tap(find.text('Começar'));
     expect(taps, 1);
   });

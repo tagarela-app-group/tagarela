@@ -59,7 +59,6 @@ abstract final class AppBubbleSize {
   static const xs = 28.0;
   static const sm = 32.0;
   static const md = 40.0;
-  static const lg = 48.0;
   static const xl = 52.0;
   static const xxl = 56.0;
   static const hero = 64.0;

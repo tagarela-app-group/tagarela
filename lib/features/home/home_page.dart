@@ -63,11 +63,6 @@ class HomePage extends StatelessWidget {
         return AppPage(
           header: header,
           children: [
-            VocabularySummary(
-              learning: vocabulary.learningCount,
-              mastered: vocabulary.masteredCount,
-              onSeeAll: onSeeVocabulary,
-            ),
             if (review.due > 0)
               ReviewCard(
                 count: review.due,
@@ -75,6 +70,11 @@ class HomePage extends StatelessWidget {
                     ? null
                     : () => PracticePage.openReview(context, review.rounds),
               ),
+            VocabularySummary(
+              learning: vocabulary.learningCount,
+              mastered: vocabulary.masteredCount,
+              onSeeAll: onSeeVocabulary,
+            ),
           ],
         );
       },

@@ -460,18 +460,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get reviewToday => 'Revisão de hoje';
 
   @override
-  String termsWaiting(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count termos esperando',
-      one: '1 termo esperando',
-      zero: '$count termos esperando',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get start => 'Começar';
 
   @override

@@ -8,7 +8,7 @@ Detalhe de cada feature, minigames e ambientes: `docs/produto.md`. Antes de mexe
 
 1. Antes de alterar algo (código, doc, config, mockup): propor (o quê, onde, opções, recomendação) e esperar ok. Pedido fere regra/boa prática: avisar e propor alternativa.
 2. UI: reusar o design system. Nada serve: procurar peça parecida em todo `lib/`, inclusive `_X` e widget de feature, e extrair pra lá, com nome pelo que é e API genérica. Valor visual sempre token (`test/design_tokens_test.dart` cobra).
-3. Código novo/alterado: com teste. Bug: teste que reproduz. Teste cobra regra, toque, estado, acessibilidade, animação e layout que não pode quebrar. Não testa cópia do código (valor igual ao token ou ao mockup, constante, repasse pro Flutter ou lib) nem o que outro teste já cobre (página: ligação com o store; widget: desenho; store: regra). Antes de escrever, dizer que bug ele pegaria; nenhum, não escreve.
+3. Código novo/alterado: com teste. Teste cobra funcionamento: regra, toque, estado, acessibilidade e animação. Não mede layout (largura, altura, posição). Bug de lógica: teste que reproduz; bug só visual não ganha teste. Não testa cópia do código (valor igual ao token ou ao mockup, constante, repasse pro Flutter ou lib) nem o que outro teste já cobre (página: ligação com o store; widget: desenho; store: regra). Antes de escrever, dizer que bug ele pegaria; nenhum, não escreve.
 4. Sem comentário em código/config.
 5. Mudou regra: atualizar aqui. Mudou feature: `docs/produto.md`. Só o que o código não mostra.
 6. Git é do usuário: no máximo um commit local, em branch da `develop` (`feat/ fix/ docs/ ci/ chore/`), nunca direto em `develop`/`main`. Conventional Commits pt-BR, enxuto, sem assinatura de IA. Push, PR, merge e erro da esteira: ele cuida.
