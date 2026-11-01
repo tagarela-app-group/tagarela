@@ -969,5 +969,6 @@ void main() {
     expect(find.byType(PracticePage), findsOneWidget);
     expect(find.text('1/1'), findsOneWidget);
     expect(api.calls.last, 'GET /api/v1/terms/u1/exercises/listen_write');
+    expect(api.studied, [('u1', 'read')]);
   });
 }

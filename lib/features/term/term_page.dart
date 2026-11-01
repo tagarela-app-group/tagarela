@@ -49,7 +49,10 @@ class _TermPageState extends State<TermPage> {
   }
 
   void _onVoice() {
-    if (_voice.speaking != null) _term.heard();
+    if (_voice.speaking != null &&
+        (ModalRoute.of(context)?.isCurrent ?? false)) {
+      _term.heard();
+    }
   }
 
   void _openTerm(String id) {
