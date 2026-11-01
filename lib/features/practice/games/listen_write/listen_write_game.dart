@@ -21,7 +21,7 @@ class ListenWriteGame extends StatefulWidget {
   final ListenWriteExercise exercise;
   final CourseLanguage language;
   final Voice voice;
-  final ValueChanged<Outcome> onSolved;
+  final ValueChanged<RoundPlay> onSolved;
   final Widget? result;
 
   @override
@@ -30,13 +30,16 @@ class ListenWriteGame extends StatefulWidget {
 
 class _ListenWriteGameState extends State<ListenWriteGame> {
   late final _fill = GapFill(widget.exercise.answer);
+  final _clock = Stopwatch()..start();
   var _bursts = 0;
+  var _usedSlow = false;
+  var _replays = 0;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _listen(VoiceSpeed.normal);
+      if (mounted) _listen(VoiceSpeed.normal, auto: true);
     });
   }
 
@@ -46,25 +49,36 @@ class _ListenWriteGameState extends State<ListenWriteGame> {
     super.dispose();
   }
 
-  void _listen(VoiceSpeed speed) {
+  void _listen(VoiceSpeed speed, {bool auto = false}) {
     final voice = widget.voice;
     if (voice.speaking == speed && voice.text == widget.exercise.sentence) {
       voice.stop();
     } else {
+      if (speed == VoiceSpeed.slow) _usedSlow = true;
+      if (!auto) _replays++;
       voice.speak(widget.exercise.sentence, widget.language, speed: speed);
     }
   }
 
+  RoundPlay get _play => RoundPlay(
+    _fill.outcome,
+    usedSlow: _usedSlow,
+    errors: _fill.tries,
+    hints: _fill.hintsUsed,
+    audioReplays: _replays,
+    responseMs: _clock.elapsedMilliseconds,
+  );
+
   void _check() {
     if (_fill.check()) {
       setState(() => _bursts++);
-      widget.onSolved(_fill.outcome);
+      widget.onSolved(_play);
     }
   }
 
   void _reveal() {
     _fill.reveal();
-    widget.onSolved(_fill.outcome);
+    widget.onSolved(_play);
   }
 
   @override

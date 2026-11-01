@@ -22,6 +22,7 @@ class FakeVocabularyApi extends FakeApi {
   final revealed = <String>{};
   final pitfallRevealed = <String>{};
   final formalityRevealed = <String>{};
+  final termFields = <String, Json>{};
   Completer<void>? holdCard;
   final _deleted = <({Json term, String? groupId})>[];
 
@@ -183,6 +184,7 @@ class FakeVocabularyApi extends FakeApi {
               'icon': group['icon'],
               'accent': group['accent'],
             },
+      ...?termFields[id],
       'revealed': revealed.contains(id),
       'pitfall_revealed': pitfallRevealed.contains(id),
       'formality_revealed': formalityRevealed.contains(id),

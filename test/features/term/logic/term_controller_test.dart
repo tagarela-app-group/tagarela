@@ -113,6 +113,79 @@ void main() {
     });
   });
 
+  group('estudo', () {
+    late List<StudyEvent> events;
+    late TermController studied;
+    var failing = false;
+
+    setUp(() {
+      events = [];
+      failing = false;
+      studied = TermController(
+        vocabulary.store,
+        'u1',
+        onStudy: (event) async {
+          if (failing) throw Exception('sem rede');
+          events.add(event);
+        },
+      );
+    });
+
+    tearDown(() => studied.dispose());
+
+    test('abrir a ficha conta como leitura, uma vez só', () async {
+      await studied.load();
+      await studied.load();
+      await pumpEventQueue();
+
+      expect(events, [StudyEvent.read]);
+    });
+
+    test('ouvir conta uma vez e só com a ficha aberta', () async {
+      studied.heard();
+      await pumpEventQueue();
+      expect(events, isEmpty);
+
+      await studied.load();
+      studied
+        ..heard()
+        ..heard();
+      await pumpEventQueue();
+
+      expect(events, [StudyEvent.read, StudyEvent.listened]);
+    });
+
+    test('falhou ao avisar: tenta de novo na próxima vez', () async {
+      failing = true;
+      await studied.load();
+      await pumpEventQueue();
+
+      failing = false;
+      await studied.load();
+      await pumpEventQueue();
+
+      expect(events, [StudyEvent.read]);
+    });
+
+    test('ficha que não abriu não conta como leitura', () async {
+      vocabulary.api.offline = true;
+
+      await studied.load();
+      await pumpEventQueue();
+
+      expect(events, isEmpty);
+    });
+  });
+
+  test('a resposta do Tinha sacado é salva', () async {
+    await term.load();
+
+    term.gotIt(yes: false);
+    await pumpEventQueue();
+
+    expect(vocabulary.api.bodies['PATCH /api/v1/terms/u1'], {'got_it': false});
+  });
+
   group('tabs', () {
     test('sem ficha: nenhuma aba', () {
       expect(term.tabs, isEmpty);

@@ -10,10 +10,12 @@ enum TermTab { context, words, usage }
 enum TermNote { remember, pitfall, formality }
 
 class TermController extends ChangeNotifier {
-  TermController(this._vocabulary, this._id);
+  TermController(this._vocabulary, this._id, {this._onStudy});
 
   final VocabularyStore _vocabulary;
   final String _id;
+  final Future<void> Function(StudyEvent event)? _onStudy;
+  final _studied = <StudyEvent>{};
   final _revealed = <TermNote>{};
   final _bursts = {for (final note in TermNote.values) note: 0};
   TermDetail? _detail;
@@ -67,6 +69,7 @@ class TermController extends ChangeNotifier {
           if (detail.pitfallRevealed) TermNote.pitfall,
           if (detail.formalityRevealed) TermNote.formality,
         });
+      _study(StudyEvent.read);
     } on Exception catch (e) {
       if (_disposed) return;
       _error = e;
@@ -85,6 +88,16 @@ class TermController extends ChangeNotifier {
     if (note == TermNote.remember) _asked = revealed;
     notifyListeners();
     unawaited(_save(note, revealed));
+  }
+
+  void heard() {
+    if (_detail != null) _study(StudyEvent.listened);
+  }
+
+  void gotIt({required bool yes}) => unawaited(_saveGotIt(yes));
+
+  void _study(StudyEvent event) {
+    if (_studied.add(event)) unawaited(_saveStudy(event));
   }
 
   void flip() {
@@ -107,6 +120,22 @@ class TermController extends ChangeNotifier {
       );
     } on Exception {
       return;
+    }
+  }
+
+  Future<void> _saveGotIt(bool yes) async {
+    try {
+      await _vocabulary.reveal(_id, gotIt: yes);
+    } on Exception {
+      return;
+    }
+  }
+
+  Future<void> _saveStudy(StudyEvent event) async {
+    try {
+      await _onStudy?.call(event);
+    } on Exception {
+      _studied.remove(event);
     }
   }
 

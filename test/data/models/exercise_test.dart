@@ -60,15 +60,20 @@ void main() {
   test('sessão de revisão pula rodada de tipo desconhecido', () {
     final session = ReviewSession.fromJson({
       'due': 3,
+      'done': 0,
+      'waiting': 0,
+      'unread': 0,
+      'next_due_at': null,
       'rounds': [
-        {'term': fenceTermJson, 'kind': 'listen_write'},
-        {'term': awkwardTermJson, 'kind': 'crossword'},
+        {'term': fenceTermJson, 'kind': 'listen_write', 'retest': true},
+        {'term': awkwardTermJson, 'kind': 'crossword', 'retest': false},
       ],
     });
 
     expect(session.due, 3);
     expect(session.rounds.single.term.text, 'on the fence');
     expect(session.rounds.single.kind, ExerciseKind.listenWrite);
+    expect(session.rounds.single.retest, isTrue);
   });
 
   test('dominado só no último nível', () {

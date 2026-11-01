@@ -6,6 +6,7 @@ import 'package:tagarela/data/stores/store.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/course/modals/course_modal.dart';
 import 'package:tagarela/features/home/widgets/daily_word_card.dart';
+import 'package:tagarela/features/home/widgets/new_terms_card.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
@@ -82,13 +83,17 @@ class HomePage extends StatelessWidget {
                 onSave: scope.dailyWord.save,
                 onOpen: (term) => TermPage.open(context, term),
               ),
-            if (review.due > 0)
+            if (review.hasSomething)
               ReviewCard(
-                count: review.due,
+                review: review,
+                now: DateTime.now(),
                 onStart: review.rounds.isEmpty
                     ? null
                     : () => PracticePage.openReview(context, review.rounds),
+                onAskForMore: scope.practice.askForMore,
               ),
+            if (review.unread > 0)
+              NewTermsCard(count: review.unread, onSee: onSeeVocabulary),
             VocabularySummary(
               learning: vocabulary.learningCount,
               mastered: vocabulary.masteredCount,

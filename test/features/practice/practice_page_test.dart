@@ -86,6 +86,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Na segunda, valeu!'), findsOneWidget);
+    expect(find.text('Ótimo'), findsOneWidget);
+    expect(find.textContaining('Volta em'), findsOneWidget);
     expect(
       find.text('Ainda tô em cima do muro sobre me mudar pra Lisboa.'),
       findsOneWidget,
@@ -115,6 +117,7 @@ void main() {
 
     expect(find.text('Revisão feita!'), findsOneWidget);
     expect(find.text('0 de 2 de primeira'), findsOneWidget);
+    expect(find.text('2 ficaram mais fortes'), findsOneWidget);
     expect(find.text('+ on the fence about'), findsOneWidget);
     expect(find.text('+ an awkward guy'), findsOneWidget);
     expect(find.text('Na segunda'), findsOneWidget);
@@ -125,6 +128,60 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(PracticePage), findsNothing);
+  });
+
+  testWidgets('grava erros, dicas, repetições e Devagar da rodada', (
+    tester,
+  ) async {
+    final practice = await _open(
+      tester,
+      rounds: [PracticeRound(_fence, ExerciseKind.listenWrite)],
+    );
+
+    await tester.tap(find.text('Devagar'));
+    await tester.pump();
+    await tester.tap(find.bySemanticsLabel('Dica: mostra uma letra'));
+    await tester.pump();
+    await _type(tester, 'nthefanse');
+    await tester.tap(find.text('Conferir'));
+    await tester.pumpAndSettle();
+    await _type(tester, 'ec');
+    await tester.tap(find.text('Conferir'));
+    await tester.pumpAndSettle();
+
+    final attempt = practice.api.attempts.single;
+    expect(attempt['used_slow'], isTrue);
+    expect(attempt['audio_replays'], 1);
+    expect(attempt['errors'], 1);
+    expect(attempt['hints'], 1);
+    expect(attempt['response_ms'], isA<int>());
+  });
+
+  testWidgets('sem usar nada, a abertura não conta como repetição', (
+    tester,
+  ) async {
+    final practice = await _open(
+      tester,
+      rounds: [PracticeRound(_fence, ExerciseKind.listenWrite)],
+    );
+
+    await _type(tester, 'onthefence');
+    await tester.tap(find.text('Conferir'));
+    await tester.pumpAndSettle();
+
+    final attempt = practice.api.attempts.single;
+    expect(attempt['used_slow'], isFalse);
+    expect(attempt['audio_replays'], 0);
+    expect(find.textContaining('De primeira e sem Devagar!'), findsOneWidget);
+  });
+
+  testWidgets('reteste avisa que o termo voltou', (tester) async {
+    await _open(
+      tester,
+      rounds: [PracticeRound(_fence, ExerciseKind.listenWrite, retest: true)],
+    );
+
+    expect(find.text('Esse voltou pra você'), findsOneWidget);
   });
 
   testWidgets('mostrar a resposta fecha a rodada como vista', (tester) async {
@@ -174,6 +231,7 @@ void main() {
     expect(find.text('Treino feito!'), findsOneWidget);
     expect(find.text('2 de 2 de primeira'), findsOneWidget);
     expect(find.text('Treino livre: não conta pra revisão.'), findsOneWidget);
+    expect(find.textContaining('Volta em'), findsNothing);
     expect(practice.api.attempts, isEmpty);
     expect(
       practice.api.calls.where((c) => c.contains('/exercises/')),

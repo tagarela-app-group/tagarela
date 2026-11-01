@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/home/home_page.dart';
 import 'package:tagarela/features/home/widgets/daily_word_card.dart';
+import 'package:tagarela/features/home/widgets/new_terms_card.dart';
 import 'package:tagarela/features/home/widgets/review_card.dart';
 import 'package:tagarela/features/home/widgets/vocabulary_summary.dart';
 import 'package:tagarela/features/practice/practice_page.dart';
@@ -78,8 +79,8 @@ void main() {
     );
 
     expect(
-      tester.widget<ReviewCard>(find.byType(ReviewCard)).count,
-      scope.practice.data!.due,
+      tester.widget<ReviewCard>(find.byType(ReviewCard)).review,
+      scope.practice.data,
     );
   });
 
@@ -275,8 +276,49 @@ void main() {
     );
 
     final card = tester.widget<ReviewCard>(find.byType(ReviewCard));
-    expect(card.count, 4);
+    expect(card.review.due, 4);
     expect(card.onStart, isNull);
+  });
+
+  testWidgets('termo novo: convida a conhecer e leva ao vocabulário', (
+    tester,
+  ) async {
+    var seen = 0;
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () => seen++, onCapture: () {}),
+      deps: fakeDependencies(
+        practice: fakePractice(
+          FakePracticeApi(due: 0, unread: 3, rounds: []),
+        ).store,
+      ),
+    );
+
+    expect(find.byType(ReviewCard), findsNothing);
+    expect(find.text('3 termos novos pra conhecer'), findsOneWidget);
+
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NewTermsCard),
+        matching: find.text('Ver tudo'),
+      ),
+    );
+    expect(seen, 1);
+  });
+
+  testWidgets('pedir mais avisa a API e recarrega a revisão', (tester) async {
+    final practice = fakePractice(
+      FakePracticeApi(due: 0, done: 10, waiting: 2, rounds: []),
+    );
+    await tester.pumpPage(
+      HomePage(onSeeVocabulary: () {}, onCapture: () {}),
+      deps: fakeDependencies(practice: practice.store),
+    );
+
+    await tester.tap(find.text('Pedir mais'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(practice.api.askedForMore, 1);
   });
 }
 

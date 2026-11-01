@@ -2337,6 +2337,156 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Treino livre: não conta pra revisão.'**
   String get practiceFree;
+
+  /// No description provided for @reviewProgress.
+  ///
+  /// In pt, this message translates to:
+  /// **'{done} de {total}'**
+  String reviewProgress(int done, int total);
+
+  /// No description provided for @reviewMinutes.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Menos de 1 min} =1{Cerca de 1 min} other{Cerca de {count} min}}'**
+  String reviewMinutes(int count);
+
+  /// No description provided for @reviewEnough.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por hoje é só'**
+  String get reviewEnough;
+
+  /// No description provided for @reviewWaiting.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Nenhum termo esperando} =1{1 termo esperando} other{{count} termos esperando}}'**
+  String reviewWaiting(int count);
+
+  /// No description provided for @reviewAskMore.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedir mais'**
+  String get reviewAskMore;
+
+  /// No description provided for @reviewAllDone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tudo em dia'**
+  String get reviewAllDone;
+
+  /// No description provided for @nextReviewInDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{A próxima vem hoje} =1{A próxima vem em 1 dia} other{A próxima vem em {count} dias}}'**
+  String nextReviewInDays(int count);
+
+  /// No description provided for @nextReviewInHours.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{A próxima vem já} =1{A próxima vem em 1 hora} other{A próxima vem em {count} horas}}'**
+  String nextReviewInHours(int count);
+
+  /// No description provided for @returnsNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já pode voltar pra revisão'**
+  String get returnsNow;
+
+  /// No description provided for @returnsInDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Volta hoje} =1{Volta em 1 dia} other{Volta em {count} dias}}'**
+  String returnsInDays(int count);
+
+  /// No description provided for @returnsInHours.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Volta já} =1{Volta em 1 hora} other{Volta em {count} horas}}'**
+  String returnsInHours(int count);
+
+  /// No description provided for @termMemory.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{memória de menos de 1 dia} =1{memória de 1 dia} other{memória de {count} dias}}'**
+  String termMemory(int count);
+
+  /// No description provided for @newTerms.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Nenhum termo novo} =1{1 termo novo pra conhecer} other{{count} termos novos pra conhecer}}'**
+  String newTerms(int count);
+
+  /// No description provided for @newTermsHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abra a ficha e eles entram na revisão.'**
+  String get newTermsHint;
+
+  /// No description provided for @retestLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esse voltou pra você'**
+  String get retestLabel;
+
+  /// No description provided for @roundRating.
+  ///
+  /// In pt, this message translates to:
+  /// **'{rating, select, poor{Ruim} fair{Regular} good{Bom} great{Ótimo} other{}}'**
+  String roundRating(String rating);
+
+  /// No description provided for @feedbackClean.
+  ///
+  /// In pt, this message translates to:
+  /// **'De primeira e sem Devagar!'**
+  String get feedbackClean;
+
+  /// No description provided for @feedbackSlow.
+  ///
+  /// In pt, this message translates to:
+  /// **'De primeira, com uma força do Devagar.'**
+  String get feedbackSlow;
+
+  /// No description provided for @feedbackPoor.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem drama, esse volta logo.'**
+  String get feedbackPoor;
+
+  /// No description provided for @feedbackMastered.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dominou!'**
+  String get feedbackMastered;
+
+  /// No description provided for @feedbackEscaped.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escapou um pouco, sem problema.'**
+  String get feedbackEscaped;
+
+  /// No description provided for @feedbackRetest.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anotado! Ele volta amanhã.'**
+  String get feedbackRetest;
+
+  /// No description provided for @recapStronger.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{nenhum ficou mais forte} =1{1 ficou mais forte} other{{count} ficaram mais fortes}}'**
+  String recapStronger(int count);
+
+  /// No description provided for @recapMastered.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{nenhum foi dominado} =1{1 foi dominado} other{{count} foram dominados}}'**
+  String recapMastered(int count);
+
+  /// No description provided for @recapBackToday.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{nenhum volta hoje} =1{1 volta hoje} other{{count} voltam hoje}}'**
+  String recapBackToday(int count);
 }
 
 class _AppLocalizationsDelegate

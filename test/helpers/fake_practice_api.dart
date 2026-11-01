@@ -27,6 +27,22 @@ const Json awkwardTermJson = {
   'level': 0,
 };
 
+const Json attemptEffectJson = {
+  'role': 'session',
+  'rating': 'great',
+  'level_before': 2,
+  'level': 3,
+  'interval_before': 8.0,
+  'interval_days': 20.0,
+  'due_at': '2036-11-21T12:00:00Z',
+};
+
+const Json roundJson = {
+  'term': fenceTermJson,
+  'kind': 'listen_write',
+  'retest': false,
+};
+
 Json listenWriteJson(
   String id, {
   String sentence = "I'm still on the fence about moving to Lisbon.",
@@ -52,17 +68,30 @@ Json listenWriteJson(
 }
 
 class FakePracticeApi extends FakeApi {
-  FakePracticeApi({this.due = 2, List<Json>? rounds})
-    : rounds =
-          rounds ??
-          [
-            {'term': fenceTermJson, 'kind': 'listen_write'},
-            {'term': awkwardTermJson, 'kind': 'listen_write'},
-          ];
+  FakePracticeApi({
+    this.due = 2,
+    this.done = 0,
+    this.waiting = 0,
+    this.unread = 0,
+    this.nextDueAt,
+    List<Json>? rounds,
+  }) : rounds =
+           rounds ??
+           [
+             roundJson,
+             {'term': awkwardTermJson, 'kind': 'listen_write', 'retest': false},
+           ];
 
   int due;
+  int done;
+  int waiting;
+  int unread;
+  String? nextDueAt;
   final List<Json> rounds;
   final attempts = <Map<String, Object?>>[];
+  final studied = <(String, Object?)>[];
+  Json effect = attemptEffectJson;
+  var askedForMore = 0;
   final exercises = <String, List<Json>>{
     't-fence': [
       listenWriteJson('e-fence-0'),
@@ -91,14 +120,33 @@ class FakePracticeApi extends FakeApi {
     String path,
     Map<String, Object?>? body,
   ) async {
-    if (method == 'POST') return _attempt(body!);
+    if (method == 'POST') return _post(path, body!);
     if (path.startsWith('/api/v1/reviews')) {
-      return {'due': due, 'rounds': rounds};
+      return {
+        'due': due,
+        'done': done,
+        'waiting': waiting,
+        'unread': unread,
+        'next_due_at': nextDueAt,
+        'rounds': rounds,
+      };
     }
     await hold?.future;
     final termId = path.split('/')[4];
     if (failing.contains(termId)) throw ApiException(503, 'GET $path');
     return {'exercises': exercises[termId] ?? const <Json>[]};
+  }
+
+  Json? _post(String path, Map<String, Object?> body) {
+    if (path == '/api/v1/reviews/more') {
+      askedForMore++;
+      return null;
+    }
+    if (path.endsWith('/study')) {
+      studied.add((path.split('/')[4], body['event']));
+      return const {'term': fenceTermJson};
+    }
+    return _attempt(body);
   }
 
   Json _attempt(Map<String, Object?> body) {
@@ -108,6 +156,7 @@ class FakePracticeApi extends FakeApi {
     ].firstWhere((t) => t['id'] == body['term']);
     return {
       'term': {...term, 'level': (term['level']! as int) + 1},
+      'effect': effect,
     };
   }
 }

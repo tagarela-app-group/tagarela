@@ -22,7 +22,7 @@ Detalhe de cada feature, minigames e ambientes: `docs/produto.md`. Antes de mexe
 
 ## Produto
 
-- Fluxo: captura (foto, áudio, texto) → escolhe termos → confirma → vocabulário → pessoa agrupa → revisão até dominar.
+- Fluxo: captura (foto, áudio, texto) → escolhe termos → confirma → vocabulário → pessoa agrupa → abre a ficha → revisão até dominar.
 - Curso: "aprende X por meio de Y", na conta, um ativo. Capturas, termos e grupos são do curso. O app fala o Y do curso ativo.
 - A pessoa decide; a IA sugere, nunca organiza por ela.
 - Tom de amigo ("você"), captura em um gesto, funciona offline, cor só com significado.

@@ -1104,6 +1104,86 @@ class $ReviewAttemptRowsTable extends ReviewAttemptRows
         type: DriftSqlType.string,
         requiredDuringInsert: true,
       ).withConverter<Outcome>($ReviewAttemptRowsTable.$converteroutcome);
+  static const VerificationMeta _playedAtMeta = const VerificationMeta(
+    'playedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> playedAt = GeneratedColumn<DateTime>(
+    'played_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _localDateMeta = const VerificationMeta(
+    'localDate',
+  );
+  @override
+  late final GeneratedColumn<String> localDate = GeneratedColumn<String>(
+    'local_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _usedSlowMeta = const VerificationMeta(
+    'usedSlow',
+  );
+  @override
+  late final GeneratedColumn<bool> usedSlow = GeneratedColumn<bool>(
+    'used_slow',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("used_slow" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _errorsMeta = const VerificationMeta('errors');
+  @override
+  late final GeneratedColumn<int> errors = GeneratedColumn<int>(
+    'errors',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _hintsMeta = const VerificationMeta('hints');
+  @override
+  late final GeneratedColumn<int> hints = GeneratedColumn<int>(
+    'hints',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _audioReplaysMeta = const VerificationMeta(
+    'audioReplays',
+  );
+  @override
+  late final GeneratedColumn<int> audioReplays = GeneratedColumn<int>(
+    'audio_replays',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _responseMsMeta = const VerificationMeta(
+    'responseMs',
+  );
+  @override
+  late final GeneratedColumn<int> responseMs = GeneratedColumn<int>(
+    'response_ms',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1112,6 +1192,13 @@ class $ReviewAttemptRowsTable extends ReviewAttemptRows
     kind,
     exercise,
     outcome,
+    playedAt,
+    localDate,
+    usedSlow,
+    errors,
+    hints,
+    audioReplays,
+    responseMs,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1152,6 +1239,51 @@ class $ReviewAttemptRowsTable extends ReviewAttemptRows
         exercise.isAcceptableOrUnknown(data['exercise']!, _exerciseMeta),
       );
     }
+    if (data.containsKey('played_at')) {
+      context.handle(
+        _playedAtMeta,
+        playedAt.isAcceptableOrUnknown(data['played_at']!, _playedAtMeta),
+      );
+    }
+    if (data.containsKey('local_date')) {
+      context.handle(
+        _localDateMeta,
+        localDate.isAcceptableOrUnknown(data['local_date']!, _localDateMeta),
+      );
+    }
+    if (data.containsKey('used_slow')) {
+      context.handle(
+        _usedSlowMeta,
+        usedSlow.isAcceptableOrUnknown(data['used_slow']!, _usedSlowMeta),
+      );
+    }
+    if (data.containsKey('errors')) {
+      context.handle(
+        _errorsMeta,
+        errors.isAcceptableOrUnknown(data['errors']!, _errorsMeta),
+      );
+    }
+    if (data.containsKey('hints')) {
+      context.handle(
+        _hintsMeta,
+        hints.isAcceptableOrUnknown(data['hints']!, _hintsMeta),
+      );
+    }
+    if (data.containsKey('audio_replays')) {
+      context.handle(
+        _audioReplaysMeta,
+        audioReplays.isAcceptableOrUnknown(
+          data['audio_replays']!,
+          _audioReplaysMeta,
+        ),
+      );
+    }
+    if (data.containsKey('response_ms')) {
+      context.handle(
+        _responseMsMeta,
+        responseMs.isAcceptableOrUnknown(data['response_ms']!, _responseMsMeta),
+      );
+    }
     return context;
   }
 
@@ -1189,6 +1321,34 @@ class $ReviewAttemptRowsTable extends ReviewAttemptRows
           data['${effectivePrefix}outcome'],
         )!,
       ),
+      playedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}played_at'],
+      ),
+      localDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_date'],
+      ),
+      usedSlow: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}used_slow'],
+      )!,
+      errors: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}errors'],
+      )!,
+      hints: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hints'],
+      )!,
+      audioReplays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}audio_replays'],
+      )!,
+      responseMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}response_ms'],
+      ),
     );
   }
 
@@ -1211,6 +1371,13 @@ class ReviewAttemptRow extends DataClass
   final ExerciseKind kind;
   final String? exercise;
   final Outcome outcome;
+  final DateTime? playedAt;
+  final String? localDate;
+  final bool usedSlow;
+  final int errors;
+  final int hints;
+  final int audioReplays;
+  final int? responseMs;
   const ReviewAttemptRow({
     required this.id,
     required this.owner,
@@ -1218,6 +1385,13 @@ class ReviewAttemptRow extends DataClass
     required this.kind,
     this.exercise,
     required this.outcome,
+    this.playedAt,
+    this.localDate,
+    required this.usedSlow,
+    required this.errors,
+    required this.hints,
+    required this.audioReplays,
+    this.responseMs,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1238,6 +1412,19 @@ class ReviewAttemptRow extends DataClass
         $ReviewAttemptRowsTable.$converteroutcome.toSql(outcome),
       );
     }
+    if (!nullToAbsent || playedAt != null) {
+      map['played_at'] = Variable<DateTime>(playedAt);
+    }
+    if (!nullToAbsent || localDate != null) {
+      map['local_date'] = Variable<String>(localDate);
+    }
+    map['used_slow'] = Variable<bool>(usedSlow);
+    map['errors'] = Variable<int>(errors);
+    map['hints'] = Variable<int>(hints);
+    map['audio_replays'] = Variable<int>(audioReplays);
+    if (!nullToAbsent || responseMs != null) {
+      map['response_ms'] = Variable<int>(responseMs);
+    }
     return map;
   }
 
@@ -1251,6 +1438,19 @@ class ReviewAttemptRow extends DataClass
           ? const Value.absent()
           : Value(exercise),
       outcome: Value(outcome),
+      playedAt: playedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(playedAt),
+      localDate: localDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localDate),
+      usedSlow: Value(usedSlow),
+      errors: Value(errors),
+      hints: Value(hints),
+      audioReplays: Value(audioReplays),
+      responseMs: responseMs == null && nullToAbsent
+          ? const Value.absent()
+          : Value(responseMs),
     );
   }
 
@@ -1270,6 +1470,13 @@ class ReviewAttemptRow extends DataClass
       outcome: $ReviewAttemptRowsTable.$converteroutcome.fromJson(
         serializer.fromJson<String>(json['outcome']),
       ),
+      playedAt: serializer.fromJson<DateTime?>(json['playedAt']),
+      localDate: serializer.fromJson<String?>(json['localDate']),
+      usedSlow: serializer.fromJson<bool>(json['usedSlow']),
+      errors: serializer.fromJson<int>(json['errors']),
+      hints: serializer.fromJson<int>(json['hints']),
+      audioReplays: serializer.fromJson<int>(json['audioReplays']),
+      responseMs: serializer.fromJson<int?>(json['responseMs']),
     );
   }
   @override
@@ -1286,6 +1493,13 @@ class ReviewAttemptRow extends DataClass
       'outcome': serializer.toJson<String>(
         $ReviewAttemptRowsTable.$converteroutcome.toJson(outcome),
       ),
+      'playedAt': serializer.toJson<DateTime?>(playedAt),
+      'localDate': serializer.toJson<String?>(localDate),
+      'usedSlow': serializer.toJson<bool>(usedSlow),
+      'errors': serializer.toJson<int>(errors),
+      'hints': serializer.toJson<int>(hints),
+      'audioReplays': serializer.toJson<int>(audioReplays),
+      'responseMs': serializer.toJson<int?>(responseMs),
     };
   }
 
@@ -1296,6 +1510,13 @@ class ReviewAttemptRow extends DataClass
     ExerciseKind? kind,
     Value<String?> exercise = const Value.absent(),
     Outcome? outcome,
+    Value<DateTime?> playedAt = const Value.absent(),
+    Value<String?> localDate = const Value.absent(),
+    bool? usedSlow,
+    int? errors,
+    int? hints,
+    int? audioReplays,
+    Value<int?> responseMs = const Value.absent(),
   }) => ReviewAttemptRow(
     id: id ?? this.id,
     owner: owner ?? this.owner,
@@ -1303,6 +1524,13 @@ class ReviewAttemptRow extends DataClass
     kind: kind ?? this.kind,
     exercise: exercise.present ? exercise.value : this.exercise,
     outcome: outcome ?? this.outcome,
+    playedAt: playedAt.present ? playedAt.value : this.playedAt,
+    localDate: localDate.present ? localDate.value : this.localDate,
+    usedSlow: usedSlow ?? this.usedSlow,
+    errors: errors ?? this.errors,
+    hints: hints ?? this.hints,
+    audioReplays: audioReplays ?? this.audioReplays,
+    responseMs: responseMs.present ? responseMs.value : this.responseMs,
   );
   ReviewAttemptRow copyWithCompanion(ReviewAttemptRowsCompanion data) {
     return ReviewAttemptRow(
@@ -1312,6 +1540,17 @@ class ReviewAttemptRow extends DataClass
       kind: data.kind.present ? data.kind.value : this.kind,
       exercise: data.exercise.present ? data.exercise.value : this.exercise,
       outcome: data.outcome.present ? data.outcome.value : this.outcome,
+      playedAt: data.playedAt.present ? data.playedAt.value : this.playedAt,
+      localDate: data.localDate.present ? data.localDate.value : this.localDate,
+      usedSlow: data.usedSlow.present ? data.usedSlow.value : this.usedSlow,
+      errors: data.errors.present ? data.errors.value : this.errors,
+      hints: data.hints.present ? data.hints.value : this.hints,
+      audioReplays: data.audioReplays.present
+          ? data.audioReplays.value
+          : this.audioReplays,
+      responseMs: data.responseMs.present
+          ? data.responseMs.value
+          : this.responseMs,
     );
   }
 
@@ -1323,13 +1562,34 @@ class ReviewAttemptRow extends DataClass
           ..write('term: $term, ')
           ..write('kind: $kind, ')
           ..write('exercise: $exercise, ')
-          ..write('outcome: $outcome')
+          ..write('outcome: $outcome, ')
+          ..write('playedAt: $playedAt, ')
+          ..write('localDate: $localDate, ')
+          ..write('usedSlow: $usedSlow, ')
+          ..write('errors: $errors, ')
+          ..write('hints: $hints, ')
+          ..write('audioReplays: $audioReplays, ')
+          ..write('responseMs: $responseMs')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, owner, term, kind, exercise, outcome);
+  int get hashCode => Object.hash(
+    id,
+    owner,
+    term,
+    kind,
+    exercise,
+    outcome,
+    playedAt,
+    localDate,
+    usedSlow,
+    errors,
+    hints,
+    audioReplays,
+    responseMs,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1339,7 +1599,14 @@ class ReviewAttemptRow extends DataClass
           other.term == this.term &&
           other.kind == this.kind &&
           other.exercise == this.exercise &&
-          other.outcome == this.outcome);
+          other.outcome == this.outcome &&
+          other.playedAt == this.playedAt &&
+          other.localDate == this.localDate &&
+          other.usedSlow == this.usedSlow &&
+          other.errors == this.errors &&
+          other.hints == this.hints &&
+          other.audioReplays == this.audioReplays &&
+          other.responseMs == this.responseMs);
 }
 
 class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
@@ -1349,6 +1616,13 @@ class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
   final Value<ExerciseKind> kind;
   final Value<String?> exercise;
   final Value<Outcome> outcome;
+  final Value<DateTime?> playedAt;
+  final Value<String?> localDate;
+  final Value<bool> usedSlow;
+  final Value<int> errors;
+  final Value<int> hints;
+  final Value<int> audioReplays;
+  final Value<int?> responseMs;
   final Value<int> rowid;
   const ReviewAttemptRowsCompanion({
     this.id = const Value.absent(),
@@ -1357,6 +1631,13 @@ class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
     this.kind = const Value.absent(),
     this.exercise = const Value.absent(),
     this.outcome = const Value.absent(),
+    this.playedAt = const Value.absent(),
+    this.localDate = const Value.absent(),
+    this.usedSlow = const Value.absent(),
+    this.errors = const Value.absent(),
+    this.hints = const Value.absent(),
+    this.audioReplays = const Value.absent(),
+    this.responseMs = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ReviewAttemptRowsCompanion.insert({
@@ -1366,6 +1647,13 @@ class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
     required ExerciseKind kind,
     this.exercise = const Value.absent(),
     required Outcome outcome,
+    this.playedAt = const Value.absent(),
+    this.localDate = const Value.absent(),
+    this.usedSlow = const Value.absent(),
+    this.errors = const Value.absent(),
+    this.hints = const Value.absent(),
+    this.audioReplays = const Value.absent(),
+    this.responseMs = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        owner = Value(owner),
@@ -1379,6 +1667,13 @@ class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
     Expression<String>? kind,
     Expression<String>? exercise,
     Expression<String>? outcome,
+    Expression<DateTime>? playedAt,
+    Expression<String>? localDate,
+    Expression<bool>? usedSlow,
+    Expression<int>? errors,
+    Expression<int>? hints,
+    Expression<int>? audioReplays,
+    Expression<int>? responseMs,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1388,6 +1683,13 @@ class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
       if (kind != null) 'kind': kind,
       if (exercise != null) 'exercise': exercise,
       if (outcome != null) 'outcome': outcome,
+      if (playedAt != null) 'played_at': playedAt,
+      if (localDate != null) 'local_date': localDate,
+      if (usedSlow != null) 'used_slow': usedSlow,
+      if (errors != null) 'errors': errors,
+      if (hints != null) 'hints': hints,
+      if (audioReplays != null) 'audio_replays': audioReplays,
+      if (responseMs != null) 'response_ms': responseMs,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1399,6 +1701,13 @@ class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
     Value<ExerciseKind>? kind,
     Value<String?>? exercise,
     Value<Outcome>? outcome,
+    Value<DateTime?>? playedAt,
+    Value<String?>? localDate,
+    Value<bool>? usedSlow,
+    Value<int>? errors,
+    Value<int>? hints,
+    Value<int>? audioReplays,
+    Value<int?>? responseMs,
     Value<int>? rowid,
   }) {
     return ReviewAttemptRowsCompanion(
@@ -1408,6 +1717,13 @@ class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
       kind: kind ?? this.kind,
       exercise: exercise ?? this.exercise,
       outcome: outcome ?? this.outcome,
+      playedAt: playedAt ?? this.playedAt,
+      localDate: localDate ?? this.localDate,
+      usedSlow: usedSlow ?? this.usedSlow,
+      errors: errors ?? this.errors,
+      hints: hints ?? this.hints,
+      audioReplays: audioReplays ?? this.audioReplays,
+      responseMs: responseMs ?? this.responseMs,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1437,6 +1753,27 @@ class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
         $ReviewAttemptRowsTable.$converteroutcome.toSql(outcome.value),
       );
     }
+    if (playedAt.present) {
+      map['played_at'] = Variable<DateTime>(playedAt.value);
+    }
+    if (localDate.present) {
+      map['local_date'] = Variable<String>(localDate.value);
+    }
+    if (usedSlow.present) {
+      map['used_slow'] = Variable<bool>(usedSlow.value);
+    }
+    if (errors.present) {
+      map['errors'] = Variable<int>(errors.value);
+    }
+    if (hints.present) {
+      map['hints'] = Variable<int>(hints.value);
+    }
+    if (audioReplays.present) {
+      map['audio_replays'] = Variable<int>(audioReplays.value);
+    }
+    if (responseMs.present) {
+      map['response_ms'] = Variable<int>(responseMs.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1452,6 +1789,13 @@ class ReviewAttemptRowsCompanion extends UpdateCompanion<ReviewAttemptRow> {
           ..write('kind: $kind, ')
           ..write('exercise: $exercise, ')
           ..write('outcome: $outcome, ')
+          ..write('playedAt: $playedAt, ')
+          ..write('localDate: $localDate, ')
+          ..write('usedSlow: $usedSlow, ')
+          ..write('errors: $errors, ')
+          ..write('hints: $hints, ')
+          ..write('audioReplays: $audioReplays, ')
+          ..write('responseMs: $responseMs, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2033,6 +2377,13 @@ typedef $$ReviewAttemptRowsTableCreateCompanionBuilder =
       required ExerciseKind kind,
       Value<String?> exercise,
       required Outcome outcome,
+      Value<DateTime?> playedAt,
+      Value<String?> localDate,
+      Value<bool> usedSlow,
+      Value<int> errors,
+      Value<int> hints,
+      Value<int> audioReplays,
+      Value<int?> responseMs,
       Value<int> rowid,
     });
 typedef $$ReviewAttemptRowsTableUpdateCompanionBuilder =
@@ -2043,6 +2394,13 @@ typedef $$ReviewAttemptRowsTableUpdateCompanionBuilder =
       Value<ExerciseKind> kind,
       Value<String?> exercise,
       Value<Outcome> outcome,
+      Value<DateTime?> playedAt,
+      Value<String?> localDate,
+      Value<bool> usedSlow,
+      Value<int> errors,
+      Value<int> hints,
+      Value<int> audioReplays,
+      Value<int?> responseMs,
       Value<int> rowid,
     });
 
@@ -2086,6 +2444,41 @@ class $$ReviewAttemptRowsTableFilterComposer
         column: $table.outcome,
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
+
+  ColumnFilters<DateTime> get playedAt => $composableBuilder(
+    column: $table.playedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localDate => $composableBuilder(
+    column: $table.localDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get usedSlow => $composableBuilder(
+    column: $table.usedSlow,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get errors => $composableBuilder(
+    column: $table.errors,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hints => $composableBuilder(
+    column: $table.hints,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get audioReplays => $composableBuilder(
+    column: $table.audioReplays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get responseMs => $composableBuilder(
+    column: $table.responseMs,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$ReviewAttemptRowsTableOrderingComposer
@@ -2126,6 +2519,41 @@ class $$ReviewAttemptRowsTableOrderingComposer
     column: $table.outcome,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<DateTime> get playedAt => $composableBuilder(
+    column: $table.playedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localDate => $composableBuilder(
+    column: $table.localDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get usedSlow => $composableBuilder(
+    column: $table.usedSlow,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get errors => $composableBuilder(
+    column: $table.errors,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hints => $composableBuilder(
+    column: $table.hints,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get audioReplays => $composableBuilder(
+    column: $table.audioReplays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get responseMs => $composableBuilder(
+    column: $table.responseMs,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ReviewAttemptRowsTableAnnotationComposer
@@ -2154,6 +2582,31 @@ class $$ReviewAttemptRowsTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<Outcome, String> get outcome =>
       $composableBuilder(column: $table.outcome, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get playedAt =>
+      $composableBuilder(column: $table.playedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get localDate =>
+      $composableBuilder(column: $table.localDate, builder: (column) => column);
+
+  GeneratedColumn<bool> get usedSlow =>
+      $composableBuilder(column: $table.usedSlow, builder: (column) => column);
+
+  GeneratedColumn<int> get errors =>
+      $composableBuilder(column: $table.errors, builder: (column) => column);
+
+  GeneratedColumn<int> get hints =>
+      $composableBuilder(column: $table.hints, builder: (column) => column);
+
+  GeneratedColumn<int> get audioReplays => $composableBuilder(
+    column: $table.audioReplays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get responseMs => $composableBuilder(
+    column: $table.responseMs,
+    builder: (column) => column,
+  );
 }
 
 class $$ReviewAttemptRowsTableTableManager
@@ -2202,6 +2655,13 @@ class $$ReviewAttemptRowsTableTableManager
                 Value<ExerciseKind> kind = const Value.absent(),
                 Value<String?> exercise = const Value.absent(),
                 Value<Outcome> outcome = const Value.absent(),
+                Value<DateTime?> playedAt = const Value.absent(),
+                Value<String?> localDate = const Value.absent(),
+                Value<bool> usedSlow = const Value.absent(),
+                Value<int> errors = const Value.absent(),
+                Value<int> hints = const Value.absent(),
+                Value<int> audioReplays = const Value.absent(),
+                Value<int?> responseMs = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ReviewAttemptRowsCompanion(
                 id: id,
@@ -2210,6 +2670,13 @@ class $$ReviewAttemptRowsTableTableManager
                 kind: kind,
                 exercise: exercise,
                 outcome: outcome,
+                playedAt: playedAt,
+                localDate: localDate,
+                usedSlow: usedSlow,
+                errors: errors,
+                hints: hints,
+                audioReplays: audioReplays,
+                responseMs: responseMs,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2220,6 +2687,13 @@ class $$ReviewAttemptRowsTableTableManager
                 required ExerciseKind kind,
                 Value<String?> exercise = const Value.absent(),
                 required Outcome outcome,
+                Value<DateTime?> playedAt = const Value.absent(),
+                Value<String?> localDate = const Value.absent(),
+                Value<bool> usedSlow = const Value.absent(),
+                Value<int> errors = const Value.absent(),
+                Value<int> hints = const Value.absent(),
+                Value<int> audioReplays = const Value.absent(),
+                Value<int?> responseMs = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ReviewAttemptRowsCompanion.insert(
                 id: id,
@@ -2228,6 +2702,13 @@ class $$ReviewAttemptRowsTableTableManager
                 kind: kind,
                 exercise: exercise,
                 outcome: outcome,
+                playedAt: playedAt,
+                localDate: localDate,
+                usedSlow: usedSlow,
+                errors: errors,
+                hints: hints,
+                audioReplays: audioReplays,
+                responseMs: responseMs,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -15,6 +15,8 @@ class RoundResult extends StatelessWidget {
     required this.voice,
     required this.last,
     required this.onNext,
+    this.feedback,
+    this.rating,
   });
 
   final Exercise exercise;
@@ -24,6 +26,8 @@ class RoundResult extends StatelessWidget {
   final Voice voice;
   final bool last;
   final VoidCallback onNext;
+  final String? feedback;
+  final RoundRating? rating;
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +69,27 @@ class RoundResult extends StatelessWidget {
                     style: AppText.titleMd.copyWith(color: c.ink),
                   ),
                 ),
+                if (rating case final rating?)
+                  StatusPill(
+                    label: l10n.roundRating(rating.name),
+                    tone: switch (rating) {
+                      RoundRating.poor => StatusTone.alert,
+                      RoundRating.fair => StatusTone.learning,
+                      RoundRating.good => StatusTone.primary,
+                      RoundRating.great => StatusTone.mastered,
+                    },
+                  ),
               ],
             ),
           ),
+          if (feedback case final feedback?)
+            Semantics(
+              liveRegion: true,
+              child: Text(
+                feedback,
+                style: AppText.bodyLg.copyWith(color: c.inkSoft),
+              ),
+            ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: AppSpacing.s1,

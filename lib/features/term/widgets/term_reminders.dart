@@ -16,6 +16,7 @@ class TermReminders extends StatelessWidget {
     required this.asked,
     required this.bursts,
     required this.onReveal,
+    required this.onGotIt,
     required this.pitfallRevealed,
     required this.pitfallBursts,
     required this.onPitfallReveal,
@@ -28,6 +29,7 @@ class TermReminders extends StatelessWidget {
   final bool asked;
   final int bursts;
   final VoidCallback onReveal;
+  final ValueChanged<bool> onGotIt;
   final bool pitfallRevealed;
   final int pitfallBursts;
   final ValueChanged<bool> onPitfallReveal;
@@ -141,7 +143,7 @@ class TermReminders extends StatelessWidget {
                 Positioned.fill(child: BubbleBurst(key: ValueKey(bursts))),
             ],
           ),
-        if (asked) const GotItCheck(),
+        if (asked) GotItCheck(onAnswer: onGotIt),
         if (mistake != null || pitfall != null)
           TermPitfall(
             mistake: mistake,
