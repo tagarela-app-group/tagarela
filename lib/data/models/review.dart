@@ -2,7 +2,7 @@ import 'package:tagarela/data/models/exercise.dart';
 import 'package:tagarela/data/models/json.dart';
 import 'package:tagarela/data/models/term.dart';
 
-enum Outcome { first, retry, hint, missed }
+enum Outcome { first, slip, retry, hint, missed }
 
 enum StudyEvent { read, listened }
 
@@ -128,6 +128,7 @@ class ReviewSession {
     this.waiting = 0,
     this.unread = 0,
     this.nextDueAt,
+    this.kinds = const [],
   });
 
   factory ReviewSession.fromJson(Json json) => ReviewSession(
@@ -139,6 +140,10 @@ class ReviewSession {
       final String at => DateTime.parse(at),
       _ => null,
     },
+    kinds: [
+      for (final key in (json['kinds']! as List).cast<String>())
+        ?ExerciseKind.fromKey(key),
+    ],
     rounds: [
       for (final round in (json['rounds']! as List).cast<Json>())
         if (ExerciseKind.fromKey(round['kind']! as String) case final kind?)
@@ -155,6 +160,7 @@ class ReviewSession {
   final int waiting;
   final int unread;
   final DateTime? nextDueAt;
+  final List<ExerciseKind> kinds;
   final List<ReviewRound> rounds;
 
   bool get hasSomething =>

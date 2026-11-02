@@ -6,6 +6,7 @@ import 'package:tagarela/design_system/design_system.dart';
 import 'package:tagarela/features/practice/games/listen_write/logic/gap_fill.dart';
 import 'package:tagarela/features/practice/games/listen_write/widgets/gap_sentence.dart';
 import 'package:tagarela/features/practice/logic/keyboard_rows.dart';
+import 'package:tagarela/features/practice/logic/round_listening.dart';
 import 'package:tagarela/l10n/l10n.dart';
 
 class ListenWriteGame extends StatefulWidget {
@@ -30,10 +31,9 @@ class ListenWriteGame extends StatefulWidget {
 
 class _ListenWriteGameState extends State<ListenWriteGame> {
   late final _fill = GapFill(widget.exercise.answer);
+  late final _listening = RoundListening(widget.voice, widget.language);
   final _clock = Stopwatch()..start();
   var _bursts = 0;
-  var _usedSlow = false;
-  var _replays = 0;
 
   @override
   void initState() {
@@ -49,23 +49,15 @@ class _ListenWriteGameState extends State<ListenWriteGame> {
     super.dispose();
   }
 
-  void _listen(VoiceSpeed speed, {bool auto = false}) {
-    final voice = widget.voice;
-    if (voice.speaking == speed && voice.text == widget.exercise.sentence) {
-      voice.stop();
-    } else {
-      if (speed == VoiceSpeed.slow) _usedSlow = true;
-      if (!auto) _replays++;
-      voice.speak(widget.exercise.sentence, widget.language, speed: speed);
-    }
-  }
+  void _listen(VoiceSpeed speed, {bool auto = false}) =>
+      _listening.play(widget.exercise.sentence, speed, auto: auto);
 
   RoundPlay get _play => RoundPlay(
     _fill.outcome,
-    usedSlow: _usedSlow,
+    usedSlow: _listening.usedSlow,
     errors: _fill.tries,
     hints: _fill.hintsUsed,
-    audioReplays: _replays,
+    audioReplays: _listening.replays,
     responseMs: _clock.elapsedMilliseconds,
   );
 

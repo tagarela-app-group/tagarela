@@ -53,21 +53,21 @@ void main() {
     test('de primeira e sem Devagar comemora e diz quando volta', () {
       expect(
         feedback(_result(_effect())),
-        'De primeira e sem Devagar! Volta em 20 dias.',
+        'De primeira e sem Devagar! Revisão retorna em 20 dias.',
       );
     });
 
     test('de primeira com Devagar não comemora igual', () {
       expect(
         feedback(_result(_effect(), usedSlow: true)),
-        'De primeira, com uma força do Devagar. Volta em 20 dias.',
+        'De primeira, com uma força do Devagar. Revisão retorna em 20 dias.',
       );
     });
 
     test('foi bem com ajuda só diz quando volta', () {
       expect(
         feedback(_result(_effect(), outcome: Outcome.hint)),
-        'Volta em 20 dias.',
+        'Revisão retorna em 20 dias.',
       );
     });
 
@@ -83,14 +83,14 @@ void main() {
             outcome: Outcome.missed,
           ),
         ),
-        'Sem drama, esse volta logo. Volta em 4 horas.',
+        'Sem drama, esse volta logo. Revisão retorna em 4 horas.',
       );
     });
 
     test('virou dominado e escapou têm texto próprio', () {
       expect(
         feedback(_result(_effect(levelBefore: 4, level: 5))),
-        'Dominou! Volta em 20 dias.',
+        'Dominou! Revisão retorna em 20 dias.',
       );
       expect(
         feedback(
@@ -99,7 +99,7 @@ void main() {
             outcome: Outcome.retry,
           ),
         ),
-        'Escapou um pouco, sem problema. Volta em 20 dias.',
+        'Escapou um pouco, sem problema. Revisão retorna em 20 dias.',
       );
     });
 

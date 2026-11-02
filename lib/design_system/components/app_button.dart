@@ -37,6 +37,8 @@ class AppButton extends StatelessWidget {
     this.size = AppButtonSize.medium,
     this.expand = false,
     this.loading = false,
+    this.maxLines = 1,
+    this.locale,
   });
 
   final String label;
@@ -47,6 +49,8 @@ class AppButton extends StatelessWidget {
 
   final bool expand;
   final bool loading;
+  final int maxLines;
+  final Locale? locale;
 
   static void _ignore() {}
 
@@ -77,9 +81,14 @@ class AppButton extends StatelessWidget {
         disabledBackgroundColor: isText ? Colors.transparent : c.surfaceAlt,
         disabledForegroundColor: c.inkSoft,
         minimumSize: Size(expand ? double.infinity : 0, size.height),
-        padding: EdgeInsets.symmetric(
-          horizontal: isText ? AppSpacing.s2 : AppSpacing.s5,
-        ),
+        padding: maxLines > 1
+            ? const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s3,
+                vertical: AppSpacing.s2,
+              )
+            : EdgeInsets.symmetric(
+                horizontal: isText ? AppSpacing.s2 : AppSpacing.s5,
+              ),
         textStyle: size == AppButtonSize.large
             ? AppText.button.copyWith(fontSize: 16)
             : AppText.button,
@@ -97,7 +106,13 @@ class AppButton extends StatelessWidget {
         children: [
           ?(loading ? AppSpinner(size: 18, color: fg) : leading),
           Flexible(
-            child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+            child: Text(
+              label,
+              locale: locale,
+              maxLines: maxLines,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),

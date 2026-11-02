@@ -6,8 +6,9 @@ import 'package:tagarela/l10n/l10n.dart';
 import 'package:tagarela/shared/logic/exercise_style.dart';
 
 class PracticeCards extends StatelessWidget {
-  const PracticeCards({super.key, required this.onOpen});
+  const PracticeCards({super.key, required this.kinds, required this.onOpen});
 
+  final List<ExerciseKind> kinds;
   final ValueChanged<ExerciseKind> onOpen;
 
   @override
@@ -18,7 +19,7 @@ class PracticeCards extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppSpacing.s2,
       children: [
-        for (final kind in ExerciseKind.values)
+        for (final kind in kinds)
           AppCard(
             onTap: () => onOpen(kind),
             child: Row(

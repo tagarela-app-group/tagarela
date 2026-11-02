@@ -17,6 +17,7 @@ class RoundResult extends StatelessWidget {
     required this.onNext,
     this.feedback,
     this.rating,
+    this.term,
   });
 
   final Exercise exercise;
@@ -28,6 +29,7 @@ class RoundResult extends StatelessWidget {
   final VoidCallback onNext;
   final String? feedback;
   final RoundRating? rating;
+  final String? term;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class RoundResult extends StatelessWidget {
     final l10n = context.l10n;
     final (icon, bg, fg) = switch (outcome) {
       Outcome.first ||
+      Outcome.slip ||
       Outcome.retry => (AppIcons.check, c.primary, c.onPrimary),
       Outcome.hint => (AppIcons.idea, c.learningSoft, c.learningText),
       Outcome.missed => (AppIcons.reveal, c.surfaceAlt, c.alert),
@@ -82,29 +85,54 @@ class RoundResult extends StatelessWidget {
               ],
             ),
           ),
-          if (feedback case final feedback?)
+          if (term case final term?)
             Semantics(
               liveRegion: true,
-              child: Text(
-                feedback,
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: term,
+                      locale: Locale(learning.name),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: c.ink,
+                      ),
+                    ),
+                    TextSpan(text: ': ${exercise.translation}.'),
+                    if (feedback case final feedback?)
+                      TextSpan(text: ' $feedback'),
+                  ],
+                ),
+                locale: Locale(base.name),
                 style: AppText.bodyLg.copyWith(color: c.inkSoft),
               ),
+            )
+          else ...[
+            if (feedback case final feedback?)
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  feedback,
+                  style: AppText.bodyLg.copyWith(color: c.inkSoft),
+                ),
+              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: AppSpacing.s1,
+              children: [
+                Text(
+                  l10n.means.toUpperCase(),
+                  style: AppText.overline.copyWith(color: c.inkSoft),
+                ),
+                Text(
+                  exercise.translation,
+                  locale: Locale(base.name),
+                  style: AppText.bodyLg.copyWith(color: c.ink),
+                ),
+              ],
             ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: AppSpacing.s1,
-            children: [
-              Text(
-                l10n.means.toUpperCase(),
-                style: AppText.overline.copyWith(color: c.inkSoft),
-              ),
-              Text(
-                exercise.translation,
-                locale: Locale(base.name),
-                style: AppText.bodyLg.copyWith(color: c.ink),
-              ),
-            ],
-          ),
+          ],
           Container(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.s4,

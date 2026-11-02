@@ -26,6 +26,9 @@
 ## Minigames
 
 - Minigames em `lib/features/practice/`: `practice_page.dart` (modo jogo, serve revisão e treino da ficha), `logic/practice_session.dart` (rodadas, busca com a próxima já pedida, resultados, gravação) e `games/<tipo>/` (um jogo por pasta, com `logic/` e `widgets/`). `games/games.dart` liga cada `Exercise` (sealed) ao jogo num `switch` exaustivo; o ícone fica em `shared/logic/exercise_style.dart`. Minigame novo: valor em `ExerciseKind` com a chave da API, subclasse de `Exercise` com `fromPayload`, pasta em `games/`, case em `games.dart` e no `exercise_style.dart` e textos no `select` de `exerciseKind`/`exerciseKindHint`; o compilador cobra o resto. O app pede ao `/reviews` só os tipos que conhece.
+- Responde aí (`games/reply/`): conversa com a Nina no idioma aprendido. A resposta tem uma lacuna, e um toque em uma das opções já envia. A conversa continua entre as rodadas com `PracticeSession.conversation`; entre elas, a Nina digitando substitui o carregamento. Resultado: de primeira `first`; 1 erro `slip`; 2 erros `retry`; 3 erros ou Mostrar resposta `missed`. A fala confusa da Nina vem do ARB do idioma aprendido (`lookupAppLocalizations`), não do idioma do app.
+- Carregamento (`GameLoading`): tela cheia, sem X nem progresso, para todos os jogos. A saída aparece depois de `AppMotion.loadingPatience`; se der erro, volta a barra com o X.
+- Os cards da ficha mostram os `kinds` que o `/reviews` devolve, porque o Responde aí só existe com 4 termos lidos no curso.
 
 ## Ambientes
 

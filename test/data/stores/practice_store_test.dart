@@ -21,7 +21,7 @@ void main() {
 
     expect(
       practice.api.calls.single,
-      startsWith('GET /api/v1/reviews?kinds=listen_write&date='),
+      startsWith('GET /api/v1/reviews?kinds=listen_write&kinds=reply&date='),
     );
     expect(practice.store.data!.due, 2);
     expect(practice.store.data!.rounds, hasLength(2));
@@ -42,7 +42,7 @@ void main() {
 
     expect(
       api.calls.single,
-      'GET /api/v1/reviews?kinds=listen_write&date=2026-03-07'
+      'GET /api/v1/reviews?kinds=listen_write&kinds=reply&date=2026-03-07'
       '&offset=${now.timeZoneOffset.inMinutes}',
     );
   });

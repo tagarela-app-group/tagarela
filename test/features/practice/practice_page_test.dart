@@ -27,6 +27,7 @@ Future<FakePractice> _open(
   WidgetTester tester, {
   required List<PracticeRound> rounds,
   bool review = true,
+  bool settle = true,
   FakeVoice? voice,
   FakePracticeApi? api,
 }) async {
@@ -47,9 +48,17 @@ Future<FakePractice> _open(
     deps: fakeDependencies(practice: practice.store, voice: voice),
   );
   await tester.tap(find.text('abrir'));
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump(AppMotion.slow);
+    await tester.pump(AppMotion.slow);
+  }
   return practice;
 }
+
+Finder _visibilityOf(Finder child) =>
+    find.ancestor(of: child, matching: find.byType(Visibility)).first;
 
 void main() {
   testWidgets('revisão: erra, corrige, usa dica e termina no resumo', (
@@ -85,9 +94,9 @@ void main() {
     await tester.tap(find.text('Conferir'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Na segunda, valeu!'), findsOneWidget);
+    expect(find.text('Chegou lá, valeu!'), findsOneWidget);
     expect(find.text('Ótimo'), findsOneWidget);
-    expect(find.textContaining('Volta em'), findsOneWidget);
+    expect(find.textContaining('Revisão retorna em'), findsOneWidget);
     expect(
       find.text('Ainda tô em cima do muro sobre me mudar pra Lisboa.'),
       findsOneWidget,
@@ -120,7 +129,7 @@ void main() {
     expect(find.text('2 ficaram mais fortes'), findsOneWidget);
     expect(find.text('+ on the fence about'), findsOneWidget);
     expect(find.text('+ an awkward guy'), findsOneWidget);
-    expect(find.text('Na segunda'), findsOneWidget);
+    expect(find.text('Chegou lá'), findsOneWidget);
     expect(find.text('Com dica'), findsOneWidget);
     expect(find.text('Treino livre: não conta pra revisão.'), findsNothing);
 
@@ -231,7 +240,7 @@ void main() {
     expect(find.text('Treino feito!'), findsOneWidget);
     expect(find.text('2 de 2 de primeira'), findsOneWidget);
     expect(find.text('Treino livre: não conta pra revisão.'), findsOneWidget);
-    expect(find.textContaining('Volta em'), findsNothing);
+    expect(find.textContaining('Revisão retorna em'), findsNothing);
     expect(practice.api.attempts, isEmpty);
     expect(
       practice.api.calls.where((c) => c.contains('/exercises/')),
@@ -256,7 +265,7 @@ void main() {
     expect(find.text('Conferir'), findsOneWidget);
   });
 
-  testWidgets('enquanto prepara a frase, mostra o balão esperando', (
+  testWidgets('enquanto prepara o jogo, mostra a tela cheia sem o X', (
     tester,
   ) async {
     final api = FakePracticeApi()..hold = Completer();
@@ -266,14 +275,223 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.bySemanticsLabel('Preparando a frase…'), findsOneWidget);
+    expect(find.bySemanticsLabel('Preparando o jogo…'), findsOneWidget);
     expect(find.byType(TypingDots), findsOneWidget);
+    expect(find.byTooltip('Sair'), findsNothing);
 
     api.hold!.complete();
     await tester.pumpAndSettle();
 
     expect(find.byType(TypingDots), findsNothing);
+    expect(find.byTooltip('Sair'), findsOneWidget);
     expect(find.text('Conferir'), findsOneWidget);
+  });
+
+  testWidgets('se o jogo demora, a tela oferece a saída', (tester) async {
+    final api = FakePracticeApi()..hold = Completer();
+    await _open(
+      tester,
+      api: api,
+      settle: false,
+      rounds: [PracticeRound(_fence, ExerciseKind.listenWrite)],
+    );
+
+    final leave = find.widgetWithText(AppButton, 'Sair', skipOffstage: false);
+    expect(tester.widget<Visibility>(_visibilityOf(leave)).visible, isFalse);
+
+    await tester.pump(AppMotion.loadingPatience);
+    await tester.pump();
+
+    expect(tester.widget<Visibility>(_visibilityOf(leave)).visible, isTrue);
+
+    await tester.tap(leave);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PracticePage), findsNothing);
+    api.hold!.complete();
+  });
+
+  group('Responde aí', () {
+    FakePracticeApi replyApi(List<Json> fence, [List<Json>? awkward]) =>
+        FakePracticeApi()
+          ..exercises['t-fence'] = fence
+          ..exercises['t-awkward'] = awkward ?? const [];
+
+    Future<void> nina(WidgetTester tester) async {
+      await tester.pump(AppMotion.replyTyping);
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> pick(WidgetTester tester, String option) async {
+      await tester.tap(find.widgetWithText(AppButton, option));
+      await tester.pump();
+      await nina(tester);
+    }
+
+    testWidgets(
+      'acerta de primeira: envia, a Nina responde e vem o resultado',
+      (tester) async {
+        final voice = FakeVoice();
+        final practice = await _open(
+          tester,
+          voice: voice,
+          api: replyApi([replyJson('e0', filled: 'on the fence')]),
+          rounds: [PracticeRound(_fence, ExerciseKind.reply)],
+        );
+
+        expect(find.text('Did you decide about Lisbon?'), findsOneWidget);
+        expect(find.text('Conferir'), findsNothing);
+        expect(voice.spoken, isEmpty);
+
+        await tester.tap(find.widgetWithText(AppButton, 'on the fence'));
+        await tester.pump();
+
+        expect(
+          voice.spoken.last.$1,
+          "Not yet. I'm still on the fence about it.",
+        );
+        expect(find.text('De primeira!'), findsNothing);
+
+        await nina(tester);
+
+        expect(practice.api.attempts.single['outcome'], 'first');
+        expect(practice.api.attempts.single['kind'], 'reply');
+        expect(find.text('Fair enough, big move.'), findsOneWidget);
+        expect(find.text('De primeira!'), findsOneWidget);
+        expect(
+          find.textContaining('on the fence: em cima do muro.'),
+          findsOneWidget,
+        );
+        expect(find.textContaining('Revisão retorna em'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'erro: a Nina não entende, a opção apaga e pode ver a resposta',
+      (tester) async {
+        final practice = await _open(
+          tester,
+          api: replyApi([replyJson('e0', filled: 'on the fence')]),
+          rounds: [PracticeRound(_fence, ExerciseKind.reply)],
+        );
+
+        expect(find.text('Mostrar resposta'), findsNothing);
+
+        await pick(tester, 'awkward');
+
+        expect(find.text('Wait, “awkward”? What do you mean?'), findsOneWidget);
+        expect(find.text('Mostrar resposta'), findsOneWidget);
+        expect(practice.api.attempts, isEmpty);
+        final used = tester.widget<AppButton>(
+          find.widgetWithText(AppButton, 'awkward'),
+        );
+        expect(used.onPressed, isNull);
+
+        await pick(tester, 'on the fence');
+
+        expect(practice.api.attempts.single['outcome'], 'slip');
+        expect(practice.api.attempts.single['errors'], 1);
+        expect(find.text('Na segunda, valeu!'), findsOneWidget);
+      },
+    );
+
+    testWidgets('mostrar a resposta fecha a rodada como vista', (tester) async {
+      final practice = await _open(
+        tester,
+        api: replyApi([replyJson('e0', filled: 'on the fence')]),
+        rounds: [PracticeRound(_fence, ExerciseKind.reply)],
+      );
+
+      await pick(tester, 'awkward');
+      await tester.tap(find.text('Mostrar resposta'));
+      await tester.pump();
+      await nina(tester);
+
+      expect(practice.api.attempts.single['outcome'], 'missed');
+      expect(find.text('Era assim'), findsOneWidget);
+    });
+
+    testWidgets('a conversa segue de um termo pro outro e termina no resumo', (
+      tester,
+    ) async {
+      final practice = await _open(
+        tester,
+        api: replyApi(
+          [replyJson('e0', filled: 'on the fence')],
+          [
+            replyJson(
+              'e1',
+              nina: 'How was dinner?',
+              segue: 'Oh, by the way:',
+              reply: 'It was so awkward.',
+              filled: 'awkward',
+              answer: 'awkward',
+            ),
+          ],
+        ),
+        rounds: [
+          PracticeRound(_fence, ExerciseKind.reply),
+          PracticeRound(_awkward, ExerciseKind.reply),
+        ],
+      );
+
+      await pick(tester, 'on the fence');
+      await tester.tap(find.text('Próxima'));
+      await tester.pump();
+      await nina(tester);
+
+      expect(find.text('Did you decide about Lisbon?'), findsOneWidget);
+      expect(find.text('Fair enough, big move.'), findsOneWidget);
+      expect(find.text('Oh, by the way: How was dinner?'), findsOneWidget);
+
+      await pick(tester, 'awkward');
+      await tester.tap(find.text('Ver resumo'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Revisão feita!'), findsOneWidget);
+      expect(find.text('2 de 2 de primeira'), findsOneWidget);
+      expect(practice.api.attempts, hasLength(2));
+    });
+
+    testWidgets(
+      'áudio toca sozinho, grava Devagar e só no fim mostra o texto',
+      (tester) async {
+        final voice = FakeVoice();
+        final practice = await _open(
+          tester,
+          voice: voice,
+          api: replyApi([
+            replyJson('e0', mode: 'audio', filled: 'on the fence'),
+          ]),
+          rounds: [PracticeRound(_fence, ExerciseKind.reply)],
+        );
+
+        expect(voice.spoken.first.$1, 'Did you decide about Lisbon?');
+        expect(find.text('Did you decide about Lisbon?'), findsNothing);
+
+        await tester.tap(find.text('Devagar'));
+        await tester.pump();
+        await pick(tester, 'on the fence');
+
+        expect(find.text('Did you decide about Lisbon?'), findsOneWidget);
+        expect(practice.api.attempts.single['used_slow'], isTrue);
+        expect(practice.api.attempts.single['audio_replays'], 1);
+      },
+    );
+
+    testWidgets('treino da ficha não grava', (tester) async {
+      final practice = await _open(
+        tester,
+        review: false,
+        api: replyApi([replyJson('e0', filled: 'on the fence')]),
+        rounds: [PracticeRound(_fence, ExerciseKind.reply)],
+      );
+
+      await pick(tester, 'on the fence');
+
+      expect(find.text('De primeira!'), findsOneWidget);
+      expect(practice.api.attempts, isEmpty);
+    });
   });
 
   testWidgets('palavra longa quebra com hífen e mantém o tamanho da peça', (

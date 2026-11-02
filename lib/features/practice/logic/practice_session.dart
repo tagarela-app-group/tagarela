@@ -61,6 +61,13 @@ class PracticeSession extends ChangeNotifier {
   List<PracticeResult> get results => List.unmodifiable(_results);
   PracticeResult? get current => _outcome == null ? null : _results.last;
 
+  List<ReplyExercise> get conversation => [
+    for (final result in _results)
+      if (result.exercise case final ReplyExercise exercise
+          when exercise.id != _exercise?.id)
+        exercise,
+  ];
+
   Future<void> start() => _open();
 
   Future<void> retry() => _open();

@@ -666,7 +666,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Volta em 12 dias · memória de 12 dias'), findsOneWidget);
+    expect(
+      find.text('Revisão retorna em 12 dias · memória de 12 dias'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('tinha sacado: responde como amigo e some ao embaçar', (
