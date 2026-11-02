@@ -146,7 +146,9 @@ class PracticeSummary extends StatelessWidget {
           StatusPill(
             label: context.l10n.outcomeLabel(result.outcome.name),
             tone: switch (result.outcome) {
-              Outcome.first || Outcome.retry => StatusTone.primary,
+              Outcome.first ||
+              Outcome.slip ||
+              Outcome.retry => StatusTone.primary,
               Outcome.hint => StatusTone.learning,
               Outcome.missed => StatusTone.alert,
             },

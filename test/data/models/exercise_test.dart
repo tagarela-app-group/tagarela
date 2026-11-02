@@ -25,6 +25,28 @@ void main() {
     expect(exercise.extra.say, 'on the fence about');
   });
 
+  test('responde aí lê a conversa e a lacuna da resposta', () {
+    final exercise =
+        Exercise.fromJson(replyJson('e1', mode: 'understand'))!
+            as ReplyExercise;
+
+    expect(exercise.kind, ExerciseKind.reply);
+    expect(exercise.mode, ReplyMode.understand);
+    expect(exercise.before, 'Not yet. ');
+    expect(exercise.filled, "I'm still on the fence");
+    expect(exercise.after, ' about it.');
+  });
+
+  test('mudança de assunto só entra com a conversa andando', () {
+    final exercise = Exercise.fromJson(replyJson('e1'))! as ReplyExercise;
+
+    expect(exercise.opening(continuing: false), 'Did you decide about Lisbon?');
+    expect(
+      exercise.opening(continuing: true),
+      'Anyway! Did you decide about Lisbon?',
+    );
+  });
+
   test('posições da API contam caracteres, não unidades UTF-16', () {
     final exercise =
         Exercise.fromJson({
@@ -64,6 +86,7 @@ void main() {
       'waiting': 0,
       'unread': 0,
       'next_due_at': null,
+      'kinds': ['listen_write', 'crossword'],
       'rounds': [
         {'term': fenceTermJson, 'kind': 'listen_write', 'retest': true},
         {'term': awkwardTermJson, 'kind': 'crossword', 'retest': false},
@@ -71,6 +94,7 @@ void main() {
     });
 
     expect(session.due, 3);
+    expect(session.kinds, [ExerciseKind.listenWrite]);
     expect(session.rounds.single.term.text, 'on the fence');
     expect(session.rounds.single.kind, ExerciseKind.listenWrite);
     expect(session.rounds.single.retest, isTrue);

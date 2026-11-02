@@ -184,8 +184,15 @@ class _TermPageState extends State<TermPage> {
         spacing: AppSpacing.s1,
         children: [
           SectionLabel(label: l10n.practiceSection),
-          PracticeCards(
-            onOpen: (kind) => PracticePage.openTerm(context, detail.term, kind),
+          ListenableBuilder(
+            listenable: scope.practice,
+            builder: (context, _) => PracticeCards(
+              kinds:
+                  scope.practice.data?.kinds ??
+                  const [ExerciseKind.listenWrite],
+              onOpen: (kind) =>
+                  PracticePage.openTerm(context, detail.term, kind),
+            ),
           ),
         ],
       ),

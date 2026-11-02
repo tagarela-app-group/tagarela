@@ -60,10 +60,22 @@ void main() {
     );
   });
 
+  test('exercícios do Responde aí', () {
+    final exercises =
+        contractExample('exercises_reply')['exercises']! as List<Object?>;
+    final exercise =
+        Exercise.fromJson(exercises.single! as Json)! as ReplyExercise;
+
+    expect(exercise.mode, ReplyMode.use);
+    expect(exercise.filled, 'on the fence');
+    expect(exercise.options, contains(exercise.answer));
+  });
+
   test('revisão', () {
     final session = ReviewSession.fromJson(contractExample('review_session'));
 
     expect(session.due, 1);
+    expect(session.kinds, [ExerciseKind.listenWrite]);
     expect(session.done, 2);
     expect(session.waiting, 3);
     expect(session.unread, 4);

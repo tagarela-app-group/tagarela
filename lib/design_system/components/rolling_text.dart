@@ -8,16 +8,28 @@ class RollingText extends StatelessWidget {
     required this.texts,
     required this.index,
     this.style,
+    this.maxLines = 1,
+    this.alignment = AlignmentDirectional.topStart,
+    this.textAlign,
   });
 
   final List<String> texts;
   final int index;
   final TextStyle? style;
+  final int maxLines;
+  final AlignmentGeometry alignment;
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
-    Text line(String text, {Key? key}) =>
-        Text(text, key: key, style: style, maxLines: 1, softWrap: false);
+    Text line(String text, {Key? key}) => Text(
+      text,
+      key: key,
+      style: style,
+      maxLines: maxLines,
+      softWrap: maxLines > 1,
+      textAlign: textAlign,
+    );
     return ClipRect(
       child: Stack(
         children: [
@@ -35,7 +47,7 @@ class RollingText extends StatelessWidget {
               switchInCurve: AppMotion.spring,
               switchOutCurve: AppMotion.smooth,
               layoutBuilder: (current, previous) => Stack(
-                alignment: AlignmentDirectional.topStart,
+                alignment: alignment,
                 children: [...previous, ?current],
               ),
               transitionBuilder: (child, animation) => SlideTransition(

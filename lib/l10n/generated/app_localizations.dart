@@ -2143,13 +2143,13 @@ abstract class AppLocalizations {
   /// No description provided for @exerciseKind.
   ///
   /// In pt, this message translates to:
-  /// **'{kind, select, listenWrite{Ouvir e escrever} other{}}'**
+  /// **'{kind, select, listenWrite{Ouvir e escrever} reply{Responde aí} other{}}'**
   String exerciseKind(String kind);
 
   /// No description provided for @exerciseKindHint.
   ///
   /// In pt, this message translates to:
-  /// **'{kind, select, listenWrite{Ouça uma frase nova e complete o que falta} other{}}'**
+  /// **'{kind, select, listenWrite{Ouça uma frase nova e complete o que falta} reply{Converse com a Nina e complete a sua resposta} other{}}'**
   String exerciseKindHint(String kind);
 
   /// No description provided for @practiceSection.
@@ -2161,8 +2161,50 @@ abstract class AppLocalizations {
   /// No description provided for @practiceLoading.
   ///
   /// In pt, this message translates to:
-  /// **'Preparando a frase…'**
+  /// **'Preparando o jogo…'**
   String get practiceLoading;
+
+  /// No description provided for @loadingLine.
+  ///
+  /// In pt, this message translates to:
+  /// **'{line, select, a{Esperando as palavras acordarem…} b{Escolhendo uma frase boa…} c{Afinando a voz…} d{Arrumando as letras…} e{Esquentando a conversa…} other{Quase lá…}}'**
+  String loadingLine(String line);
+
+  /// No description provided for @replyNina.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nina'**
+  String get replyNina;
+
+  /// No description provided for @replyOnline.
+  ///
+  /// In pt, this message translates to:
+  /// **'online'**
+  String get replyOnline;
+
+  /// No description provided for @replyTyping.
+  ///
+  /// In pt, this message translates to:
+  /// **'digitando…'**
+  String get replyTyping;
+
+  /// No description provided for @replyGap.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lacuna'**
+  String get replyGap;
+
+  /// No description provided for @replyListen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ouvir o áudio'**
+  String get replyListen;
+
+  /// No description provided for @replyConfused.
+  ///
+  /// In pt, this message translates to:
+  /// **'{which, select, a{Ué, “{option}”? Como assim?} b{Hmm, “{option}”? Não entendi.} other{Haha, “{option}”? Tenta de novo.}}'**
+  String replyConfused(String which, String option);
 
   /// No description provided for @listenTap.
   ///
@@ -2233,13 +2275,13 @@ abstract class AppLocalizations {
   /// No description provided for @outcomeTitle.
   ///
   /// In pt, this message translates to:
-  /// **'{outcome, select, first{De primeira!} retry{Na segunda, valeu!} hint{Foi, com uma ajuda} missed{Era assim} other{}}'**
+  /// **'{outcome, select, first{De primeira!} slip{Na segunda, valeu!} retry{Chegou lá, valeu!} hint{Foi, com uma ajuda} missed{Era assim} other{}}'**
   String outcomeTitle(String outcome);
 
   /// No description provided for @outcomeLabel.
   ///
   /// In pt, this message translates to:
-  /// **'{outcome, select, first{De primeira} retry{Na segunda} hint{Com dica} missed{Viu a resposta} other{}}'**
+  /// **'{outcome, select, first{De primeira} slip{Na segunda} retry{Chegou lá} hint{Com dica} missed{Viu a resposta} other{}}'**
   String outcomeLabel(String outcome);
 
   /// No description provided for @means.
@@ -2395,13 +2437,13 @@ abstract class AppLocalizations {
   /// No description provided for @returnsInDays.
   ///
   /// In pt, this message translates to:
-  /// **'{count, plural, =0{Volta hoje} =1{Volta em 1 dia} other{Volta em {count} dias}}'**
+  /// **'{count, plural, =0{Revisão retorna hoje} =1{Revisão retorna em 1 dia} other{Revisão retorna em {count} dias}}'**
   String returnsInDays(int count);
 
   /// No description provided for @returnsInHours.
   ///
   /// In pt, this message translates to:
-  /// **'{count, plural, =0{Volta já} =1{Volta em 1 hora} other{Volta em {count} horas}}'**
+  /// **'{count, plural, =0{Revisão retorna já} =1{Revisão retorna em 1 hora} other{Revisão retorna em {count} horas}}'**
   String returnsInHours(int count);
 
   /// No description provided for @termMemory.

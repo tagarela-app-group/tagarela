@@ -1,0 +1,24 @@
+{
+  "exercises": [
+    {
+      "id": "f6b8d0e2-5a7c-4e9f-8b1d-3c4e5f607182",
+      "kind": "reply",
+      "payload": {
+        "mode": "use",
+        "segue": "Anyway!",
+        "nina": "Did you decide about the Lisbon job?",
+        "reply": "Not yet. I'm still on the fence about it.",
+        "start": 17,
+        "end": 29,
+        "nina_reply": "Fair enough, it's a big move.",
+        "translation": "em cima do muro",
+        "extra": {
+          "note": "Depois vem *about*: *on the fence about* alguma coisa.",
+          "say": "on the fence about"
+        },
+        "answer": "on the fence",
+        "options": ["awkward", "on the fence", "wit", "procrastination"]
+      }
+    }
+  ]
+}

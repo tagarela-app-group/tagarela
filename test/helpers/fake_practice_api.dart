@@ -67,6 +67,42 @@ Json listenWriteJson(
   };
 }
 
+Json replyJson(
+  String id, {
+  String mode = 'use',
+  String nina = 'Did you decide about Lisbon?',
+  String segue = 'Anyway!',
+  String reply = "Not yet. I'm still on the fence about it.",
+  String filled = "I'm still on the fence",
+  String answer = 'on the fence',
+  List<String> options = const [
+    'awkward',
+    'on the fence',
+    'wit',
+    'procrastination',
+  ],
+}) {
+  final start = reply.indexOf(filled);
+  return {
+    'id': id,
+    'kind': 'reply',
+    'variant': 0,
+    'payload': {
+      'mode': mode,
+      'segue': segue,
+      'nina': nina,
+      'reply': reply,
+      'start': start,
+      'end': start + filled.length,
+      'nina_reply': 'Fair enough, big move.',
+      'translation': 'em cima do muro',
+      'extra': {'note': 'Depois vem *about*.', 'say': 'on the fence about'},
+      'answer': answer,
+      'options': options,
+    },
+  };
+}
+
 class FakePracticeApi extends FakeApi {
   FakePracticeApi({
     this.due = 2,
@@ -74,6 +110,7 @@ class FakePracticeApi extends FakeApi {
     this.waiting = 0,
     this.unread = 0,
     this.nextDueAt,
+    this.kinds = const ['listen_write'],
     List<Json>? rounds,
   }) : rounds =
            rounds ??
@@ -87,6 +124,7 @@ class FakePracticeApi extends FakeApi {
   int waiting;
   int unread;
   String? nextDueAt;
+  final List<String> kinds;
   final List<Json> rounds;
   final attempts = <Map<String, Object?>>[];
   final studied = <(String, Object?)>[];
@@ -128,6 +166,7 @@ class FakePracticeApi extends FakeApi {
         'waiting': waiting,
         'unread': unread,
         'next_due_at': nextDueAt,
+        'kinds': kinds,
         'rounds': rounds,
       };
     }

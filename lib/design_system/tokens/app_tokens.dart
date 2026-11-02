@@ -99,6 +99,8 @@ abstract final class AppMotion {
   static const roll = Duration(milliseconds: 520);
   static const rollEvery = Duration(milliseconds: 2200);
   static const typing = Duration(milliseconds: 1200);
+  static const replyTyping = Duration(milliseconds: 900);
+  static const loadingPatience = Duration(seconds: 12);
   static const wordFirst = Duration(milliseconds: 1200);
   static const wordEvery = Duration(seconds: 30);
   static const wordHop = Duration(milliseconds: 1500);

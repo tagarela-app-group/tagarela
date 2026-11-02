@@ -15,13 +15,19 @@ void main() {
   });
 
   test('menos de um dia conta em horas, arredondando pra cima', () {
-    expect(back(const Duration(minutes: 10)), 'Volta em 1 hora');
-    expect(back(const Duration(hours: 4, minutes: 1)), 'Volta em 5 horas');
+    expect(back(const Duration(minutes: 10)), 'Revisão retorna em 1 hora');
+    expect(
+      back(const Duration(hours: 4, minutes: 1)),
+      'Revisão retorna em 5 horas',
+    );
   });
 
   test('a partir de um dia conta em dias', () {
-    expect(back(const Duration(hours: 24)), 'Volta em 1 dia');
-    expect(back(const Duration(days: 20, hours: 3)), 'Volta em 20 dias');
+    expect(back(const Duration(hours: 24)), 'Revisão retorna em 1 dia');
+    expect(
+      back(const Duration(days: 20, hours: 3)),
+      'Revisão retorna em 20 dias',
+    );
   });
 
   test('a próxima revisão usa a mesma conta', () {

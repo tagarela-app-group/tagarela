@@ -10,16 +10,18 @@ class ListenSlowButton extends StatelessWidget {
     super.key,
     required this.playing,
     required this.onPressed,
+    this.variant = AppButtonVariant.onHeader,
   });
 
   final bool playing;
   final VoidCallback onPressed;
+  final AppButtonVariant variant;
 
   @override
   Widget build(BuildContext context) {
     return AppButton(
       label: context.l10n.listenSlow,
-      variant: AppButtonVariant.onHeader,
+      variant: variant,
       size: AppButtonSize.small,
       leading: playing
           ? const Icon(AppIcons.stop, size: 18)

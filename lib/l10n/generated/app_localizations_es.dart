@@ -1548,6 +1548,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String exerciseKind(String kind) {
     String _temp0 = intl.Intl.selectLogic(kind, {
       'listenWrite': 'Escuchar y escribir',
+      'reply': 'Responde ahí',
       'other': '',
     });
     return '$_temp0';
@@ -1557,6 +1558,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String exerciseKindHint(String kind) {
     String _temp0 = intl.Intl.selectLogic(kind, {
       'listenWrite': 'Escucha una frase nueva y completa lo que falta',
+      'reply': 'Conversa con Nina y completa tu respuesta',
       'other': '',
     });
     return '$_temp0';
@@ -1566,7 +1568,45 @@ class AppLocalizationsEs extends AppLocalizations {
   String get practiceSection => 'Practicar';
 
   @override
-  String get practiceLoading => 'Preparando la frase…';
+  String get practiceLoading => 'Preparando el juego…';
+
+  @override
+  String loadingLine(String line) {
+    String _temp0 = intl.Intl.selectLogic(line, {
+      'a': 'Esperando a que las palabras despierten…',
+      'b': 'Eligiendo una buena frase…',
+      'c': 'Afinando la voz…',
+      'd': 'Ordenando las letras…',
+      'e': 'Calentando la charla…',
+      'other': 'Ya casi…',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get replyNina => 'Nina';
+
+  @override
+  String get replyOnline => 'en línea';
+
+  @override
+  String get replyTyping => 'escribiendo…';
+
+  @override
+  String get replyGap => 'Espacio';
+
+  @override
+  String get replyListen => 'Escuchar el audio';
+
+  @override
+  String replyConfused(String which, String option) {
+    String _temp0 = intl.Intl.selectLogic(which, {
+      'a': '¿Cómo, “$option”? ¿Qué quieres decir?',
+      'b': 'Mmm, “$option”? No te entendí.',
+      'other': 'Jaja, “$option”? Prueba otra vez.',
+    });
+    return '$_temp0';
+  }
 
   @override
   String get listenTap => 'Toca para escuchar';
@@ -1634,7 +1674,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String outcomeTitle(String outcome) {
     String _temp0 = intl.Intl.selectLogic(outcome, {
       'first': '¡A la primera!',
-      'retry': '¡A la segunda, bien!',
+      'slip': '¡A la segunda, bien!',
+      'retry': '¡Lo lograste!',
       'hint': 'Listo, con una ayuda',
       'missed': 'Era así',
       'other': '',
@@ -1646,7 +1687,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String outcomeLabel(String outcome) {
     String _temp0 = intl.Intl.selectLogic(outcome, {
       'first': 'A la primera',
-      'retry': 'A la segunda',
+      'slip': 'A la segunda',
+      'retry': 'Lo lograste',
       'hint': 'Con pista',
       'missed': 'Viste la respuesta',
       'other': '',
@@ -1791,9 +1833,9 @@ class AppLocalizationsEs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Vuelve en $count días',
-      one: 'Vuelve en 1 día',
-      zero: 'Vuelve hoy',
+      other: 'El repaso vuelve en $count días',
+      one: 'El repaso vuelve en 1 día',
+      zero: 'El repaso vuelve hoy',
     );
     return '$_temp0';
   }
@@ -1803,9 +1845,9 @@ class AppLocalizationsEs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Vuelve en $count horas',
-      one: 'Vuelve en 1 hora',
-      zero: 'Vuelve ya',
+      other: 'El repaso vuelve en $count horas',
+      one: 'El repaso vuelve en 1 hora',
+      zero: 'El repaso vuelve ya',
     );
     return '$_temp0';
   }

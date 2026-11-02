@@ -1,5 +1,6 @@
 {
   "due": 1,
+  "kinds": ["listen_write"],
   "rounds": [
     {
       "term": {
