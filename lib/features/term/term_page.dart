@@ -185,10 +185,10 @@ class _TermPageState extends State<TermPage> {
         children: [
           SectionLabel(label: l10n.practiceSection),
           ListenableBuilder(
-            listenable: scope.practice,
+            listenable: AppScope.of(context).practice,
             builder: (context, _) => PracticeCards(
               kinds:
-                  scope.practice.data?.kinds ??
+                  AppScope.of(context).practice.data?.kinds ??
                   const [ExerciseKind.listenWrite],
               onOpen: (kind) =>
                   PracticePage.openTerm(context, detail.term, kind),

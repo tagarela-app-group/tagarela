@@ -142,7 +142,7 @@ class ReviewSession {
     },
     kinds: [
       for (final key in (json['kinds']! as List).cast<String>())
-        if (ExerciseKind.fromKey(key) case final kind?) kind,
+        ?ExerciseKind.fromKey(key),
     ],
     rounds: [
       for (final round in (json['rounds']! as List).cast<Json>())

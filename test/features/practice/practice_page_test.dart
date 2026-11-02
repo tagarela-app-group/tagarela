@@ -351,12 +351,12 @@ void main() {
           voice.spoken.last.$1,
           "Not yet. I'm still on the fence about it.",
         );
-        expect(practice.api.attempts.single['outcome'], 'first');
-        expect(practice.api.attempts.single['kind'], 'reply');
         expect(find.text('De primeira!'), findsNothing);
 
         await nina(tester);
 
+        expect(practice.api.attempts.single['outcome'], 'first');
+        expect(practice.api.attempts.single['kind'], 'reply');
         expect(find.text('Fair enough, big move.'), findsOneWidget);
         expect(find.text('De primeira!'), findsOneWidget);
         expect(

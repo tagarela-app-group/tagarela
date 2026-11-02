@@ -194,14 +194,12 @@ class _ReplyGameState extends State<ReplyGame> {
     ];
   }
 
-  Widget _opening() {
-    if (_exercise.mode != ReplyMode.audio) {
-      return NinaBubble.text(
-        _exercise.opening(continuing: widget.earlier.isNotEmpty),
-        language: widget.language,
-      );
-    }
-    return NinaBubble(
+  Widget _opening() => switch (_exercise.mode) {
+    ReplyMode.use || ReplyMode.understand => NinaBubble.text(
+      _exercise.opening(continuing: widget.earlier.isNotEmpty),
+      language: widget.language,
+    ),
+    ReplyMode.audio => NinaBubble(
       child: NinaAudio(
         text: _exercise.nina,
         language: widget.language,
@@ -209,8 +207,8 @@ class _ReplyGameState extends State<ReplyGame> {
         showText: _round.finished,
         onListen: (speed) => _listening.play(_exercise.nina, speed),
       ),
-    );
-  }
+    ),
+  };
 
   Widget _options(BuildContext context) {
     final options = _exercise.options;
