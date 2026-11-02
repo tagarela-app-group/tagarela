@@ -305,8 +305,7 @@ void main() {
     expect(tester.widget<Visibility>(_visibilityOf(leave)).visible, isTrue);
 
     await tester.tap(leave);
-    await tester.pump(AppMotion.slow);
-    await tester.pump(AppMotion.slow);
+    await tester.pumpAndSettle();
 
     expect(find.byType(PracticePage), findsNothing);
     api.hold!.complete();

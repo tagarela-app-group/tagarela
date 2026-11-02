@@ -15,25 +15,6 @@ class NinaAudio extends StatelessWidget {
     required this.showText,
   });
 
-  static const _bars = [
-    11.0,
-    16.0,
-    21.0,
-    12.0,
-    24.0,
-    18.0,
-    10.0,
-    22.0,
-    28.0,
-    16.0,
-    12.0,
-    20.0,
-    26.0,
-    14.0,
-    8.0,
-    18.0,
-  ];
-
   final String text;
   final CourseLanguage language;
   final Voice voice;
@@ -66,32 +47,10 @@ class NinaAudio extends StatelessWidget {
                   onPressed: () => onListen(VoiceSpeed.normal),
                 ),
                 Expanded(
-                  child: ExcludeSemantics(
-                    child: SizedBox(
-                      height: AppBubbleSize.xs,
-                      child: LayoutBuilder(
-                        builder: (context, constraints) => Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            for (
-                              var i = 0;
-                              i < constraints.maxWidth ~/ AppSpacing.s15;
-                              i++
-                            )
-                              Container(
-                                width: AppSpacing.s05,
-                                height: _bars[i % _bars.length],
-                                decoration: BoxDecoration(
-                                  color: saying == null ? c.inkSoft : c.primary,
-                                  borderRadius: BorderRadius.circular(
-                                    AppRadius.pill,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  child: Waveform(
+                    progress: saying == null ? 0 : 1,
+                    color: c.primary,
+                    track: c.inkSoft,
                   ),
                 ),
                 ListenSlowButton(
